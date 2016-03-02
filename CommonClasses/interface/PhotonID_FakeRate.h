@@ -132,7 +132,7 @@ namespace ExoDiPhotons{
         else return false;
     }
 
-
+    // must pass all cuts in the High pT ID except for the Sieie cut
     bool passLooseNumeratorCut(const pat::Photon* photon, double chIso, double phoIso, double sigIeIe, double rho, bool passCSEV, bool isSat){
 
         if (
@@ -149,7 +149,12 @@ namespace ExoDiPhotons{
     bool passDenominatorCut(const pat::Photon* photon, double chIso, double phoIso, double sigIeIe, double rho, bool passCSEV, bool isSat){
 
         // first check if the photon fails at least one of the high pT ID cuts
-        bool failID = !passHighPtID(photon,chIso,phoIso,sigIeIe,rho,passCSEV,isSat);
+        bool failID = (
+            !passesHadTowerOverEmCut(photon) ||
+            !passesChargedHadronCut(photon, chIso) ||
+            !passesSigmaIetaIetaCut(photon, sigIeIe) ||
+            !passCorPhoIsoHighPtID(photon,phoIso,rho)
+        ); // don't enforce electron veto; do this offline to study the veto's effect on the fake rate
 
         // now check if it passes the looser ID
         bool passLooseIso = passesChargedHadronCut(photon, chIso, true) && passCorPhoIsoHighPtID(photon,phoIso,rho, true);
