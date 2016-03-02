@@ -1,66 +1,21 @@
-// Event and Vertex info
+#ifndef VERTEX_INFO_INC
+#define VERTEX_INFO_INC
 
-#ifndef EVENT_AND_VERTEX_INFO_INC
-#define EVENT_AND_VERTEX_INFO_INC
+//#include <string>
 
-#include <string>
-
-#include "FWCore/Framework/interface/Event.h"
+//#include "FWCore/Framework/interface/Event.h"
 
 //for vertex
-#include "DataFormats/VertexReco/interface/Vertex.h"
-#include "DataFormats/VertexReco/interface/VertexFwd.h"
+//#include "DataFormats/VertexReco/interface/Vertex.h"
+//#include "DataFormats/VertexReco/interface/VertexFwd.h"
 
 // for beamspot
-#include "DataFormats/BeamSpot/interface/BeamSpot.h"
+//#include "DataFormats/BeamSpot/interface/BeamSpot.h"
 
 
 namespace ExoDiPhotons
 {
-
-  // event info 
-
-  struct eventInfo_t{
-    Float_t pthat;
-    Float_t alphaqcd;
-    Float_t alphaqed;
-    Float_t qscale;
-    Float_t weight;
-
-    Int_t run;
-    Int_t LS;
-    Int_t evnum;
-    Int_t processid;
-
-  };
-
-  std::string eventInfoBranchDefString("pthat/F:alphaqcd:alphaqed:qscale:weight:run/I:LS:evnum:processid");
-
-  void FillEventInfo(eventInfo_t &eventInfo,const edm::Event& iEvent) {
-    
-    eventInfo.run = iEvent.id().run();
-    eventInfo.LS = iEvent.id().luminosityBlock();
-    eventInfo.evnum = iEvent.id().event();
-    
-  }
-
-  void InitEventInfo(eventInfo_t &eventInfo, float value) {
-    
-    eventInfo.run = (int)value;
-    eventInfo.LS = (int)value;
-    eventInfo.evnum = (int)value;
-    
-    eventInfo.processid = (int)value;
-    eventInfo.pthat = value;
-    eventInfo.alphaqcd = value;
-    eventInfo.alphaqed = value;
-    eventInfo.qscale = value;
-    eventInfo.weight = value;
-
-  }
-
-  // vertex info
-
+  
   struct vtxInfo_t{
     Double_t vx;
     Double_t vy;
