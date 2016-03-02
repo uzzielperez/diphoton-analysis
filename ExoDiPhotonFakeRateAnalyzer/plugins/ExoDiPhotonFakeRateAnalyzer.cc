@@ -28,6 +28,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 // from our CommomClasses
+#include "DiPhotonAnalysis/CommonClasses/interface/EventInfo.h"
 #include "DiPhotonAnalysis/CommonClasses/interface/PhotonID_FakeRate.h"
 
 // for TFileService, trees
@@ -89,6 +90,9 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
   
   // main tree
   TTree *fTree;
+
+  // event info
+  ExoDiPhotons::eventInfo_t fEventInfo;
   
 };
 
@@ -112,6 +116,7 @@ ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet
   edm::Service<TFileService> fs;
   
   fTree = fs->make<TTree>("fTree","PhotonTree");
+  fTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
   
   // MiniAOD tokens
   photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
@@ -146,8 +151,8 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   using namespace std;
   using namespace pat;
   
-  //ExoDiPhotons::InitEventInfo(fEventInfo);
-  //ExoDiPhotons::FillEventInfo(fEventInfo,iEvent);
+  ExoDiPhotons::InitEventInfo(fEventInfo);
+  ExoDiPhotons::FillEventInfo(fEventInfo,iEvent);
   
   cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
 
