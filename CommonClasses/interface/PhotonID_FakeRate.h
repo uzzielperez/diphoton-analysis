@@ -1,11 +1,72 @@
-#ifndef PFPHOTON_ID_INC
-#define PFPHOTON_ID_INC
+#ifndef PHOTON_ID_FakeRate_INC
+#define PHOTON_ID_FakeRate_INC
 
 // for pat::Photons
 #include "DataFormats/PatCandidates/interface/Photon.h"
 
+// for saturation
+#include "RecoCaloTools/Navigation/interface/CaloNavigator.h"
+#include "DataFormats/EcalDetId/interface/EBDetId.h"
+#include "DataFormats/EcalDetId/interface/EEDetId.h"
+
 namespace ExoDiPhotons{
 
+  // why is this needed? if(it != recHitsEB->end())
+  // checking for saturated photons in 5x5 around seed crystal
+  // considered saturated if any crystal is marked as saturated
+  bool isSaturated(const pat::Photon *photon, const EcalRecHitCollection *recHitsEB, const EcalRecHitCollection *recHitsEE,
+		   const CaloSubdetectorTopology* subDetTopologyEB_, const CaloSubdetectorTopology* subDetTopologyEE_) {
+    using namespace std;
+    
+    bool isSat = false;
+    DetId seedDetId = ((photon->superCluster())->seed())->seed();
+    
+    // check EB
+    if (seedDetId.subdetId()==EcalBarrel) {
+      CaloNavigator<DetId> cursor = CaloNavigator<DetId>(seedDetId,subDetTopologyEB_);
+      for (int i = -2; i <= 2; ++i) {
+	for (int j = -2; j <= 2; ++j) {
+	  cursor.home();
+	  cursor.offsetBy(i,j);
+	  EcalRecHitCollection::const_iterator it = recHitsEB->find(*cursor);
+	  if(it != recHitsEB->end()) {
+	    cout << "Energy of (" << i << ", " << j << "): " << it-> energy()
+		 << ", kSaturated: " << it->checkFlag(EcalRecHit::kSaturated)
+		 << ", kDead: " << it->checkFlag(EcalRecHit::kDead)
+		 << ", kKilled: " << it->checkFlag(EcalRecHit::kKilled)
+		 << endl;
+	    if (it->checkFlag(EcalRecHit::kSaturated) && !it->checkFlag(EcalRecHit::kDead) && !it->checkFlag(EcalRecHit::kKilled)) {
+	      isSat = true;
+	    }
+	  }	  
+	}
+      }
+    }
+    // check EE
+    else if (seedDetId.subdetId()==EcalEndcap) {
+      CaloNavigator<DetId> cursor = CaloNavigator<DetId>(seedDetId,subDetTopologyEE_);
+      for (int i = -2; i <= 2; ++i) {
+	for (int j = -2; j <= 2; ++j) {
+	  cursor.home();
+	  cursor.offsetBy(i,j);
+	  EcalRecHitCollection::const_iterator it = recHitsEE->find(*cursor);
+	  if(it != recHitsEE->end()) {
+	    cout << "Energy of (" << i << ", " << j << "): " << it->energy()
+		 << ", kSaturated: " << it->checkFlag(EcalRecHit::kSaturated)
+		 << ", kDead: " << it->checkFlag(EcalRecHit::kDead)
+		 << ", kKilled: " << it->checkFlag(EcalRecHit::kKilled)
+		 << endl;
+	    if (it->checkFlag(EcalRecHit::kSaturated) && !it->checkFlag(EcalRecHit::kDead) && !it->checkFlag(EcalRecHit::kKilled)) {
+	      isSat = true;
+	    }
+	  }
+	}
+      }
+    }
+    return isSat;
+  }
+  
+  
     bool passesHadTowerOverEmCut(const pat::Photon* photon){
 
         double hOverE = photon->hadTowOverEm();
@@ -18,8 +79,8 @@ namespace ExoDiPhotons{
 
     // will write another method for the sideband cut, this is for the numerator
     bool passesChargedHadronCut(const pat::Photon* photon, double rhocorPFChargedHadronIso, bool forFakeRateDenom = false){
-
-        double chIsoCut = 5.
+      
+      double chIsoCut = 5.;
         // the cut value doesn't depend on eta
         if (rhocorPFChargedHadronIso < chIsoCut && !forFakeRateDenom) return true;
         else if ( (rhocorPFChargedHadronIso < 5.*chIsoCut || rhocorPFChargedHadronIso < 0.2*photon->pt()) && forFakeRateDenom ) return true;
@@ -29,12 +90,12 @@ namespace ExoDiPhotons{
 
     bool passesSigmaIetaIetaCut(const pat::Photon* photon, double full5x5SigmaIetaIeta, bool isSaturated){
 
-        double scEta = fabs( photon->superCluster()->eta() );
-        double sieieCut = -1.
-        if (photon->isEB() && !isSaturated) sieieCut = 0.0105; 
-        else if (photon->isEB() && isSaturated) sieieCut = 0.0112;
-        else if (photon->isEE() && !isSaturated) sieieCut = 0.0280; 
-        else if (photon->isEE() && isSaturated) sieieCut = 0.0300;
+        double phoEta = fabs( photon->superCluster()->eta() );
+        double sieieCut = -1.;
+        if (phoEta < 1.4442 && !isSaturated) sieieCut = 0.0105; 
+        else if (phoEta < 1.4442 && isSaturated) sieieCut = 0.0112;
+        else if (1.566 < phoEta && phoEta < 2.5 && !isSaturated) sieieCut = 0.0280; 
+        else if (1.566 < phoEta && phoEta < 2.5 && isSaturated) sieieCut = 0.0300;
 
         if (full5x5SigmaIetaIeta < sieieCut) return true;
         else return false;
@@ -114,7 +175,7 @@ namespace ExoDiPhotons{
         if (1.560 < fabs(photon->superCluster()->eta()) && fabs(photon->superCluster()->eta()) < 2.5) corPhoIsoCut = 2.00;
 
         if (corPhoIso < corPhoIsoCut && !forFakeRateDenom) return true;
-        else if ( (corPhoIso < 5.*chIsoCut || corPhoIso < 0.2*photon->pt()) && forFakeRateDenom ) return true;
+        else if ( (corPhoIso < 5.*corPhoIsoCut || corPhoIso < 0.2*photon->pt()) && forFakeRateDenom ) return true;
         else return false;
         
         return pass;
@@ -123,8 +184,8 @@ namespace ExoDiPhotons{
     bool passHighPtID(const pat::Photon* photon, double chIso, double phoIso, double sigIeIe, double rho, bool passCSEV, bool isSat){
         if (
             passesHadTowerOverEmCut(photon) &&
-            passesChargedHadronCut(photon, chIso) &&
-            passesSigmaIetaIetaCut(photon, sigIeIe) &&
+            passesChargedHadronCut(photon,chIso) &&
+            passesSigmaIetaIetaCut(photon,sigIeIe,isSat) &&
             passCorPhoIsoHighPtID(photon,phoIso,rho) &&
             passCSEV
         ) return true;
@@ -137,7 +198,7 @@ namespace ExoDiPhotons{
 
         if (
             passesHadTowerOverEmCut(photon) &&
-            passesChargedHadronCut(photon, chIso) &&
+            passesChargedHadronCut(photon,chIso) &&
             passCorPhoIsoHighPtID(photon,phoIso,rho) &&
             passCSEV
         ) return true;
@@ -152,7 +213,7 @@ namespace ExoDiPhotons{
         bool failID = (
             !passesHadTowerOverEmCut(photon) ||
             !passesChargedHadronCut(photon, chIso) ||
-            !passesSigmaIetaIetaCut(photon, sigIeIe) ||
+            !passesSigmaIetaIetaCut(photon, sigIeIe, isSat) ||
             !passCorPhoIsoHighPtID(photon,phoIso,rho)
         ); // don't enforce electron veto; do this offline to study the veto's effect on the fake rate
 
@@ -165,3 +226,5 @@ namespace ExoDiPhotons{
     }
 
 }
+
+#endif

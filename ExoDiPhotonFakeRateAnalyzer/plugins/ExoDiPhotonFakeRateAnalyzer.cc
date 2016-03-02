@@ -11,7 +11,7 @@
      [Notes on implementation]
 */
 //
-// Original Author:  andrew buccilli
+// Original Author:  Andrew Buccilli
 //         Created:  Wed, 02 Mar 2016 14:43:55 GMT
 //
 //
@@ -23,11 +23,30 @@
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
-
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+
+// from our CommomClasses
+#include "DiPhotonAnalysis/CommonClasses/interface/PhotonID_FakeRate.h"
+
+// for TFileService, trees
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "TTree.h"
+
+// for ECAL topology
+#include "Geometry/CaloTopology/interface/CaloTopology.h"
+#include "Geometry/CaloEventSetup/interface/CaloTopologyRecord.h"
+#include "FWCore/Framework/interface/ESHandle.h"
+#include "FWCore/Framework/interface/EventSetup.h"
+#include "DataFormats/EcalDetId/interface/EBDetId.h"
+#include "DataFormats/EcalDetId/interface/EEDetId.h"
+
+// for photons
+#include "DataFormats/PatCandidates/interface/Photon.h"
+
+
 //
 // class declaration
 //
@@ -51,7 +70,26 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
       virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
       virtual void endJob() override;
 
-      // ----------member data ---------------------------
+  // ----------member data ---------------------------
+  
+  // miniAOD photon token
+  edm::EDGetToken photonsMiniAODToken_;
+    
+  // ECAL recHits
+  edm::InputTag recHitsEBTag_;
+  edm::InputTag recHitsEETag_;
+  edm::EDGetTokenT<EcalRecHitCollection> recHitsEBToken;
+  edm::EDGetTokenT<EcalRecHitCollection> recHitsEEToken;
+
+  // rho token
+  edm::EDGetTokenT<double> rhoToken_;
+  
+  // rho variable
+  float rho_;
+  
+  // main tree
+  TTree *fTree;
+  
 };
 
 //
@@ -66,11 +104,24 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
 // constructors and destructor
 //
 ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet& iConfig)
-
+  : rhoToken_(consumes<double> (iConfig.getParameter<edm::InputTag>("rho")))
 {
-   //now do what ever initialization is needed
-   usesResource("TFileService");
-
+  //now do what ever initialization is needed
+  usesResource("TFileService");
+  
+  edm::Service<TFileService> fs;
+  
+  fTree = fs->make<TTree>("fTree","PhotonTree");
+  
+  // MiniAOD tokens
+  photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
+  
+  // ECAL RecHits
+  recHitsEBTag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEBTag",edm::InputTag("reducedEgamma:reducedEBRecHits"));
+  recHitsEETag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEETag",edm::InputTag("reducedEgamma:reducedEERecHits"));
+  recHitsEBToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEBTag_);
+  recHitsEEToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEETag_);
+  
 }
 
 
@@ -91,10 +142,58 @@ ExoDiPhotonFakeRateAnalyzer::~ExoDiPhotonFakeRateAnalyzer()
 void
 ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-   using namespace edm;
+  using namespace edm;
+  using namespace std;
+  using namespace pat;
+  
+  //ExoDiPhotons::InitEventInfo(fEventInfo);
+  //ExoDiPhotons::FillEventInfo(fEventInfo,iEvent);
+  
+  cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
 
+  // Get rho
+  edm::Handle< double > rhoH;
+  iEvent.getByToken(rhoToken_,rhoH);
+  rho_ = *rhoH;
+  
+  cout << "rho: " << rho_ << endl;
+  
+  // ECAL RecHits
+  edm::Handle<EcalRecHitCollection> recHitsEB;
+  iEvent.getByToken(recHitsEBToken,recHitsEB);   
+  edm::Handle<EcalRecHitCollection> recHitsEE;
+  iEvent.getByToken(recHitsEEToken,recHitsEE);
 
+  // ECAL Topology
+  const CaloSubdetectorTopology* subDetTopologyEB_;
+  const CaloSubdetectorTopology* subDetTopologyEE_;
+  edm::ESHandle<CaloTopology> caloTopology;
+  iSetup.get<CaloTopologyRecord>().get(caloTopology);
+  subDetTopologyEB_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalBarrel);
+  subDetTopologyEE_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalEndcap);
 
+  //ExoDiPhotons::InitPhotonInfo(fPhotonInfo1);
+  //ExoDiPhotons::InitPhotonInfo(fPhotonInfo2);
+  
+  // Get pat::Photon
+  edm::Handle<edm::View<pat::Photon> > photons;
+  iEvent.getByToken(photonsMiniAODToken_,photons);
+  
+  //for (edm::View<pat::Photon>::const_iterator pho = photons->begin(); pho != photons->end(); ++pho) {
+  for (size_t i = 0; i < photons->size(); ++i){
+    const auto pho = photons->ptrAt(i);
+    cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
+    cout << "isSat: " <<
+      ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_))
+	 << endl;
+  }
+  
+  //ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo);
+  
+  // fill our tree
+  fTree->Fill();
+  
+  
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
    Handle<ExampleData> pIn;
    iEvent.getByLabel("example",pIn);
