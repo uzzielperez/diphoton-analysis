@@ -1,0 +1,3 @@
+# python compiled
+*.pyc
+__init__.py
