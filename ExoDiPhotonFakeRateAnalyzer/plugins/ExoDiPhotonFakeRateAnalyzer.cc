@@ -30,6 +30,7 @@
 // from our CommomClasses
 #include "DiPhotonAnalysis/CommonClasses/interface/EventInfo.h"
 #include "DiPhotonAnalysis/CommonClasses/interface/PhotonID_FakeRate.h"
+#include "DiPhotonAnalysis/CommonClasses/interface/PhotonInfo_FakeRate.h"
 
 // for TFileService, trees
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
@@ -91,7 +92,10 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
   // main tree
   TTree *fTree;
 
-  // event info
+  // photons
+  ExoDiPhotons::photonInfo_t fPhotonInfo;
+  
+  // event
   ExoDiPhotons::eventInfo_t fEventInfo;
   
 };
@@ -117,6 +121,7 @@ ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet
   
   fTree = fs->make<TTree>("fTree","PhotonTree");
   fTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
+  fTree->Branch("Photon",&fPhotonInfo,ExoDiPhotons::photonBranchDefString.c_str());
   
   // MiniAOD tokens
   photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
@@ -177,8 +182,7 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   subDetTopologyEB_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalBarrel);
   subDetTopologyEE_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalEndcap);
 
-  //ExoDiPhotons::InitPhotonInfo(fPhotonInfo1);
-  //ExoDiPhotons::InitPhotonInfo(fPhotonInfo2);
+  ExoDiPhotons::InitPhotonInfo(fPhotonInfo);
   
   // Get pat::Photon
   edm::Handle<edm::View<pat::Photon> > photons;
@@ -191,13 +195,10 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
     cout << "isSat: " <<
       ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_))
 	 << endl;
+    ExoDiPhotons::FillPhotonInfo(fPhotonInfo, &(*pho));
+    // fill our tree
+    fTree->Fill();
   }
-  
-  //ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo);
-  
-  // fill our tree
-  fTree->Fill();
-  
   
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
    Handle<ExampleData> pIn;
