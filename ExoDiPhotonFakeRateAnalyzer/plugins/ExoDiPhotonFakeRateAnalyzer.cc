@@ -87,7 +87,7 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
   edm::EDGetTokenT<double> rhoToken_;
   
   // rho variable
-  float rho_;
+  double rho_;
   
   // main tree
   TTree *fTree;
@@ -192,10 +192,10 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   for (size_t i = 0; i < photons->size(); ++i){
     const auto pho = photons->ptrAt(i);
     cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
-    cout << "isSat: " <<
-      ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_))
-	 << endl;
-    ExoDiPhotons::FillPhotonInfo(fPhotonInfo, &(*pho));
+    fPhotonInfo.isSaturated = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+    cout << "isSat: " << fPhotonInfo.isSaturated << endl;
+    ExoDiPhotons::FillBasicPhotonInfo(fPhotonInfo, &(*pho));
+    ExoDiPhotons::FillPhotonIDInfo(fPhotonInfo, &(*pho), rho_, fPhotonInfo.isSaturated);
     // fill our tree
     fTree->Fill();
   }

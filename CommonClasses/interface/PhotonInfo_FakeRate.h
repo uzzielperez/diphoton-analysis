@@ -2,51 +2,58 @@
 #define PHOTON_INFO_FAKERATE_INC
 
 #include "DataFormats/PatCandidates/interface/Photon.h"
+#include "DataFormats/EgammaCandidates/interface/Photon.h"
 
 namespace ExoDiPhotons
 {
   struct photonInfo_t {
     // kinematics
-    double pt;
-    double eta;
-    double phi;
-    double scEta;
-    double scPhi;
+    double pt; // filled
+    double eta; // filled
+    double phi; // filled
+    double scEta; // filled
+    double scPhi; // filled
 
     // isolation
-    double rho;
-    double PFIsoCharged03;
-    double PFIsoNeutral03;
-    double PFIsoPhoton03;
-    double rhocorPFIsoCharged03;
-    double rhocorPFIsoNeutral03;
-    double rhocorPFIsoPhoton03;
-    double hadTowerOverEm;
+    double rho; // filled
+    double chargedHadIso03; // filled
+    double neutralHadIso03; // filled
+    double photonIso03; // filled
+    double rhoCorChargedHadIso03;
+    double rhoCorNeutralHadIso03;
+    double rhoCorPhotonIso03;
+    double corPhotonIso03; // filled
+    double hadTowerOverEm; // filled
 
     // shower shape variables
-    double r9;
-    double sigmaIetaIeta;
-    double sigmaEtaEta;
+    double r9; // filled
+    double sigmaIetaIeta; // filled
+    double sigmaEtaEta; // filled
     double sigmaIphiIphi;
     double sigmaPhiPhi;
-    double maxEnergyXtal;
+    double maxEnergyXtal; // filled
 
-    //fiducial flags
-    bool isEB; //Photon is in EB
-    bool isEE; //Photon is in EE
-    bool isEBEtaGap; //Photon is in supermodule/supercrystal eta gap in EB
-    bool isEBPhiGap; //Photon is in supermodule/supercrystal phi gap in EB
-    bool isEERingGap; //Photon is in crystal ring gap in EE
-    bool isEEDeeGap; //Photon is in crystal dee gap in EE
-    bool isEBEEGap; //Photon is in border between EB and EE.
+    // high pT ID
+    double alphaHighPtID; // filled
+    double kappaHighPtID; // filled
+    double phoEAHighPtID; // filled
+    
+    // fiducial flags
+    bool isEB; // filled
+    bool isEE; // filled
+    bool isEBEtaGap; // filled
+    bool isEBPhiGap; // filled
+    bool isEERingGap; // filled
+    bool isEEDeeGap; // filled
+    bool isEBEEGap; // filled
 
     // electron veto and high pT ID checks
-    bool passedElectronVeto;
-    bool passedHoverE;
-    bool passedChIso;
-    bool passedPhoIso;
-    bool passedSieie;
-    bool passedHighPtID;
+    bool passElectronVeto; // filled
+    bool passHTowOverE; // filled
+    bool passChIso; // filled
+    bool passCorPhoIso; // filled
+    bool passSieie; // filled
+    bool passHighPtID; // filled
 
     // for fake rate
     bool isFakeable;
@@ -54,56 +61,45 @@ namespace ExoDiPhotons
     bool isDenominatorObj;
 
     // saturation
-    bool isSaturated;
-
+    bool isSaturated; // filled in analyzer and passed to FillPhotonIDInfo
   };
 
-  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:PFIsoCharged03:PFIsoNeutral03:PFIsoPhoton03:rhocorPFIsoCharged03:rhocorPFIsoNeutral03:rhocorPFIsoPhoton03:hadTowerOverEm:r9:sigmaIetaIeta:sigmaEtaEta:sigmaIphiIphi:sigmaPhiPhi:maxEnergyXtal:isEB/O:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passedElectronVeto:passedHoverE:passedChIso:passedPhoIso:passedSieie:passedHighPtID:isFakeable:isNumeratorObj:isDenominatorObj:isSaturated");
-
-  void FillPhotonInfo(photonInfo_t &photonInfo, const pat::Photon *photon)
-  {
-    photonInfo.pt = photon->pt();
-    photonInfo.eta = photon->eta();
-    photonInfo.phi = photon->phi();
-    photonInfo.scEta = photon->superCluster()->eta();
-    photonInfo.scPhi = photon->superCluster()->phi();
-
-    photonInfo.isEB        = photon->isEB();        
-    photonInfo.isEE        = photon->isEE();   
-    photonInfo.isEBEtaGap  = photon->isEBEtaGap();   
-    photonInfo.isEBPhiGap  = photon->isEBPhiGap();   
-    photonInfo.isEERingGap = photon->isEERingGap(); 
-    photonInfo.isEEDeeGap  = photon->isEEDeeGap();   
-    photonInfo.isEBEEGap   = photon->isEBEEGap();
-
-    photonInfo.passedElectronVeto = photon->passElectronVeto();
-    photonInfo.passedHoverE = ExoDiPhotons::passesHadTowerOverEmCut(photon);
-  }
+  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:r9:sigmaIetaIeta:sigmaEtaEta:sigmaIphiIphi:sigmaPhiPhi:maxEnergyXtal:alphaHighPtID:kappaHighPtID:phoEAHighPtID:isEB/O:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:isFakeable:isNumeratorObj:isDenominatorObj:isSaturated");
 
   void InitPhotonInfo(photonInfo_t &photonInfo)
   {
-    photonInfo.pt = -9999.99;
-    photonInfo.eta = -9999.99;
-    photonInfo.phi = -9999.99;
+    // kinematics
+    photonInfo.pt    = -9999.99;
+    photonInfo.eta   = -9999.99;
+    photonInfo.phi   = -9999.99;
     photonInfo.scEta = -9999.99;
     photonInfo.scPhi = -9999.99;
 
-    photonInfo.rho = -9999.99;
-    photonInfo.PFIsoCharged03 = -9999.99;
-    photonInfo.PFIsoNeutral03 = -9999.99;
-    photonInfo.PFIsoPhoton03 = -9999.99;
-    photonInfo.rhocorPFIsoCharged03 = -9999.99;
-    photonInfo.rhocorPFIsoNeutral03 = -9999.99;
-    photonInfo.rhocorPFIsoPhoton03 = -9999.99;
-    photonInfo.hadTowerOverEm = -9999.99;
+    // isolation
+    photonInfo.rho                   = -9999.99;
+    photonInfo.chargedHadIso03       = -9999.99;
+    photonInfo.neutralHadIso03       = -9999.99;
+    photonInfo.photonIso03           = -9999.99;
+    photonInfo.rhoCorChargedHadIso03 = -9999.99;
+    photonInfo.rhoCorNeutralHadIso03 = -9999.99;
+    photonInfo.rhoCorPhotonIso03     = -9999.99;
+    photonInfo.corPhotonIso03        = -9999.99;
+    photonInfo.hadTowerOverEm        = -9999.99;
 
-    photonInfo.r9 = -9999.99;
+    // shower shape variables 
+    photonInfo.r9            = -9999.99;
     photonInfo.sigmaIetaIeta = -9999.99;
-    photonInfo.sigmaEtaEta = -9999.99;
+    photonInfo.sigmaEtaEta   = -9999.99;
     photonInfo.sigmaIphiIphi = -9999.99;
-    photonInfo.sigmaPhiPhi = -9999.99;
+    photonInfo.sigmaPhiPhi   = -9999.99;
     photonInfo.maxEnergyXtal = -9999.99;
 
+    // high pT ID
+    photonInfo.alphaHighPtID = -9999.99;
+    photonInfo.kappaHighPtID = -9999.99;
+    photonInfo.phoEAHighPtID = -9999.99;
+    
+    // fiducial flags 
     photonInfo.isEB        = false;        
     photonInfo.isEE        = false;   
     photonInfo.isEBEtaGap  = false;   
@@ -111,8 +107,73 @@ namespace ExoDiPhotons
     photonInfo.isEERingGap = false; 
     photonInfo.isEEDeeGap  = false;   
     photonInfo.isEBEEGap   = false;
+
+    // electron veto and high pT ID checks
+    photonInfo.passElectronVeto = false;
+    photonInfo.passHTowOverE    = false;
+    photonInfo.passChIso        = false;
+    photonInfo.passCorPhoIso    = false;
+    photonInfo.passSieie        = false;
+    photonInfo.passHighPtID     = false;
+
+    // for fake rate
+    photonInfo.isFakeable       = false;
+    photonInfo.isNumeratorObj   = false;
+    photonInfo.isDenominatorObj = false;
+
+    // saturation
+    photonInfo.isSaturated = false;
+  }
+  
+  void FillBasicPhotonInfo(photonInfo_t &photonInfo, const pat::Photon *photon)
+  {
+    // kinematics
+    photonInfo.pt          = photon->pt();
+    photonInfo.eta         = photon->eta();
+    photonInfo.phi         = photon->phi();
+    photonInfo.scEta       = photon->superCluster()->eta();
+    photonInfo.scPhi       = photon->superCluster()->phi();
+
+    // fiducial flags
+    photonInfo.isEB        = photon->isEB();        
+    photonInfo.isEE        = photon->isEE();   
+    photonInfo.isEBEtaGap  = photon->isEBEtaGap();   
+    photonInfo.isEBPhiGap  = photon->isEBPhiGap();   
+    photonInfo.isEERingGap = photon->isEERingGap(); 
+    photonInfo.isEEDeeGap  = photon->isEEDeeGap();   
+    photonInfo.isEBEEGap   = photon->isEBEEGap();
   }
 
+  void FillPhotonIDInfo(photonInfo_t &photonInfo, const pat::Photon *photon, double rho, double isSat)
+  {
+    // isolation
+    photonInfo.rho              = rho;
+    photonInfo.chargedHadIso03  = photon->chargedHadronIso();
+    photonInfo.neutralHadIso03  = photon->neutralHadronIso();
+    photonInfo.photonIso03      = photon->photonIso();
+    photonInfo.corPhotonIso03   = ExoDiPhotons::corPhoIsoHighPtID(photon,rho);
+    photonInfo.hadTowerOverEm   = photon->hadTowOverEm();
+
+    // shower shape variables
+    photonInfo.r9               = photon->r9();
+    photonInfo.sigmaIetaIeta    = photon->sigmaIetaIeta();
+    photonInfo.sigmaEtaEta      = photon->sigmaEtaEta();
+    photonInfo.maxEnergyXtal    = photon->maxEnergyXtal();
+
+    // high pT ID
+    photonInfo.alphaHighPtID    = ExoDiPhotons::phoAlphaHighPtID(photon);
+    photonInfo.kappaHighPtID    = ExoDiPhotons::phoKappaHighPtID(photon);
+    photonInfo.phoEAHighPtID    = ExoDiPhotons::phoEAHighPtID(photon);
+    
+    // electron veto and high pT ID checks
+    photonInfo.passElectronVeto = photon->passElectronVeto();
+    photonInfo.passHTowOverE    = ExoDiPhotons::passHadTowerOverEmCut(photon);
+    photonInfo.passChIso        = ExoDiPhotons::passChargedHadronCut(photon,false);
+    photonInfo.passCorPhoIso    = ExoDiPhotons::passCorPhoIsoHighPtID(photon,rho,false);
+    photonInfo.passSieie        = ExoDiPhotons::passSigmaIetaIetaCut(photon,isSat);
+    photonInfo.passHighPtID     = ExoDiPhotons::passHighPtID(photon,isSat,rho,false);
+  }
+  
 } // end of namespace
 
 #endif

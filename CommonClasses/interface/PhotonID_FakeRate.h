@@ -66,8 +66,7 @@ namespace ExoDiPhotons{
     return isSat;
   }
   
-  
-  bool passesHadTowerOverEmCut(const pat::Photon* photon){
+  bool passHadTowerOverEmCut(const pat::Photon* photon) {
 
     double hOverE = photon->hadTowOverEm();
     
@@ -77,102 +76,146 @@ namespace ExoDiPhotons{
 
   }
 
-    // will write another method for the sideband cut, this is for the denominator
-  bool passesChargedHadronCut(const pat::Photon* photon, double rhocorPFChargedHadronIso, bool forFakeRateDenom = false){
+  // will write another method for the sideband cut, this is for the denominator
+  bool passChargedHadronCut(const pat::Photon* photon, bool forFakeRateDenom) {
+
+    double chIso = photon->chargedHadronIso();
     
     double chIsoCut = 5.;
     // the cut value doesn't depend on eta
-    if (rhocorPFChargedHadronIso < chIsoCut && !forFakeRateDenom) return true;
-    else if ( (rhocorPFChargedHadronIso < 5.*chIsoCut || rhocorPFChargedHadronIso < 0.2*photon->pt()) && forFakeRateDenom ) return true;
+    if (chIso < chIsoCut && !forFakeRateDenom) return true;
+    else if ( (chIso < 5.*chIsoCut || chIso < 0.2*photon->pt()) && forFakeRateDenom ) return true;
     else return false;
 
   }
 
-  bool passesSigmaIetaIetaCut(const pat::Photon* photon, double full5x5SigmaIetaIeta, bool isSaturated){
+  bool passSigmaIetaIetaCut(const pat::Photon* photon, bool isSaturated) {
 
-    double phoEta = fabs( photon->superCluster()->eta() );
-    double sieieCut = -1.;
-    if (phoEta < 1.4442 && !isSaturated) sieieCut = 0.0105; 
-    else if (phoEta < 1.4442 && isSaturated) sieieCut = 0.0112;
-    else if (1.566 < phoEta && phoEta < 2.5 && !isSaturated) sieieCut = 0.0280; 
-    else if (1.566 < phoEta && phoEta < 2.5 && isSaturated) sieieCut = 0.0300;
-
-    if (full5x5SigmaIetaIeta < sieieCut) return true;
-    else return false;
-
-  }
-
-  double alphaPhotonHighPtID(const pat::Photon *photon){
-
-    double alpha = 0;
-
-    // 1.560 or 1.566?
-    if (fabs(photon->superCluster()->eta()) < 0.9)                                                    {alpha = 2.5;}
-    if (0.9 < fabs(photon->superCluster()->eta())   && fabs(photon->superCluster()->eta()) < 1.4442 ) {alpha = 2.5;}
-    if (1.560 < fabs(photon->superCluster()->eta()) && fabs(photon->superCluster()->eta()) < 2.0 )    {alpha = 2.5;}
-    if (2.0 < fabs(photon->superCluster()->eta())   && fabs(photon->superCluster()->eta()) < 2.2 )    {alpha = 2.5;}
-    if (2.2 < fabs(photon->superCluster()->eta())   && fabs(photon->superCluster()->eta()) < 2.5 )    {alpha = 2.5;}
-
-    return alpha;
-  }
-
-  double kappaPhotonHighPtID(const pat::Photon *photon){
-
-    double kappa = 0;
-
-    // 1.560 or 1.566?
-    if (fabs(photon->superCluster()->eta()) < 0.9)                                                    {kappa = 0.0045;}
-    if (0.9 < fabs(photon->superCluster()->eta())   && fabs(photon->superCluster()->eta()) < 1.4442 ) {kappa = 0.0045;}
-    if (1.560 < fabs(photon->superCluster()->eta()) && fabs(photon->superCluster()->eta()) < 2.0 )    {kappa = 0.0045;}
-    if (2.0 < fabs(photon->superCluster()->eta())   && fabs(photon->superCluster()->eta()) < 2.2 )    {kappa = 0.0030;}
-    if (2.2 < fabs(photon->superCluster()->eta())   && fabs(photon->superCluster()->eta()) < 2.5 )    {kappa = 0.0030;}
-
-    return kappa;
-
-  }
-
-
-
-  std::vector<double> EffectiveAreas(const pat::Photon* photon){
-
-    std::vector<double> effarea;
-    effarea.reserve(3);
-
-    double effareaCH = 0.;
-    double effareaNH = 0.;
-    double effareaPH = 0.;
-
-      if (fabs(photon->superCluster()->eta()) < 0.9) 
-                            {effareaPH = 0.17;}
-      if (0.9   < fabs(photon->superCluster()->eta()) && fabs(photon->superCluster()->eta()) < 1.4442) {effareaPH = 0.14;}
-      if (1.560 < fabs(photon->superCluster()->eta()) && fabs(photon->superCluster()->eta()) < 2.0)    {effareaPH = 0.11;}
-      if (2.0   < fabs(photon->superCluster()->eta()) && fabs(photon->superCluster()->eta()) < 2.2)    {effareaPH = 0.14;}
-      if (2.2   < fabs(photon->superCluster()->eta()) && fabs(photon->superCluster()->eta()) < 2.5)    {effareaPH = 0.22;}
-
-    effarea.push_back(effareaCH);
-    effarea.push_back(effareaNH);
-    effarea.push_back(effareaPH);
-
-    return effarea;
-  }
-
-
-
-  double corPhoIsoHighPtID(const pat::Photon* photon, double phoIso, double rho){
-    std::vector<double> EA = EffectiveAreas(photon);
-    double corPhoIso = alphaPhotonHighPtID(photon) + phoIso - rho*EA[2] - kappaPhotonHighPtID(photon)*photon->pt();
+    double phoEta = fabs(photon->superCluster()->eta());
+    double sIeIe = photon->sigmaIetaIeta();
+    double sIeIeCut = -1.;
     
-    return corPhoIso;
+    if (phoEta < 1.4442 && !isSaturated) sIeIeCut = 0.0105; 
+    else if (phoEta < 1.4442 && isSaturated) sIeIeCut = 0.0112;
+    else if (1.566 < phoEta && phoEta < 2.5 && !isSaturated) sIeIeCut = 0.0280; 
+    else if (1.566 < phoEta && phoEta < 2.5 && isSaturated) sIeIeCut = 0.0300;
+
+    if (sIeIe < sIeIeCut) return true;
+    else return false;
+
   }
 
-  bool passCorPhoIsoHighPtID(const pat::Photon* photon, double phoIso, double rho, bool forFakeRateDenom = false){
+  double phoAlphaHighPtID(const pat::Photon *photon) {
+    
+    double phoEta = fabs(photon->superCluster()->eta());
+    
+    if (phoEta < 1.4442) {
+      if (phoEta < 0.9) {
+	return 2.5;
+      }
+      else {
+	return 2.5;
+      }
+    } // end EB
+    
+    else if (1.566 < phoEta && phoEta < 2.5) {
+      if (phoEta < 2.0) {
+	return 2.5;
+      }
+      else if (phoEta < 2.2) {
+	return 2.5;
+      }
+      else {
+	return 2.5;
+      }
+    } // end EE
+    
+    else {
+      return 99999.99;
+    }
+    
+  }
+  
+  double phoKappaHighPtID(const pat::Photon *photon) {
+    
+    double phoEta = fabs(photon->superCluster()->eta());
+    
+    if (phoEta < 1.4442) {
+      if (phoEta < 0.9) {
+	return 0.0045;
+      }
+      else {
+	return 0.0045;
+      }
+    } // end EB
+    
+    else if (1.566 < phoEta && phoEta < 2.5) {
+      if (phoEta < 2.0) {
+	return 0.0045;
+      }
+      else if (phoEta < 2.2) {
+	return 0.003;
+      }
+      else {
+	return 0.003;
+      }
+    } // end EE
+    
+    else {
+      return -99999.99;
+    }
+    
+  }
+  
+  double phoEAHighPtID(const pat::Photon* photon) {
+    
+    double phoEta = fabs(photon->superCluster()->eta());
+    
+    if (phoEta < 1.4442) {
+      if (phoEta < 0.9) {
+	return 0.17;
+      }
+      else {
+	return 0.14;
+      }
+    } // end EB
+    
+    else if (1.566 < phoEta && phoEta < 2.5) {
+      if (phoEta < 2.0) {
+	return 0.11;
+      }
+      else if (phoEta < 2.2) {
+	return 0.14;
+      }
+      else {
+	return 0.22;
+      }
+    } // end EE
+    
+    else {
+      return -99999.99;
+    }
+    
+  }
+  
+  double corPhoIsoHighPtID(const pat::Photon* photon, double rho) {
 
+    double phoIso = photon->photonIso();
+    
+    return (phoAlphaHighPtID(photon) + phoIso - rho*phoEAHighPtID(photon) - phoKappaHighPtID(photon)*photon->pt());
+    
+  }
+
+  bool passCorPhoIsoHighPtID(const pat::Photon* photon, double rho, bool forFakeRateDenom) {
+
+    double phoEta = fabs(photon->superCluster()->eta());
+    
     bool pass = false;
     double corPhoIsoCut = 0.;
-    double corPhoIso = corPhoIsoHighPtID(photon, phoIso, rho);
+    double corPhoIso = corPhoIsoHighPtID(photon,rho);
 
-    if (fabs(photon->superCluster()->eta()) < 1.4442) corPhoIsoCut = 2.75;
-    if (1.560 < fabs(photon->superCluster()->eta()) && fabs(photon->superCluster()->eta()) < 2.5) corPhoIsoCut = 2.00;
+    if (phoEta < 1.4442) corPhoIsoCut = 2.75;
+    if (1.560 < phoEta && phoEta < 2.5) corPhoIsoCut = 2.00;
 
     if (corPhoIso < corPhoIsoCut && !forFakeRateDenom) return true;
     else if ( (corPhoIso < 5.*corPhoIsoCut || corPhoIso < 0.2*photon->pt()) && forFakeRateDenom ) return true;
@@ -181,50 +224,50 @@ namespace ExoDiPhotons{
     return pass;
   }
 
-  bool passHighPtID(const pat::Photon* photon, double chIso, double phoIso, double sigIeIe, double rho, bool passCSEV, bool isSat){
+  bool passHighPtID(const pat::Photon* photon, bool isSat, double rho, bool forFakeRateDenom) {
     if (
-      passesHadTowerOverEmCut(photon) &&
-      passesChargedHadronCut(photon,chIso) &&
-      passesSigmaIetaIetaCut(photon,sigIeIe,isSat) &&
-      passCorPhoIsoHighPtID(photon,phoIso,rho) &&
-      passCSEV
+      passHadTowerOverEmCut(photon) &&
+      passChargedHadronCut(photon,forFakeRateDenom) &&
+      passSigmaIetaIetaCut(photon,isSat) &&
+      passCorPhoIsoHighPtID(photon,rho,forFakeRateDenom) &&
+      photon->passElectronVeto()
     ) return true;
 
     else return false;
   }
 
   // must pass all cuts in the High pT ID except for the Sieie cut
-  bool passLooseNumeratorCut(const pat::Photon* photon, double chIso, double phoIso, double sigIeIe, double rho, bool passCSEV, bool isSat){
+  bool passLooseNumeratorCut(const pat::Photon* photon, bool isSat, double rho, bool forFakeRateDenom) {
 
     if (
-      passesHadTowerOverEmCut(photon) &&
-      passesChargedHadronCut(photon,chIso) &&
-      passCorPhoIsoHighPtID(photon,phoIso,rho) &&
-      passCSEV
+      passHadTowerOverEmCut(photon) &&
+      passChargedHadronCut(photon,forFakeRateDenom) &&
+      passCorPhoIsoHighPtID(photon,rho,forFakeRateDenom) &&
+      photon->passElectronVeto()
     ) return true;
 
     else return false;
 
   }
 
-  bool passDenominatorCut(const pat::Photon* photon, double chIso, double phoIso, double sigIeIe, double rho, bool passCSEV, bool isSat){
+  bool passDenominatorCut(const pat::Photon* photon, bool isSat, double rho, bool forFakeRateDenom) {
 
     // first check if the photon fails at least one of the high pT ID cuts
     bool failID = (
-      !passesHadTowerOverEmCut(photon) ||
-      !passesChargedHadronCut(photon, chIso) ||
-      !passesSigmaIetaIetaCut(photon, sigIeIe, isSat) ||
-      !passCorPhoIsoHighPtID(photon,phoIso,rho)
+      !passHadTowerOverEmCut(photon) ||
+      !passChargedHadronCut(photon,forFakeRateDenom) ||
+      !passSigmaIetaIetaCut(photon,isSat) ||
+      !passCorPhoIsoHighPtID(photon,rho,forFakeRateDenom)
     ); // don't enforce electron veto; do this offline to study the veto's effect on the fake rate
 
-    // now check if it passes the looser ID
-    bool passLooseIso = passesChargedHadronCut(photon, chIso, true) && passCorPhoIsoHighPtID(photon,phoIso,rho, true);
+    // now check if it pass the looser ID
+    bool passLooseIso = passChargedHadronCut(photon,true) && passCorPhoIsoHighPtID(photon,rho,true);
 
     if (failID && passLooseIso) return true;
     else return false;
-
+    
   }
-
+  
 }
 
 #endif
