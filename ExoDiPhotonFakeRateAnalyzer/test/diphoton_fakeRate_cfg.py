@@ -12,7 +12,7 @@ process.source = cms.Source(
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
         #'file:myfile.root'
-        'root://cmsxrootd.fnal.gov//store/relval/CMSSW_7_6_2/JetHT/MINIAOD/76X_dataRun2_v15_rerecoGT_RelVal_jetHT2015D-v1/00000/4A19845F-EE9C-E511-9E4A-0025905964A6.root'
+        'root://cmsxrootd.fnal.gov//store/data/Run2015C_25ns/JetHT/MINIAOD/16Dec2015-v1/20000/B8EFF9C3-48B5-E511-87B3-3417EBE64444.root'
         )
     )
 
