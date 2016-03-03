@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("Demo")
+process = cms.Process("ExoDiPhoton")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
@@ -39,7 +39,7 @@ for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 # analyzer and inputs
-process.demo = cms.EDAnalyzer(
+process.diphoton = cms.EDAnalyzer(
     'ExoDiPhotonFakeRateAnalyzer',
     # photon tag
     photonsMiniAOD = cms.InputTag("slimmedPhotons"),
@@ -55,4 +55,4 @@ process.demo = cms.EDAnalyzer(
     phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight")
     )
 
-process.p = cms.Path(process.egmPhotonIDSequence * process.demo)
+process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton)
