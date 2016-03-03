@@ -45,6 +45,9 @@
 #include "DataFormats/EcalDetId/interface/EBDetId.h"
 #include "DataFormats/EcalDetId/interface/EEDetId.h"
 
+// for EGM ID
+#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+
 // for photons
 #include "DataFormats/PatCandidates/interface/Photon.h"
 
@@ -88,6 +91,16 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
   
   // rho variable
   double rho_;
+
+  // EGM eff. areas
+  EffectiveAreas effAreaChHadrons_;
+  EffectiveAreas effAreaNeuHadrons_;
+  EffectiveAreas effAreaPhotons_;
+
+  // EGM ID decision tokens
+  edm::EDGetTokenT<edm::ValueMap<bool> > phoLooseIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> > phoMediumIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> > phoTightIdMapToken_;
   
   // main tree
   TTree *fTree;
@@ -112,7 +125,13 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
 // constructors and destructor
 //
 ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet& iConfig)
-  : rhoToken_(consumes<double> (iConfig.getParameter<edm::InputTag>("rho")))
+  : rhoToken_(consumes<double> (iConfig.getParameter<edm::InputTag>("rho"))),
+    effAreaChHadrons_( (iConfig.getParameter<edm::FileInPath>("effAreaChHadFile")).fullPath() ),
+    effAreaNeuHadrons_( (iConfig.getParameter<edm::FileInPath>("effAreaNeuHadFile")).fullPath() ),
+    effAreaPhotons_( (iConfig.getParameter<edm::FileInPath>("effAreaPhoFile")).fullPath() ),
+    phoLooseIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoLooseIdMap"))),
+    phoMediumIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoMediumIdMap"))),
+    phoTightIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoTightIdMap")))
 {
   //now do what ever initialization is needed
   usesResource("TFileService");
@@ -167,6 +186,14 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   rho_ = *rhoH;
   
   cout << "rho: " << rho_ << endl;
+
+  // EGM ID decisions
+  edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
+  iEvent.getByToken(phoLooseIdMapToken_ ,loose_id_decisions);
+  edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
+  iEvent.getByToken(phoMediumIdMapToken_,medium_id_decisions);
+  edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
+  iEvent.getByToken(phoTightIdMapToken_ ,tight_id_decisions);
   
   // ECAL RecHits
   edm::Handle<EcalRecHitCollection> recHitsEB;
@@ -191,11 +218,30 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   //for (edm::View<pat::Photon>::const_iterator pho = photons->begin(); pho != photons->end(); ++pho) {
   for (size_t i = 0; i < photons->size(); ++i){
     const auto pho = photons->ptrAt(i);
+
+    // print photon info
     cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
+    
+    // fill photon saturation
     fPhotonInfo.isSaturated = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
     cout << "isSat: " << fPhotonInfo.isSaturated << endl;
+
+    // fill photon info
     ExoDiPhotons::FillBasicPhotonInfo(fPhotonInfo, &(*pho));
     ExoDiPhotons::FillPhotonIDInfo(fPhotonInfo, &(*pho), rho_, fPhotonInfo.isSaturated);
+    
+    // EGM ID info
+    // requires CH, NH, and PHO ISO to be stored using ExoDiPhotons::FillPhotonIDInfo first
+    fPhotonInfo.chEAegmID   = effAreaChHadrons_.getEffectiveArea(fabs(pho->superCluster()->eta()));
+    fPhotonInfo.nhEAegmID   = effAreaNeuHadrons_.getEffectiveArea(fabs(pho->superCluster()->eta()));
+    fPhotonInfo.phoEAegamID = effAreaPhotons_.getEffectiveArea(fabs(pho->superCluster()->eta()));
+    fPhotonInfo.rhoCorChargedHadIso03 = std::max((double)0.0, (double)fPhotonInfo.chargedHadIso03-rho_*fPhotonInfo.chEAegmID);
+    fPhotonInfo.rhoCorNeutralHadIso03 = std::max((double)0.0, (double)fPhotonInfo.neutralHadIso03-rho_*fPhotonInfo.nhEAegmID);
+    fPhotonInfo.rhoCorPhotonIso03     = std::max((double)0.0, (double)fPhotonInfo.photonIso03    -rho_*fPhotonInfo.phoEAegamID);
+    fPhotonInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
+    fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
+    fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
+    
     // fill our tree
     fTree->Fill();
   }

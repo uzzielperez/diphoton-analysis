@@ -29,13 +29,30 @@ process.TFileService = cms.Service(
     fileName = cms.string("ExoDiphotonAnalyzer.root")
     )
 
+# Setup VID for EGM ID
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
+# define which IDs we want to produce
+my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff']
+#add them to the VID producer
+for idmod in my_id_modules:
+    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+
 # analyzer and inputs
 process.demo = cms.EDAnalyzer(
     'ExoDiPhotonFakeRateAnalyzer',
     # photon tag
     photonsMiniAOD = cms.InputTag("slimmedPhotons"),
     # rho tag (use fixedGridRhoAll?)
-    rho = cms.InputTag("fixedGridRhoFastjetAll")
+    rho = cms.InputTag("fixedGridRhoFastjetAll"),
+    # EGM eff. areas
+    effAreaChHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfChargedHadrons_25ns_NULLcorrection.txt"),
+    effAreaNeuHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfNeutralHadrons_25ns_90percentBased.txt"),
+    effAreaPhoFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfPhotons_25ns_90percentBased.txt"),
+    # EGM ID decisions
+    phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
+    phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
+    phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight")
     )
 
-process.p = cms.Path(process.demo)
+process.p = cms.Path(process.egmPhotonIDSequence * process.demo)

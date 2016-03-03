@@ -37,6 +37,14 @@ namespace ExoDiPhotons
     double alphaHighPtID; // filled
     double kappaHighPtID; // filled
     double phoEAHighPtID; // filled
+
+    // EGM ID
+    double chEAegmID;
+    double nhEAegmID;
+    double phoEAegamID;
+    bool passEGMLooseID;
+    bool passEGMMediumID;
+    bool passEGMTightID;
     
     // fiducial flags
     bool isEB; // filled
@@ -64,7 +72,7 @@ namespace ExoDiPhotons
     bool isSaturated; // filled in analyzer and passed to FillPhotonIDInfo
   };
 
-  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:r9:sigmaIetaIeta:sigmaEtaEta:sigmaIphiIphi:sigmaPhiPhi:maxEnergyXtal:alphaHighPtID:kappaHighPtID:phoEAHighPtID:isEB/O:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:isFakeable:isNumeratorObj:isDenominatorObj:isSaturated");
+  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:r9:sigmaIetaIeta:sigmaEtaEta:sigmaIphiIphi:sigmaPhiPhi:maxEnergyXtal:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:isFakeable:isNumeratorObj:isDenominatorObj:isSaturated");
 
   void InitPhotonInfo(photonInfo_t &photonInfo)
   {
@@ -98,6 +106,14 @@ namespace ExoDiPhotons
     photonInfo.alphaHighPtID = -9999.99;
     photonInfo.kappaHighPtID = -9999.99;
     photonInfo.phoEAHighPtID = -9999.99;
+
+    // EGM ID
+    photonInfo.chEAegmID       = -9999.99;
+    photonInfo.nhEAegmID       = -9999.99;
+    photonInfo.phoEAegamID     = -9999.99;
+    photonInfo.passEGMLooseID  = false;
+    photonInfo.passEGMMediumID = false;
+    photonInfo.passEGMTightID  = false;
     
     // fiducial flags 
     photonInfo.isEB        = false;        
