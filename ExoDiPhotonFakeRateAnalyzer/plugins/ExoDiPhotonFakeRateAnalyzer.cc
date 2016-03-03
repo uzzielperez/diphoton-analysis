@@ -51,6 +51,9 @@
 // for photons
 #include "DataFormats/PatCandidates/interface/Photon.h"
 
+// for jets
+#include "DataFormats/PatCandidates/interface/Jet.h"
+
 
 //
 // class declaration
@@ -79,6 +82,11 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
   
   // miniAOD photon token
   edm::EDGetToken photonsMiniAODToken_;
+
+  // AK4 jet token
+  edm::EDGetToken jetsMiniAODToken_;
+  double jetPtThreshold;
+  double jetEtaThreshold;
     
   // ECAL recHits
   edm::InputTag recHitsEBTag_;
@@ -144,6 +152,11 @@ ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet
   
   // MiniAOD tokens
   photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
+
+  // AK4 jets token
+  jetsMiniAODToken_ = mayConsume< edm::View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("jetsMiniAOD"));
+  jetPtThreshold = iConfig.getParameter<double>("jetPtThreshold");
+  jetEtaThreshold = iConfig.getParameter<double>("jetEtaThreshold");
   
   // ECAL RecHits
   recHitsEBTag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEBTag",edm::InputTag("reducedEgamma:reducedEBRecHits"));
@@ -179,6 +192,24 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
   
   cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
+
+  // add jet HT information
+
+  edm::Handle< edm::View<pat::Jet> > jets;
+  iEvent.getByToken(jetsMiniAODToken_,jets);
+
+  int nJets = 0;
+  double jetHT = 0.;
+  for (auto &j : *jets){
+    double jetPt = j.pt();
+    double jetEta = fabs( j.eta() );
+    if (jetPt > jetPtThreshold && jetEta < jetEtaThreshold ){
+      nJets++;
+      jetHT += jetPt;
+    }
+  }
+  fEventInfo.nJets = nJets;
+  fEventInfo.jetHT = jetHT;
 
   // Get rho
   edm::Handle< double > rhoH;
@@ -244,7 +275,7 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
     
     // fill our tree
     fTree->Fill();
-  }
+  } // end of photon loop
   
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
    Handle<ExampleData> pIn;

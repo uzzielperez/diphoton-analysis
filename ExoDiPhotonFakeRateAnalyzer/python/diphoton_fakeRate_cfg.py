@@ -43,6 +43,10 @@ process.diphoton = cms.EDAnalyzer(
     'ExoDiPhotonFakeRateAnalyzer',
     # photon tag
     photonsMiniAOD = cms.InputTag("slimmedPhotons"),
+    # ak4 jets
+    jetsMiniAOD = cms.InputTag("slimmedJets"),
+    jetPtThreshold = cms.double(30.),
+    jetEtaThreshold = cms.double(2.5),
     # rho tag (use fixedGridRhoAll?)
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
     # EGM eff. areas
