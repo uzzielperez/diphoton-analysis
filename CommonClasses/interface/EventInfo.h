@@ -1,6 +1,9 @@
 #ifndef EVENT_INFO_INC
 #define EVENT_INFO_INC
 
+// for gen info
+#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
+
 namespace ExoDiPhotons
 {
   
@@ -22,14 +25,6 @@ namespace ExoDiPhotons
   
   std::string eventBranchDefString("pthat/F:alphaqcd:alphaqed:qscale:weight:run/I:LS:evnum:processid:bx:orbit:interactingParton1PdgId:interactingParton2PdgId");
   
-  void FillEventInfo(eventInfo_t &eventInfo, const edm::Event& iEvent) {
-    eventInfo.run   = iEvent.id().run();
-    eventInfo.LS    = iEvent.id().luminosityBlock();
-    eventInfo.evnum = iEvent.id().event();
-    eventInfo.bx    = iEvent.bunchCrossing();
-    eventInfo.orbit = iEvent.orbitNumber();
-  }
-  
   void InitEventInfo(eventInfo_t &eventInfo) {
     eventInfo.processid = (int) -99999.99;
     eventInfo.pthat = -99999.99;
@@ -44,6 +39,23 @@ namespace ExoDiPhotons
     eventInfo.orbit = (int) -99999.99;
     eventInfo.interactingParton1PdgId = (int) -99999.99;
     eventInfo.interactingParton2PdgId = (int) -99999.99;
+  }
+
+  void FillBasicEventInfo(eventInfo_t &eventInfo, const edm::Event& iEvent) {
+    eventInfo.run   = iEvent.id().run();
+    eventInfo.LS    = iEvent.id().luminosityBlock();
+    eventInfo.evnum = iEvent.id().event();
+    eventInfo.bx    = iEvent.bunchCrossing();
+    eventInfo.orbit = iEvent.orbitNumber();
+  }
+
+  void FillGenEventInfo(eventInfo_t &eventInfo, const GenEventInfoProduct *genInfoHandle) {
+    eventInfo.pthat = genInfoHandle->hasBinningValues() ? (genInfoHandle->binningValues())[0] : 0.0 ;
+    eventInfo.alphaqcd = genInfoHandle->alphaQCD();
+    eventInfo.alphaqed = genInfoHandle->alphaQED();
+    eventInfo.qscale = genInfoHandle->qScale();
+    eventInfo.processid = genInfoHandle->signalProcessID();
+    eventInfo.weight = genInfoHandle->weights()[0];
   }
 
 } // end of namespace

@@ -157,7 +157,7 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   using namespace pat;
   
   ExoDiPhotons::InitEventInfo(fEventInfo);
-  ExoDiPhotons::FillEventInfo(fEventInfo,iEvent);
+  ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
   
   cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
 
