@@ -29,6 +29,7 @@
 
 // from our CommomClasses
 #include "DiPhotonAnalysis/CommonClasses/interface/EventInfo.h"
+#include "DiPhotonAnalysis/CommonClasses/interface/JetInfo.h"
 #include "DiPhotonAnalysis/CommonClasses/interface/PhotonID_FakeRate.h"
 #include "DiPhotonAnalysis/CommonClasses/interface/PhotonInfo_FakeRate.h"
 
@@ -115,6 +116,9 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
 
   // photons
   ExoDiPhotons::photonInfo_t fPhotonInfo;
+
+  // jets
+  ExoDiPhotons::jetInfo_t fJetInfo;
   
   // event
   ExoDiPhotons::eventInfo_t fEventInfo;
@@ -148,6 +152,7 @@ ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet
   
   fTree = fs->make<TTree>("fTree","PhotonTree");
   fTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
+  fTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
   fTree->Branch("Photon",&fPhotonInfo,ExoDiPhotons::photonBranchDefString.c_str());
   
   // MiniAOD tokens
@@ -193,8 +198,9 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   
   cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
 
+  ExoDiPhotons::InitJetInfo(fJetInfo);
+  
   // add jet HT information
-
   edm::Handle< edm::View<pat::Jet> > jets;
   iEvent.getByToken(jetsMiniAODToken_,jets);
 
@@ -208,8 +214,8 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
       jetHT += jetPt;
     }
   }
-  fEventInfo.nJets = nJets;
-  fEventInfo.jetHT = jetHT;
+  fJetInfo.nJets = nJets;
+  fJetInfo.jetHT = jetHT;
 
   // Get rho
   edm::Handle< double > rhoH;

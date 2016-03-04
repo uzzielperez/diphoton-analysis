@@ -13,7 +13,6 @@ namespace ExoDiPhotons
     float alphaqed;
     float qscale;
     float weight;
-    float jetHT;
     int run;
     int LS;
     int evnum;
@@ -22,10 +21,9 @@ namespace ExoDiPhotons
     int orbit;
     int interactingParton1PdgId;
     int interactingParton2PdgId;
-    int nJets;
   };
   
-  std::string eventBranchDefString("pthat/F:alphaqcd:alphaqed:qscale:weight:jetHT:run/I:LS:evnum:processid:bx:orbit:interactingParton1PdgId:interactingParton2PdgId:nJets");
+  std::string eventBranchDefString("pthat/F:alphaqcd:alphaqed:qscale:weight:run/I:LS:evnum:processid:bx:orbit:interactingParton1PdgId:interactingParton2PdgId");
   
   void InitEventInfo(eventInfo_t &eventInfo) {
     eventInfo.processid = (int) -99999.99;
@@ -34,7 +32,6 @@ namespace ExoDiPhotons
     eventInfo.alphaqed = -99999.99;
     eventInfo.qscale = -99999.99;
     eventInfo.weight = -99999.99;
-    eventInfo.jetHT = -99999.99;
     eventInfo.run = (int) -99999.99;
     eventInfo.LS = (int) -99999.99;
     eventInfo.evnum = (int) -99999.99;
@@ -42,7 +39,6 @@ namespace ExoDiPhotons
     eventInfo.orbit = (int) -99999.99;
     eventInfo.interactingParton1PdgId = (int) -99999.99;
     eventInfo.interactingParton2PdgId = (int) -99999.99;
-    eventInfo.nJets = (int) -99999.99;
   }
 
   void FillBasicEventInfo(eventInfo_t &eventInfo, const edm::Event& iEvent) {
