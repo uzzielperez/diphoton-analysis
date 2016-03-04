@@ -98,7 +98,7 @@ namespace ExoDiPhotons{
   // SIGMAiETAiETA
   bool passSigmaIetaIetaCut(const pat::Photon* photon, bool isSaturated) {
     double phoEta = fabs(photon->superCluster()->eta());
-    double sIeIe = photon->sigmaIetaIeta();
+    double sIeIe = photon->full5x5_sigmaIetaIeta();
     double sIeIeCut = -1.;
     
     if (phoEta < 1.4442 && !isSaturated) sIeIeCut = 0.0105; 
