@@ -28,10 +28,10 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 // from our CommomClasses
-#include "DiPhotonAnalysis/CommonClasses/interface/EventInfo.h"
-#include "DiPhotonAnalysis/CommonClasses/interface/JetInfo.h"
-#include "DiPhotonAnalysis/CommonClasses/interface/PhotonID_FakeRate.h"
-#include "DiPhotonAnalysis/CommonClasses/interface/PhotonInfo_FakeRate.h"
+#include "diphoton-analysis/CommonClasses/interface/EventInfo.h"
+#include "diphoton-analysis/CommonClasses/interface/JetInfo.h"
+#include "diphoton-analysis/CommonClasses/interface/PhotonID.h"
+#include "diphoton-analysis/CommonClasses/interface/PhotonInfo.h"
 
 // for TFileService, trees
 #include "CommonTools/UtilAlgos/interface/TFileService.h"

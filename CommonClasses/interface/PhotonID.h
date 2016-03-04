@@ -1,5 +1,5 @@
-#ifndef PHOTON_ID_FakeRate_INC
-#define PHOTON_ID_FakeRate_INC
+#ifndef PHOTON_ID_INC
+#define PHOTON_ID_INC
 
 // for pat::Photons
 #include "DataFormats/PatCandidates/interface/Photon.h"

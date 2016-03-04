@@ -1,5 +1,5 @@
-#ifndef PHOTON_INFO_FAKERATE_INC
-#define PHOTON_INFO_FAKERATE_INC
+#ifndef PHOTON_INFO_INC
+#define PHOTON_INFO_INC
 
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
