@@ -4,6 +4,9 @@
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
 
+// for EGM ID
+#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+
 namespace ExoDiPhotons
 {
   struct photonInfo_t {
@@ -191,6 +194,21 @@ namespace ExoDiPhotons
     photonInfo.passCorPhoIso    = ExoDiPhotons::passCorPhoIsoHighPtID(photon,rho,false);
     photonInfo.passSieie        = ExoDiPhotons::passSigmaIetaIetaCut(photon,isSat);
     photonInfo.passHighPtID     = ExoDiPhotons::passHighPtID(photon,isSat,rho,false);
+  }
+
+  void FillPhotonEGMidInfo(photonInfo_t &photonInfo, const pat::Photon *photon, double rho, EffectiveAreas eaCH, EffectiveAreas eaNH, EffectiveAreas eaPho)
+  {
+    double chEA  = eaCH.getEffectiveArea(fabs(photon->superCluster()->eta()));
+    double nhEA  = eaNH.getEffectiveArea(fabs(photon->superCluster()->eta()));
+    double phoEA = eaPho.getEffectiveArea(fabs(photon->superCluster()->eta()));
+    
+    photonInfo.chEAegmID   = chEA;
+    photonInfo.nhEAegmID   = nhEA;
+    photonInfo.phoEAegamID = phoEA;
+
+    photonInfo.rhoCorChargedHadIso03 = std::max((double)0.0, (double)photon->chargedHadronIso()-rho*chEA);
+    photonInfo.rhoCorNeutralHadIso03 = std::max((double)0.0, (double)photon->neutralHadronIso()-rho*nhEA);
+    photonInfo.rhoCorPhotonIso03     = std::max((double)0.0, (double)photon->photonIso()       -rho*phoEA);
   }
   
 } // end of namespace

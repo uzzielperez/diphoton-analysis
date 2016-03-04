@@ -261,14 +261,8 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
     ExoDiPhotons::FillBasicPhotonInfo(fPhotonInfo, &(*pho));
     ExoDiPhotons::FillPhotonIDInfo(fPhotonInfo, &(*pho), rho_, fPhotonInfo.isSaturated);
     
-    // EGM ID info
-    // requires CH, NH, and PHO ISO to be stored using ExoDiPhotons::FillPhotonIDInfo first
-    fPhotonInfo.chEAegmID   = effAreaChHadrons_.getEffectiveArea(fabs(pho->superCluster()->eta()));
-    fPhotonInfo.nhEAegmID   = effAreaNeuHadrons_.getEffectiveArea(fabs(pho->superCluster()->eta()));
-    fPhotonInfo.phoEAegamID = effAreaPhotons_.getEffectiveArea(fabs(pho->superCluster()->eta()));
-    fPhotonInfo.rhoCorChargedHadIso03 = std::max((double)0.0, (double)fPhotonInfo.chargedHadIso03-rho_*fPhotonInfo.chEAegmID);
-    fPhotonInfo.rhoCorNeutralHadIso03 = std::max((double)0.0, (double)fPhotonInfo.neutralHadIso03-rho_*fPhotonInfo.nhEAegmID);
-    fPhotonInfo.rhoCorPhotonIso03     = std::max((double)0.0, (double)fPhotonInfo.photonIso03    -rho_*fPhotonInfo.phoEAegamID);
+    // fill EGM ID info
+    ExoDiPhotons::FillPhotonEGMidInfo(fPhotonInfo, &(*pho), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
     fPhotonInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
     fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
     fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
