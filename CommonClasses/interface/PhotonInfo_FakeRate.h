@@ -68,6 +68,8 @@ namespace ExoDiPhotons
     bool passHighPtID; // filled
 
     // for fake rate
+    bool passChIsoDenom; // filled
+    bool passCorPhoIsoDenom; // filled
     bool isFakeable;
     bool isNumeratorObj; // filled
     bool isDenominatorObj; // filled
@@ -76,7 +78,7 @@ namespace ExoDiPhotons
     bool isSaturated; // filled in analyzer and passed to FillPhotonIDInfo
   };
 
-  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:r9:sigmaIetaIeta:sigmaIetaIeta5x5:sigmaEtaEta:sigmaIphiIphi:sigmaPhiPhi:maxEnergyXtal:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:isFakeable:isNumeratorObj:isDenominatorObj:isSaturated");
+  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:r9:sigmaIetaIeta:sigmaIetaIeta5x5:sigmaEtaEta:sigmaIphiIphi:sigmaPhiPhi:maxEnergyXtal:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:passChIsoDenom:passCorPhoIsoDenom:isFakeable:isNumeratorObj:isDenominatorObj:isSaturated");
 
   void InitPhotonInfo(photonInfo_t &photonInfo)
   {
@@ -138,9 +140,11 @@ namespace ExoDiPhotons
     photonInfo.passHighPtID     = false;
 
     // for fake rate
-    photonInfo.isFakeable       = false;
-    photonInfo.isNumeratorObj   = false;
-    photonInfo.isDenominatorObj = false;
+    photonInfo.passChIsoDenom     = false;
+    photonInfo.passCorPhoIsoDenom = false;
+    photonInfo.isFakeable         = false;
+    photonInfo.isNumeratorObj     = false;
+    photonInfo.isDenominatorObj   = false;
 
     // saturation
     photonInfo.isSaturated = false;
@@ -196,8 +200,10 @@ namespace ExoDiPhotons
     photonInfo.passHighPtID     = ExoDiPhotons::passHighPtID(photon,rho,isSat);
 
     // for fake rate
-    photonInfo.isNumeratorObj   = ExoDiPhotons::passLooseNumeratorCut(photon,rho,isSat);
-    photonInfo.isDenominatorObj = ExoDiPhotons::passDenominatorCut(photon,rho,isSat);
+    photonInfo.passChIsoDenom     = ExoDiPhotons::passChargedHadronDenomCut(photon);
+    photonInfo.passCorPhoIsoDenom = ExoDiPhotons::passCorPhoIsoDenom(photon,rho);
+    photonInfo.isNumeratorObj     = ExoDiPhotons::passLooseNumeratorCut(photon,rho,isSat);
+    photonInfo.isDenominatorObj   = ExoDiPhotons::passDenominatorCut(photon,rho,isSat);
   }
 
   void FillPhotonEGMidInfo(photonInfo_t &photonInfo, const pat::Photon *photon, double rho, EffectiveAreas eaCH, EffectiveAreas eaNH, EffectiveAreas eaPho)
