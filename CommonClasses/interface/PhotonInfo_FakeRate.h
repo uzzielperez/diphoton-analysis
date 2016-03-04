@@ -22,9 +22,9 @@ namespace ExoDiPhotons
     double chargedHadIso03; // filled
     double neutralHadIso03; // filled
     double photonIso03; // filled
-    double rhoCorChargedHadIso03;
-    double rhoCorNeutralHadIso03;
-    double rhoCorPhotonIso03;
+    double rhoCorChargedHadIso03; // filled
+    double rhoCorNeutralHadIso03; // filled
+    double rhoCorPhotonIso03; // filled
     double corPhotonIso03; // filled
     double hadTowerOverEm; // filled
 
@@ -43,9 +43,9 @@ namespace ExoDiPhotons
     double phoEAHighPtID; // filled
 
     // EGM ID
-    double chEAegmID;
-    double nhEAegmID;
-    double phoEAegamID;
+    double chEAegmID; // filled
+    double nhEAegmID; // filled
+    double phoEAegamID; // filled
     bool passEGMLooseID;
     bool passEGMMediumID;
     bool passEGMTightID;
@@ -69,8 +69,8 @@ namespace ExoDiPhotons
 
     // for fake rate
     bool isFakeable;
-    bool isNumeratorObj;
-    bool isDenominatorObj;
+    bool isNumeratorObj; // filled
+    bool isDenominatorObj; // filled
 
     // saturation
     bool isSaturated; // filled in analyzer and passed to FillPhotonIDInfo
@@ -190,10 +190,14 @@ namespace ExoDiPhotons
     // electron veto and high pT ID checks
     photonInfo.passElectronVeto = photon->passElectronVeto();
     photonInfo.passHTowOverE    = ExoDiPhotons::passHadTowerOverEmCut(photon);
-    photonInfo.passChIso        = ExoDiPhotons::passChargedHadronCut(photon,false);
-    photonInfo.passCorPhoIso    = ExoDiPhotons::passCorPhoIsoHighPtID(photon,rho,false);
+    photonInfo.passChIso        = ExoDiPhotons::passChargedHadronCut(photon);
+    photonInfo.passCorPhoIso    = ExoDiPhotons::passCorPhoIsoHighPtID(photon,rho);
     photonInfo.passSieie        = ExoDiPhotons::passSigmaIetaIetaCut(photon,isSat);
-    photonInfo.passHighPtID     = ExoDiPhotons::passHighPtID(photon,isSat,rho,false);
+    photonInfo.passHighPtID     = ExoDiPhotons::passHighPtID(photon,rho,isSat);
+
+    // for fake rate
+    photonInfo.isNumeratorObj   = ExoDiPhotons::passLooseNumeratorCut(photon,rho,isSat);
+    photonInfo.isDenominatorObj = ExoDiPhotons::passDenominatorCut(photon,rho,isSat);
   }
 
   void FillPhotonEGMidInfo(photonInfo_t &photonInfo, const pat::Photon *photon, double rho, EffectiveAreas eaCH, EffectiveAreas eaNH, EffectiveAreas eaPho)

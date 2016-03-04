@@ -4,7 +4,7 @@ process = cms.Process("ExoDiPhoton")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 # for input file
 process.source = cms.Source(

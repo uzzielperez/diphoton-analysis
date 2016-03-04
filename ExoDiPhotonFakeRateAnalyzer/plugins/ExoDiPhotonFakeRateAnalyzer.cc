@@ -111,8 +111,9 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
   edm::EDGetTokenT<edm::ValueMap<bool> > phoMediumIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > phoTightIdMapToken_;
   
-  // main tree
-  TTree *fTree;
+  // trees
+  TTree *fNumTree;
+  TTree *fDenomTree;
 
   // photons
   ExoDiPhotons::photonInfo_t fPhotonInfo;
@@ -149,11 +150,18 @@ ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet
   usesResource("TFileService");
   
   edm::Service<TFileService> fs;
-  
-  fTree = fs->make<TTree>("fTree","PhotonTree");
-  fTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
-  fTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
-  fTree->Branch("Photon",&fPhotonInfo,ExoDiPhotons::photonBranchDefString.c_str());
+
+  // tree for numerator objects
+  fNumTree = fs->make<TTree>("fNumTree","NumeratorTree");
+  fNumTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
+  fNumTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
+  fNumTree->Branch("Photon",&fPhotonInfo,ExoDiPhotons::photonBranchDefString.c_str());
+
+  // tree for denominator objects
+  fDenomTree = fs->make<TTree>("fDenomTree","DenominatorTree");
+  fDenomTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
+  fDenomTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
+  fDenomTree->Branch("Photon",&fPhotonInfo,ExoDiPhotons::photonBranchDefString.c_str());
   
   // MiniAOD tokens
   photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
@@ -272,9 +280,10 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
     fPhotonInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
     fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
     fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
-    
-    // fill our tree
-    fTree->Fill();
+
+    // fill our trees
+    if (ExoDiPhotons::passLooseNumeratorCut(&(*pho), rho_, fPhotonInfo.isSaturated)) fNumTree->Fill();
+    if (ExoDiPhotons::passDenominatorCut(&(*pho), rho_, fPhotonInfo.isSaturated)) fDenomTree->Fill();
   } // end of photon loop
   
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
