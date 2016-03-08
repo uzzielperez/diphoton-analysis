@@ -30,11 +30,11 @@ namespace ExoDiPhotons{
       	  cursor.offsetBy(i,j);
       	  EcalRecHitCollection::const_iterator it = recHitsEB->find(*cursor);
       	  if(it != recHitsEB->end()) {
-      	    cout << "Energy of (" << i << ", " << j << "): " << it-> energy()
-      		 << ", kSaturated: " << it->checkFlag(EcalRecHit::kSaturated)
-      		 << ", kDead: " << it->checkFlag(EcalRecHit::kDead)
-      		 << ", kKilled: " << it->checkFlag(EcalRecHit::kKilled)
-      		 << endl;
+      	    /*cout << "Energy of (" << i << ", " << j << "): " << it-> energy()
+	      << ", kSaturated: " << it->checkFlag(EcalRecHit::kSaturated)
+	      << ", kDead: " << it->checkFlag(EcalRecHit::kDead)
+	      << ", kKilled: " << it->checkFlag(EcalRecHit::kKilled)
+	      << endl;*/
       	    if (it->checkFlag(EcalRecHit::kSaturated) && !it->checkFlag(EcalRecHit::kDead) && !it->checkFlag(EcalRecHit::kKilled)) {
       	      isSat = true;
       	    }
@@ -51,11 +51,11 @@ namespace ExoDiPhotons{
       	  cursor.offsetBy(i,j);
       	  EcalRecHitCollection::const_iterator it = recHitsEE->find(*cursor);
       	  if(it != recHitsEE->end()) {
-      	    cout << "Energy of (" << i << ", " << j << "): " << it->energy()
-      		 << ", kSaturated: " << it->checkFlag(EcalRecHit::kSaturated)
-      		 << ", kDead: " << it->checkFlag(EcalRecHit::kDead)
-      		 << ", kKilled: " << it->checkFlag(EcalRecHit::kKilled)
-      		 << endl;
+      	    /*cout << "Energy of (" << i << ", " << j << "): " << it->energy()
+	      << ", kSaturated: " << it->checkFlag(EcalRecHit::kSaturated)
+	      << ", kDead: " << it->checkFlag(EcalRecHit::kDead)
+	      << ", kKilled: " << it->checkFlag(EcalRecHit::kKilled)
+	      << endl;*/
       	    if (it->checkFlag(EcalRecHit::kSaturated) && !it->checkFlag(EcalRecHit::kDead) && !it->checkFlag(EcalRecHit::kKilled)) {
       	      isSat = true;
       	    }
@@ -91,7 +91,7 @@ namespace ExoDiPhotons{
   bool passChargedHadronDenomCut(const pat::Photon* photon) {
     double chIsoCut = 5.;
     double chIso = photon->chargedHadronIso();
-    if ( (chIso < 5.*chIsoCut || chIso < 0.2*photon->pt())) return true;
+    if ( chIso < std::min((double)5.*chIsoCut, (double)0.2*photon->pt()) ) return true;
     else return false;
   }
 
@@ -214,7 +214,7 @@ namespace ExoDiPhotons{
     if (phoEta < 1.4442) corPhoIsoCut = 2.75;
     if (1.560 < phoEta && phoEta < 2.5) corPhoIsoCut = 2.00;
     
-    if ( (corPhoIso < 5.*corPhoIsoCut || corPhoIso < 0.2*photon->pt()) ) return true;
+    if ( corPhoIso < std::min((double)5.*corPhoIsoCut, (double)0.2*photon->pt()) ) return true;
     else return false;
   }
 
