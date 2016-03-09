@@ -248,10 +248,10 @@ namespace ExoDiPhotons{
     else return false;
   }
 
-  bool passFakeTemplateCut(const pat::Photon* photon, double rho, bool isSat, double sideBandLow, double sideBandHigh){
+  // These are not the only cuts for making the fake template!!! The rest of the cuts are made offline.
+  bool passFakeTemplateCandCut(const pat::Photon* photon, double rho){
     if (
       passHadTowerOverEmCut(photon) &&
-      passChargedHadronSideBandCut(photon,sideBandLow,sideBandHigh) &&
       passCorPhoIsoHighPtID(photon,rho) &&
       photon->passElectronVeto()
     ) return true;

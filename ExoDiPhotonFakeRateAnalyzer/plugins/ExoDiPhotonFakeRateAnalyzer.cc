@@ -101,10 +101,6 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
   // rho variable
   double rho_;
 
-  // chIso sidebands
-  double chIsoSideBandLow;
-  double chIsoSideBandHigh;
-
   // EGM eff. areas
   EffectiveAreas effAreaChHadrons_;
   EffectiveAreas effAreaNeuHadrons_;
@@ -173,10 +169,6 @@ ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet
   recHitsEETag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEETag",edm::InputTag("reducedEgamma:reducedEERecHits"));
   recHitsEBToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEBTag_);
   recHitsEEToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEETag_);
-
-  // chIso sidebands
-  chIsoSideBandLow = iConfig.getParameter<double>("chIsoSideBandLow");
-  chIsoSideBandHigh = iConfig.getParameter<double>("chIsoSideBandHigh");
   
 }
 
@@ -282,15 +274,10 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
     fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
     fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
 
-    // fill fake template info
-    fPhotonInfo.passChIsoSideband = ExoDiPhotons::passChargedHadronSideBandCut(&(*pho), chIsoSideBandLow, chIsoSideBandHigh );
-    fPhotonInfo.isFakeTemplateObj = ExoDiPhotons::passFakeTemplateCut(&(*pho), rho_, fPhotonInfo.isSaturated, chIsoSideBandLow, chIsoSideBandHigh);
-    fPhotonInfo.sideBandLow = chIsoSideBandLow;
-    fPhotonInfo.sideBandHigh = chIsoSideBandHigh;
     // fill our tree
     if ( ExoDiPhotons::passLooseNumeratorCut(&(*pho), rho_, fPhotonInfo.isSaturated) ||
          ExoDiPhotons::passDenominatorCut(&(*pho), rho_, fPhotonInfo.isSaturated) ||
-         fPhotonInfo.isFakeTemplateObj
+         fPhotonInfo.isFakeTemplateObjCand // this was already filled with ExoDiPhotons::FillPhotonIDInfo
        ) fTree->Fill();
 										  
   } // end of photon loop

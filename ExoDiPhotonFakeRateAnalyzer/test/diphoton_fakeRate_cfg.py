@@ -10,18 +10,6 @@ options.register('globalTag',
                 VarParsing.varType.string,
                 "global tag to use when running"
 )
-options.register('chIsoSideBandLow',
-                5.,
-                VarParsing.multiplicity.singleton,
-                VarParsing.varType.float,
-                "lower bound of chIso sideband"
-)
-options.register('chIsoSideBandHigh',
-                10.,
-                VarParsing.multiplicity.singleton,
-                VarParsing.varType.float,
-                "upper bound of chIso sideband"
-)
 ## 'maxEvents' is already registered by the Framework, changing default value
 options.setDefault('maxEvents', 100)
 
@@ -86,9 +74,6 @@ process.diphoton = cms.EDAnalyzer(
     phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
     phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
     phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
-    # for fake template
-    chIsoSideBandLow = cms.double( options.chIsoSideBandLow ),
-    chIsoSideBandHigh = cms.double( options.chIsoSideBandHigh )
     )
 
 process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton)
