@@ -248,8 +248,7 @@ namespace ExoDiPhotons{
     else return false;
   }
 
-  // numerator cut for the sideband
-  bool passLooseNumeratorCutWithSideband(const pat::Photon* photon, double rho, bool isSat, double sideBandLow, double sideBandHigh){
+  bool passFakeTemplateCut(const pat::Photon* photon, double rho, bool isSat, double sideBandLow, double sideBandHigh){
     if (
       passHadTowerOverEmCut(photon) &&
       passChargedHadronSideBandCut(photon,sideBandLow,sideBandHigh) &&

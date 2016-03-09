@@ -284,13 +284,13 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
 
     // fill fake template info
     fPhotonInfo.passChIsoSideband = ExoDiPhotons::passChargedHadronSideBandCut(&(*pho), chIsoSideBandLow, chIsoSideBandHigh );
-    fPhotonInfo.isNumeratorWithSidebandObj = ExoDiPhotons::passLooseNumeratorCutWithSideband(&(*pho), rho_, fPhotonInfo.isSaturated, chIsoSideBandLow, chIsoSideBandHigh);
+    fPhotonInfo.isFakeTemplateObj = ExoDiPhotons::passFakeTemplateCut(&(*pho), rho_, fPhotonInfo.isSaturated, chIsoSideBandLow, chIsoSideBandHigh);
     fPhotonInfo.sideBandLow = chIsoSideBandLow;
     fPhotonInfo.sideBandHigh = chIsoSideBandHigh;
     // fill our tree
     if ( ExoDiPhotons::passLooseNumeratorCut(&(*pho), rho_, fPhotonInfo.isSaturated) ||
          ExoDiPhotons::passDenominatorCut(&(*pho), rho_, fPhotonInfo.isSaturated) ||
-         ExoDiPhotons::passLooseNumeratorCutWithSideband(&(*pho), rho_, fPhotonInfo.isSaturated, chIsoSideBandLow, chIsoSideBandHigh)
+         fPhotonInfo.isFakeTemplateObj
        ) fTree->Fill();
 										  
   } // end of photon loop
