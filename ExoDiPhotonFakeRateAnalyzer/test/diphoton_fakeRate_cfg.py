@@ -1,10 +1,39 @@
+# runtime options
+
+from FWCore.ParameterSet.VarParsing import VarParsing
+
+options = VarParsing ('python')
+
+options.register('globalTag',
+                '76X_dataRun2_v15',
+                VarParsing.multiplicity.singleton,
+                VarParsing.varType.string,
+                "global tag to use when running"
+)
+options.register('chIsoSideBandLow',
+                5.,
+                VarParsing.multiplicity.singleton,
+                VarParsing.varType.float,
+                "lower bound of chIso sideband"
+)
+options.register('chIsoSideBandHigh',
+                10.,
+                VarParsing.multiplicity.singleton,
+                VarParsing.varType.float,
+                "upper bound of chIso sideband"
+)
+## 'maxEvents' is already registered by the Framework, changing default value
+options.setDefault('maxEvents', 100)
+
+options.parseArguments()
+
 import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("ExoDiPhoton")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( options.maxEvents ) )
 
 # for input file
 process.source = cms.Source(
@@ -18,7 +47,7 @@ process.source = cms.Source(
 
 # for global tag
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
-process.GlobalTag.globaltag = '76X_dataRun2_v15'
+process.GlobalTag.globaltag = options.globalTag
 
 # geometry for saturation
 process.load("Configuration.StandardSequences.GeometryDB_cff")
@@ -56,7 +85,10 @@ process.diphoton = cms.EDAnalyzer(
     # EGM ID decisions
     phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
     phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
-    phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight")
+    phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
+    # for fake template
+    chIsoSideBandLow = cms.double( options.chIsoSideBandLow ),
+    chIsoSideBandHigh = cms.double( options.chIsoSideBandHigh )
     )
 
 process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton)

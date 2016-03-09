@@ -88,6 +88,12 @@ namespace ExoDiPhotons{
     else return false;
   }
 
+  bool passChargedHadronSideBandCut(const pat::Photon* photon, double sideBandLow, double sideBandHigh){
+    double chIso = photon->chargedHadronIso();
+    if ( (sideBandLow < chIso) && (chIso < sideBandHigh) ) return true;
+    else return false;
+  }
+
   bool passChargedHadronDenomCut(const pat::Photon* photon) {
     double chIsoCut = 5.;
     double chIso = photon->chargedHadronIso();
@@ -235,6 +241,18 @@ namespace ExoDiPhotons{
     if (
       passHadTowerOverEmCut(photon) &&
       passChargedHadronCut(photon) &&
+      passCorPhoIsoHighPtID(photon,rho) &&
+      photon->passElectronVeto()
+    ) return true;
+
+    else return false;
+  }
+
+  // numerator cut for the sideband
+  bool passLooseNumeratorCutWithSideband(const pat::Photon* photon, double rho, bool isSat, double sideBandLow, double sideBandHigh){
+    if (
+      passHadTowerOverEmCut(photon) &&
+      passChargedHadronSideBandCut(photon,sideBandLow,sideBandHigh) &&
       passCorPhoIsoHighPtID(photon,rho) &&
       photon->passElectronVeto()
     ) return true;

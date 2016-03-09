@@ -84,7 +84,7 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
   // miniAOD photon token
   edm::EDGetToken photonsMiniAODToken_;
 
-  // AK4 jet token
+  // AK4 jet token and cuts
   edm::EDGetToken jetsMiniAODToken_;
   double jetPtThreshold;
   double jetEtaThreshold;
@@ -100,6 +100,10 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
   
   // rho variable
   double rho_;
+
+  // chIso sidebands
+  double chIsoSideBandLow;
+  double chIsoSideBandHigh;
 
   // EGM eff. areas
   EffectiveAreas effAreaChHadrons_;
@@ -169,6 +173,10 @@ ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet
   recHitsEETag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEETag",edm::InputTag("reducedEgamma:reducedEERecHits"));
   recHitsEBToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEBTag_);
   recHitsEEToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEETag_);
+
+  // chIso sidebands
+  chIsoSideBandLow = iConfig.getParameter<double>("chIsoSideBandLow");
+  chIsoSideBandHigh = iConfig.getParameter<double>("chIsoSideBandHigh");
   
 }
 
@@ -249,7 +257,7 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
 
   ExoDiPhotons::InitPhotonInfo(fPhotonInfo);
   
-  // Get pat::Photon
+  // Get pat::Photon collection
   edm::Handle<edm::View<pat::Photon> > photons;
   iEvent.getByToken(photonsMiniAODToken_,photons);
   
@@ -274,10 +282,16 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
     fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
     fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
 
+    // fill fake template info
+    fPhotonInfo.passChIsoSideband = ExoDiPhotons::passChargedHadronSideBandCut(&(*pho), chIsoSideBandLow, chIsoSideBandHigh );
+    fPhotonInfo.isNumeratorWithSidebandObj = ExoDiPhotons::passLooseNumeratorCutWithSideband(&(*pho), rho_, fPhotonInfo.isSaturated, chIsoSideBandLow, chIsoSideBandHigh);
+    fPhotonInfo.sideBandLow = chIsoSideBandLow;
+    fPhotonInfo.sideBandHigh = chIsoSideBandHigh;
     // fill our tree
-    if (ExoDiPhotons::passLooseNumeratorCut(&(*pho), rho_, fPhotonInfo.isSaturated) ||
-	ExoDiPhotons::passDenominatorCut(&(*pho), rho_, fPhotonInfo.isSaturated)
-      ) fTree->Fill();
+    if ( ExoDiPhotons::passLooseNumeratorCut(&(*pho), rho_, fPhotonInfo.isSaturated) ||
+         ExoDiPhotons::passDenominatorCut(&(*pho), rho_, fPhotonInfo.isSaturated) ||
+         ExoDiPhotons::passLooseNumeratorCutWithSideband(&(*pho), rho_, fPhotonInfo.isSaturated, chIsoSideBandLow, chIsoSideBandHigh)
+       ) fTree->Fill();
 										  
   } // end of photon loop
   
