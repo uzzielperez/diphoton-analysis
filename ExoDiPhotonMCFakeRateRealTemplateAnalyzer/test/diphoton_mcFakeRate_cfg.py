@@ -55,7 +55,7 @@ my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonI
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
-# analyzer and inputs
+# main analyzer and inputs
 process.diphoton = cms.EDAnalyzer(
     'ExoDiPhotonMCFakeRateRealTemplateAnalyzer',
     # photon tag
@@ -80,4 +80,7 @@ process.diphoton = cms.EDAnalyzer(
     genInfo = cms.InputTag("generator", "", "SIM")
     )
 
-process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton)
+# analyzer to print cross section
+process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
+
+process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton * process.xsec)
