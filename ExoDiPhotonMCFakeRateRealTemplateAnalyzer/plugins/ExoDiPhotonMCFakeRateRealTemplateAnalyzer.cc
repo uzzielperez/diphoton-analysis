@@ -55,6 +55,12 @@
 // for jets
 #include "DataFormats/PatCandidates/interface/Jet.h"
 
+// for genParticles
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+
+// for genEventInfo
+#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
+
 //
 // class declaration
 //
@@ -79,9 +85,12 @@ class ExoDiPhotonMCFakeRateRealTemplateAnalyzer : public edm::one::EDAnalyzer<ed
       virtual void endJob() override;
 
   // ----------member data ---------------------------
-  // miniAOD photon token
+  // photon token
   edm::EDGetToken photonsMiniAODToken_;
 
+  // genParticle token
+  edm::EDGetTokenT<edm::View<reco::GenParticle> > genParticlesMiniAODToken_;
+  
   // AK4 jet token and cuts
   edm::EDGetToken jetsMiniAODToken_;
   double jetPtThreshold;
@@ -120,6 +129,9 @@ class ExoDiPhotonMCFakeRateRealTemplateAnalyzer : public edm::one::EDAnalyzer<ed
   
   // event
   ExoDiPhotons::eventInfo_t fEventInfo;
+
+  // gen event info token
+  edm::EDGetTokenT<GenEventInfoProduct> genInfoToken_;
   
 };
 
@@ -141,7 +153,8 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::ExoDiPhotonMCFakeRateRealTemplateAnal
     effAreaPhotons_( (iConfig.getParameter<edm::FileInPath>("effAreaPhoFile")).fullPath() ),
     phoLooseIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoLooseIdMap"))),
     phoMediumIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoMediumIdMap"))),
-    phoTightIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoTightIdMap")))
+    phoTightIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoTightIdMap"))),
+    genInfoToken_(consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("genInfo")))
 {
   //now do what ever initialization is needed
    usesResource("TFileService");
@@ -154,9 +167,12 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::ExoDiPhotonMCFakeRateRealTemplateAnal
   fTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
   fTree->Branch("Photon",&fPhotonInfo,ExoDiPhotons::photonBranchDefString.c_str());
   
-  // MiniAOD tokens
+  // photon token
   photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
 
+  // genParticle token
+  genParticlesMiniAODToken_ = mayConsume<edm::View<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticlesMiniAOD"));
+  
   // AK4 jets token
   jetsMiniAODToken_ = mayConsume< edm::View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("jetsMiniAOD"));
   jetPtThreshold = iConfig.getParameter<double>("jetPtThreshold");
@@ -190,11 +206,29 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
   using namespace edm;
   using namespace std;
   using namespace pat;
+
+  // ==========
+  // EVENT INFO
+  // ==========
   
   ExoDiPhotons::InitEventInfo(fEventInfo);
   ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
   
   cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
+
+  // ==============
+  // GEN EVENT INFO
+  // ==============
+
+  // get genEventInfo
+  edm::Handle<GenEventInfoProduct> genInfo;
+  iEvent.getByToken(genInfoToken_,genInfo);
+  
+  ExoDiPhotons::FillGenEventInfo(fEventInfo, &(*genInfo));
+  
+  // ====
+  // JETS
+  // ====
   
   ExoDiPhotons::InitJetInfo(fJetInfo);
   
@@ -214,6 +248,10 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
   }
   fJetInfo.nJets = nJets;
   fJetInfo.jetHT = jetHT;
+
+  // ===
+  // RHO
+  // ===
   
   // Get rho
   edm::Handle< double > rhoH;
@@ -221,6 +259,10 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
   rho_ = *rhoH;
   
   cout << "rho: " << rho_ << endl;
+
+  // ======
+  // EGM ID
+  // ======
   
   // EGM ID decisions
   edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
@@ -229,6 +271,10 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
   iEvent.getByToken(phoMediumIdMapToken_,medium_id_decisions);
   edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
   iEvent.getByToken(phoTightIdMapToken_ ,tight_id_decisions);
+
+  // ========================
+  // ECAL INFO FOR SATURATION
+  // ========================
   
   // ECAL RecHits
   edm::Handle<EcalRecHitCollection> recHitsEB;
@@ -244,6 +290,10 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
   subDetTopologyEB_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalBarrel);
   subDetTopologyEE_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalEndcap);
 
+  // =======
+  // PHOTONS
+  // =======
+  
   ExoDiPhotons::InitPhotonInfo(fPhotonInfo);
   
   // Get pat::Photon collection
@@ -279,7 +329,21 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
 										  
   } // end of photon loop
 
+  // ============
+  // GENPARTICLES
+  // ============
 
+  // get genParticle collection
+  Handle<edm::View<reco::GenParticle> > genParticles;
+  iEvent.getByToken(genParticlesMiniAODToken_,genParticles);
+
+  //for (edm::View<reco::GenParticle>::const_iterator gen = genParticles->begin(); gen != genParticles->end(); ++gen) {
+  for (size_t i = 0; i < genParticles->size(); ++i) {
+    const auto gen = genParticles->ptrAt(i);
+    if (gen->pt() > 50)
+      cout << "GenParticle: " << "pt = " << gen->pt() << "; eta = " << gen->eta() << "; phi = " << gen->phi() << endl;
+  } // end of genParticle loop
+  
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
    Handle<ExampleData> pIn;
    iEvent.getByLabel("example",pIn);

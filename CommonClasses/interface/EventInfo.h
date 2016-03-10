@@ -8,10 +8,11 @@ namespace ExoDiPhotons
 {
   
   struct eventInfo_t {
-    float pthat;
+    float ptHat;
     float alphaqcd;
     float alphaqed;
     float qscale;
+    float weight0;
     float weight;
     int run;
     int LS;
@@ -23,14 +24,15 @@ namespace ExoDiPhotons
     int interactingParton2PdgId;
   };
   
-  std::string eventBranchDefString("pthat/F:alphaqcd:alphaqed:qscale:weight:run/I:LS:evnum:processid:bx:orbit:interactingParton1PdgId:interactingParton2PdgId");
+  std::string eventBranchDefString("ptHat/F:alphaqcd:alphaqed:qscale:weight0:weight:run/I:LS:evnum:processid:bx:orbit:interactingParton1PdgId:interactingParton2PdgId");
   
   void InitEventInfo(eventInfo_t &eventInfo) {
     eventInfo.processid = (int) -99999.99;
-    eventInfo.pthat = -99999.99;
+    eventInfo.ptHat = -99999.99;
     eventInfo.alphaqcd = -99999.99;
     eventInfo.alphaqed = -99999.99;
     eventInfo.qscale = -99999.99;
+    eventInfo.weight0 = -99999.99;
     eventInfo.weight = -99999.99;
     eventInfo.run = (int) -99999.99;
     eventInfo.LS = (int) -99999.99;
@@ -49,13 +51,14 @@ namespace ExoDiPhotons
     eventInfo.orbit = iEvent.orbitNumber();
   }
 
-  void FillGenEventInfo(eventInfo_t &eventInfo, const GenEventInfoProduct *genInfoHandle) {
-    eventInfo.pthat = genInfoHandle->hasBinningValues() ? (genInfoHandle->binningValues())[0] : 0.0 ;
-    eventInfo.alphaqcd = genInfoHandle->alphaQCD();
-    eventInfo.alphaqed = genInfoHandle->alphaQED();
-    eventInfo.qscale = genInfoHandle->qScale();
-    eventInfo.processid = genInfoHandle->signalProcessID();
-    eventInfo.weight = genInfoHandle->weights()[0];
+  void FillGenEventInfo(eventInfo_t &eventInfo, const GenEventInfoProduct *genInfo) {
+    eventInfo.ptHat     = genInfo->hasBinningValues() ? (genInfo->binningValues())[0] : 0.0 ;
+    eventInfo.alphaqcd  = genInfo->alphaQCD();
+    eventInfo.alphaqed  = genInfo->alphaQED();
+    eventInfo.qscale    = genInfo->qScale();
+    eventInfo.processid = genInfo->signalProcessID();
+    eventInfo.weight0   = genInfo->weights()[0];
+    eventInfo.weight    = genInfo->weight();
   }
 
 } // end of namespace

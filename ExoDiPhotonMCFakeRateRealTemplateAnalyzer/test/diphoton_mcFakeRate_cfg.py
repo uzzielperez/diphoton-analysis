@@ -5,7 +5,7 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing ('python')
 
 options.register('globalTag',
-                '76X_dataRun2_v15',
+                '76X_mcRun2_asymptotic_v12',
                 VarParsing.multiplicity.singleton,
                 VarParsing.varType.string,
                 "global tag to use when running"
@@ -29,7 +29,7 @@ process.source = cms.Source(
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
         #'file:myfile.root'
-        'root://cmsxrootd.fnal.gov//store/data/Run2015C_25ns/JetHT/MINIAOD/16Dec2015-v1/20000/B8EFF9C3-48B5-E511-87B3-3417EBE64444.root'
+        'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/04B53B17-24D9-E511-B1ED-00259075D72E.root'
         )
     )
 
@@ -57,9 +57,11 @@ for idmod in my_id_modules:
 
 # analyzer and inputs
 process.diphoton = cms.EDAnalyzer(
-    'ExoDiPhotonFakeRateAnalyzer',
+    'ExoDiPhotonMCFakeRateRealTemplateAnalyzer',
     # photon tag
     photonsMiniAOD = cms.InputTag("slimmedPhotons"),
+    # genParticle tag
+    genParticlesMiniAOD = cms.InputTag("prunedGenParticles"),
     # ak4 jets
     jetsMiniAOD = cms.InputTag("slimmedJets"),
     jetPtThreshold = cms.double(30.),
@@ -74,6 +76,8 @@ process.diphoton = cms.EDAnalyzer(
     phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
     phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
     phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
+    # gen event info
+    genInfo = cms.InputTag("generator", "", "SIM")
     )
 
 process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton)
