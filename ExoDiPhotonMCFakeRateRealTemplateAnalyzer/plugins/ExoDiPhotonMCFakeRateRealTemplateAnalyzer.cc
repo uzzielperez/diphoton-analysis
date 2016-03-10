@@ -243,19 +243,8 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
   edm::Handle< edm::View<pat::Jet> > jets;
   iEvent.getByToken(jetsMiniAODToken_,jets);
   
-  int nJets = 0;
-  double jetHT = 0.;
-  for (auto &j : *jets){
-    double jetPt = j.pt();
-    double jetEta = fabs( j.eta() );
-    if (jetPt > jetPtThreshold && jetEta < jetEtaThreshold ){
-      nJets++;
-      jetHT += jetPt;
-    }
-  }
-  fJetInfo.nJets = nJets;
-  fJetInfo.jetHT = jetHT;
-
+  ExoDiPhotons::FillJetInfo(fJetInfo, &(*jets), jetPtThreshold, jetEtaThreshold);
+  
   // ===
   // RHO
   // ===
