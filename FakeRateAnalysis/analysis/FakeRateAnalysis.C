@@ -31,6 +31,9 @@ void FakeRateAnalysis::Loop()
 //by  b_branchname->GetEntry(ientry); //read only this branch
    if (fChain == 0) return;
 
+   TH1F *sigmaIetaIetaEB = new TH1F("sigmaIetaIetaEB","sigmaIetaIetaEB",10000,0,0.5);
+   TH1F *sigmaIetaIetaEE = new TH1F("sigmaIetaIetaEE","sigmaIetaIetaEE",10000,0,0.5);
+   
    Long64_t nentries = fChain->GetEntriesFast();
 
    Long64_t nbytes = 0, nb = 0;
@@ -39,5 +42,25 @@ void FakeRateAnalysis::Loop()
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
-   }
-}
+      if (jentry % 100000 == 0)
+	std::cout << "Number of entries looped over: " << jentry << std::endl;
+
+      if (fabs(Photon_scEta) < 1.4442) {
+	sigmaIetaIetaEB->Fill(Photon_sigmaIetaIeta5x5);
+      }
+
+      if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+	sigmaIetaIetaEE->Fill(Photon_sigmaIetaIeta5x5);
+      }
+      
+   } // end loop over entries
+
+   TFile file_out("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root","RECREATE");
+
+   sigmaIetaIetaEB->Write();
+   sigmaIetaIetaEE->Write();
+   
+   file_out.ls();
+   file_out.Close();
+   
+} // end Loop()
