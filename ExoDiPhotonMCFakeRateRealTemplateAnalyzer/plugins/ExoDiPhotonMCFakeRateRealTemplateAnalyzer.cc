@@ -32,6 +32,7 @@
 #include "diphoton-analysis/CommonClasses/interface/JetInfo.h"
 #include "diphoton-analysis/CommonClasses/interface/PhotonID.h"
 #include "diphoton-analysis/CommonClasses/interface/PhotonInfo.h"
+#include "diphoton-analysis/CommonClasses/interface/GenParticleInfo.h"
 
 // for TFileService, trees
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
@@ -60,6 +61,9 @@
 
 // for genEventInfo
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
+
+// for deltaR
+#include "DataFormats/Math/interface/deltaR.h"
 
 //
 // class declaration
@@ -132,7 +136,9 @@ class ExoDiPhotonMCFakeRateRealTemplateAnalyzer : public edm::one::EDAnalyzer<ed
 
   // gen event info token
   edm::EDGetTokenT<GenEventInfoProduct> genInfoToken_;
-  
+
+  // genParticles
+  ExoDiPhotons::genParticleInfo_t fGenParticleInfo;
 };
 
 //
@@ -166,6 +172,7 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::ExoDiPhotonMCFakeRateRealTemplateAnal
   fTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
   fTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
   fTree->Branch("Photon",&fPhotonInfo,ExoDiPhotons::photonBranchDefString.c_str());
+  fTree->Branch("PhotonGenMatch",&fGenParticleInfo,ExoDiPhotons::genParticleBranchDefString.c_str());
   
   // photon token
   photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
@@ -272,9 +279,9 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
   edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
   iEvent.getByToken(phoTightIdMapToken_ ,tight_id_decisions);
 
-  // ========================
-  // ECAL INFO FOR SATURATION
-  // ========================
+  // =========
+  // ECAL INFO
+  // =========
   
   // ECAL RecHits
   edm::Handle<EcalRecHitCollection> recHitsEB;
@@ -290,59 +297,147 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
   subDetTopologyEB_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalBarrel);
   subDetTopologyEE_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalEndcap);
 
+  // ============
+  // GENPARTICLES
+  // ============
+
+  ExoDiPhotons::InitGenParticleInfo(fGenParticleInfo);
+  
+  // get genParticle collection
+  Handle<edm::View<reco::GenParticle> > genParticles;
+  iEvent.getByToken(genParticlesMiniAODToken_,genParticles);
+
+  //for (edm::View<reco::GenParticle>::const_iterator gen = genParticles->begin(); gen != genParticles->end(); ++gen) {
+  //for (size_t i = 0; i < genParticles->size(); ++i) {
+  //const auto gen = genParticles->ptrAt(i);
+  //if (gen->pt() > 50)
+  //cout << "GenParticle: " << "pt = " << gen->pt() << "; eta = " << gen->eta() << "; phi = " << gen->phi() << endl;
+  //} // end of genParticle loop
+  
   // =======
   // PHOTONS
   // =======
   
   ExoDiPhotons::InitPhotonInfo(fPhotonInfo);
   
-  // Get pat::Photon collection
+  // get photon collection
   edm::Handle<edm::View<pat::Photon> > photons;
   iEvent.getByToken(photonsMiniAODToken_,photons);
-  
+
   //for (edm::View<pat::Photon>::const_iterator pho = photons->begin(); pho != photons->end(); ++pho) {
   for (size_t i = 0; i < photons->size(); ++i){
     const auto pho = photons->ptrAt(i);
 
     // print photon info
     cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
-    
-    // fill photon saturation
-    fPhotonInfo.isSaturated = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-    cout << "isSat: " << fPhotonInfo.isSaturated << endl;
 
-    // fill photon info
-    ExoDiPhotons::FillBasicPhotonInfo(fPhotonInfo, &(*pho));
-    ExoDiPhotons::FillPhotonIDInfo(fPhotonInfo, &(*pho), rho_, fPhotonInfo.isSaturated);
-    
-    // fill EGM ID info
-    ExoDiPhotons::FillPhotonEGMidInfo(fPhotonInfo, &(*pho), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
-    fPhotonInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
-    fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
-    fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
+    // deltaR cut
+    double minDeltaR       = 0.1;
+    double minDeltaRfromHP = 0.1;
 
-    // fill our tree
-    if ( ExoDiPhotons::passLooseNumeratorCut(&(*pho), rho_, fPhotonInfo.isSaturated) ||
-         ExoDiPhotons::passDenominatorCut(&(*pho), rho_, fPhotonInfo.isSaturated) ||
-         fPhotonInfo.isFakeTemplateObjCand // this was already filled with ExoDiPhotons::FillPhotonIDInfo
-       ) fTree->Fill();
-										  
+    // no match when starting loop
+    const reco::GenParticle *photonMatch       = NULL;
+    const reco::GenParticle *photonMatchFromHP = NULL;
+    
+    // loop through genParticles to find real photon matches
+    //for (edm::View<reco::GenParticle>::const_iterator gen = genParticles->begin(); gen != genParticles->end(); ++gen) {
+    for (size_t i = 0; i < genParticles->size(); ++i) {
+      const auto gen = genParticles->ptrAt(i);
+
+      
+      // calculate deltaR for current genParticle
+      double deltaR = reco::deltaR(pho->eta(),pho->phi(),gen->eta(),gen->phi());
+
+      // find best match
+      if (deltaR < minDeltaR) {
+	//cout << "GenParticle match: Status = " << gen->status()  << "; ID = " << gen->pdgId() << "; pt = "
+	//<< gen->pt() << "; eta = " << gen->eta() << "; phi = " << gen->phi()  << "; deltaR = " << deltaR << endl;
+	minDeltaR = deltaR;
+	photonMatch = &(*gen);
+      }
+
+      // find best final state from hard process match
+      if (gen->fromHardProcessFinalState()) {
+	double deltaRfromHP = reco::deltaR(pho->eta(),pho->phi(),gen->eta(),gen->phi());
+	if (deltaRfromHP < minDeltaRfromHP) {
+	  minDeltaRfromHP = deltaRfromHP;
+	  photonMatchFromHP = &(*gen);
+	}
+      }
+      
+    } // end of genParticle loop
+
+    // ***************************************************************************
+    // if photon match, determine if it came from a photon in the hard interaction
+    // ***************************************************************************
+    // consider all mothers when matching (no deltaR cut)
+    double minMotherMatchDeltaR = 10000;
+    int matchMotherIndex = 0;
+    
+    if (photonMatch) {
+      cout << "PhotonMatch START: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
+	   << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi()  << "; deltaR = " << minDeltaR << endl;
+
+      // if there is a best final-state-from-hard-interaction match in deltaR <= 0.1, start from this instead of best overall match 
+      if (photonMatchFromHP) {
+	photonMatch = &(*photonMatchFromHP);
+	cout << "PhotonMatch RESTART: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
+	     << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi()  << "; deltaR = " << minDeltaRfromHP << endl;
+      }
+
+      // loop over all mothers to find best match in deltaR. this is consider the true mother
+      // do this for each mother until its mother has pT = 0 (from hard interaction)
+      // photonMatch will always have at least one mother
+      while (photonMatch->mother()->pt() != 0) {
+	for (unsigned int j=0; j < photonMatch->numberOfMothers(); j++) {
+	  double deltaR = reco::deltaR(photonMatch->eta(),photonMatch->phi(),photonMatch->mother(j)->eta(),photonMatch->mother(j)->phi());
+	  if (deltaR < minMotherMatchDeltaR) {
+	    minMotherMatchDeltaR = deltaR;
+	    matchMotherIndex = j;
+	  }
+	}
+	photonMatch = (reco::GenParticle *) photonMatch->mother(matchMotherIndex);
+	cout << "PhotonMatch WHILE: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
+	     << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi()  << "; deltaR = " << minMotherMatchDeltaR << endl;
+	// reset cut! 
+	minMotherMatchDeltaR = 10000;
+      }
+      // this is our hard interaction match, with mother having pT = 0 (interacting parton)
+      cout << "PhotonMatch END: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
+	   << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi()  << endl;
+
+      // only fill tree if match is a hard interaction photon
+      if (photonMatch->pdgId() == 22) {
+	// fill genParticle info
+	ExoDiPhotons::FillGenParticleInfo(fGenParticleInfo,photonMatch);
+	
+	// fill photon saturation
+	fPhotonInfo.isSaturated = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+	cout << "isSat: " << fPhotonInfo.isSaturated << endl;
+	
+	// fill photon info
+	ExoDiPhotons::FillBasicPhotonInfo(fPhotonInfo, &(*pho));
+	ExoDiPhotons::FillPhotonIDInfo(fPhotonInfo, &(*pho), rho_, fPhotonInfo.isSaturated);
+	
+	// fill EGM ID info
+	ExoDiPhotons::FillPhotonEGMidInfo(fPhotonInfo, &(*pho), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
+	fPhotonInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
+	fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
+	fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
+	
+	// fill our tree
+	if ( ExoDiPhotons::passLooseNumeratorCut(&(*pho), rho_, fPhotonInfo.isSaturated) ||
+	     ExoDiPhotons::passDenominatorCut(&(*pho), rho_, fPhotonInfo.isSaturated) ||
+	     fPhotonInfo.isFakeTemplateObjCand // this was already filled with ExoDiPhotons::FillPhotonIDInfo
+	  ) fTree->Fill();
+      }
+      
+    } // end if photonMatch
+    else cout << "No photon match in DeltaR <= 0.1" << endl;
+
   } // end of photon loop
 
-  // ============
-  // GENPARTICLES
-  // ============
-
-  // get genParticle collection
-  Handle<edm::View<reco::GenParticle> > genParticles;
-  iEvent.getByToken(genParticlesMiniAODToken_,genParticles);
-
-  //for (edm::View<reco::GenParticle>::const_iterator gen = genParticles->begin(); gen != genParticles->end(); ++gen) {
-  for (size_t i = 0; i < genParticles->size(); ++i) {
-    const auto gen = genParticles->ptrAt(i);
-    if (gen->pt() > 50)
-      cout << "GenParticle: " << "pt = " << gen->pt() << "; eta = " << gen->eta() << "; phi = " << gen->phi() << endl;
-  } // end of genParticle loop
+  cout << endl;
   
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
    Handle<ExampleData> pIn;
