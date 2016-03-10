@@ -193,6 +193,10 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   using namespace edm;
   using namespace std;
   using namespace pat;
+
+  // =====
+  // EVENT
+  // =====
   
   ExoDiPhotons::InitEventInfo(fEventInfo);
   ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
@@ -200,6 +204,10 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
 
   ExoDiPhotons::InitJetInfo(fJetInfo);
+
+  // ===
+  // JET
+  // ===
   
   // add jet HT information
   edm::Handle< edm::View<pat::Jet> > jets;
@@ -218,6 +226,10 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   fJetInfo.nJets = nJets;
   fJetInfo.jetHT = jetHT;
 
+  // ===
+  // RHO
+  // ===
+  
   // Get rho
   edm::Handle< double > rhoH;
   iEvent.getByToken(rhoToken_,rhoH);
@@ -225,6 +237,10 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   
   cout << "rho: " << rho_ << endl;
 
+  // ======
+  // EGM ID
+  // ======
+  
   // EGM ID decisions
   edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
   iEvent.getByToken(phoLooseIdMapToken_ ,loose_id_decisions);
@@ -232,6 +248,10 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   iEvent.getByToken(phoMediumIdMapToken_,medium_id_decisions);
   edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
   iEvent.getByToken(phoTightIdMapToken_ ,tight_id_decisions);
+
+  // =========
+  // ECAL INFO
+  // =========
   
   // ECAL RecHits
   edm::Handle<EcalRecHitCollection> recHitsEB;
@@ -247,6 +267,10 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   subDetTopologyEB_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalBarrel);
   subDetTopologyEE_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalEndcap);
 
+  // =======
+  // PHOTONS
+  // =======
+  
   ExoDiPhotons::InitPhotonInfo(fPhotonInfo);
   
   // Get pat::Photon collection
