@@ -4,7 +4,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void MCFakeRateAnalysis::Loop()
+void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 {
 //   In a ROOT session, you can do:
 //      root> .L MCFakeRateAnalysis.C
@@ -30,14 +30,104 @@ void MCFakeRateAnalysis::Loop()
 //    fChain->GetEntry(jentry);       //read all branches
 //by  b_branchname->GetEntry(ientry); //read only this branch
    if (fChain == 0) return;
+   
+   vector<TH1F*> sigmaIetaIetaEB_pt20;  
+   for (int i = 30; i<140; i=i+20) {
+     TH1F *h = new TH1F(Form("hsigmaIeIeEB_%d_%d",i,i+20),"sigmaIetaIetaEB_pt",10000,0,0.5);
+     sigmaIetaIetaEB_pt20.push_back(h);
+   }
+   vector<TH1F*> sigmaIetaIetaEB_pt50;  
+   for (int i = 150; i<650; i=i+50) {
+     TH1F *h = new TH1F(Form("hsigmaIeIeEB_%d_%d",i,i+50),"sigmaIetaIetaEB_pt",10000,0,0.5);
+     sigmaIetaIetaEB_pt50.push_back(h);
+   }
 
+   vector<TH1F*> sigmaIetaIetaEE_pt20;  
+   for (int i = 30; i<140; i=i+20) {
+     TH1F *h = new TH1F(Form("hsigmaIeIeEE_%d_%d",i,i+20),"sigmaIetaIetaEE_pt",10000,0,0.5);
+     sigmaIetaIetaEE_pt20.push_back(h);
+   }
+   vector<TH1F*> sigmaIetaIetaEE_pt50;  
+   for (int i = 150; i<650; i=i+50) {
+     TH1F *h = new TH1F(Form("hsigmaIeIeEE_%d_%d",i,i+50),"sigmaIetaIetaEE_pt",10000,0,0.5);
+     sigmaIetaIetaEE_pt50.push_back(h);
+   }
+   
    Long64_t nentries = fChain->GetEntriesFast();
-
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
+      if (jentry % 100000 == 0)
+	std::cout << "Number of entries looped over: " << jentry << std::endl;
+      
+      // EB
+      if (fabs(Photon_scEta) < 1.4442) {
+	for (int i = 30; i<140; i=i+20) {
+	  if (i < Photon_pt && Photon_pt < i+20) {
+	    if (Photon_isNumeratorObj) {
+	      //sigmaIetaIetaEB_pt20[(i-30)/30]->Sumw2();
+	      sigmaIetaIetaEB_pt20[(i-30)/30]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	    }
+	  }
+	}
+	for (int i = 150; i<650; i=i+50) {
+	  if (i < Photon_pt && Photon_pt < i+50) {
+	    if (Photon_isNumeratorObj) {
+	      //sigmaIetaIetaEB_pt50[(i-150)/150]->Sumw2();
+	      sigmaIetaIetaEB_pt50[(i-150)/150]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	    }
+	  }
+	}
+      } // end EB
+      
+      // EE
+      if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+	for (int i = 30; i<140; i=i+20) {
+	  if (i < Photon_pt && Photon_pt < i+20) {
+	    if (Photon_isNumeratorObj) {
+	      //sigmaIetaIetaEE_pt20[(i-30)/30]->Sumw2();
+	      sigmaIetaIetaEE_pt20[(i-30)/30]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	    }
+	  }
+	}
+	for (int i = 150; i<650; i=i+50) {
+	  if (i < Photon_pt && Photon_pt < i+50) {
+	    if (Photon_isNumeratorObj) {
+	      //sigmaIetaIetaEE_pt50[(i-150)/150]->Sumw2();
+	      sigmaIetaIetaEE_pt50[(i-150)/150]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	    }
+	  }
+	}
+      } // end EE
+      
+   } // end loop over entries
+
+   TString filename;
+   if (strcmp(iMass,"all") == 0) filename = "diphoton_fakeRate_GGJets_all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
+   else filename = TString::Format("diphoton_fakeRate_GGJets_M-%s_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root",iMass);
+   TFile file_out(filename,"RECREATE");
+
+   for (vector<TH1F*>::iterator it = sigmaIetaIetaEB_pt20.begin() ; it != sigmaIetaIetaEB_pt20.end(); ++it) {
+     (*it)->Write();
+     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
    }
-}
+   for (vector<TH1F*>::iterator it = sigmaIetaIetaEB_pt50.begin() ; it != sigmaIetaIetaEB_pt50.end(); ++it) {
+     (*it)->Write();
+     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+   }
+   for (vector<TH1F*>::iterator it = sigmaIetaIetaEE_pt20.begin() ; it != sigmaIetaIetaEE_pt20.end(); ++it) {
+     (*it)->Write();
+     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+   }
+   for (vector<TH1F*>::iterator it = sigmaIetaIetaEE_pt50.begin() ; it != sigmaIetaIetaEE_pt50.end(); ++it) {
+     (*it)->Write();
+     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+   }
+   
+   file_out.ls();
+   file_out.Close();
+   
+} // end of Loop()
