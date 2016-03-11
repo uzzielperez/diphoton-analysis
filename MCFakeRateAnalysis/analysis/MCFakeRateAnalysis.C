@@ -69,7 +69,7 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 	  if (i < Photon_pt && Photon_pt < i+20) {
 	    if (Photon_isNumeratorObj) {
 	      //sigmaIetaIetaEB_pt20[(i-30)/30]->Sumw2();
-	      sigmaIetaIetaEB_pt20[(i-30)/30]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	      sigmaIetaIetaEB_pt20[(i-30)/20]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
 	    }
 	  }
 	}
@@ -77,7 +77,7 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 	  if (i < Photon_pt && Photon_pt < i+50) {
 	    if (Photon_isNumeratorObj) {
 	      //sigmaIetaIetaEB_pt50[(i-150)/150]->Sumw2();
-	      sigmaIetaIetaEB_pt50[(i-150)/150]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	      sigmaIetaIetaEB_pt50[(i-150)/50]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
 	    }
 	  }
 	}
@@ -89,7 +89,7 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 	  if (i < Photon_pt && Photon_pt < i+20) {
 	    if (Photon_isNumeratorObj) {
 	      //sigmaIetaIetaEE_pt20[(i-30)/30]->Sumw2();
-	      sigmaIetaIetaEE_pt20[(i-30)/30]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	      sigmaIetaIetaEE_pt20[(i-30)/20]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
 	    }
 	  }
 	}
@@ -97,7 +97,7 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 	  if (i < Photon_pt && Photon_pt < i+50) {
 	    if (Photon_isNumeratorObj) {
 	      //sigmaIetaIetaEE_pt50[(i-150)/150]->Sumw2();
-	      sigmaIetaIetaEE_pt50[(i-150)/150]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	      sigmaIetaIetaEE_pt50[(i-150)/50]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
 	    }
 	  }
 	}
@@ -112,19 +112,19 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 
    for (vector<TH1F*>::iterator it = sigmaIetaIetaEB_pt20.begin() ; it != sigmaIetaIetaEB_pt20.end(); ++it) {
      (*it)->Write();
-     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+     //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
    }
    for (vector<TH1F*>::iterator it = sigmaIetaIetaEB_pt50.begin() ; it != sigmaIetaIetaEB_pt50.end(); ++it) {
      (*it)->Write();
-     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+     //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
    }
    for (vector<TH1F*>::iterator it = sigmaIetaIetaEE_pt20.begin() ; it != sigmaIetaIetaEE_pt20.end(); ++it) {
      (*it)->Write();
-     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+     //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
    }
    for (vector<TH1F*>::iterator it = sigmaIetaIetaEE_pt50.begin() ; it != sigmaIetaIetaEE_pt50.end(); ++it) {
      (*it)->Write();
-     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+     //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
    }
    
    file_out.ls();
