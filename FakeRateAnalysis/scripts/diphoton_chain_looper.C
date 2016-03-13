@@ -1,7 +1,6 @@
 #include "FakeRateAnalysis.C"
 
 void diphoton_chain_looper() {
-  cout << "began" << endl;
   // use stopwatch to time
   TStopwatch sw;
   sw.Start();

@@ -42,52 +42,77 @@ void FakeRateAnalysis::Loop()
    TH1D phoPtEE_denominator("phoPtEE_denominator","",5000,0,5000);
 
    // pt spectrum of all objects passing fake template criteria
-   TH1D phoPtEB_faketemplate("TH1D phoptEB_faketemplate","",5000,0,5000);
-   TH1D phoPtEE_faketemplate("TH1D phoptEE_faketemplate","",5000,0,5000);
+   TH1D phoPtEB_faketemplate("phoptEB_faketemplate","",5000,0,5000);
+   TH1D phoPtEE_faketemplate("phoptEE_faketemplate","",5000,0,5000);
 
    // template histograms
    std::vector<TH1D*> fakeTemplHistVec;
-   double ptBinArray[11] = { 20., 40., 60., 80., 100., 120., 200., 300., 400., 600., 14.e3 };
+   // double ptBinArray[11] = { 20., 40., 60., 80., 100., 120., 200., 300., 400., 600., 14.e3 };
+   double ptBinArray[18] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 350., 400., 450., 500., 550., 600., 14.e3 };
 
-   TH1D* sieieEB_faketemplate_pt20To40 = new TH1D("sieieEB_faketemplate_pt20To40","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt20To40);
-   TH1D* sieieEB_faketemplate_pt40To60 = new TH1D("sieieEB_faketemplate_pt40To60","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt40To60);
-   TH1D* sieieEB_faketemplate_pt60To80 = new TH1D("sieieEB_faketemplate_pt60To80","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt60To80);
-   TH1D* sieieEB_faketemplate_pt80To100 = new TH1D("sieieEB_faketemplate_pt80To100","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt80To100);
-   TH1D* sieieEB_faketemplate_pt100To120 = new TH1D("sieieEB_faketemplate_pt100To120","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt100To120);
-   TH1D* sieieEB_faketemplate_pt120To200 = new TH1D("sieieEB_faketemplate_pt120To200","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt120To200);
-   TH1D* sieieEB_faketemplate_pt200To300 = new TH1D("sieieEB_faketemplate_pt200To300","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt200To300);
-   TH1D* sieieEB_faketemplate_pt300To400 = new TH1D("sieieEB_faketemplate_pt300To400","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt300To400);
-   TH1D* sieieEB_faketemplate_pt400To600 = new TH1D("sieieEB_faketemplate_pt400To600","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt400To600);
-   TH1D* sieieEB_faketemplate_pt600ToInf = new TH1D("sieieEB_faketemplate_pt600ToInf","",100,0.,0.5);
+   TH1D* sieieEB_faketemplate_pt30To50 = new TH1D("sieieEB_faketemplate_pt30To50","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt30To50);
+   TH1D* sieieEB_faketemplate_pt50To70 = new TH1D("sieieEB_faketemplate_pt50To70","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt50To70);
+   TH1D* sieieEB_faketemplate_pt70To90 = new TH1D("sieieEB_faketemplate_pt70To90","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt70To90);
+   TH1D* sieieEB_faketemplate_pt90To110 = new TH1D("sieieEB_faketemplate_pt90To110","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt90To110);
+   TH1D* sieieEB_faketemplate_pt110To130 = new TH1D("sieieEB_faketemplate_pt110To130","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt110To130);
+   TH1D* sieieEB_faketemplate_pt130To150 = new TH1D("sieieEB_faketemplate_pt130To150","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt130To150);
+   TH1D* sieieEB_faketemplate_pt150To200 = new TH1D("sieieEB_faketemplate_pt150To200","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt150To200);
+   TH1D* sieieEB_faketemplate_pt200To250 = new TH1D("sieieEB_faketemplate_pt200To250","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt200To250);
+   TH1D* sieieEB_faketemplate_pt250To300 = new TH1D("sieieEB_faketemplate_pt250To300","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt250To300);
+   TH1D* sieieEB_faketemplate_pt300To350 = new TH1D("sieieEB_faketemplate_pt300To350","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt300To350);
+   TH1D* sieieEB_faketemplate_pt350To400 = new TH1D("sieieEB_faketemplate_pt350To400","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt350To400);
+   TH1D* sieieEB_faketemplate_pt400To450 = new TH1D("sieieEB_faketemplate_pt400To450","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt400To450);
+   TH1D* sieieEB_faketemplate_pt450To500 = new TH1D("sieieEB_faketemplate_pt450To500","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt450To500);
+   TH1D* sieieEB_faketemplate_pt500To550 = new TH1D("sieieEB_faketemplate_pt500To550","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt500To550);
+   TH1D* sieieEB_faketemplate_pt550To600 = new TH1D("sieieEB_faketemplate_pt550To600","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEB_faketemplate_pt550To600);
+   TH1D* sieieEB_faketemplate_pt600ToInf = new TH1D("sieieEB_faketemplate_pt600ToInf","",1000,0.,0.5);
    fakeTemplHistVec.push_back(sieieEB_faketemplate_pt600ToInf);
-   TH1D* sieieEE_faketemplate_pt20To40 = new TH1D("sieieEE_faketemplate_pt20To40","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt20To40);
-   TH1D* sieieEE_faketemplate_pt40To60 = new TH1D("sieieEE_faketemplate_pt40To60","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt40To60);
-   TH1D* sieieEE_faketemplate_pt60To80 = new TH1D("sieieEE_faketemplate_pt60To80","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt60To80);
-   TH1D* sieieEE_faketemplate_pt80To100 = new TH1D("sieieEE_faketemplate_pt80To100","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt80To100);
-   TH1D* sieieEE_faketemplate_pt100To120 = new TH1D("sieieEE_faketemplate_pt100To120","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt100To120);
-   TH1D* sieieEE_faketemplate_pt120To200 = new TH1D("sieieEE_faketemplate_pt120To200","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt120To200);
-   TH1D* sieieEE_faketemplate_pt200To300 = new TH1D("sieieEE_faketemplate_pt200To300","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt200To300);
-   TH1D* sieieEE_faketemplate_pt300To400 = new TH1D("sieieEE_faketemplate_pt300To400","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt300To400);
-   TH1D* sieieEE_faketemplate_pt400To600 = new TH1D("sieieEE_faketemplate_pt400To600","",100,0.,0.5);
-   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt400To600);
-   TH1D* sieieEE_faketemplate_pt600ToInf = new TH1D("sieieEE_faketemplate_pt600ToInf","",100,0.,0.5);
+   TH1D* sieieEE_faketemplate_pt30To50 = new TH1D("sieieEE_faketemplate_pt30To50","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt30To50);
+   TH1D* sieieEE_faketemplate_pt50To70 = new TH1D("sieieEE_faketemplate_pt50To70","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt50To70);
+   TH1D* sieieEE_faketemplate_pt70To90 = new TH1D("sieieEE_faketemplate_pt70To90","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt70To90);
+   TH1D* sieieEE_faketemplate_pt90To110 = new TH1D("sieieEE_faketemplate_pt90To110","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt90To110);
+   TH1D* sieieEE_faketemplate_pt110To130 = new TH1D("sieieEE_faketemplate_pt110To130","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt110To130);
+   TH1D* sieieEE_faketemplate_pt130To150 = new TH1D("sieieEE_faketemplate_pt130To150","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt130To150);
+   TH1D* sieieEE_faketemplate_pt150To200 = new TH1D("sieieEE_faketemplate_pt150To200","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt150To200);
+   TH1D* sieieEE_faketemplate_pt200To250 = new TH1D("sieieEE_faketemplate_pt200To250","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt200To250);
+   TH1D* sieieEE_faketemplate_pt250To300 = new TH1D("sieieEE_faketemplate_pt250To300","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt250To300);
+   TH1D* sieieEE_faketemplate_pt300To350 = new TH1D("sieieEE_faketemplate_pt300To350","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt300To350);
+   TH1D* sieieEE_faketemplate_pt350To400 = new TH1D("sieieEE_faketemplate_pt350To400","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt350To400);
+   TH1D* sieieEE_faketemplate_pt400To450 = new TH1D("sieieEE_faketemplate_pt400To450","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt400To450);
+   TH1D* sieieEE_faketemplate_pt450To500 = new TH1D("sieieEE_faketemplate_pt450To500","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt450To500);
+   TH1D* sieieEE_faketemplate_pt500To550 = new TH1D("sieieEE_faketemplate_pt500To550","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt500To550);
+   TH1D* sieieEE_faketemplate_pt550To600 = new TH1D("sieieEE_faketemplate_pt550To600","",1000,0.,0.5);
+   fakeTemplHistVec.push_back(sieieEE_faketemplate_pt550To600);
+   TH1D* sieieEE_faketemplate_pt600ToInf = new TH1D("sieieEE_faketemplate_pt600ToInf","",1000,0.,0.5);
    fakeTemplHistVec.push_back(sieieEE_faketemplate_pt600ToInf);
    
    Long64_t nentries = fChain->GetEntriesFast();
@@ -119,14 +144,14 @@ void FakeRateAnalysis::Loop()
       // fake template phoPt spectrum
 
       //loop over pt bin low edges (also equal to or half of hist vector entry numbers)
-      for (int i = 0; i<10; i++){
+      for (int i = 0; i<16; i++){
          double binLowEdge = ptBinArray[i];
          double binUpperEdge = ptBinArray[i+1];
 
          if ( (binLowEdge < Photon_pt) && (Photon_pt < binUpperEdge) && Photon_isFakeTemplateObjCand && inChIsoSideband ){
 
             if (fabs(Photon_scEta) < 1.4442) fakeTemplHistVec.at(i)->Fill( Photon_sigmaIetaIeta5x5 );
-            else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) fakeTemplHistVec.at(i+10)->Fill( Photon_sigmaIetaIeta5x5 );
+            else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) fakeTemplHistVec.at(i+16)->Fill( Photon_sigmaIetaIeta5x5 );
 
          }
 
@@ -144,25 +169,37 @@ void FakeRateAnalysis::Loop()
    phoPtEE_denominator.Write();
    phoPtEB_faketemplate.Write();
    phoPtEE_faketemplate.Write();
-   sieieEB_faketemplate_pt20To40->Write();
-   sieieEB_faketemplate_pt40To60->Write();
-   sieieEB_faketemplate_pt60To80->Write();
-   sieieEB_faketemplate_pt80To100->Write();
-   sieieEB_faketemplate_pt100To120->Write();
-   sieieEB_faketemplate_pt120To200->Write();
-   sieieEB_faketemplate_pt200To300->Write();
-   sieieEB_faketemplate_pt300To400->Write();
-   sieieEB_faketemplate_pt400To600->Write();
+   sieieEB_faketemplate_pt30To50->Write();
+   sieieEB_faketemplate_pt50To70->Write();
+   sieieEB_faketemplate_pt70To90->Write();
+   sieieEB_faketemplate_pt90To110->Write();
+   sieieEB_faketemplate_pt110To130->Write();
+   sieieEB_faketemplate_pt130To150->Write();
+   sieieEB_faketemplate_pt150To200->Write();
+   sieieEB_faketemplate_pt200To250->Write();
+   sieieEB_faketemplate_pt250To300->Write();
+   sieieEB_faketemplate_pt300To350->Write();
+   sieieEB_faketemplate_pt350To400->Write();
+   sieieEB_faketemplate_pt400To450->Write();
+   sieieEB_faketemplate_pt450To500->Write();
+   sieieEB_faketemplate_pt500To550->Write();
+   sieieEB_faketemplate_pt550To600->Write();
    sieieEB_faketemplate_pt600ToInf->Write();
-   sieieEE_faketemplate_pt20To40->Write();
-   sieieEE_faketemplate_pt40To60->Write();
-   sieieEE_faketemplate_pt60To80->Write();
-   sieieEE_faketemplate_pt80To100->Write();
-   sieieEE_faketemplate_pt100To120->Write();
-   sieieEE_faketemplate_pt120To200->Write();
-   sieieEE_faketemplate_pt200To300->Write();
-   sieieEE_faketemplate_pt300To400->Write();
-   sieieEE_faketemplate_pt400To600->Write();
+   sieieEE_faketemplate_pt30To50->Write();
+   sieieEE_faketemplate_pt50To70->Write();
+   sieieEE_faketemplate_pt70To90->Write();
+   sieieEE_faketemplate_pt90To110->Write();
+   sieieEE_faketemplate_pt110To130->Write();
+   sieieEE_faketemplate_pt130To150->Write();
+   sieieEE_faketemplate_pt150To200->Write();
+   sieieEE_faketemplate_pt200To250->Write();
+   sieieEE_faketemplate_pt250To300->Write();
+   sieieEE_faketemplate_pt300To350->Write();
+   sieieEE_faketemplate_pt350To400->Write();
+   sieieEE_faketemplate_pt400To450->Write();
+   sieieEE_faketemplate_pt450To500->Write();
+   sieieEE_faketemplate_pt500To550->Write();
+   sieieEE_faketemplate_pt550To600->Write();
    sieieEE_faketemplate_pt600ToInf->Write();
    
    file_out.ls();
