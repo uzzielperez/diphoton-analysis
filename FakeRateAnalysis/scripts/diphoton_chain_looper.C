@@ -1,6 +1,7 @@
 #include "FakeRateAnalysis.C"
 
 void diphoton_chain_looper() {
+  cout << "began" << endl;
   // use stopwatch to time
   TStopwatch sw;
   sw.Start();
@@ -9,8 +10,8 @@ void diphoton_chain_looper() {
   TChain *chain = new TChain("diphoton/fTree");
   // wildcard not supported when using xrootd
   // added ",0" to print correct number of entries, not entries=1234567890
-  chain->Add("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/FakeRateMerged/diphoton_fakeRate_JetHT_Run2015C_25ns-16Dec2015-v1_MINIAOD_merged.root",0);
-  chain->Add("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/FakeRateMerged/diphoton_fakeRate_JetHT_Run2015D-16Dec2015-v1_MINIAOD_merged.root",0);
+  chain->Add("root://cmsxrootd.fnal.gov//store/user/skaplan/noreplica/FakeRateMerged/JetHT_Run2015C_25ns-16Dec2015-v1_MINIAOD/mergedFakeRateNtuple.root",0);
+  chain->Add("root://cmsxrootd.fnal.gov//store/user/skaplan/noreplica/FakeRateMerged/JetHT_Run2015D-16Dec2015-v1_MINIAOD/mergedFakeRateNtuple.root",0);
   chain->ls();
   cout << "Total number of entries: " << chain->GetEntries() << endl; 
 
