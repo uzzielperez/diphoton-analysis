@@ -34,22 +34,26 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
    vector<TH1D*> sigmaIetaIetaEB_pt20;  
    for (int i = 30; i<140; i=i+20) {
      TH1D *h = new TH1D(Form("sieieEB_realtemplate_pt%dTo%d",i,i+20),"sigmaIetaIetaEB",1000,0.,0.5);
+     h->Sumw2();
      sigmaIetaIetaEB_pt20.push_back(h);
    }
    vector<TH1D*> sigmaIetaIetaEB_pt50;  
    for (int i = 150; i<650; i=i+50) {
      TH1D *h = new TH1D(Form("sieieEB_realtemplate_pt%dTo%d",i,i+50),"sigmaIetaIetaEB",1000,0.,0.5);
+     h->Sumw2();
      sigmaIetaIetaEB_pt50.push_back(h);
    }
 
    vector<TH1D*> sigmaIetaIetaEE_pt20;  
    for (int i = 30; i<140; i=i+20) {
      TH1D *h = new TH1D(Form("sieieEE_realtemplate_pt%dTo%d",i,i+20),"sigmaIetaIetaEE",1000,0.,0.5);
+     h->Sumw2();
      sigmaIetaIetaEE_pt20.push_back(h);
    }
    vector<TH1D*> sigmaIetaIetaEE_pt50;  
    for (int i = 150; i<650; i=i+50) {
      TH1D *h = new TH1D(Form("sieieEE_realtemplate_pt%dTo%d",i,i+50),"sigmaIetaIetaEE",1000,0.,0.5);
+     h->Sumw2();
      sigmaIetaIetaEE_pt50.push_back(h);
    }
    
@@ -68,7 +72,6 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 	for (int i = 30; i<140; i=i+20) {
 	  if (i < Photon_pt && Photon_pt < i+20) {
 	    if (Photon_isNumeratorObj) {
-	      //sigmaIetaIetaEB_pt20[(i-30)/30]->Sumw2();
 	      sigmaIetaIetaEB_pt20[(i-30)/20]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
 	    }
 	  }
@@ -76,7 +79,6 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 	for (int i = 150; i<650; i=i+50) {
 	  if (i < Photon_pt && Photon_pt < i+50) {
 	    if (Photon_isNumeratorObj) {
-	      //sigmaIetaIetaEB_pt50[(i-150)/150]->Sumw2();
 	      sigmaIetaIetaEB_pt50[(i-150)/50]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
 	    }
 	  }
@@ -88,7 +90,6 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 	for (int i = 30; i<140; i=i+20) {
 	  if (i < Photon_pt && Photon_pt < i+20) {
 	    if (Photon_isNumeratorObj) {
-	      //sigmaIetaIetaEE_pt20[(i-30)/30]->Sumw2();
 	      sigmaIetaIetaEE_pt20[(i-30)/20]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
 	    }
 	  }
@@ -96,7 +97,6 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 	for (int i = 150; i<650; i=i+50) {
 	  if (i < Photon_pt && Photon_pt < i+50) {
 	    if (Photon_isNumeratorObj) {
-	      //sigmaIetaIetaEE_pt50[(i-150)/150]->Sumw2();
 	      sigmaIetaIetaEE_pt50[(i-150)/50]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
 	    }
 	  }
@@ -111,18 +111,22 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
    TFile file_out(filename,"RECREATE");
 
    for (vector<TH1D*>::iterator it = sigmaIetaIetaEB_pt20.begin() ; it != sigmaIetaIetaEB_pt20.end(); ++it) {
+     (*it)->Scale(1.0/(*it)->Integral());
      (*it)->Write();
      //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
    }
    for (vector<TH1D*>::iterator it = sigmaIetaIetaEB_pt50.begin() ; it != sigmaIetaIetaEB_pt50.end(); ++it) {
+     (*it)->Scale(1.0/(*it)->Integral());
      (*it)->Write();
      //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
    }
    for (vector<TH1D*>::iterator it = sigmaIetaIetaEE_pt20.begin() ; it != sigmaIetaIetaEE_pt20.end(); ++it) {
+     (*it)->Scale(1.0/(*it)->Integral());
      (*it)->Write();
      //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
    }
    for (vector<TH1D*>::iterator it = sigmaIetaIetaEE_pt50.begin() ; it != sigmaIetaIetaEE_pt50.end(); ++it) {
+     (*it)->Scale(1.0/(*it)->Integral());
      (*it)->Write();
      //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
    }
