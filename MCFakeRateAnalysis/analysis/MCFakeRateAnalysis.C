@@ -31,25 +31,25 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 //by  b_branchname->GetEntry(ientry); //read only this branch
    if (fChain == 0) return;
    
-   vector<TH1F*> sigmaIetaIetaEB_pt20;  
+   vector<TH1D*> sigmaIetaIetaEB_pt20;  
    for (int i = 30; i<140; i=i+20) {
-     TH1F *h = new TH1F(Form("hsigmaIeIeEB_%d_%d",i,i+20),"sigmaIetaIetaEB_pt",10000,0,0.5);
+     TH1D *h = new TH1D(Form("sieieEB_realtemplate_pt%dTo%d",i,i+20),"sigmaIetaIetaEB",1000,0.,0.5);
      sigmaIetaIetaEB_pt20.push_back(h);
    }
-   vector<TH1F*> sigmaIetaIetaEB_pt50;  
+   vector<TH1D*> sigmaIetaIetaEB_pt50;  
    for (int i = 150; i<650; i=i+50) {
-     TH1F *h = new TH1F(Form("hsigmaIeIeEB_%d_%d",i,i+50),"sigmaIetaIetaEB_pt",10000,0,0.5);
+     TH1D *h = new TH1D(Form("sieieEB_realtemplate_pt%dTo%d",i,i+50),"sigmaIetaIetaEB",1000,0.,0.5);
      sigmaIetaIetaEB_pt50.push_back(h);
    }
 
-   vector<TH1F*> sigmaIetaIetaEE_pt20;  
+   vector<TH1D*> sigmaIetaIetaEE_pt20;  
    for (int i = 30; i<140; i=i+20) {
-     TH1F *h = new TH1F(Form("hsigmaIeIeEE_%d_%d",i,i+20),"sigmaIetaIetaEE_pt",10000,0,0.5);
+     TH1D *h = new TH1D(Form("sieieEE_realtemplate_pt%dTo%d",i,i+20),"sigmaIetaIetaEE",1000,0.,0.5);
      sigmaIetaIetaEE_pt20.push_back(h);
    }
-   vector<TH1F*> sigmaIetaIetaEE_pt50;  
+   vector<TH1D*> sigmaIetaIetaEE_pt50;  
    for (int i = 150; i<650; i=i+50) {
-     TH1F *h = new TH1F(Form("hsigmaIeIeEE_%d_%d",i,i+50),"sigmaIetaIetaEE_pt",10000,0,0.5);
+     TH1D *h = new TH1D(Form("sieieEE_realtemplate_pt%dTo%d",i,i+50),"sigmaIetaIetaEE",1000,0.,0.5);
      sigmaIetaIetaEE_pt50.push_back(h);
    }
    
@@ -110,19 +110,19 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
    else filename = TString::Format("diphoton_fakeRate_GGJets_M-%s_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root",iMass);
    TFile file_out(filename,"RECREATE");
 
-   for (vector<TH1F*>::iterator it = sigmaIetaIetaEB_pt20.begin() ; it != sigmaIetaIetaEB_pt20.end(); ++it) {
+   for (vector<TH1D*>::iterator it = sigmaIetaIetaEB_pt20.begin() ; it != sigmaIetaIetaEB_pt20.end(); ++it) {
      (*it)->Write();
      //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
    }
-   for (vector<TH1F*>::iterator it = sigmaIetaIetaEB_pt50.begin() ; it != sigmaIetaIetaEB_pt50.end(); ++it) {
+   for (vector<TH1D*>::iterator it = sigmaIetaIetaEB_pt50.begin() ; it != sigmaIetaIetaEB_pt50.end(); ++it) {
      (*it)->Write();
      //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
    }
-   for (vector<TH1F*>::iterator it = sigmaIetaIetaEE_pt20.begin() ; it != sigmaIetaIetaEE_pt20.end(); ++it) {
+   for (vector<TH1D*>::iterator it = sigmaIetaIetaEE_pt20.begin() ; it != sigmaIetaIetaEE_pt20.end(); ++it) {
      (*it)->Write();
      //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
    }
-   for (vector<TH1F*>::iterator it = sigmaIetaIetaEE_pt50.begin() ; it != sigmaIetaIetaEE_pt50.end(); ++it) {
+   for (vector<TH1D*>::iterator it = sigmaIetaIetaEE_pt50.begin() ; it != sigmaIetaIetaEE_pt50.end(); ++it) {
      (*it)->Write();
      //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
    }
