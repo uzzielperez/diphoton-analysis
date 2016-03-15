@@ -30,3 +30,11 @@ diphoton_tree_looper("1000To2000")
 
 Run over all root files from analysis directory:  
 ./../scripts/bash_launcher.sh
+
+
+## Cross sections
+analysis/GGJets_Pt-50_13TeV-sherpa_cross_sections_and_events.txt
+
+All events were taken from DAS. The cross sections for all were taken from AN-15-241, expect for  
+M-60To200 and M-200To500, where were taken from GenXsecAnalyzer, but using the result from only  
+one CRAB job without considering the error.
