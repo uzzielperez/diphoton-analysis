@@ -10,7 +10,7 @@ cd CMSSW_7_6_3_patch2/src
 cmsenv  
 git clone git@github.com:cms-exotica-diphotons/diphoton-analysis  
 cd diphoton-analysis   
-cd MCFakeRateAnalysis  
+cd FakeRateAnalysis/MCFakeRateAnalysis  
 
 ## Scripts
 
