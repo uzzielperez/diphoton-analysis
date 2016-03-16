@@ -22,7 +22,7 @@
 #include <vector>
 #include <algorithm>
 
-void estimate()
+void rooFitFakeRateProducer()
 {
 
   using namespace RooFit;
@@ -180,7 +180,5 @@ void estimate()
 
   historealmcfile->cd();
   historealmcfile->Close();
-
-
-
-}//end of method
+  
+} //end of rooFitFakeRateProducer()
