@@ -33,26 +33,26 @@ void rooFitFakeRateProducer()
   gSystem->Load("libRooFit"); 
   gSystem->AddIncludePath("-I$ROOFITSYS/include");
 
-  TFile *historealmcfile = TFile::Open("TemplateHistosRealMCHighPtBarrel.root");
-  TFile *histojetfile = TFile::Open("TemplateHistosJetRun2015DHighPtBarrelSideBand6_11.root");
+  TFile *historealmcfile = TFile::Open("diphoton_fakeRate_GGJets_M-200To500_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
+  TFile *histojetfile = TFile::Open("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root");
 
   // get histos
-  TH1F *h1 = (TH1F*)histojetfile->Get("histoSininWithPixelSeedFakeJetptbin20_40");
-  h1->Print();
-  TH1F *h2 = (TH1F*)historealmcfile->Get("histoSininWithPixelSeedRealMCptbin20_40");
-  h2->Print();
-  TH1F *hData = (TH1F*)histojetfile->Get("histoSininWithPixelSeedDataJetptbin20_40");
+  TH1F *hfakeTemplate = (TH1F*)histojetfile->Get("sieieEB_faketemplate_pt90To110");
+  hfakeTemplate->Print();
+  TH1F *hrealTemplate = (TH1F*)historealmcfile->Get("sieieEB_realtemplate_pt90To110");
+  hrealTemplate->Print();
+  TH1F *hData = (TH1F*)histojetfile->Get("sieieEB_numerator_pt90To110");
   hData->Print();
-  TH1F *hnum = (TH1F*)histojetfile->Get("histoSininWithPixelSeedTightAndFakeJetptbin20_40");
-  hnum->Print();
+  TH1F *hdenom = (TH1F*)histojetfile->Get("phoPtEB_denominator_varbin");
+  hdenom->Print();
 
   //avoiding 0 entries in the histograms
   //fake and real mc histos are the most critical
-  for(int bincount = 1; bincount <= h1->GetNbinsX();bincount++){
-    if(h1->GetBinContent(bincount) == 0.) h1->SetBinContent(bincount,1.e-6);
+  for(int bincount = 1; bincount <= hfakeTemplate->GetNbinsX();bincount++){
+    if(hfakeTemplate->GetBinContent(bincount) == 0.) hfakeTemplate->SetBinContent(bincount,1.e-6);
   }
-  for(int bincount = 1; bincount <= h2->GetNbinsX();bincount++){
-    if(h2->GetBinContent(bincount) == 0.) h2->SetBinContent(bincount,1.e-6);
+  for(int bincount = 1; bincount <= hrealTemplate->GetNbinsX();bincount++){
+    if(hrealTemplate->GetBinContent(bincount) == 0.) hrealTemplate->SetBinContent(bincount,1.e-6);
   }
   
   int ndataentries = hData->GetEntries();
@@ -64,10 +64,10 @@ void rooFitFakeRateProducer()
   RooRealVar sinin("sinin",roofitvartitle.Data(),sininmin,sininmax);
   sinin.setRange("sigrange",0.005,0.0105);
 
-  RooDataHist faketemplate("faketemplate","fake template",sinin,h1);
+  RooDataHist faketemplate("faketemplate","fake template",sinin,hfakeTemplate);
   RooHistPdf fakepdf("fakepdf","test hist fake pdf",sinin,faketemplate);
   
-  RooDataHist realtemplate("realtemplate","real template",sinin,h2);
+  RooDataHist realtemplate("realtemplate","real template",sinin,hrealTemplate);
   RooHistPdf realpdf("realpdf","test hist real pdf",sinin,realtemplate);
   
   RooDataHist data("data","data to be fitted to",sinin,hData);
@@ -106,7 +106,7 @@ void rooFitFakeRateProducer()
   legend->SetFillColor(kWhite);
   legend->SetLineColor(kWhite);
 
-  TString legendheader = "p_{t} (GeV): [20-40]";
+  TString legendheader = "p_{t} (GeV): [90-110]";
   cout<<"legend "<<legendheader.Data()<<endl;
   legend->SetHeader(legendheader.Data());
 
@@ -154,9 +154,9 @@ void rooFitFakeRateProducer()
   float RatioError = Ratio*sqrt( ((fakeerrormax/fakevalue)*(fakeerrormax/fakevalue) + (sigerrormax/sigvalue)*(sigerrormax/sigvalue)) );
   cout<<"Ratio "<<Ratio<<" +- "<<RatioError<<endl;
 
-  int binnr = 21;
+  int binnr = 21; // bin with upper edge = 0.0105, the sieie cut in the barrel
   float numerator = hData->Integral(0,binnr);
-  float denominator = hnum->Integral();
+  float denominator = hdenom->GetBinContent( 4 ); // bin 4 = pt in (90,110)
   float contamination = sigvalue;
 
   cout<<numerator<<" "<<denominator<<" "<<contamination<<endl;
@@ -171,7 +171,7 @@ void rooFitFakeRateProducer()
   cout<<"So in sigmaietaieta < (0.0105,0.028) there are "<<contamination<<" to subtract from "<<numerator<<endl;
   cout<<"and thus there are "<<(numerator-contamination)<<" total tight entries "<<endl;
   cout<<"and there are "<<denominator<<" entries in the tight and fake sample "<<endl;
-  cout<<"and so the fake rate for the pt range 20-40 is "<<fakerate<<endl;
+  cout<<"and so the fake rate for the pt range 90-100 is "<<fakerate<<endl;
   cout<<"***********************************************************"<<endl;
   cout<<""<<endl;
 
