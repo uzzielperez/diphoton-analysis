@@ -22,7 +22,7 @@
 #include <vector>
 #include <algorithm>
 
-std::pair<double,double> rooFitFakeRateProducer(std::string ptBin, int denomBin)
+std::pair<double,double> rooFitFakeRateProducer(TString ptBin, int denomBin)
 {
 
   using namespace RooFit;
@@ -40,11 +40,11 @@ std::pair<double,double> rooFitFakeRateProducer(std::string ptBin, int denomBin)
 
   // get histos
 
-  TH1F *hfakeTemplate = (TH1F*)histojetfile->Get(TString::Format("sieieEB_faketemplate_pt%s",ptBin.c_str()));
+  TH1F *hfakeTemplate = (TH1F*)histojetfile->Get( TString("sieieEB_faketemplate_pt") + ptBin );
   hfakeTemplate->Print();
-  TH1F *hrealTemplate = (TH1F*)historealmcfile->Get(TString::Format("sieieEB_realtemplate_pt%s",ptBin.c_str()));
+  TH1F *hrealTemplate = (TH1F*)historealmcfile->Get( TString("sieieEB_realtemplate_pt") + ptBin );
   hrealTemplate->Print();
-  TH1F *hData = (TH1F*)histojetfile->Get(TString::Format("sieieEB_numerator_pt%s",ptBin.c_str()));
+  TH1F *hData = (TH1F*)histojetfile->Get( TString("sieieEB_numerator_pt") + ptBin);
   hData->Print();
   TH1F *hdenom = (TH1F*)histojetfile->Get("phoPtEB_denominator_varbin");
   hdenom->Print();
@@ -133,7 +133,7 @@ std::pair<double,double> rooFitFakeRateProducer(std::string ptBin, int denomBin)
   legend->AddEntry(objmodel,"Signal + Background","l");
   legend->Draw("same");
 
-  canvas->Print(TString::Format("fakeRatePlot_EB_pT%s.png",ptBin.c_str()));
+  canvas->Print( TString("fakeRatePlot_EB_pT") + ptBin + TString(".png") );
 
   float fakevalue = fakenum.getValV();
   float fakeerrorhi = fakenum.getErrorHi();
