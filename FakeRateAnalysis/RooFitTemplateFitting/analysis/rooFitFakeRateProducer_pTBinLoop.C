@@ -22,7 +22,7 @@
 #include <vector>
 #include <algorithm>
 
-std::pair<double,double> rooFitFakeRateProducer(TString ptBin, int denomBin)
+std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, int denomBin)
 {
 
   using namespace RooFit;
@@ -40,13 +40,13 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, int denomBin)
 
   // get histos
 
-  TH1F *hfakeTemplate = (TH1F*)histojetfile->Get( TString("sieieEB_faketemplate_pt") + ptBin );
+  TH1F *hfakeTemplate = (TH1F*)histojetfile->Get( TString("sieie") + etaBin + TString("_faketemplate_pt") + ptBin );
   hfakeTemplate->Print();
-  TH1F *hrealTemplate = (TH1F*)historealmcfile->Get( TString("sieieEB_realtemplate_pt") + ptBin );
+  TH1F *hrealTemplate = (TH1F*)historealmcfile->Get( TString("sieie") + etaBin + TString("_realtemplate_pt") + ptBin );
   hrealTemplate->Print();
-  TH1F *hData = (TH1F*)histojetfile->Get( TString("sieieEB_numerator_pt") + ptBin);
+  TH1F *hData = (TH1F*)histojetfile->Get( TString("sieie") + etaBin + TString("_numerator_pt") + ptBin);
   hData->Print();
-  TH1F *hdenom = (TH1F*)histojetfile->Get("phoPtEB_denominator_varbin");
+  TH1F *hdenom = (TH1F*)histojetfile->Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );
   hdenom->Print();
 
   //avoiding 0 entries in the histograms
@@ -132,10 +132,10 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, int denomBin)
     if(objname.Contains("model") && objname.Contains("Background")) objfake = (TH1D*)xframe->findObject(objname.Data());
   }
 
-  objdata->SetName( TString("data_pt")+ptBin );
-  objmodel->SetName( TString("sigplusbkgfit_pt") + ptBin );
-  objsignal->SetName( TString("signalfit_pt") + ptBin );
-  objfake->SetName( TString("bkgfit_pt") + ptBin );
+  objdata->SetName( TString("data") + etaBin + TString("_pt") + ptBin );
+  objmodel->SetName( TString("sigplusbkgfit") + etaBin + TString("_pt") + ptBin );
+  objsignal->SetName( TString("signalfit") + etaBin + TString("_pt") + ptBin );
+  objfake->SetName( TString("bkgfit") + etaBin + TString("_pt") + ptBin );
   TFile outfile("fakeRatePlots.root","update");
   outfile.cd();
   objdata->Write();
