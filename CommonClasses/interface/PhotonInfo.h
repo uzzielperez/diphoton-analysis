@@ -33,8 +33,10 @@ namespace ExoDiPhotons
     double sigmaIetaIeta; // filled
     double sigmaIetaIeta5x5; // filled
     double sigmaEtaEta; // filled
-    double sigmaIphiIphi;
-    double sigmaPhiPhi;
+    double sigmaIphiIphi; // filled
+    double sigmaIphiIphi5x5; // filled
+    double sigmaIetaIphi; // filled
+    double sigmaIetaIphi5x5; // filled
     double maxEnergyXtal; // filled
 
     // high pT ID
@@ -79,7 +81,7 @@ namespace ExoDiPhotons
     bool isSaturated; // filled in analyzer and passed to FillPhotonIDInfo
   };
 
-  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:r9:sigmaIetaIeta:sigmaIetaIeta5x5:sigmaEtaEta:sigmaIphiIphi:sigmaPhiPhi:maxEnergyXtal:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:passChIsoDenom:passCorPhoIsoDenom:isFakeable:isNumeratorObjCand:isDenominatorObj:isSaturated");
+  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:r9:sigmaIetaIeta:sigmaIetaIeta5x5:sigmaEtaEta:sigmaIphiIphi:sigmaIphiIphi5x5:sigmaIetaIphi:sigmaIetaIphi5x5:maxEnergyXtal:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:passChIsoDenom:passCorPhoIsoDenom:isFakeable:isNumeratorObjCand:isDenominatorObj:isSaturated");
 
   void InitPhotonInfo(photonInfo_t &photonInfo)
   {
@@ -107,7 +109,9 @@ namespace ExoDiPhotons
     photonInfo.sigmaIetaIeta5x5 = -9999.99;
     photonInfo.sigmaEtaEta      = -9999.99;
     photonInfo.sigmaIphiIphi    = -9999.99;
-    photonInfo.sigmaPhiPhi      = -9999.99;
+    photonInfo.sigmaIphiIphi5x5 = -9999.99;
+    photonInfo.sigmaIetaIphi    = -9999.99;
+    photonInfo.sigmaIetaIphi5x5 = -9999.99;
     photonInfo.maxEnergyXtal    = -9999.99;
 
     // high pT ID
@@ -185,6 +189,10 @@ namespace ExoDiPhotons
     photonInfo.sigmaIetaIeta    = photon->sigmaIetaIeta();
     photonInfo.sigmaIetaIeta5x5 = photon->full5x5_sigmaIetaIeta();
     photonInfo.sigmaEtaEta      = photon->sigmaEtaEta();
+    photonInfo.sigmaIphiIphi    = photon->showerShapeVariables().sigmaIphiIphi;
+    photonInfo.sigmaIphiIphi5x5 = photon->full5x5_showerShapeVariables().sigmaIphiIphi;
+    photonInfo.sigmaIetaIphi    = photon->showerShapeVariables().sigmaIetaIphi;
+    photonInfo.sigmaIetaIphi5x5 = photon->full5x5_showerShapeVariables().sigmaIetaIphi;
     photonInfo.maxEnergyXtal    = photon->maxEnergyXtal();
 
     // high pT ID
