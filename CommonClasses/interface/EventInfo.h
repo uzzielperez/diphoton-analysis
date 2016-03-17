@@ -4,6 +4,9 @@
 // for gen info
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 
+// for beam halo summary
+#include "DataFormats/METReco/interface/BeamHaloSummary.h"
+
 namespace ExoDiPhotons
 {
   
@@ -22,9 +25,14 @@ namespace ExoDiPhotons
     int orbit;
     int interactingParton1PdgId;
     int interactingParton2PdgId;
+
+    // CSC Beam Halo ID decisions
+    bool beamHaloIDLoose;
+    bool beamHaloIDTight;
+    bool beamHaloIDTight2015;
   };
   
-  std::string eventBranchDefString("ptHat/F:alphaqcd:alphaqed:qscale:weight0:weight:run/I:LS:evnum:processid:bx:orbit:interactingParton1PdgId:interactingParton2PdgId");
+  std::string eventBranchDefString("ptHat/F:alphaqcd:alphaqed:qscale:weight0:weight:run/I:LS:evnum:processid:bx:orbit:interactingParton1PdgId:interactingParton2PdgId:beamHaloIDLoose/O:beamHaloIDTight:beamHaloIDTight2015");
   
   void InitEventInfo(eventInfo_t &eventInfo) {
     eventInfo.processid = (int) -99999.99;
@@ -41,14 +49,20 @@ namespace ExoDiPhotons
     eventInfo.orbit = (int) -99999.99;
     eventInfo.interactingParton1PdgId = (int) -99999.99;
     eventInfo.interactingParton2PdgId = (int) -99999.99;
+    eventInfo.beamHaloIDLoose = false;
+    eventInfo.beamHaloIDTight = false;
+    eventInfo.beamHaloIDTight2015 = false;
   }
 
-  void FillBasicEventInfo(eventInfo_t &eventInfo, const edm::Event& iEvent) {
+  void FillBasicEventInfo(eventInfo_t &eventInfo, const edm::Event& iEvent, const reco::BeamHaloSummary* beamHaloSummary) {
     eventInfo.run   = iEvent.id().run();
     eventInfo.LS    = iEvent.id().luminosityBlock();
     eventInfo.evnum = iEvent.id().event();
     eventInfo.bx    = iEvent.bunchCrossing();
     eventInfo.orbit = iEvent.orbitNumber();
+    eventInfo.beamHaloIDLoose     = beamHaloSummary->CSCLooseHaloId();
+    eventInfo.beamHaloIDTight     = beamHaloSummary->CSCTightHaloId();
+    eventInfo.beamHaloIDTight2015 = beamHaloSummary->CSCTightHaloId2015();
   }
 
   void FillGenEventInfo(eventInfo_t &eventInfo, const GenEventInfoProduct *genInfo) {

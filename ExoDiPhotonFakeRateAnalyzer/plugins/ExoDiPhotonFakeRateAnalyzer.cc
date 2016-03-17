@@ -110,6 +110,9 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
   edm::EDGetTokenT<edm::ValueMap<bool> > phoLooseIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > phoMediumIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > phoTightIdMapToken_;
+
+  // BeamHaloSummary token
+  edm::EDGetToken beamHaloSummaryToken_;
   
   // trees
   TTree *fTree;
@@ -169,6 +172,9 @@ ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet
   recHitsEETag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEETag",edm::InputTag("reducedEgamma:reducedEERecHits"));
   recHitsEBToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEBTag_);
   recHitsEEToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEETag_);
+
+  // BeamHaloSummary
+  beamHaloSummaryToken_ = consumes<reco::BeamHaloSummary>( edm::InputTag("BeamHaloSummary") );
   
 }
 
@@ -197,9 +203,13 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   // =====
   // EVENT
   // =====
+
+  edm::Handle< reco::BeamHaloSummary > bhsHandle;
+  iEvent.getByToken(beamHaloSummaryToken_,bhsHandle);
+  const reco::BeamHaloSummary* bhs = &(*bhsHandle);
   
   ExoDiPhotons::InitEventInfo(fEventInfo);
-  ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
+  ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent, bhs);
   
   cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
 

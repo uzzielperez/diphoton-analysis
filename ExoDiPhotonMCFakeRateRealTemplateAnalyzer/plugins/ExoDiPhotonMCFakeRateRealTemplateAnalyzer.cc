@@ -99,6 +99,9 @@ class ExoDiPhotonMCFakeRateRealTemplateAnalyzer : public edm::one::EDAnalyzer<ed
   edm::EDGetToken jetsMiniAODToken_;
   double jetPtThreshold;
   double jetEtaThreshold;
+
+  // BeamHaloSummary token
+  edm::EDGetToken beamHaloSummaryToken_;
     
   // ECAL recHits
   edm::InputTag recHitsEBTag_;
@@ -190,6 +193,9 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::ExoDiPhotonMCFakeRateRealTemplateAnal
   recHitsEETag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEETag",edm::InputTag("reducedEgamma:reducedEERecHits"));
   recHitsEBToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEBTag_);
   recHitsEEToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEETag_);
+
+  // BeamHaloSummary
+  beamHaloSummaryToken_ = consumes<reco::BeamHaloSummary>( edm::InputTag("BeamHaloSummary") );
 }
 
 
@@ -217,9 +223,13 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
   // ==========
   // EVENT INFO
   // ==========
+
+  edm::Handle< reco::BeamHaloSummary > bhsHandle;
+  iEvent.getByToken(beamHaloSummaryToken_,bhsHandle);
+  const reco::BeamHaloSummary* bhs = &(*bhsHandle);
   
   ExoDiPhotons::InitEventInfo(fEventInfo);
-  ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
+  ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent, bhs);
   
   cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
 
