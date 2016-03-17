@@ -236,20 +236,9 @@ namespace ExoDiPhotons{
     else return false;
   }
 
-  // must pass all cuts in the High pT ID except for the Sieie cut
-  bool passLooseNumeratorCut(const pat::Photon* photon, double rho, bool isSat) {
-    if (
-      passHadTowerOverEmCut(photon) &&
-      passChargedHadronCut(photon) &&
-      passCorPhoIsoHighPtID(photon,rho) &&
-      photon->passElectronVeto()
-    ) return true;
-
-    else return false;
-  }
-
-  // These are not the only cuts for making the fake template!!! The rest of the cuts are made offline.
-  bool passFakeTemplateCandCut(const pat::Photon* photon, double rho){
+  // must pass all cuts in the High pT ID except for the Sieie cut and chIso cut
+  // NOTE: enforce chIso and sieie cuts offline depending on if this is used for numerator or fake template
+  bool passNumeratorCandCut(const pat::Photon* photon, double rho, bool isSat) {
     if (
       passHadTowerOverEmCut(photon) &&
       passCorPhoIsoHighPtID(photon,rho) &&
@@ -265,8 +254,9 @@ namespace ExoDiPhotons{
       !passHadTowerOverEmCut(photon) ||
       !passChargedHadronCut(photon) ||
       !passSigmaIetaIetaCut(photon,isSat) ||
-      !passCorPhoIsoHighPtID(photon,rho)
-    ); // don't enforce electron veto; do this offline to study the veto's effect on the fake rate
+      !passCorPhoIsoHighPtID(photon,rho) ||
+      !photon->passElectronVeto()
+    ); //  enforce electron veto; can ignore it offline to study the veto's effect on the fake rate
 
     // now check if it pass the looser ID
     bool passLooseIso = passChargedHadronDenomCut(photon) && passCorPhoIsoDenom(photon,rho);
