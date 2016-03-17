@@ -9,6 +9,9 @@ void fakeRateCalculation() {
 
   TGraphAsymmErrors fakeRateEB;
   fakeRateEB.SetName("fakeRateEB");
+
+  TFile outfile("fakeRatePlots.root","recreate");
+  outfile.Close();
   // loop over pT bins
   for (int i = 0; i < 16; i++){
     if (i == 15) continue; // no 600ToInf real template yet
@@ -22,10 +25,10 @@ void fakeRateCalculation() {
     fakeRateEB.SetPoint(i,graphX,graphY);
     fakeRateEB.SetPointError(i,ex,ex,0.,0.);
   }
-  TFile outfile("fakeRatePlots.root","recreate");
-  outfile.cd();
+  TFile outfile2("fakeRatePlots.root","update");
+  outfile2.cd();
   fakeRateEB.Write();
-  outfile.Close();
+  outfile2.Close();
 
   // stop stopwatch
   sw.Stop();

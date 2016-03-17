@@ -102,38 +102,54 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, int denomBin)
   xframe->GetXaxis()->SetRangeUser(0.,0.1);
   float xframemax = xframe->GetMaximum();
   xframe->GetYaxis()->SetRangeUser(1.e-1,1.1*xframemax);
-  xframe->Draw();
+  // xframe->Draw();
 
-  TLegend *legend = new TLegend(0.62,0.65,0.82,0.85);
-  legend->SetTextSize(0.02);
-  legend->SetFillColor(kWhite);
-  legend->SetLineColor(kWhite);
+  // TLegend *legend = new TLegend(0.62,0.65,0.82,0.85);
+  // legend->SetTextSize(0.02);
+  // legend->SetFillColor(kWhite);
+  // legend->SetLineColor(kWhite);
 
-  TString legendheader = "p_{t} (GeV): [90-110]";
-  cout<<"legend "<<legendheader.Data()<<endl;
-  legend->SetHeader(legendheader.Data());
+  // TString legendheader = "p_{t} (GeV): [90-110]";
+  // cout<<"legend "<<legendheader.Data()<<endl;
+  // legend->SetHeader(legendheader.Data());
 
-  TObject *objdata;
-  TObject *objmodel;
-  TObject *objsignal;
-  TObject *objfake;
+  // TObject *objdata;
+  // TObject *objmodel;
+  // TObject *objsignal;
+  // TObject *objfake;
 
+  // change to TH1D just so we can change the name
+  TH1D *objdata;
+  TH1D *objmodel;
+  TH1D *objsignal;
+  TH1D *objfake;
   for(int i=0;i<xframe->numItems();i++){
     cout<<xframe->nameOf(i)<<endl;
     TString objname = xframe->nameOf(i);
-    if(objname.Contains("data")) objdata = (TObject*)xframe->findObject(objname.Data());
-    if(objname.Contains("model") && !objname.Contains("Comp")) objmodel = (TObject*)xframe->findObject(objname.Data());
-    if(objname.Contains("model") && objname.Contains("Signal")) objsignal = (TObject*)xframe->findObject(objname.Data());
-    if(objname.Contains("model") && objname.Contains("Background")) objfake = (TObject*)xframe->findObject(objname.Data());
+    if(objname.Contains("data")) objdata = (TH1D*)xframe->findObject(objname.Data());
+    if(objname.Contains("model") && !objname.Contains("Comp")) objmodel = (TH1D*)xframe->findObject(objname.Data());
+    if(objname.Contains("model") && objname.Contains("Signal")) objsignal = (TH1D*)xframe->findObject(objname.Data());
+    if(objname.Contains("model") && objname.Contains("Background")) objfake = (TH1D*)xframe->findObject(objname.Data());
   }
 
-  legend->AddEntry(objdata,"Data","lp");
-  legend->AddEntry(objsignal,"Signal","l");
-  legend->AddEntry(objfake,"Background","l");
-  legend->AddEntry(objmodel,"Signal + Background","l");
-  legend->Draw("same");
+  objdata->SetName( TString("data_pt")+ptBin );
+  objmodel->SetName( TString("sigplusbkgfit_pt") + ptBin );
+  objsignal->SetName( TString("signalfit_pt") + ptBin );
+  objfake->SetName( TString("bkgfit_pt") + ptBin );
+  TFile outfile("fakeRatePlots.root","update");
+  outfile.cd();
+  objdata->Write();
+  objmodel->Write();
+  objsignal->Write();
+  objfake->Write();
 
-  canvas->Print( TString("fakeRatePlot_EB_pT") + ptBin + TString(".png") );
+  // legend->AddEntry(objdata,"Data","lp");
+  // legend->AddEntry(objsignal,"Signal","l");
+  // legend->AddEntry(objfake,"Background","l");
+  // legend->AddEntry(objmodel,"Signal + Background","l");
+  // legend->Draw("same");
+
+  // canvas->Print( TString("fakeRatePlot_EB_pT") + ptBin + TString(".png") );
 
   float fakevalue = fakenum.getValV();
   float fakeerrorhi = fakenum.getErrorHi();
@@ -167,7 +183,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, int denomBin)
   float fakerate = (numerator-contamination)/denominator;
   float fakerateerror = fakerate * sqrt( (1./numerator) + (1./denominator) + ((sigerrormax/sigvalue)*(sigerrormax/sigvalue)) );
 
-  cout<<"Here: "<<fakerate<<" "<<fakerateerror<<endl;
+  // cout<<"Here: "<<fakerate<<" "<<fakerateerror<<endl;
   return std::make_pair(fakerate,fakerateerror);
 
   // cout<<""<<endl;
