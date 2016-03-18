@@ -22,10 +22,11 @@ public :
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
    // Declaration of leaf types
-   Float_t         Event_pthat;
+   Float_t         Event_ptHat;
    Float_t         Event_alphaqcd;
    Float_t         Event_alphaqed;
    Float_t         Event_qscale;
+   Float_t         Event_weight0;
    Float_t         Event_weight;
    Int_t           Event_run;
    Int_t           Event_LS;
@@ -168,7 +169,7 @@ void FakeRateAnalysis::Init(TTree *tree)
    fCurrent = -1;
    fChain->SetMakeClass(1);
 
-   fChain->SetBranchAddress("Event", &Event_pthat, &b_Event);
+   fChain->SetBranchAddress("Event", &Event_ptHat, &b_Event);
    fChain->SetBranchAddress("Jet", &Jet_jetHT, &b_Jet);
    fChain->SetBranchAddress("Photon", &Photon_pt, &b_Photon);
    Notify();
