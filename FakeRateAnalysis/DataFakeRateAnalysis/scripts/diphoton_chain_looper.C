@@ -9,8 +9,10 @@ void diphoton_chain_looper() {
   TChain *chain = new TChain("diphoton/fTree");
   // wildcard not supported when using xrootd
   // added ",0" to print correct number of entries, not entries=1234567890
-  chain->Add("root://cmsxrootd.fnal.gov//store/user/skaplan/noreplica/FakeRateMerged/JetHT_Run2015C_25ns-16Dec2015-v1_MINIAOD/mergedFakeRateNtuple.root",0);
-  chain->Add("root://cmsxrootd.fnal.gov//store/user/skaplan/noreplica/FakeRateMerged/JetHT_Run2015D-16Dec2015-v1_MINIAOD/mergedFakeRateNtuple.root",0);
+  // chain->Add("root://cmsxrootd.fnal.gov//store/user/skaplan/noreplica/FakeRateMerged/JetHT_Run2015C_25ns-16Dec2015-v1_MINIAOD/mergedFakeRateNtuple.root",0);
+  // chain->Add("root://cmsxrootd.fnal.gov//store/user/skaplan/noreplica/FakeRateMerged/JetHT_Run2015D-16Dec2015-v1_MINIAOD/mergedFakeRateNtuple.root",0);
+  chain->Add("root://cmseos.fnal.gov//store/user/skaplan/noreplica/FakeRateMerged/temp/JetHT_Run2015C.root",0);
+  chain->Add("root://cmseos.fnal.gov//store/user/skaplan/noreplica/FakeRateMerged/temp/JetHT_Run2015D.root",0);
   chain->ls();
   cout << "Total number of entries: " << chain->GetEntries() << endl; 
 

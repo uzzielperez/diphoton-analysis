@@ -276,10 +276,12 @@ void FakeRateAnalysis::Loop()
 
       // plot fake templates
       bool inChIsoSideband = (10. < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < 15.); //maybe add in sideband at runtime in the future?
+      bool isNumeratorObj = Photon_isNumeratorObjCand && Photon_passChIso;
+      bool isFakeTemplateObj = Photon_isNumeratorObjCand && inChIsoSideband;
 
       if (fabs(Photon_scEta) < 1.4442) {
          phoPtEB.Fill( Photon_pt );
-         if (Photon_isNumeratorObj){
+         if (isNumeratorObj){
             phoPtEB_numerator.Fill(Photon_pt);
             phoPtEB_numerator_varbin.Fill(Photon_pt);
          }
@@ -287,7 +289,7 @@ void FakeRateAnalysis::Loop()
             phoPtEB_denominator.Fill(Photon_pt);
             phoPtEB_denominator_varbin.Fill(Photon_pt);
          }
-         if (Photon_isFakeTemplateObjCand && inChIsoSideband){
+         if (isFakeTemplateObj){
             phoPtEB_faketemplate.Fill(Photon_pt);
             phoPtEB_faketemplate_varbin.Fill(Photon_pt);
          }
@@ -295,7 +297,7 @@ void FakeRateAnalysis::Loop()
 
       else if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
          phoPtEE.Fill( Photon_pt );
-         if (Photon_isNumeratorObj){
+         if (isNumeratorObj){
             phoPtEE_numerator.Fill(Photon_pt);
             phoPtEE_numerator_varbin.Fill(Photon_pt);
          }
@@ -303,7 +305,7 @@ void FakeRateAnalysis::Loop()
             phoPtEE_denominator.Fill(Photon_pt);
             phoPtEE_denominator_varbin.Fill(Photon_pt);
          }
-         if (Photon_isFakeTemplateObjCand && inChIsoSideband){
+         if (isFakeTemplateObj){
             phoPtEE_faketemplate.Fill(Photon_pt);
             phoPtEE_faketemplate_varbin.Fill(Photon_pt);
          }
@@ -317,7 +319,7 @@ void FakeRateAnalysis::Loop()
          double binUpperEdge = ptBinArray[i+1];
 
          // fill fake templates
-         if ( (binLowEdge < Photon_pt) && (Photon_pt < binUpperEdge) && Photon_isFakeTemplateObjCand && inChIsoSideband ){
+         if ( (binLowEdge < Photon_pt) && (Photon_pt < binUpperEdge) && isFakeTemplateObj ){
 
             if (fabs(Photon_scEta) < 1.4442) fakeTemplHistVec.at(i)->Fill( Photon_sigmaIetaIeta5x5 );
             else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) fakeTemplHistVec.at(i+16)->Fill( Photon_sigmaIetaIeta5x5 );
@@ -325,7 +327,7 @@ void FakeRateAnalysis::Loop()
          }
 
          // fill numerator histograms
-         if ( (binLowEdge < Photon_pt) && (Photon_pt < binUpperEdge) && Photon_isNumeratorObj ){
+         if ( (binLowEdge < Photon_pt) && (Photon_pt < binUpperEdge) && isNumeratorObj ){
 
             if (fabs(Photon_scEta) < 1.4442) numeratorHistVec.at(i)->Fill( Photon_sigmaIetaIeta5x5 );
             else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) numeratorHistVec.at(i+16)->Fill( Photon_sigmaIetaIeta5x5 );
