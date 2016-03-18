@@ -1,3 +1,5 @@
 # python compiled
 *.pyc
 __init__.py
+*.png
+*.pdf
