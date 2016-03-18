@@ -274,6 +274,8 @@ void FakeRateAnalysis::Loop()
       if (jentry % 100000 == 0)
 	std::cout << "Number of entries looped over: " << jentry << std::endl;
 
+      if (Event_beamHaloIDTight2015) continue;
+      
       // plot fake templates
       bool inChIsoSideband = (10. < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < 15.); //maybe add in sideband at runtime in the future?
       bool isNumeratorObj = Photon_isNumeratorObjCand && Photon_passChIso;
@@ -371,9 +373,9 @@ void FakeRateAnalysis::Loop()
    sieieEE_faketemplate_pt500To550->Scale(1./sieieEE_faketemplate_pt500To550->Integral());
    sieieEE_faketemplate_pt550To600->Scale(1./sieieEE_faketemplate_pt550To600->Integral());
    sieieEE_faketemplate_pt600ToInf->Scale(1./sieieEE_faketemplate_pt600ToInf->Integral());
-
+   
    // write histograms out to root files
-
+   
    TFile file_out("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root","RECREATE");
 
    // sigmaIetaIetaEB->Write();
