@@ -1,6 +1,6 @@
 #include "rooFitFakeRateProducer_pTBinLoop_png.C"
 
-void fakeRateCalculation() {
+void fakeRateCalculation_png() {
   // use stopwatch to time
   TStopwatch sw;
   sw.Start();

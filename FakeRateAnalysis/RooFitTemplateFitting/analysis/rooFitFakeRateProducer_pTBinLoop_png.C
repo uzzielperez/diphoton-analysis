@@ -110,7 +110,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
   legend->SetFillColor(kWhite);
   legend->SetLineColor(kWhite);
 
-  TString legendheader = "p_{t} (GeV): [90-110]";
+  TString legendheader = "p_{t} (GeV): " + ptBin;
   cout<<"legend "<<legendheader.Data()<<endl;
   legend->SetHeader(legendheader.Data());
 
