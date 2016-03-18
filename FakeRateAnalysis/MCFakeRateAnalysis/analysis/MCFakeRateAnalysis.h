@@ -36,6 +36,9 @@ public :
    Int_t           Event_orbit;
    Int_t           Event_interactingParton1PdgId;
    Int_t           Event_interactingParton2PdgId;
+   Bool_t          Event_beamHaloIDLoose;
+   Bool_t          Event_beamHaloIDTight;
+   Bool_t          Event_beamHaloIDTight2015;
    Float_t         Jet_jetHT;
    Int_t           Jet_nJets;
    Double_t        Photon_pt;
@@ -57,7 +60,9 @@ public :
    Double_t        Photon_sigmaIetaIeta5x5;
    Double_t        Photon_sigmaEtaEta;
    Double_t        Photon_sigmaIphiIphi;
-   Double_t        Photon_sigmaPhiPhi;
+   Double_t        Photon_sigmaIphiIphi5x5;
+   Double_t        Photon_sigmaIetaIphi;
+   Double_t        Photon_sigmaIetaIphi5x5;
    Double_t        Photon_maxEnergyXtal;
    Double_t        Photon_alphaHighPtID;
    Double_t        Photon_kappaHighPtID;
@@ -84,9 +89,8 @@ public :
    Bool_t          Photon_passChIsoDenom;
    Bool_t          Photon_passCorPhoIsoDenom;
    Bool_t          Photon_isFakeable;
-   Bool_t          Photon_isNumeratorObj;
+   Bool_t          Photon_isNumeratorObjCand;
    Bool_t          Photon_isDenominatorObj;
-   Bool_t          Photon_isFakeTemplateObjCand;
    Bool_t          Photon_isSaturated;
    Int_t           PhotonGenMatch_status;
    Int_t           PhotonGenMatch_motherStatus;

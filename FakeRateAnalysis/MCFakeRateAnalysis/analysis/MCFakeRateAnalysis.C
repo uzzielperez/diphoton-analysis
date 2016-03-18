@@ -71,14 +71,14 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
       if (fabs(Photon_scEta) < 1.4442) {
 	for (int i = 30; i<140; i=i+20) {
 	  if (i < Photon_pt && Photon_pt < i+20) {
-	    if (Photon_isNumeratorObj) {
+	    if (Photon_isNumeratorObjCand && Photon_passChIso) {
 	      sigmaIetaIetaEB_pt20[(i-30)/20]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
 	    }
 	  }
 	}
 	for (int i = 150; i<650; i=i+50) {
 	  if (i < Photon_pt && Photon_pt < i+50) {
-	    if (Photon_isNumeratorObj) {
+	    if (Photon_isNumeratorObjCand && Photon_passChIso) {
 	      sigmaIetaIetaEB_pt50[(i-150)/50]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
 	    }
 	  }
@@ -89,14 +89,14 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
       if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
 	for (int i = 30; i<140; i=i+20) {
 	  if (i < Photon_pt && Photon_pt < i+20) {
-	    if (Photon_isNumeratorObj) {
+	    if (Photon_isNumeratorObjCand && Photon_passChIso) {
 	      sigmaIetaIetaEE_pt20[(i-30)/20]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
 	    }
 	  }
 	}
 	for (int i = 150; i<650; i=i+50) {
 	  if (i < Photon_pt && Photon_pt < i+50) {
-	    if (Photon_isNumeratorObj) {
+	    if (Photon_isNumeratorObjCand && Photon_passChIso) {
 	      sigmaIetaIetaEE_pt50[(i-150)/50]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
 	    }
 	  }
