@@ -65,7 +65,9 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
 
   TString roofitvartitle = "#sigma_{i #eta i #eta}";
   RooRealVar sinin("sinin",roofitvartitle.Data(),sininmin,sininmax);
-  sinin.setRange("sigrange",0.005,0.0105);
+  float sininCut = 0.0105; // sigma_IetaIeta cut for EB
+  if (etaBin.Contains("EE")) sininCut = 0.028; // sigma_IetaIeta cut for EE
+  sinin.setRange("sigrange",0.005,sininCut);
 
   RooDataHist faketemplate("faketemplate","fake template",sinin,hfakeTemplate);
   RooHistPdf fakepdf("fakepdf","test hist fake pdf",sinin,faketemplate);
@@ -134,6 +136,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
   legend->AddEntry(objmodel,"Signal + Background","l");
   legend->Draw("same");
 
+  // canvas->SetLogy();
   canvas->Print( TString("fakeRatePlot")+ etaBin + TString("_pT") + ptBin + TString(".png") );
 
   float fakevalue = fakenum.getValV();
@@ -159,6 +162,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
   cout<<"Ratio "<<Ratio<<" +- "<<RatioError<<endl;
 
   int binnr = 21; // bin with upper edge = 0.0105, the sieie cut in the barrel
+  if (etaBin.Contains("EE")) binnr = 56; // bin with upper edge = 0.028, the sieie cut in the endcap
   float numerator = hData->Integral(0,binnr);
   float denominator = hdenom->GetBinContent( denomBin ); // pT bin in denominator pT distribution
   float contamination = sigvalue;
