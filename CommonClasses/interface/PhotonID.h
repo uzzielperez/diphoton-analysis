@@ -254,16 +254,17 @@ namespace ExoDiPhotons{
       !passHadTowerOverEmCut(photon) ||
       !passChargedHadronCut(photon) ||
       !passSigmaIetaIetaCut(photon,isSat) ||
-      !passCorPhoIsoHighPtID(photon,rho) ||
-      !photon->passElectronVeto()
-    ); //  enforce electron veto; can ignore it offline to study the veto's effect on the fake rate
-
+      !passCorPhoIsoHighPtID(photon,rho)
+      );
+    
     // now check if it pass the looser ID
     bool passLooseIso = passChargedHadronDenomCut(photon) && passCorPhoIsoDenom(photon,rho);
-
-    if (failID && passLooseIso) return true;
-    else return false;
     
+    // require object to pass CSEV
+    bool passCSEV = photon->passElectronVeto();
+    
+    if (failID && passLooseIso && passCSEV) return true;
+    else return false;
   }
   
 }
