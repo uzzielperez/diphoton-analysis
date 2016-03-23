@@ -1,3 +1,27 @@
 # EXO DiPhoton Analysis Code
 
-See individual analyzer for instructions.
+## Fake Rate Analysis
+
+Fake rate twiki  
+https://twiki.cern.ch/twiki/bin/viewauth/CMS/ExoPhotonFakeRate13TeV
+
+### EDAnalyzers  
+ExoDiPhotonFakeRateAnalyzer  
+ExoDiPhotonMCFakeRateRealTemplateAnalyzer
+
+### Analysis and plotting code  
+FakeRateAnalysis
+
+## Signal Analysis
+
+### RSG Samples
+
+#### EDAnalyzer  
+ExoDiPhotonRSGSignalAnalyzer
+
+
+## Misc.
+
+### Tools
+
+Scripts for general analysis
