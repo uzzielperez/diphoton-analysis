@@ -273,8 +273,8 @@ void FakeRateAnalysis::Loop()
       // if (Cut(ientry) < 0) continue;
       if (jentry % 100000 == 0) std::cout << "Number of entries looped over: " << jentry << std::endl;
 
-      if (Event_beamHaloIDTight2015) continue;
-      //if (Photon_sigmaIphiIphi5x5 > 0.009) continue;
+      //if (Event_beamHaloIDTight2015) continue;
+      if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
       
       // plot fake templates
       bool inChIsoSideband = (10. < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < 15.); //maybe add in sideband at runtime in the future?

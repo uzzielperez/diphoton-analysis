@@ -67,8 +67,8 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
       if (jentry % 100000 == 0)
 	std::cout << "Number of entries looped over: " << jentry << std::endl;
 
-      if (Event_beamHaloIDTight2015) continue;
-      //if (Photon_sigmaIphiIphi5x5 > 0.009) continue;
+      //if (Event_beamHaloIDTight2015) continue;
+      if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
       
       // EB
       if (fabs(Photon_scEta) < 1.4442) {
