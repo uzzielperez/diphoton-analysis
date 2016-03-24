@@ -8,6 +8,7 @@ https://twiki.cern.ch/twiki/bin/viewauth/CMS/ExoPhotonFakeRate13TeV
 ### EDAnalyzers  
 ExoDiPhotonFakeRateAnalyzer  
 ExoDiPhotonMCFakeRateRealTemplateAnalyzer
+ExoDiPhotonMCFakeRateClosureTestAnalyzer
 
 ### Analysis and plotting code  
 FakeRateAnalysis

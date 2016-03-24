@@ -11,7 +11,7 @@
      [Notes on implementation]
 */
 //
-// Original Author:  andrew buccilli
+// Original Author:  Andrew Buccilli
 //         Created:  Thu, 24 Mar 2016 14:11:52 GMT
 //
 //
