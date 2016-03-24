@@ -209,7 +209,8 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   const reco::BeamHaloSummary* bhs = &(*bhsHandle);
   
   ExoDiPhotons::InitEventInfo(fEventInfo);
-  ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent, bhs);
+  ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
+  ExoDiPhotons::FillBeamHaloEventInfo(fEventInfo, bhs);
   
   cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
 

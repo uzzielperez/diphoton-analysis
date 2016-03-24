@@ -54,17 +54,20 @@ namespace ExoDiPhotons
     eventInfo.beamHaloIDTight2015 = false;
   }
 
-  void FillBasicEventInfo(eventInfo_t &eventInfo, const edm::Event& iEvent, const reco::BeamHaloSummary* beamHaloSummary) {
+  void FillBasicEventInfo(eventInfo_t &eventInfo, const edm::Event& iEvent) {
     eventInfo.run   = iEvent.id().run();
     eventInfo.LS    = iEvent.id().luminosityBlock();
     eventInfo.evnum = iEvent.id().event();
     eventInfo.bx    = iEvent.bunchCrossing();
     eventInfo.orbit = iEvent.orbitNumber();
+  }
+  
+  void FillBeamHaloEventInfo(eventInfo_t &eventInfo, const reco::BeamHaloSummary* beamHaloSummary) {
     eventInfo.beamHaloIDLoose     = beamHaloSummary->CSCLooseHaloId();
     eventInfo.beamHaloIDTight     = beamHaloSummary->CSCTightHaloId();
     eventInfo.beamHaloIDTight2015 = beamHaloSummary->CSCTightHaloId2015();
   }
-
+  
   void FillGenEventInfo(eventInfo_t &eventInfo, const GenEventInfoProduct *genInfo) {
     eventInfo.ptHat     = genInfo->hasBinningValues() ? (genInfo->binningValues())[0] : 0.0 ;
     eventInfo.alphaqcd  = genInfo->alphaQCD();
