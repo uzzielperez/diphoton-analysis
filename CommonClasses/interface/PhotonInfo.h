@@ -211,7 +211,7 @@ namespace ExoDiPhotons
     // for fake rate
     photonInfo.passChIsoDenom        = ExoDiPhotons::passChargedHadronDenomCut(photon);
     photonInfo.passCorPhoIsoDenom    = ExoDiPhotons::passCorPhoIsoDenom(photon,rho);
-    photonInfo.isNumeratorObjCand    = ExoDiPhotons::passNumeratorCandCut(photon,rho,isSat);
+    photonInfo.isNumeratorObjCand    = ExoDiPhotons::passNumeratorCandCut(photon,rho);
     photonInfo.isDenominatorObj      = ExoDiPhotons::passDenominatorCut(photon,rho,isSat);
   }
 

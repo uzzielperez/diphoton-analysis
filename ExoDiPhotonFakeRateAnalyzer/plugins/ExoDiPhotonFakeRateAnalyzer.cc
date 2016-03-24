@@ -299,7 +299,7 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
     fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
 
     // fill our tree
-    if ( ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_, fPhotonInfo.isSaturated) ||
+    if ( ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) ||
          ExoDiPhotons::passDenominatorCut(&(*pho), rho_, fPhotonInfo.isSaturated)
        ) fTree->Fill();
 										  

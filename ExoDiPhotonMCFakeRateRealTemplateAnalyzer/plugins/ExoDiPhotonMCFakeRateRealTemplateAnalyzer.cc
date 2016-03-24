@@ -426,7 +426,7 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
 	fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
 	
 	// fill our tree
-	if ( ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_, fPhotonInfo.isSaturated) ) fTree->Fill();
+	if ( ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) ) fTree->Fill();
       }
       
     } // end if photonMatch
