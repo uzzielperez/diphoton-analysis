@@ -375,9 +375,8 @@ void FakeRateAnalysis::Loop()
    sieieEE_faketemplate_pt600ToInf->Scale(1./sieieEE_faketemplate_pt600ToInf->Integral());
    
    // write histograms out to root files
-   
-   TFile file_out("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_BeamHaloTight2015.root","RECREATE");
-   // TFile file_out("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root","RECREATE");
+
+   TFile file_out("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root","RECREATE");
 
    // sigmaIetaIetaEB->Write();
    // sigmaIetaIetaEE->Write();
