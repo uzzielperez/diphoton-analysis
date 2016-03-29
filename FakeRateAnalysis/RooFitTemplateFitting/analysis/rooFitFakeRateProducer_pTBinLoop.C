@@ -35,8 +35,8 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
   gSystem->Load("libRooFit"); 
   gSystem->AddIncludePath("-I$ROOFITSYS/include");
 
-  TFile *historealmcfile = TFile::Open("diphoton_fakeRate_GGJets_M-200To500_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
-  TFile *histojetfile = TFile::Open("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root");
+  TFile *historealmcfile = TFile::Open("diphoton_fakeRate_GGJets_M-200To500_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms_newbinning.root");
+  TFile *histojetfile = TFile::Open("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_newbinning.root");
 
   // get histos
 
@@ -65,7 +65,9 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
 
   TString roofitvartitle = "#sigma_{i #eta i #eta}";
   RooRealVar sinin("sinin",roofitvartitle.Data(),sininmin,sininmax);
-  sinin.setRange("sigrange",0.005,0.0105);
+  float sininCut = 0.0105; // sigma_IetaIeta cut for EB
+  if (etaBin.Contains("EE")) sininCut = 0.028; // sigma_IetaIeta cut for EE
+  sinin.setRange("sigrange",0.005,sininCut);
 
   RooDataHist faketemplate("faketemplate","fake template",sinin,hfakeTemplate);
   RooHistPdf fakepdf("fakepdf","test hist fake pdf",sinin,faketemplate);
@@ -99,57 +101,67 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
 
   canvas->cd();
 
-  xframe->GetXaxis()->SetRangeUser(0.,0.1);
+  xframe->GetXaxis()->SetRangeUser(0.,0.025);
+  if (etaBin.Contains("EE")) xframe->GetXaxis()->SetRangeUser(0.,0.05);
   float xframemax = xframe->GetMaximum();
   xframe->GetYaxis()->SetRangeUser(1.e-1,1.1*xframemax);
-  // xframe->Draw();
+  xframe->Draw();
 
-  // TLegend *legend = new TLegend(0.62,0.65,0.82,0.85);
-  // legend->SetTextSize(0.02);
-  // legend->SetFillColor(kWhite);
-  // legend->SetLineColor(kWhite);
+  TLegend *legend = new TLegend(0.62,0.65,0.82,0.85);
+  legend->SetTextSize(0.02);
+  legend->SetFillColor(kWhite);
+  legend->SetLineColor(kWhite);
 
-  // TString legendheader = "p_{t} (GeV): [90-110]";
-  // cout<<"legend "<<legendheader.Data()<<endl;
-  // legend->SetHeader(legendheader.Data());
+  TString legendheader = "p_{t} (GeV): " + ptBin;
+  cout<<"legend "<<legendheader.Data()<<endl;
+  legend->SetHeader(legendheader.Data());
 
-  // TObject *objdata;
-  // TObject *objmodel;
-  // TObject *objsignal;
-  // TObject *objfake;
+  TObject *objdata;
+  TObject *objmodel;
+  TObject *objsignal;
+  TObject *objfake;
 
-  // change to TH1D just so we can change the name
-  TH1D *objdata;
-  TH1D *objmodel;
-  TH1D *objsignal;
-  TH1D *objfake;
   for(int i=0;i<xframe->numItems();i++){
     cout<<xframe->nameOf(i)<<endl;
     TString objname = xframe->nameOf(i);
-    if(objname.Contains("data")) objdata = (TH1D*)xframe->findObject(objname.Data());
-    if(objname.Contains("model") && !objname.Contains("Comp")) objmodel = (TH1D*)xframe->findObject(objname.Data());
-    if(objname.Contains("model") && objname.Contains("Signal")) objsignal = (TH1D*)xframe->findObject(objname.Data());
-    if(objname.Contains("model") && objname.Contains("Background")) objfake = (TH1D*)xframe->findObject(objname.Data());
+    if(objname.Contains("data")) objdata = (TObject*)xframe->findObject(objname.Data());
+    if(objname.Contains("model") && !objname.Contains("Comp")) objmodel = (TObject*)xframe->findObject(objname.Data());
+    if(objname.Contains("model") && objname.Contains("Signal")) objsignal = (TObject*)xframe->findObject(objname.Data());
+    if(objname.Contains("model") && objname.Contains("Background")) objfake = (TObject*)xframe->findObject(objname.Data());
   }
 
-  objdata->SetName( TString("data") + etaBin + TString("_pt") + ptBin );
-  objmodel->SetName( TString("sigplusbkgfit") + etaBin + TString("_pt") + ptBin );
-  objsignal->SetName( TString("signalfit") + etaBin + TString("_pt") + ptBin );
-  objfake->SetName( TString("bkgfit") + etaBin + TString("_pt") + ptBin );
+  legend->AddEntry(objdata,"Data","lp");
+  legend->AddEntry(objsignal,"Signal","l");
+  legend->AddEntry(objfake,"Background","l");
+  legend->AddEntry(objmodel,"Signal + Background","l");
+  legend->Draw("same");
+
+  canvas->Print( TString("fakeRatePlot")+ etaBin + TString("_pT") + ptBin + TString(".png") );
+
+  // change to TH1D just so we can change the name
+  TH1D *hobjdata;
+  TH1D *hobjmodel;
+  TH1D *hobjsignal;
+  TH1D *hobjfake;
+  for(int i=0;i<xframe->numItems();i++){
+    cout<<xframe->nameOf(i)<<endl;
+    TString objname = xframe->nameOf(i);
+    if(objname.Contains("data")) hobjdata = (TH1D*)xframe->findObject(objname.Data());
+    if(objname.Contains("model") && !objname.Contains("Comp")) hobjmodel = (TH1D*)xframe->findObject(objname.Data());
+    if(objname.Contains("model") && objname.Contains("Signal")) hobjsignal = (TH1D*)xframe->findObject(objname.Data());
+    if(objname.Contains("model") && objname.Contains("Background")) hobjfake = (TH1D*)xframe->findObject(objname.Data());
+  }
+
+  hobjdata->SetName( TString("data") + etaBin + TString("_pt") + ptBin );
+  hobjmodel->SetName( TString("sigplusbkgfit") + etaBin + TString("_pt") + ptBin );
+  hobjsignal->SetName( TString("signalfit") + etaBin + TString("_pt") + ptBin );
+  hobjfake->SetName( TString("bkgfit") + etaBin + TString("_pt") + ptBin );
   TFile outfile("fakeRatePlots.root","update");
   outfile.cd();
-  objdata->Write();
-  objmodel->Write();
-  objsignal->Write();
-  objfake->Write();
-
-  // legend->AddEntry(objdata,"Data","lp");
-  // legend->AddEntry(objsignal,"Signal","l");
-  // legend->AddEntry(objfake,"Background","l");
-  // legend->AddEntry(objmodel,"Signal + Background","l");
-  // legend->Draw("same");
-
-  // canvas->Print( TString("fakeRatePlot_EB_pT") + ptBin + TString(".png") );
+  hobjdata->Write();
+  hobjmodel->Write();
+  hobjsignal->Write();
+  hobjfake->Write();
 
   float fakevalue = fakenum.getValV();
   float fakeerrorhi = fakenum.getErrorHi();
@@ -174,6 +186,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
   cout<<"Ratio "<<Ratio<<" +- "<<RatioError<<endl;
 
   int binnr = 21; // bin with upper edge = 0.0105, the sieie cut in the barrel
+  if (etaBin.Contains("EE")) binnr = 56; // bin with upper edge = 0.028, the sieie
   float numerator = hData->Integral(0,binnr);
   float denominator = hdenom->GetBinContent( denomBin ); // pT bin in denominator pT distribution
   float contamination = sigvalue;

@@ -5,7 +5,7 @@ void fakeRateCalculation() {
   TStopwatch sw;
   sw.Start();
 
-  int ptBinArray[17] = { 30, 50, 70, 90, 110, 130, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 14000 };
+  int ptBinArray[11] = { 30, 50, 70, 90, 110, 130, 150, 200, 250, 300, 14000 };
 
   TGraphAsymmErrors fakeRateEB;
   TGraphAsymmErrors fakeRateEE;
@@ -15,9 +15,10 @@ void fakeRateCalculation() {
   TFile outfile("fakeRatePlots.root","recreate");
   outfile.Close();
   // loop over pT bins
-  for (int i = 0; i < 16; i++){
-    if (i == 15) continue; // no 600ToInf real template yet
-    TString binName = TString::Format("%iTo%i",ptBinArray[i],ptBinArray[i+1]);
+  for (int i = 0; i < 10; i++){
+    // if (i == 15) continue; // no 600ToInf real template yet
+    TString binName = "300ToInf";
+    if (i < 9) binName = TString::Format("%iTo%i",ptBinArray[i],ptBinArray[i+1]);
     // run calculation twice, once for EB and once for EE
     std::pair<double,double> resEB = rooFitFakeRateProducer(binName,TString("EB"),i+1); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
     std::pair<double,double> resEE = rooFitFakeRateProducer(binName,TString("EE"),i+1);
@@ -37,6 +38,21 @@ void fakeRateCalculation() {
   fakeRateEB.Write();
   fakeRateEE.Write();
   outfile2.Close();
+
+  TCanvas c("c","",1200,800);
+  fakeRateEB.Draw("AL");
+  fakeRateEB.GetXaxis()->SetTitle("Photon pT (GeV/c)");
+  fakeRateEB.GetYaxis()->SetTitle("Fake Rate");
+  fakeRateEB.Draw("AL");
+  c.SaveAs("fakeRateEB.png");
+
+  c.Clear();
+  fakeRateEE.Draw("AL");
+  fakeRateEE.GetXaxis()->SetTitle("Photon pT (GeV/c)");
+  fakeRateEE.GetYaxis()->SetTitle("Fake Rate");
+  fakeRateEE.GetYaxis()->SetTitleOffset(1.4);
+  fakeRateEE.Draw("AL");
+  c.SaveAs("fakeRateEE.png");
 
   // stop stopwatch
   sw.Stop();

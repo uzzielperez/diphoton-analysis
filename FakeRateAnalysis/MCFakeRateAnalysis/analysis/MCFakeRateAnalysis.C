@@ -38,11 +38,14 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
      sigmaIetaIetaEB_pt20.push_back(h);
    }
    vector<TH1D*> sigmaIetaIetaEB_pt50;  
-   for (int i = 150; i<650; i=i+50) {
+   for (int i = 150; i<300; i=i+50) {
      TH1D *h = new TH1D(Form("sieieEB_realtemplate_pt%dTo%d",i,i+50),"sigmaIetaIetaEB",200,0.,0.1);
      h->Sumw2();
      sigmaIetaIetaEB_pt50.push_back(h);
    }
+   // add 300ToInf
+   TH1D *sieieEB_realtemplate_pt300ToInf = new TH1D("sieieEB_realtemplate_pt300ToInf","sigmaIetaIetaEB",200,0.,0.1);
+   sieieEB_realtemplate_pt300ToInf->Sumw2();
 
    vector<TH1D*> sigmaIetaIetaEE_pt20;  
    for (int i = 30; i<140; i=i+20) {
@@ -51,11 +54,14 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
      sigmaIetaIetaEE_pt20.push_back(h);
    }
    vector<TH1D*> sigmaIetaIetaEE_pt50;  
-   for (int i = 150; i<650; i=i+50) {
+   for (int i = 150; i<300; i=i+50) {
      TH1D *h = new TH1D(Form("sieieEE_realtemplate_pt%dTo%d",i,i+50),"sigmaIetaIetaEE",200,0.,0.1);
      h->Sumw2();
      sigmaIetaIetaEE_pt50.push_back(h);
    }
+   // add 300ToInf
+   TH1D *sieieEE_realtemplate_pt300ToInf = new TH1D("sieieEE_realtemplate_pt300ToInf","sigmaIetaIetaEE",200,0.,0.1);
+   sieieEE_realtemplate_pt300ToInf->Sumw2();
    
    Long64_t nentries = fChain->GetEntriesFast();
    Long64_t nbytes = 0, nb = 0;
@@ -79,12 +85,21 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 	    }
 	  }
 	}
-	for (int i = 150; i<650; i=i+50) {
-	  if (i < Photon_pt && Photon_pt < i+50) {
-	    if (Photon_isNumeratorObjCand && Photon_passChIso) {
-	      sigmaIetaIetaEB_pt50[(i-150)/50]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-	    }
-	  }
+	for (int i = 150; i<350; i=i+50) {
+	  if ( i == 300 ){ // last catch-all bin
+      if (i < Photon_pt && Photon_pt < 14.e3){
+        if (Photon_isNumeratorObjCand && Photon_passChIso){
+          sieieEB_realtemplate_pt300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+        }
+      }
+    }
+    else if (i < 300){
+      if (i < Photon_pt && Photon_pt < i+50) {
+  	    if (Photon_isNumeratorObjCand && Photon_passChIso) {
+  	      sigmaIetaIetaEB_pt50[(i-150)/50]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+  	    }
+  	  }
+    }
 	}
       } // end EB
       
@@ -97,20 +112,31 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 	    }
 	  }
 	}
-	for (int i = 150; i<650; i=i+50) {
-	  if (i < Photon_pt && Photon_pt < i+50) {
-	    if (Photon_isNumeratorObjCand && Photon_passChIso) {
-	      sigmaIetaIetaEE_pt50[(i-150)/50]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-	    }
-	  }
+	for (int i = 150; i<350; i=i+50) {
+    if (i == 300){
+      if (i < Photon_pt && Photon_pt < 14.e3){
+        if (Photon_isNumeratorObjCand && Photon_passChIso){
+          sieieEE_realtemplate_pt300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+        }
+      }
+    }
+    else if (i < 300){
+  	  if (i < Photon_pt && Photon_pt < i+50) {
+  	    if (Photon_isNumeratorObjCand && Photon_passChIso) {
+  	      sigmaIetaIetaEE_pt50[(i-150)/50]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+  	    }
+  	  }
+    }
 	}
       } // end EE
       
    } // end loop over entries
 
    TString filename;
-   if (strcmp(iMass,"all") == 0) filename = "diphoton_fakeRate_GGJets_all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
-   else filename = TString::Format("diphoton_fakeRate_GGJets_M-%s_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root",iMass);
+   // if (strcmp(iMass,"all") == 0) filename = "diphoton_fakeRate_GGJets_all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
+   // else filename = TString::Format("diphoton_fakeRate_GGJets_M-%s_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root",iMass);
+   if (strcmp(iMass,"all") == 0) filename = "diphoton_fakeRate_GGJets_all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms_newbinning.root";
+   else filename = TString::Format("diphoton_fakeRate_GGJets_M-%s_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms_newbinning.root",iMass);
    TFile file_out(filename,"RECREATE");
 
    for (vector<TH1D*>::iterator it = sigmaIetaIetaEB_pt20.begin() ; it != sigmaIetaIetaEB_pt20.end(); ++it) {
@@ -123,6 +149,8 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
      (*it)->Write();
      //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
    }
+   sieieEB_realtemplate_pt300ToInf->Scale(1./sieieEB_realtemplate_pt300ToInf->Integral());
+   sieieEB_realtemplate_pt300ToInf->Write();
    for (vector<TH1D*>::iterator it = sigmaIetaIetaEE_pt20.begin() ; it != sigmaIetaIetaEE_pt20.end(); ++it) {
      (*it)->Scale(1.0/(*it)->Integral());
      (*it)->Write();
@@ -133,7 +161,10 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
      (*it)->Write();
      //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
    }
+   sieieEE_realtemplate_pt300ToInf->Scale(1./sieieEE_realtemplate_pt300ToInf->Integral());
+   sieieEE_realtemplate_pt300ToInf->Write();
    
+
    file_out.ls();
    file_out.Close();
    
