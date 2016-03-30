@@ -5,11 +5,13 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing ('python')
 
 options.register('globalTag',
-                '76X_dataRun2_v15',
-                VarParsing.multiplicity.singleton,
-                VarParsing.varType.string,
-                "global tag to use when running"
-)
+                 #'76X_dataRun2_v15',
+                 '76X_dataRun2_16Dec2015_v0',
+                 VarParsing.multiplicity.singleton,
+                 VarParsing.varType.string,
+                 "global tag to use when running"
+                 )
+
 ## 'maxEvents' is already registered by the Framework, changing default value
 options.setDefault('maxEvents', 100)
 
@@ -36,6 +38,7 @@ process.source = cms.Source(
 # for global tag
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
 process.GlobalTag.globaltag = options.globalTag
+print options.globalTag
 
 # geometry for saturation
 process.load("Configuration.StandardSequences.GeometryDB_cff")
