@@ -127,10 +127,12 @@ class ExoDiPhotonMCFakeRateClosureTestAnalyzer : public edm::one::EDAnalyzer<edm
   
   // trees
   TTree *fTree;
-
+  TTree *fTreeFake;
+  
   // photons
   ExoDiPhotons::photonInfo_t fPhotonInfo;
-
+  ExoDiPhotons::photonInfo_t fPhotonMatchInfo;
+  
   // jets
   ExoDiPhotons::jetInfo_t fJetInfo;
   
@@ -141,7 +143,7 @@ class ExoDiPhotonMCFakeRateClosureTestAnalyzer : public edm::one::EDAnalyzer<edm
   edm::EDGetTokenT<GenEventInfoProduct> genInfoToken_;
 
   // genParticles
-  ExoDiPhotons::genParticleInfo_t fGenParticleInfo;
+  ExoDiPhotons::genParticleInfo_t fPhotonGenMatchInfo;
 };
 
 //
@@ -175,7 +177,13 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::ExoDiPhotonMCFakeRateClosureTestAnalyz
   fTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
   fTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
   fTree->Branch("Photon",&fPhotonInfo,ExoDiPhotons::photonBranchDefString.c_str());
-  fTree->Branch("PhotonGenMatch",&fGenParticleInfo,ExoDiPhotons::genParticleBranchDefString.c_str());
+
+  // tree for photon objects matched to fake genPhotons
+  fTreeFake = fs->make<TTree>("fTreeFake","FakePhotonTree");
+  fTreeFake->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
+  fTreeFake->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
+  fTreeFake->Branch("Photon",&fPhotonMatchInfo,ExoDiPhotons::photonBranchDefString.c_str());
+  fTreeFake->Branch("PhotonGenMatch",&fPhotonGenMatchInfo,ExoDiPhotons::genParticleBranchDefString.c_str());
   
   // photon token
   photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
@@ -301,7 +309,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
   // GENPARTICLES
   // ============
 
-  ExoDiPhotons::InitGenParticleInfo(fGenParticleInfo);
+  ExoDiPhotons::InitGenParticleInfo(fPhotonGenMatchInfo);
   
   // get genParticle collection
   Handle<edm::View<reco::GenParticle> > genParticles;
@@ -317,8 +325,9 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
   // =======
   // PHOTONS
   // =======
-  
+
   ExoDiPhotons::InitPhotonInfo(fPhotonInfo);
+  ExoDiPhotons::InitPhotonInfo(fPhotonMatchInfo);
   
   // get photon collection
   edm::Handle<edm::View<pat::Photon> > photons;
@@ -330,6 +339,25 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
     
     // print photon info
     cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
+
+    // fill photon saturation
+    fPhotonInfo.isSaturated = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+    cout << "isSat: " << fPhotonInfo.isSaturated << endl;
+    
+    // fill photon info
+    ExoDiPhotons::FillBasicPhotonInfo(fPhotonInfo, &(*pho));
+    ExoDiPhotons::FillPhotonIDInfo(fPhotonInfo, &(*pho), rho_, fPhotonInfo.isSaturated);
+    
+    // fill EGM ID info
+    ExoDiPhotons::FillPhotonEGMidInfo(fPhotonInfo, &(*pho), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
+    fPhotonInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
+    fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
+    fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
+    
+    // fill our tree
+    if ( ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) ||
+         ExoDiPhotons::passDenominatorCut(&(*pho), rho_, fPhotonInfo.isSaturated)
+      ) fTree->Fill();
     
     // deltaR cut
     double minDeltaR       = 0.2;
@@ -409,24 +437,24 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
       // only fill tree if photon is matched to hard interaction particle, but not a photon
       if (photonMatch->pdgId() != 22) {
 	// fill photon saturation
-	fPhotonInfo.isSaturated = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-	cout << "isSat: " << fPhotonInfo.isSaturated << endl;
+	fPhotonMatchInfo.isSaturated = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+	cout << "isSat: " << fPhotonMatchInfo.isSaturated << endl;
 	
 	// fill photonMatch genParticle info
-	ExoDiPhotons::FillGenParticleInfo(fGenParticleInfo,photonMatch);
+	ExoDiPhotons::FillGenParticleInfo(fPhotonGenMatchInfo,photonMatch);
 	
 	// fill photon info
-	ExoDiPhotons::FillBasicPhotonInfo(fPhotonInfo, &(*pho));
-	ExoDiPhotons::FillPhotonIDInfo(fPhotonInfo, &(*pho), rho_, fPhotonInfo.isSaturated);
+	ExoDiPhotons::FillBasicPhotonInfo(fPhotonMatchInfo, &(*pho));
+	ExoDiPhotons::FillPhotonIDInfo(fPhotonMatchInfo, &(*pho), rho_, fPhotonMatchInfo.isSaturated);
 	
 	// fill EGM ID info
-	ExoDiPhotons::FillPhotonEGMidInfo(fPhotonInfo, &(*pho), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
-	fPhotonInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
-	fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
-	fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
+	ExoDiPhotons::FillPhotonEGMidInfo(fPhotonMatchInfo, &(*pho), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
+	fPhotonMatchInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
+	fPhotonMatchInfo.passEGMMediumID = (*medium_id_decisions)[pho];
+	fPhotonMatchInfo.passEGMTightID  = (*tight_id_decisions)[pho];
       
 	// fill our tree
-	if ( ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) ) fTree->Fill();
+	if ( ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) ) fTreeFake->Fill();
       }
       
     } // end if photonMatch
