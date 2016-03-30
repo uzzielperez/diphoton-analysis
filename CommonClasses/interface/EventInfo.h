@@ -11,18 +11,18 @@ namespace ExoDiPhotons
 {
   
   struct eventInfo_t {
+    Long64_t run;
+    Long64_t LS;
+    Long64_t evnum; // event numbers can cause integer overflow (so, using Long64_t)
+    Long64_t processid;
+    Long64_t bx;
+    Long64_t orbit;
     float ptHat;
     float alphaqcd;
     float alphaqed;
     float qscale;
     float weight0;
     float weight;
-    int run;
-    int LS;
-    int evnum;
-    int processid;
-    int bx;
-    int orbit;
     int interactingParton1PdgId;
     int interactingParton2PdgId;
 
@@ -31,26 +31,27 @@ namespace ExoDiPhotons
     bool beamHaloIDTight;
     bool beamHaloIDTight2015;
   };
-  
-  std::string eventBranchDefString("ptHat/F:alphaqcd:alphaqed:qscale:weight0:weight:run/I:LS:evnum:processid:bx:orbit:interactingParton1PdgId:interactingParton2PdgId:beamHaloIDLoose/O:beamHaloIDTight:beamHaloIDTight2015");
+
+  // variables must be sorted in decreasing order of size
+  std::string eventBranchDefString("run/L:LS:evnum:processid:bx:orbit:ptHat/F:alphaqcd:alphaqed:qscale:weight0:weight:interactingParton1PdgId/I:interactingParton2PdgId:beamHaloIDLoose/O:beamHaloIDTight:beamHaloIDTight2015");
   
   void InitEventInfo(eventInfo_t &eventInfo) {
-    eventInfo.processid = (int) -99999.99;
-    eventInfo.ptHat = -99999.99;
-    eventInfo.alphaqcd = -99999.99;
-    eventInfo.alphaqed = -99999.99;
-    eventInfo.qscale = -99999.99;
-    eventInfo.weight0 = -99999.99;
-    eventInfo.weight = -99999.99;
-    eventInfo.run = (int) -99999.99;
-    eventInfo.LS = (int) -99999.99;
-    eventInfo.evnum = (int) -99999.99;
-    eventInfo.bx = (int) -99999.99;
-    eventInfo.orbit = (int) -99999.99;
+    eventInfo.run       = (Long64_t) -99999.99;
+    eventInfo.LS        = (Long64_t) -99999.99;
+    eventInfo.evnum     = (Long64_t) -99999.99;
+    eventInfo.processid = (Long64_t) -99999.99;
+    eventInfo.bx        = (Long64_t) -99999.99;
+    eventInfo.orbit     = (Long64_t) -99999.99;
+    eventInfo.ptHat     = -99999.99;
+    eventInfo.alphaqcd  = -99999.99;
+    eventInfo.alphaqed  = -99999.99;
+    eventInfo.qscale    = -99999.99;
+    eventInfo.weight0   = -99999.99;
+    eventInfo.weight    = -99999.99;
     eventInfo.interactingParton1PdgId = (int) -99999.99;
     eventInfo.interactingParton2PdgId = (int) -99999.99;
-    eventInfo.beamHaloIDLoose = false;
-    eventInfo.beamHaloIDTight = false;
+    eventInfo.beamHaloIDLoose     = false;
+    eventInfo.beamHaloIDTight     = false;
     eventInfo.beamHaloIDTight2015 = false;
   }
 
