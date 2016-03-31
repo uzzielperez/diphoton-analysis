@@ -102,12 +102,12 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 
   // write our histograms to file
   for (vector<TH1D*>::iterator it = sigmaIetaIetaEB.begin() ; it != sigmaIetaIetaEB.end(); ++it) {
-    //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
   for (vector<TH1D*>::iterator it = sigmaIetaIetaEE.begin() ; it != sigmaIetaIetaEE.end(); ++it) {
-    //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
