@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
 // Thu Mar 31 14:13:32 2016 by ROOT version 6.02/13
-// from TTree fTree/PhotonTree
+// from TTree fTreeFake/FakePhotonTree
 // found on file: root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD/diphoton_fakeRate_QCD_Pt-80to120_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root
 //////////////////////////////////////////////////////////
 
-#ifndef MCFakeRateClosureTest_h
-#define MCFakeRateClosureTest_h
+#ifndef MCFakeRateClosureTestWithFakes_h
+#define MCFakeRateClosureTestWithFakes_h
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -14,7 +14,7 @@
 
 // Header file for the classes stored in the TTree if any.
 
-class MCFakeRateClosureTest {
+class MCFakeRateClosureTestWithFakes {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
@@ -94,14 +94,24 @@ public :
    Bool_t          Photon_isNumeratorObjCand;
    Bool_t          Photon_isDenominatorObj;
    Bool_t          Photon_isSaturated;
+   Int_t           PhotonGenMatch_status;
+   Int_t           PhotonGenMatch_motherStatus;
+   Int_t           PhotonGenMatch_grandmotherStatus;
+   Int_t           PhotonGenMatch_pdgId;
+   Int_t           PhotonGenMatch_motherPdgId;
+   Int_t           PhotonGenMatch_grandmotherPdgId;
+   Double_t        PhotonGenMatch_pt;
+   Double_t        PhotonGenMatch_eta;
+   Double_t        PhotonGenMatch_phi;
 
    // List of branches
    TBranch        *b_Event;   //!
    TBranch        *b_Jet;   //!
    TBranch        *b_Photon;   //!
+   TBranch        *b_PhotonGenMatch;   //!
 
-   MCFakeRateClosureTest(TTree *tree=0);
-   virtual ~MCFakeRateClosureTest();
+   MCFakeRateClosureTestWithFakes(TTree *tree=0);
+   virtual ~MCFakeRateClosureTestWithFakes();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
@@ -113,8 +123,8 @@ public :
 
 #endif
 
-#ifdef MCFakeRateClosureTest_cxx
-MCFakeRateClosureTest::MCFakeRateClosureTest(TTree *tree) : fChain(0) 
+#ifdef MCFakeRateClosureTestWithFakes_cxx
+MCFakeRateClosureTestWithFakes::MCFakeRateClosureTestWithFakes(TTree *tree) : fChain(0) 
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
@@ -124,25 +134,25 @@ MCFakeRateClosureTest::MCFakeRateClosureTest(TTree *tree) : fChain(0)
          f = new TFile("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD/diphoton_fakeRate_QCD_Pt-80to120_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root");
       }
       TDirectory * dir = (TDirectory*)f->Get("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD/diphoton_fakeRate_QCD_Pt-80to120_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root:/diphoton");
-      dir->GetObject("fTree",tree);
+      dir->GetObject("fTreeFake",tree);
 
    }
    Init(tree);
 }
 
-MCFakeRateClosureTest::~MCFakeRateClosureTest()
+MCFakeRateClosureTestWithFakes::~MCFakeRateClosureTestWithFakes()
 {
    if (!fChain) return;
    delete fChain->GetCurrentFile();
 }
 
-Int_t MCFakeRateClosureTest::GetEntry(Long64_t entry)
+Int_t MCFakeRateClosureTestWithFakes::GetEntry(Long64_t entry)
 {
 // Read contents of entry.
    if (!fChain) return 0;
    return fChain->GetEntry(entry);
 }
-Long64_t MCFakeRateClosureTest::LoadTree(Long64_t entry)
+Long64_t MCFakeRateClosureTestWithFakes::LoadTree(Long64_t entry)
 {
 // Set the environment to read one entry
    if (!fChain) return -5;
@@ -155,7 +165,7 @@ Long64_t MCFakeRateClosureTest::LoadTree(Long64_t entry)
    return centry;
 }
 
-void MCFakeRateClosureTest::Init(TTree *tree)
+void MCFakeRateClosureTestWithFakes::Init(TTree *tree)
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
@@ -174,10 +184,11 @@ void MCFakeRateClosureTest::Init(TTree *tree)
    fChain->SetBranchAddress("Event", &Event_run, &b_Event);
    fChain->SetBranchAddress("Jet", &Jet_jetHT, &b_Jet);
    fChain->SetBranchAddress("Photon", &Photon_pt, &b_Photon);
+   fChain->SetBranchAddress("PhotonGenMatch", &PhotonGenMatch_status, &b_PhotonGenMatch);
    Notify();
 }
 
-Bool_t MCFakeRateClosureTest::Notify()
+Bool_t MCFakeRateClosureTestWithFakes::Notify()
 {
    // The Notify() function is called when a new file is opened. This
    // can be either for a new TTree in a TChain or when when a new TTree
@@ -188,18 +199,18 @@ Bool_t MCFakeRateClosureTest::Notify()
    return kTRUE;
 }
 
-void MCFakeRateClosureTest::Show(Long64_t entry)
+void MCFakeRateClosureTestWithFakes::Show(Long64_t entry)
 {
 // Print contents of entry.
 // If entry is not specified, print current entry
    if (!fChain) return;
    fChain->Show(entry);
 }
-Int_t MCFakeRateClosureTest::Cut(Long64_t entry)
+Int_t MCFakeRateClosureTestWithFakes::Cut(Long64_t entry)
 {
 // This function may be called from Loop.
 // returns  1 if entry is accepted.
 // returns -1 otherwise.
    return 1;
 }
-#endif // #ifdef MCFakeRateClosureTest_cxx
+#endif // #ifdef MCFakeRateClosureTestWithFakes_cxx

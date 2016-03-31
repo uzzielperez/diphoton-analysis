@@ -20,4 +20,18 @@ void diphoton_makeClass() {
   
   // make class
   tree->MakeClass("MCFakeRateClosureTest");
+
+  // =============
+  // get next tree
+  // =============
+  TTree *treeFake = (TTree *) f->Get("diphoton/fTreeFake");
+  
+  // print tree contents
+  treeFake->Print();
+  
+  // list the total number of entries in tree
+  cout << "Entries: " << treeFake->GetEntries() << endl;
+  
+  // make class
+  treeFake->MakeClass("MCFakeRateClosureTestWithFakes");
 }
