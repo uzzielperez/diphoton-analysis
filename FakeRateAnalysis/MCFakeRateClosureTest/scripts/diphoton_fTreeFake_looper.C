@@ -6,11 +6,11 @@
 #include "TStopwatch.h"
 #include <iostream>
 
-#include "MCFakeRateClosureTest.C"
+#include "MCFakeRateClosureTestWithFakes.C"
 
 using namespace std;
 
-void diphoton_tree_looper(const Char_t *iMass) {  
+void diphoton_fTreeFake_looper(const Char_t *iMass) {  
   // use stopwatch for timing
   TStopwatch sw;
   sw.Start();
@@ -26,7 +26,7 @@ void diphoton_tree_looper(const Char_t *iMass) {
   f->ls();
 
   // get tree from file
-  TTree *tree = (TTree *) f->Get("diphoton/fTree");
+  TTree *tree = (TTree *) f->Get("diphoton/fTreeFake");
 
   // print tree
   //tree->Print();
@@ -39,7 +39,7 @@ void diphoton_tree_looper(const Char_t *iMass) {
   //gSystem->CompileMacro("AnalyzeEvent.C");
 
   // create instance using our tree
-  MCFakeRateClosureTest ptl(tree);
+  MCFakeRateClosureTestWithFakes ptl(tree);
 
   // loop over all entries of our tree
   ptl.Loop(iMass);

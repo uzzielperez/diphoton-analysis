@@ -4,7 +4,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void MCFakeRateClosureTestWithFakes::Loop()
+void MCFakeRateClosureTestWithFakes::Loop(const Char_t *iMass)
 {
 //   In a ROOT session, you can do:
 //      root> .L MCFakeRateClosureTestWithFakes.C
@@ -14,7 +14,7 @@ void MCFakeRateClosureTestWithFakes::Loop()
 //      root> t.Show(16);     // Read and show values of entry 16
 //      root> t.Loop();       // Loop on all entries
 //
-
+  
 //     This is the loop skeleton where:
 //    jentry is the global entry number in the chain
 //    ientry is the entry number in the current Tree
@@ -29,15 +29,22 @@ void MCFakeRateClosureTestWithFakes::Loop()
 // METHOD2: replace line
 //    fChain->GetEntry(jentry);       //read all branches
 //by  b_branchname->GetEntry(ientry); //read only this branch
-   if (fChain == 0) return;
+  if (fChain == 0) return;
+  
+  Long64_t nentries = fChain->GetEntriesFast();
+  Long64_t nbytes = 0, nb = 0;
+  for (Long64_t jentry=0; jentry<nentries;jentry++) {
+    Long64_t ientry = LoadTree(jentry);
+    if (ientry < 0) break;
+    nb = fChain->GetEntry(jentry);   nbytes += nb;
+    // if (Cut(ientry) < 0) continue;
+    if (jentry % 100000 == 0)
+      std::cout << "Number of entries looped over: " << jentry << std::endl;
 
-   Long64_t nentries = fChain->GetEntriesFast();
+    cout << "MCFakeRateClosureTestWithFakes.h" << endl;
+    
+  } // end loop over entries
 
-   Long64_t nbytes = 0, nb = 0;
-   for (Long64_t jentry=0; jentry<nentries;jentry++) {
-      Long64_t ientry = LoadTree(jentry);
-      if (ientry < 0) break;
-      nb = fChain->GetEntry(jentry);   nbytes += nb;
-      // if (Cut(ientry) < 0) continue;
-   }
-}
+  cout << "iMass: " << iMass << endl;
+  
+} // end of Loop()
