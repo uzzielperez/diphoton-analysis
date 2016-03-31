@@ -35,11 +35,11 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
   gSystem->Load("libRooFit"); 
   gSystem->AddIncludePath("-I$ROOFITSYS/include");
 
-  TFile *historealmcfile = TFile::Open("diphoton_fakeRate_GGJets_M-200To500_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms_newbinning.root");
-  TFile *histojetfile = TFile::Open("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_newbinning.root");
+  TFile *historealmcfile = TFile::Open("diphoton_fakeRate_GGJets_M-200To500_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
+  TFile *histojetfile = TFile::Open("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root");
+  //TFile *histojetfile = TFile::Open("diphoton_fakeRate_QCD_Pt-170to300_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
 
   // get histos
-
   TH1F *hfakeTemplate = (TH1F*)histojetfile->Get( TString("sieie") + etaBin + TString("_faketemplate_pt") + ptBin );
   hfakeTemplate->Print();
   TH1F *hrealTemplate = (TH1F*)historealmcfile->Get( TString("sieie") + etaBin + TString("_realtemplate_pt") + ptBin );

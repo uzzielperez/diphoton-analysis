@@ -16,9 +16,7 @@ void fakeRateCalculation() {
   outfile.Close();
   // loop over pT bins
   for (int i = 0; i < 10; i++){
-    // if (i == 15) continue; // no 600ToInf real template yet
-    TString binName = "300ToInf";
-    if (i < 9) binName = TString::Format("%iTo%i",ptBinArray[i],ptBinArray[i+1]);
+    TString binName = TString::Format("%iTo%i",ptBinArray[i],ptBinArray[i+1]);
     // run calculation twice, once for EB and once for EE
     std::pair<double,double> resEB = rooFitFakeRateProducer(binName,TString("EB"),i+1); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
     std::pair<double,double> resEE = rooFitFakeRateProducer(binName,TString("EE"),i+1);
