@@ -29,141 +29,90 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 // METHOD2: replace line
 //    fChain->GetEntry(jentry);       //read all branches
 //by  b_branchname->GetEntry(ientry); //read only this branch
-   if (fChain == 0) return;
-   
-   vector<TH1D*> sigmaIetaIetaEB_pt20;  
-   for (int i = 30; i<140; i=i+20) {
-     TH1D *h = new TH1D(Form("sieieEB_realtemplate_pt%dTo%d",i,i+20),"sigmaIetaIetaEB",200,0.,0.1);
-     h->Sumw2();
-     sigmaIetaIetaEB_pt20.push_back(h);
-   }
-   vector<TH1D*> sigmaIetaIetaEB_pt50;  
-   for (int i = 150; i<300; i=i+50) {
-     TH1D *h = new TH1D(Form("sieieEB_realtemplate_pt%dTo%d",i,i+50),"sigmaIetaIetaEB",200,0.,0.1);
-     h->Sumw2();
-     sigmaIetaIetaEB_pt50.push_back(h);
-   }
-   // add 300ToInf
-   TH1D *sieieEB_realtemplate_pt300ToInf = new TH1D("sieieEB_realtemplate_pt300ToInf","sigmaIetaIetaEB",200,0.,0.1);
-   sieieEB_realtemplate_pt300ToInf->Sumw2();
+  if (fChain == 0) return;
 
-   vector<TH1D*> sigmaIetaIetaEE_pt20;  
-   for (int i = 30; i<140; i=i+20) {
-     TH1D *h = new TH1D(Form("sieieEE_realtemplate_pt%dTo%d",i,i+20),"sigmaIetaIetaEE",200,0.,0.1);
-     h->Sumw2();
-     sigmaIetaIetaEE_pt20.push_back(h);
-   }
-   vector<TH1D*> sigmaIetaIetaEE_pt50;  
-   for (int i = 150; i<300; i=i+50) {
-     TH1D *h = new TH1D(Form("sieieEE_realtemplate_pt%dTo%d",i,i+50),"sigmaIetaIetaEE",200,0.,0.1);
-     h->Sumw2();
-     sigmaIetaIetaEE_pt50.push_back(h);
-   }
-   // add 300ToInf
-   TH1D *sieieEE_realtemplate_pt300ToInf = new TH1D("sieieEE_realtemplate_pt300ToInf","sigmaIetaIetaEE",200,0.,0.1);
-   sieieEE_realtemplate_pt300ToInf->Sumw2();
-   
-   Long64_t nentries = fChain->GetEntriesFast();
-   Long64_t nbytes = 0, nb = 0;
-   for (Long64_t jentry=0; jentry<nentries;jentry++) {
-      Long64_t ientry = LoadTree(jentry);
-      if (ientry < 0) break;
-      nb = fChain->GetEntry(jentry);   nbytes += nb;
-      // if (Cut(ientry) < 0) continue;
-      if (jentry % 100000 == 0)
-	std::cout << "Number of entries looped over: " << jentry << std::endl;
+  // define number of bin edges
+  const int nBins = 11;
+  
+  // define our pT bin increments
+  double ptBinArray[nBins] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 14.e3 };
+  
+  // define vectors of desired histograms
+  vector<TH1D*> sigmaIetaIetaEB;
+  vector<TH1D*> sigmaIetaIetaEE;
+  
+  // loop over bins increments and create histograms
+  for (int i = 0; i < nBins-1; i++) {
+    double binLowEdge = ptBinArray[i];
+    double binUpperEdge = ptBinArray[i+1];  
+    
+    TH1D *hEB = new TH1D(Form("sieieEB_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+    hEB->Sumw2();
+    sigmaIetaIetaEB.push_back(hEB);
+    
+    TH1D *hEE = new TH1D(Form("sieieEE_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",200,0.,0.1);
+    hEE->Sumw2();
+    sigmaIetaIetaEE.push_back(hEE);
+  }
 
-      //if (Event_beamHaloIDTight2015) continue;
-      if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
-      
-      // EB
-      if (fabs(Photon_scEta) < 1.4442) {
-	for (int i = 30; i<140; i=i+20) {
-	  if (i < Photon_pt && Photon_pt < i+20) {
-	    if (Photon_isNumeratorObjCand && Photon_passChIso) {
-	      sigmaIetaIetaEB_pt20[(i-30)/20]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-	    }
-	  }
-	}
-	for (int i = 150; i<350; i=i+50) {
-	  if ( i == 300 ){ // last catch-all bin
-      if (i < Photon_pt && Photon_pt < 14.e3){
-        if (Photon_isNumeratorObjCand && Photon_passChIso){
-          sieieEB_realtemplate_pt300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-        }
-      }
-    }
-    else if (i < 300){
-      if (i < Photon_pt && Photon_pt < i+50) {
-  	    if (Photon_isNumeratorObjCand && Photon_passChIso) {
-  	      sigmaIetaIetaEB_pt50[(i-150)/50]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-  	    }
-  	  }
-    }
-	}
-      } // end EB
-      
-      // EE
-      if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
-	for (int i = 30; i<140; i=i+20) {
-	  if (i < Photon_pt && Photon_pt < i+20) {
-	    if (Photon_isNumeratorObjCand && Photon_passChIso) {
-	      sigmaIetaIetaEE_pt20[(i-30)/20]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-	    }
-	  }
-	}
-	for (int i = 150; i<350; i=i+50) {
-    if (i == 300){
-      if (i < Photon_pt && Photon_pt < 14.e3){
-        if (Photon_isNumeratorObjCand && Photon_passChIso){
-          sieieEE_realtemplate_pt300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-        }
-      }
-    }
-    else if (i < 300){
-  	  if (i < Photon_pt && Photon_pt < i+50) {
-  	    if (Photon_isNumeratorObjCand && Photon_passChIso) {
-  	      sigmaIetaIetaEE_pt50[(i-150)/50]->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-  	    }
-  	  }
-    }
-	}
-      } // end EE
-      
-   } // end loop over entries
-   
-   TString filename;
-   if (strcmp(iMass,"all") == 0) filename = "diphoton_fakeRate_GGJets_all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
-   else filename = TString::Format("diphoton_fakeRate_GGJets_M-%s_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root",iMass);
-   TFile file_out(filename,"RECREATE");
-   
-   for (vector<TH1D*>::iterator it = sigmaIetaIetaEB_pt20.begin() ; it != sigmaIetaIetaEB_pt20.end(); ++it) {
-     (*it)->Scale(1.0/(*it)->Integral());
-     (*it)->Write();
-     //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
-   }
-   for (vector<TH1D*>::iterator it = sigmaIetaIetaEB_pt50.begin() ; it != sigmaIetaIetaEB_pt50.end(); ++it) {
-     (*it)->Scale(1.0/(*it)->Integral());
-     (*it)->Write();
-     //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
-   }
-   sieieEB_realtemplate_pt300ToInf->Scale(1./sieieEB_realtemplate_pt300ToInf->Integral());
-   sieieEB_realtemplate_pt300ToInf->Write();
-   for (vector<TH1D*>::iterator it = sigmaIetaIetaEE_pt20.begin() ; it != sigmaIetaIetaEE_pt20.end(); ++it) {
-     (*it)->Scale(1.0/(*it)->Integral());
-     (*it)->Write();
-     //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
-   }
-   for (vector<TH1D*>::iterator it = sigmaIetaIetaEE_pt50.begin() ; it != sigmaIetaIetaEE_pt50.end(); ++it) {
-     (*it)->Scale(1.0/(*it)->Integral());
-     (*it)->Write();
-     //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
-   }
-   sieieEE_realtemplate_pt300ToInf->Scale(1./sieieEE_realtemplate_pt300ToInf->Integral());
-   sieieEE_realtemplate_pt300ToInf->Write();
-   
+  // loop over entries
+  Long64_t nentries = fChain->GetEntriesFast();
+  Long64_t nbytes = 0, nb = 0;
+  for (Long64_t jentry=0; jentry<nentries;jentry++) {
+    Long64_t ientry = LoadTree(jentry);
+    if (ientry < 0) break;
+    nb = fChain->GetEntry(jentry);   nbytes += nb;
+    // if (Cut(ientry) < 0) continue;
+    if (jentry % 100000 == 0)
+      std::cout << "Number of entries looped over: " << jentry << std::endl;
 
-   file_out.ls();
-   file_out.Close();
+    // define our numerator object
+    bool isNumeratorObject = Photon_isNumeratorObjCand && Photon_passChIso;
+
+    // reject beam halo
+    //if (Event_beamHaloIDTight2015) continue;
+    if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
+    
+    // loop over pT bin increments
+    for (int i = 0; i < nBins-1; i++) {
+      double binLowEdge = ptBinArray[i];
+      double binUpperEdge = ptBinArray[i+1];
+      // use pT bins to cut on photon pT
+      if (binLowEdge < Photon_pt && Photon_pt < binUpperEdge) {
+	// only fill numerator objects
+	if (isNumeratorObject) {
+	  // EB
+	  if (fabs(Photon_scEta) < 1.4442) {
+	    sigmaIetaIetaEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	  } // end EB
+	  // EE
+	  else if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+	    sigmaIetaIetaEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	  } // end EE
+	} // end numerator object
+      } // end pt cut
+    } // end loop over pt bin increments
+    
+  } // end loop over entries
+  
+  TString filename;
+  if (strcmp(iMass,"all") == 0) filename = "diphoton_fakeRate_GGJets_all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
+  else filename = TString::Format("diphoton_fakeRate_GGJets_M-%s_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root",iMass);
+  TFile file_out(filename,"RECREATE");
+
+  // write our histograms to file
+  for (vector<TH1D*>::iterator it = sigmaIetaIetaEB.begin() ; it != sigmaIetaIetaEB.end(); ++it) {
+    //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    (*it)->Scale(1.0/(*it)->Integral());
+    (*it)->Write();
+  }
+  for (vector<TH1D*>::iterator it = sigmaIetaIetaEE.begin() ; it != sigmaIetaIetaEE.end(); ++it) {
+    //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    (*it)->Scale(1.0/(*it)->Integral());
+    (*it)->Write();
+  }
+  
+  file_out.ls();
+  file_out.Close();
    
 } // end of Loop()
