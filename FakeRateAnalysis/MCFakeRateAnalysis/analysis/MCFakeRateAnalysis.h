@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Fri Mar 11 07:27:00 2016 by ROOT version 6.02/13
+// Thu Mar 31 11:08:52 2016 by ROOT version 6.02/13
 // from TTree fTree/PhotonTree
 // found on file: root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateMerged/diphoton_fakeRate_GGJets_M-1000To2000_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root
 //////////////////////////////////////////////////////////
@@ -22,18 +22,18 @@ public :
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
    // Declaration of leaf types
+   Long64_t        Event_run;
+   Long64_t        Event_LS;
+   Long64_t        Event_evnum;
+   Long64_t        Event_processid;
+   Long64_t        Event_bx;
+   Long64_t        Event_orbit;
    Float_t         Event_ptHat;
    Float_t         Event_alphaqcd;
    Float_t         Event_alphaqed;
    Float_t         Event_qscale;
    Float_t         Event_weight0;
    Float_t         Event_weight;
-   Int_t           Event_run;
-   Int_t           Event_LS;
-   Int_t           Event_evnum;
-   Int_t           Event_processid;
-   Int_t           Event_bx;
-   Int_t           Event_orbit;
    Int_t           Event_interactingParton1PdgId;
    Int_t           Event_interactingParton2PdgId;
    Bool_t          Event_beamHaloIDLoose;
@@ -64,6 +64,8 @@ public :
    Double_t        Photon_sigmaIetaIphi;
    Double_t        Photon_sigmaIetaIphi5x5;
    Double_t        Photon_maxEnergyXtal;
+   Double_t        Photon_iEta;
+   Double_t        Photon_iPhi;
    Double_t        Photon_alphaHighPtID;
    Double_t        Photon_kappaHighPtID;
    Double_t        Photon_phoEAHighPtID;
@@ -179,7 +181,7 @@ void MCFakeRateAnalysis::Init(TTree *tree)
    fCurrent = -1;
    fChain->SetMakeClass(1);
 
-   fChain->SetBranchAddress("Event", &Event_ptHat, &b_Event);
+   fChain->SetBranchAddress("Event", &Event_run, &b_Event);
    fChain->SetBranchAddress("Jet", &Jet_jetHT, &b_Jet);
    fChain->SetBranchAddress("Photon", &Photon_pt, &b_Photon);
    fChain->SetBranchAddress("PhotonGenMatch", &PhotonGenMatch_status, &b_PhotonGenMatch);
