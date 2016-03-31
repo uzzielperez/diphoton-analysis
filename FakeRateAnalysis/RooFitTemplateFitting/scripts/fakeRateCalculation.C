@@ -28,10 +28,12 @@ void fakeRateCalculation() {
     double graphY_EB = resEB.first;
     double graphY_EE = resEE.first;
     double ex = (1.*ptBinArray[i+1] - 1.*ptBinArray[i])/2.;
+    double ey_EB = resEB.second;
+    double ey_EE = resEE.second;
     fakeRateEB.SetPoint(i,graphX,graphY_EB);
-    fakeRateEB.SetPointError(i,ex,ex,0.,0.);
+    fakeRateEB.SetPointError(i,ex,ex,ey_EB,ey_EB);
     fakeRateEE.SetPoint(i,graphX,graphY_EE);
-    fakeRateEE.SetPointError(i,ex,ex,0.,0.);
+    fakeRateEE.SetPointError(i,ex,ex,ey_EE,ey_EE);
   }
   TFile outfile2("fakeRatePlots.root","update");
   outfile2.cd();
@@ -44,6 +46,7 @@ void fakeRateCalculation() {
   fakeRateEB.GetXaxis()->SetTitle("Photon pT (GeV/c)");
   fakeRateEB.GetYaxis()->SetTitle("Fake Rate");
   fakeRateEB.Draw("AL");
+  c.SetLogx();
   c.SaveAs("fakeRateEB.png");
 
   c.Clear();
@@ -52,6 +55,7 @@ void fakeRateCalculation() {
   fakeRateEE.GetYaxis()->SetTitle("Fake Rate");
   fakeRateEE.GetYaxis()->SetTitleOffset(1.4);
   fakeRateEE.Draw("AL");
+  c.SetLogx();
   c.SaveAs("fakeRateEE.png");
 
   // stop stopwatch

@@ -36,7 +36,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
   gSystem->AddIncludePath("-I$ROOFITSYS/include");
 
   TFile *historealmcfile = TFile::Open("diphoton_fakeRate_GGJets_M-200To500_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms_newbinning.root");
-  TFile *histojetfile = TFile::Open("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_newbinning.root");
+  TFile *histojetfile = TFile::Open("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_hotchannelveto.root");
 
   // get histos
 
@@ -193,10 +193,12 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
 
   cout<<numerator<<" "<<denominator<<" "<<contamination<<endl;
 
-  float fakerate = (numerator-contamination)/denominator;
-  float fakerateerror = fakerate * sqrt( (1./numerator) + (1./denominator) + ((sigerrormax/sigvalue)*(sigerrormax/sigvalue)) );
+  //float fakerate = (numerator-contamination)/denominator;
+  // float fakerateerror = fakerate * sqrt( (1./numerator) + (1./denominator) + ((sigerrormax/sigvalue)*(sigerrormax/sigvalue)) );
+  float fakerate = fakevalue/denominator;
+  float fakerateerror = TMath::Sqrt((fakeerrormax*fakeerrormax/denominator/denominator) + (fakerate*fakerate/denominator));
 
-  // cout<<"Here: "<<fakerate<<" "<<fakerateerror<<endl;
+  cout<<"Here: "<<fakerate<<" "<<fakerateerror<<endl;
   return std::make_pair(fakerate,fakerateerror);
 
   // cout<<""<<endl;
