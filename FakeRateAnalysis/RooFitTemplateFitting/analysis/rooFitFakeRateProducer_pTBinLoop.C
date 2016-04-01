@@ -30,7 +30,8 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
 
   gROOT->SetBatch();
 
-  TCanvas *canvas = new TCanvas("canvas","canvas",400,100,500,500);
+  TCanvas *canvas = new TCanvas("canvas","Fit Result",1600,600);
+  canvas->Divide(2,1);
 
   gSystem->Load("libRooFit"); 
   gSystem->AddIncludePath("-I$ROOFITSYS/include");
@@ -63,7 +64,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
   float sininmin = 0.;
   float sininmax = 0.1;
 
-  TString roofitvartitle = "#sigma_{i #eta i #eta}";
+  TString roofitvartitle = "#sigma_{i#etai#eta}";
   RooRealVar sinin("sinin",roofitvartitle.Data(),sininmin,sininmax);
   float sininCut = 0.0105; // sigma_IetaIeta cut for EB
   if (etaBin.Contains("EE")) sininCut = 0.028; // sigma_IetaIeta cut for EE
@@ -101,10 +102,13 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
 
   canvas->cd();
 
-  xframe->GetXaxis()->SetRangeUser(0.,0.025);
-  if (etaBin.Contains("EE")) xframe->GetXaxis()->SetRangeUser(0.,0.05);
+  canvas->cd(1);
+
+  xframe->GetXaxis()->SetRangeUser(0.,0.03);
+  if (etaBin.Contains("EE")) xframe->GetXaxis()->SetRangeUser(0.,0.08);
   float xframemax = xframe->GetMaximum();
   xframe->GetYaxis()->SetRangeUser(1.e-1,1.1*xframemax);
+  xframe->GetYaxis()->SetTitleOffset(1.6);
   xframe->Draw();
 
   TLegend *legend = new TLegend(0.62,0.65,0.82,0.85);
@@ -112,7 +116,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
   legend->SetFillColor(kWhite);
   legend->SetLineColor(kWhite);
 
-  TString legendheader = "p_{t} (GeV): " + ptBin;
+  TString legendheader = "p_{T} (GeV): " + ptBin + " in " + etaBin;
   cout<<"legend "<<legendheader.Data()<<endl;
   legend->SetHeader(legendheader.Data());
 
@@ -129,15 +133,33 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
     if(objname.Contains("model") && objname.Contains("Signal")) objsignal = (TObject*)xframe->findObject(objname.Data());
     if(objname.Contains("model") && objname.Contains("Background")) objfake = (TObject*)xframe->findObject(objname.Data());
   }
-
-  legend->AddEntry(objdata,"Data","lp");
-  legend->AddEntry(objsignal,"Signal","l");
-  legend->AddEntry(objfake,"Background","l");
-  legend->AddEntry(objmodel,"Signal + Background","l");
+  
+  legend->AddEntry(objdata,"Numerator","lp");
+  legend->AddEntry(objsignal,"Real template","l");
+  legend->AddEntry(objfake,"Fake template","l");
+  legend->AddEntry(objmodel,"Combined fit","l");
   legend->Draw("same");
 
-  canvas->Print( TString("fakeRatePlot")+ etaBin + TString("_pT") + ptBin + TString(".png") );
+  canvas->cd(2);
 
+  RooPlot *xframeClone = (RooPlot*)xframe->emptyClone("xframeClone");
+  xframeClone->SetTitle("");
+  
+  xframeClone->Draw();
+  xframe->Draw("same");
+  
+  xframeClone->GetXaxis()->SetRangeUser(0.,0.03);
+  if (etaBin.Contains("EE")) xframeClone->GetXaxis()->SetRangeUser(0.,0.08);
+  xframeClone->GetYaxis()->SetRangeUser(1.e-1,10.0*xframemax);
+  xframeClone->GetYaxis()->SetTitle("Events / ( 0.0005 )");
+  xframeClone->GetYaxis()->SetTitleOffset(1.2);
+  
+  legend->Draw("same");
+
+  gPad->SetLogy();
+
+  canvas->Print( TString("fakeRatePlot")+ etaBin + TString("_pT") + ptBin + TString(".png") );
+  
   // change to TH1D just so we can change the name
   TH1D *hobjdata;
   TH1D *hobjmodel;
@@ -215,5 +237,5 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
 
   historealmcfile->cd();
   historealmcfile->Close();
-  
+
 } //end of rooFitFakeRateProducer()
