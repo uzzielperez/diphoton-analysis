@@ -215,7 +215,7 @@ void FakeRateAnalysis::Loop()
    iPhiVSiEta_NOTsieieEEHighPTTail->GetYaxis()->SetTitle("i#varphi");
 
    // std::map<long,std::map<long,int>> runMap;
-   std::ofstream runOut("runs.txt");
+   std::ofstream runOut("runsd.txt");
       
    Long64_t nentries = fChain->GetEntriesFast();
 
@@ -254,7 +254,7 @@ void FakeRateAnalysis::Loop()
             // if (lsMap.count(Event_LS) > 0) lsMap[Event_LS]++;
             // else lsMap[Event_LS] = 1;
 
-            runOut << Event_run << " " << Event_LS << "\n";
+            if (Photon_pt > 13000.) runOut << Event_run << ":" << Event_LS << ":" << Event_evnum << "\n";
          }
          else if (Photon_sigmaIetaIeta5x5 < 0.04) iPhiVSiEta_NOTsieieEEHighPTTail->Fill(Photon_iEta,Photon_iPhi);
       }
@@ -363,7 +363,7 @@ void FakeRateAnalysis::Loop()
    
    // write histograms out to root files
    
-   TFile file_out("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_newbinning2.root","RECREATE");
+   TFile file_out("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_newbinning3.root","RECREATE");
    // TFile file_out("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root","RECREATE");
 
    // sigmaIetaIetaEB->Write();
