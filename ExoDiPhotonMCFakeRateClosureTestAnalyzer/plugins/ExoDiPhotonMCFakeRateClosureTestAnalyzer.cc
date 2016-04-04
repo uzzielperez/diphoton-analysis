@@ -65,6 +65,10 @@
 // for deltaR
 #include "DataFormats/Math/interface/deltaR.h"
 
+// for trigger and filter decisions
+#include "DataFormats/Common/interface/TriggerResults.h"
+#include "FWCore/Common/interface/TriggerNames.h"
+
 //
 // class declaration
 //
@@ -102,7 +106,10 @@ class ExoDiPhotonMCFakeRateClosureTestAnalyzer : public edm::one::EDAnalyzer<edm
 
   // BeamHaloSummary token
   edm::EDGetToken beamHaloSummaryToken_;
-    
+
+  // Filter decisions token
+  edm::EDGetToken filterDecisionToken_;
+  
   // ECAL recHits
   edm::InputTag recHitsEBTag_;
   edm::InputTag recHitsEETag_;
@@ -111,7 +118,7 @@ class ExoDiPhotonMCFakeRateClosureTestAnalyzer : public edm::one::EDAnalyzer<edm
 
   // rho token
   edm::EDGetTokenT<double> rhoToken_;
-  
+
   // rho variable
   double rho_;
 
@@ -203,7 +210,10 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::ExoDiPhotonMCFakeRateClosureTestAnalyz
   recHitsEEToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEETag_);
   
   // BeamHaloSummary
-  beamHaloSummaryToken_ = consumes<reco::BeamHaloSummary>( edm::InputTag("BeamHaloSummary") );  
+  beamHaloSummaryToken_ = consumes<reco::BeamHaloSummary>( edm::InputTag("BeamHaloSummary") );
+
+  // Filter decisions
+  filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","PAT") );
 }
 
 
@@ -263,6 +273,33 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
   iEvent.getByToken(jetsMiniAODToken_,jets);
   
   ExoDiPhotons::FillJetInfo(fJetInfo, &(*jets), jetPtThreshold, jetEtaThreshold);
+
+  // =====================
+  // FILTER DECISION INFO
+  // =====================
+  
+  edm::Handle<edm::TriggerResults> filtHandle;
+  iEvent.getByToken(filterDecisionToken_,filtHandle);
+  const edm::TriggerResults *filterResults = filtHandle.product();
+  std::vector<std::string> trigNames = iEvent.triggerNames(*filterResults).triggerNames();
+  
+  int EEBadScFilterNum = -1;
+  for (unsigned int i=0; i < trigNames.size(); i++){
+    std::string tempName = trigNames.at(i);
+    if (tempName == "Flag_eeBadScFilter"){
+      EEBadScFilterNum = i;
+      break;
+    }
+  }
+  if (EEBadScFilterNum < 0) throw cms::Exception("FilterDecisionInfo") << "Cannot find Flag_eeBadScFilter in the filter decision object!! This must be investigated!!!";
+  
+  bool passEEBadScFilter = filterResults->accept(EEBadScFilterNum);
+
+  // Go to next photon if this filter is not passed
+  if (!passEEBadScFilter){
+    cout << "Event did not pass the EE Bad Supercrystal Filter, skip it!" << endl;
+    return;
+  }
   
   // ===
   // RHO
