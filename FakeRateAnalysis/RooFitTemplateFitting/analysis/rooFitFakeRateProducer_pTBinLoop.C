@@ -90,7 +90,11 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
   
   model.fitTo(data,RooFit::Minos(),SumW2Error(kTRUE),PrintEvalErrors(-1));
   //model.fitTo(data,SumW2Error(kTRUE),PrintEvalErrors(-1));
-  //model.chi2FitTo(data);
+  // model.chi2FitTo(data);
+
+  TH1D* fitHist = (TH1D*)model.createHistogram("sinin",200);
+  double fitres = hData->Chi2Test(fitHist,"CHI2/NDF");
+  // cout << "CHI2 FIT RES = " << fitres << endl;
 	    
   RooPlot *xframe = sinin.frame();
   xframe->SetTitle("");
@@ -111,12 +115,14 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
   xframe->GetYaxis()->SetTitleOffset(1.6);
   xframe->Draw();
 
-  TLegend *legend = new TLegend(0.62,0.65,0.82,0.85);
-  legend->SetTextSize(0.02);
+  TLegend *legend = new TLegend(0.62,0.60,0.87,0.85);
+  legend->SetTextSize(0.03);
   legend->SetFillColor(kWhite);
   legend->SetLineColor(kWhite);
 
-  TString legendheader = "p_{T} (GeV): " + ptBin + " in " + etaBin;
+  TString legendheaderTop = "p_{T} (GeV): " + ptBin + " in " + etaBin;
+  TString legendheaderBottom = TString::Format("#chi^{2}/ndf = %f",fitres);
+  TString legendheader = "#splitline{"+legendheaderTop+"}{"+legendheaderBottom+"}";
   cout<<"legend "<<legendheader.Data()<<endl;
   legend->SetHeader(legendheader.Data());
 
