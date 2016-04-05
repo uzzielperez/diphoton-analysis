@@ -197,22 +197,22 @@ void FakeRateAnalysis::Loop()
 
   // write numerator histograms
   for (vector<TH1D*>::iterator it = sIeIeNumeratorEB.begin() ; it != sIeIeNumeratorEB.end(); ++it) {
-    //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Write();
   }
   for (vector<TH1D*>::iterator it = sIeIeNumeratorEE.begin() ; it != sIeIeNumeratorEE.end(); ++it) {
-    //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Write();
   }
 
   // scale fake template histograms to unity and write to file
   for (vector<TH1D*>::iterator it = sIeIeFakeTemplateEB.begin() ; it != sIeIeFakeTemplateEB.end(); ++it) {
-    //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
   for (vector<TH1D*>::iterator it = sIeIeFakeTemplateEE.begin() ; it != sIeIeFakeTemplateEE.end(); ++it) {
-    //cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
