@@ -1,3 +1,5 @@
+// run in batch mode from "plots" directory
+// root -l -b -q plot_fake_template_comparison.C
 void plot_fake_template_comparison() {
   gROOT->SetStyle("Plain");
   gStyle->SetPalette(1,0);
@@ -44,8 +46,8 @@ void plot_fake_template_comparison() {
     TLegend *lsIeIeDataEB = new TLegend(0.65,0.65,0.90,0.85);
     lsIeIeDataEB->SetBorderSize(0);
     lsIeIeDataEB->SetFillColor(0);
-    lsIeIeDataEB->AddEntry(hMCEB,"MC faketemplate from QCD","lp");
-    lsIeIeDataEB->AddEntry(hDataEB,"Data faketemplate from JetHT","lp");
+    lsIeIeDataEB->AddEntry(hMCEB,"Faketemplate from QCD MC","lp");
+    lsIeIeDataEB->AddEntry(hDataEB,"Faketemplate from JetHT data","lp");
     lsIeIeDataEB->Draw();
     
     // EE
@@ -70,11 +72,11 @@ void plot_fake_template_comparison() {
     TLegend *lsIeIeDataEE = new TLegend(0.65,0.65,0.90,0.85);
     lsIeIeDataEE->SetBorderSize(0);
     lsIeIeDataEE->SetFillColor(0);
-    lsIeIeDataEE->AddEntry(hMCEE,"MC faketemplate from QCD","lp");
-    lsIeIeDataEE->AddEntry(hDataEE,"Data faketemplate from JetHT","lp");
+    lsIeIeDataEE->AddEntry(hMCEE,"Faketemplate from QCD MC","lp");
+    lsIeIeDataEE->AddEntry(hDataEE,"Faketemplate from JetHT data","lp");
     lsIeIeDataEE->Draw();  
 
-    cSieieData->SaveAs(TString::Format("closure_test_data_faketemplate_%s_comparison.png",bin));
+    cSieieData->SaveAs(TString::Format("closure_test_mc_faketemplate_data_faketemplate_%s_comparison.png",bin));
 
     // ===========================
     // MC FAKE TEMPLATE COMPARISON
@@ -85,54 +87,52 @@ void plot_fake_template_comparison() {
     // EB
     cSieieMC->cd(1);
     
-    TH1D *hFakesEB = (TH1D*) fFakes->Get(TString::Format("sieieEB_faketemplate_%s",bin));
+    TH1D *hFakesEB = (TH1D*) fFakes->Get(TString::Format("sieieEB_numerator_%s",bin));
+
+    hFakesEB->Scale(1.0/hFakesEB->Integral());
+
+    hFakesEB->Draw();
+    hMCEB->Draw("same");
     
-    hMCEB->Draw();
-    hFakesEB->Draw("same");
+    hFakesEB->SetTitle(TString::Format("EB %s",bin));
     
-    hMCEB->SetLineColor(kRed);
-    hMCEB->SetMarkerColor(kRed);
-    
-    hMCEB->SetTitle(TString::Format("EB %s",bin));
-    
-    hMCEB->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
-    hMCEB->GetXaxis()->SetRangeUser(0,0.03);
+    hFakesEB->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
+    hFakesEB->GetXaxis()->SetRangeUser(0,0.03);
     
     gPad->SetLogy();
    
     TLegend *lsIeIeMCEB = new TLegend(0.65,0.65,0.90,0.85);
     lsIeIeMCEB->SetBorderSize(0);
     lsIeIeMCEB->SetFillColor(0);
-    lsIeIeMCEB->AddEntry(hMCEB,"MC faketemplate from QCD","lp");
-    lsIeIeMCEB->AddEntry(hFakesEB,"MC faketemplate from QCD fakes","lp");
+    lsIeIeMCEB->AddEntry(hMCEB,"Faketemplate from QCD MC","lp");
+    lsIeIeMCEB->AddEntry(hFakesEB,"Numerator from QCD MC fakes","lp");
     lsIeIeMCEB->Draw();
     
     // EE
     cSieieMC->cd(2);
     
-    TH1D *hFakesEE = (TH1D*) fFakes->Get(TString::Format("sieieEE_faketemplate_%s",bin));
+    TH1D *hFakesEE = (TH1D*) fFakes->Get(TString::Format("sieieEE_numerator_%s",bin));
+
+    hFakesEE->Scale(1.0/hFakesEE->Integral());
+
+    hFakesEE->Draw();
+    hMCEE->Draw("same");
     
-    hMCEE->Draw();
-    hFakesEE->Draw("same");
+    hFakesEE->SetTitle(TString::Format("EE %s",bin));
     
-    hMCEE->SetLineColor(kRed);
-    hMCEE->SetMarkerColor(kRed);
-    
-    hMCEE->SetTitle(TString::Format("EE %s",bin));
-    
-    hMCEE->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
-    hMCEE->GetXaxis()->SetRangeUser(0,0.08);
+    hFakesEE->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
+    hFakesEE->GetXaxis()->SetRangeUser(0,0.08);
     
     gPad->SetLogy();
     
     TLegend *lsIeIeMCEE = new TLegend(0.65,0.65,0.90,0.85);
     lsIeIeMCEE->SetBorderSize(0);
     lsIeIeMCEE->SetFillColor(0);
-    lsIeIeMCEE->AddEntry(hMCEE,"MC faketemplate from QCD","lp");
-    lsIeIeMCEE->AddEntry(hFakesEE,"MC faketemplate from QCD fakes","lp");
+    lsIeIeMCEE->AddEntry(hMCEE,"Faketemplate from QCD MC","lp");
+    lsIeIeMCEE->AddEntry(hFakesEE,"Numerator from QCD MC fakes","lp");
     lsIeIeMCEE->Draw();  
 
-    cSieieMC->SaveAs(TString::Format("closure_test_mc_faketemplate_%s_comparison.png",bin));
+    cSieieMC->SaveAs(TString::Format("closure_test_mc_faketemplate_mc_numerator_%s_comparison.png",bin));
     
   } // end pt bin loop
   
