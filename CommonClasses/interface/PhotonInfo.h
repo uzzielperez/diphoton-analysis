@@ -241,6 +241,11 @@ namespace ExoDiPhotons
     photonInfo.rhoCorNeutralHadIso03 = std::max((double)0.0, (double)photon->neutralHadronIso()-rho*nhEA);
     photonInfo.rhoCorPhotonIso03     = std::max((double)0.0, (double)photon->photonIso()       -rho*phoEA);
   }
+
+  // sort two photons by highest pt
+  bool comparePhotonsByPt(edm::Ptr<pat::Photon> photon1, edm::Ptr<pat::Photon> photon2) {
+    return(photon1->pt()>=photon2->pt());
+  }
   
 } // end of namespace
 
