@@ -38,7 +38,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
 
   TFile *historealmcfile = TFile::Open("diphoton_fakeRate_GGJets_M-200To500_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
   TFile *histojetfile = TFile::Open("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root");
-  //TFile *histojetfile = TFile::Open("diphoton_fakeRate_QCD_Pt-170to300_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
+  //TFile *histojetfile = TFile::Open("diphoton_fakeRate_QCD_Pt-300toInf_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
 
   // get histos
   TH1F *hfakeTemplate = (TH1F*)histojetfile->Get( TString("sieie") + etaBin + TString("_faketemplate_pt") + ptBin );
@@ -68,7 +68,8 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
   RooRealVar sinin("sinin",roofitvartitle.Data(),sininmin,sininmax);
   float sininCut = 0.0105; // sigma_IetaIeta cut for EB
   if (etaBin.Contains("EE")) sininCut = 0.028; // sigma_IetaIeta cut for EE
-  sinin.setRange("sigrange",0.005,sininCut);
+  //sinin.setRange("sigrange",0.005,sininCut);
+  sinin.setRange("sigrange",0.0,sininCut);
 
   RooDataHist faketemplate("faketemplate","fake template",sinin,hfakeTemplate);
   RooHistPdf fakepdf("fakepdf","test hist fake pdf",sinin,faketemplate);
@@ -275,7 +276,7 @@ std::pair<double,double> rooFitFakeRateProducer_bkgreturn(TString ptBin, TString
 
   TFile *historealmcfile = TFile::Open("diphoton_fakeRate_GGJets_M-200To500_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
   TFile *histojetfile = TFile::Open("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root");
-  //TFile *histojetfile = TFile::Open("diphoton_fakeRate_QCD_Pt-170to300_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
+  //TFile *histojetfile = TFile::Open("diphoton_fakeRate_QCD_Pt-300toInf_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
 
   // get histos
   TH1F *hfakeTemplate = (TH1F*)histojetfile->Get( TString("sieie") + etaBin + TString("_faketemplate_pt") + ptBin );
@@ -305,7 +306,8 @@ std::pair<double,double> rooFitFakeRateProducer_bkgreturn(TString ptBin, TString
   RooRealVar sinin("sinin",roofitvartitle.Data(),sininmin,sininmax);
   float sininCut = 0.0105; // sigma_IetaIeta cut for EB
   if (etaBin.Contains("EE")) sininCut = 0.028; // sigma_IetaIeta cut for EE
-  sinin.setRange("sigrange",0.005,sininCut);
+  //sinin.setRange("sigrange",0.005,sininCut);
+  sinin.setRange("sigrange",0.0,sininCut);
 
   RooDataHist faketemplate("faketemplate","fake template",sinin,hfakeTemplate);
   RooHistPdf fakepdf("fakepdf","test hist fake pdf",sinin,faketemplate);
