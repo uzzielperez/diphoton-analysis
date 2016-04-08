@@ -4,7 +4,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void FakeRateAnalysis::Loop()
+void FakeRateAnalysis::Loop(double sidebandLow, double sidebandHigh)
 {
 //   In a ROOT session, you can do:
 //      root> .L FakeRateAnalysis.C
@@ -73,6 +73,8 @@ void FakeRateAnalysis::Loop()
   std::vector<TH1D*> sIeIeFakeTemplateEE;
   std::vector<TH1D*> sIeIeNumeratorEB;
   std::vector<TH1D*> sIeIeNumeratorEE;
+  std::vector<TH1D*> denomPtEB;
+  std::vector<TH1D*> denomPtEE;
 
   // loop over bins increments and create histograms
   for (int i = 0; i < nBins-1; i++) {
@@ -94,6 +96,16 @@ void FakeRateAnalysis::Loop()
     TH1D *hEE_numerator = new TH1D(Form("sieieEE_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",200,0.,0.1);
     hEE_numerator->Sumw2();
     sIeIeNumeratorEE.push_back(hEE_numerator);
+
+    // pt binned denominator histograms
+    TH1D *hEB_denominator = new TH1D(Form("PtEB_denominator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEB",100,binLowEdge,binUpperEdge);
+    hEB_denominator->Sumw2();
+    denomPtEB.push_back(hEB_denominator);
+
+    TH1D *hEE_denominator = new TH1D(Form("PtEE_denominator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEE",100,binLowEdge,binUpperEdge);
+    hEE_denominator->Sumw2();
+    denomPtEE.push_back(hEE_denominator);
+
   }
 
   // loop over all entries
@@ -111,39 +123,39 @@ void FakeRateAnalysis::Loop()
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
       
     // plot fake templates
-    bool inChIsoSideband = (10. < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < 15.); //maybe add in sideband at runtime in the future?
+    bool inChIsoSideband = (sidebandLow < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < sidebandHigh);
     bool isNumeratorObj = Photon_isNumeratorObjCand && Photon_passChIso;
     bool isFakeTemplateObj = Photon_isNumeratorObjCand && inChIsoSideband;
 
     if (fabs(Photon_scEta) < 1.4442) {
       phoPtEB.Fill( Photon_pt );
       if (isNumeratorObj){
-	phoPtEB_numerator.Fill(Photon_pt);
-	phoPtEB_numerator_varbin.Fill(Photon_pt);
+      	phoPtEB_numerator.Fill(Photon_pt);
+      	phoPtEB_numerator_varbin.Fill(Photon_pt);
       }
       if (Photon_isDenominatorObj){
-	phoPtEB_denominator.Fill(Photon_pt);
-	phoPtEB_denominator_varbin.Fill(Photon_pt);
+      	phoPtEB_denominator.Fill(Photon_pt);
+      	phoPtEB_denominator_varbin.Fill(Photon_pt);
       }
       if (isFakeTemplateObj){
-	phoPtEB_faketemplate.Fill(Photon_pt);
-	phoPtEB_faketemplate_varbin.Fill(Photon_pt);
+      	phoPtEB_faketemplate.Fill(Photon_pt);
+      	phoPtEB_faketemplate_varbin.Fill(Photon_pt);
       }
     }
 
     else if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
       phoPtEE.Fill( Photon_pt );
       if (isNumeratorObj){
-	phoPtEE_numerator.Fill(Photon_pt);
-	phoPtEE_numerator_varbin.Fill(Photon_pt);
+      	phoPtEE_numerator.Fill(Photon_pt);
+      	phoPtEE_numerator_varbin.Fill(Photon_pt);
       }
       if (Photon_isDenominatorObj){
-	phoPtEE_denominator.Fill(Photon_pt);
-	phoPtEE_denominator_varbin.Fill(Photon_pt);
+      	phoPtEE_denominator.Fill(Photon_pt);
+      	phoPtEE_denominator_varbin.Fill(Photon_pt);
       }
       if (isFakeTemplateObj){
-	phoPtEE_faketemplate.Fill(Photon_pt);
-	phoPtEE_faketemplate_varbin.Fill(Photon_pt);
+      	phoPtEE_faketemplate.Fill(Photon_pt);
+      	phoPtEE_faketemplate_varbin.Fill(Photon_pt);
       }
     }
 
@@ -157,25 +169,32 @@ void FakeRateAnalysis::Loop()
       // fill fake templates
       if ( (binLowEdge < Photon_pt) && (Photon_pt < binUpperEdge) && isFakeTemplateObj ){
 
-	if (fabs(Photon_scEta) < 1.4442) sIeIeFakeTemplateEB.at(i)->Fill( Photon_sigmaIetaIeta5x5 );
-	else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeFakeTemplateEE.at(i)->Fill( Photon_sigmaIetaIeta5x5 );
+      	if (fabs(Photon_scEta) < 1.4442) sIeIeFakeTemplateEB.at(i)->Fill( Photon_sigmaIetaIeta5x5 );
+      	else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeFakeTemplateEE.at(i)->Fill( Photon_sigmaIetaIeta5x5 );
 
       }
 
       // fill numerator histograms
       if ( (binLowEdge < Photon_pt) && (Photon_pt < binUpperEdge) && isNumeratorObj ){
 
-	if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB.at(i)->Fill( Photon_sigmaIetaIeta5x5 );
-	else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeNumeratorEE.at(i)->Fill( Photon_sigmaIetaIeta5x5 );
+      	if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB.at(i)->Fill( Photon_sigmaIetaIeta5x5 );
+      	else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeNumeratorEE.at(i)->Fill( Photon_sigmaIetaIeta5x5 );
 
       }
 
-    } // end loop over pt bins for fake template
+      // fill denominator histograms
+      if ( (binLowEdge < Photon_pt) && (Photon_pt < binUpperEdge) && Photon_isDenominatorObj ){
+        if (fabs(Photon_scEta) < 1.4442) denomPtEB.at(i)->Fill( Photon_pt );
+        else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) denomPtEE.at(i)->Fill( Photon_pt );
+      }
+
+    } // end loop over pt bins
   } // end loop over entries
 
   // write histograms out to root files
-   
-  TFile file_out("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root","RECREATE");
+  
+  TString outName = TString::Format("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_chIsoSB%iTo%i.root",(int)sidebandLow,(int)sidebandHigh);
+  TFile file_out(outName,"RECREATE");
   
   // sigmaIetaIetaEB->Write();
   // sigmaIetaIetaEE->Write();
@@ -201,6 +220,16 @@ void FakeRateAnalysis::Loop()
     (*it)->Write();
   }
   for (vector<TH1D*>::iterator it = sIeIeNumeratorEE.begin() ; it != sIeIeNumeratorEE.end(); ++it) {
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    (*it)->Write();
+  }
+
+  // write denominator histograms
+  for (vector<TH1D*>::iterator it = denomPtEB.begin() ; it != denomPtEB.end(); ++it) {
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    (*it)->Write();
+  }
+  for (vector<TH1D*>::iterator it = denomPtEE.begin() ; it != denomPtEE.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Write();
   }

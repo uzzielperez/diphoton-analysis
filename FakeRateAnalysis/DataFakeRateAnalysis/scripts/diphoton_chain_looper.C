@@ -20,7 +20,7 @@ void diphoton_chain_looper() {
   FakeRateAnalysis ptl(chain);
 
   // loop over all entries of our tree
-  ptl.Loop();
+  ptl.Loop(10.,15.);
 
   // stop stopwatch
   sw.Stop();
