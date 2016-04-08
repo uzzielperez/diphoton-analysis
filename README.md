@@ -8,12 +8,18 @@
 export SCRAM_ARCH=slc6_amd64_gcc493  
 ## tcsh
 setenv SCRAM_ARCH slc6_amd64_gcc493
-z
+
+# setup cmssw release
 cmsrel CMSSW_7_6_3_patch2  
 cd CMSSW_7_6_3_patch2/src  
 cmsenv  
+
+# clone repository
 git clone git@github.com:cms-exotica-diphotons/diphoton-analysis  
+
+# compile code
 scram b -j 16
+
 cd diphoton-analysis
 ```
 
