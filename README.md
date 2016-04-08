@@ -1,5 +1,22 @@
 # EXO DiPhoton Analysis Code
 
+## To build
+
+```
+# set architecture
+## bash
+export SCRAM_ARCH=slc6_amd64_gcc493  
+## tcsh
+setenv SCRAM_ARCH slc6_amd64_gcc493
+z
+cmsrel CMSSW_7_6_3_patch2  
+cd CMSSW_7_6_3_patch2/src  
+cmsenv  
+git clone git@github.com:cms-exotica-diphotons/diphoton-analysis  
+scram b -j 16
+cd diphoton-analysis
+```
+
 ## Fake Rate Analysis
 
 Fake rate twiki  
@@ -7,7 +24,7 @@ https://twiki.cern.ch/twiki/bin/viewauth/CMS/ExoPhotonFakeRate13TeV
 
 ### EDAnalyzers  
 ExoDiPhotonFakeRateAnalyzer  
-ExoDiPhotonMCFakeRateRealTemplateAnalyzer
+ExoDiPhotonMCFakeRateRealTemplateAnalyzer  
 ExoDiPhotonMCFakeRateClosureTestAnalyzer
 
 ### Analysis and plotting code  
@@ -15,11 +32,13 @@ FakeRateAnalysis
 
 ## Signal Analysis
 
-### RSG Samples
+### RSG signal
 
 #### EDAnalyzer  
 ExoDiPhotonRSGSignalAnalyzer
 
+## Background Analysis
+ExoDiPhotonBackgroundAnalyzer
 
 ## Misc.
 
