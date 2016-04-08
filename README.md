@@ -18,9 +18,8 @@ cmsenv
 git clone git@github.com:cms-exotica-diphotons/diphoton-analysis  
 
 # compile code
+cd diphoton-analysis  
 scram b -j 16
-
-cd diphoton-analysis
 ```
 
 ## Fake Rate Analysis
