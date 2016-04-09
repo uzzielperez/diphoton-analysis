@@ -4,7 +4,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void MCFakeRateClosureTest::Loop(const Char_t * iMass)
+void MCFakeRateClosureTest::Loop(const Char_t * iMass, double sidebandLow, double sidebandHigh)
 {
 //   In a ROOT session, you can do:
 //      root> .L MCFakeRateClosureTest.C
@@ -82,7 +82,7 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
       std::cout << "Number of entries looped over: " << jentry << std::endl;
 
     // fake rate object definitions
-    bool inChIsoSideband = (10. < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < 15.);
+    bool inChIsoSideband = (sidebandLow < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < sidebandHigh);
     bool isNumeratorObj = Photon_isNumeratorObjCand && Photon_passChIso;
     bool isFakeTemplateObj = Photon_isNumeratorObjCand && inChIsoSideband;
     
@@ -132,8 +132,8 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
 
   // create output file containing histograms
   TString filename;
-  if (strcmp(iMass,"all") == 0) filename = "diphoton_fakeRate_QCD_all_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
-  else filename = TString::Format("diphoton_fakeRate_QCD_Pt-%s_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root",iMass);
+  if (strcmp(iMass,"all") == 0) filename = TString::Format("diphoton_fakeRate_QCD_all_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms_chIsoSB%iTo%i.root",(int)sidebandLow,(int)sidebandHigh);
+  else filename = TString::Format("diphoton_fakeRate_QCD_Pt-%s_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms_chIsoSB%iTo%i.root",iMass,(int)sidebandLow,(int)sidebandHigh);
   TFile file_out(filename,"RECREATE");
 
   // write denominator histograms

@@ -42,7 +42,7 @@ void diphoton_fTree_looper(const Char_t *iMass) {
   MCFakeRateClosureTest ptl(tree);
 
   // loop over all entries of our tree
-  ptl.Loop(iMass);
+  ptl.Loop(iMass,10.,15.);
 
   // stop stopwatch
   sw.Stop();
