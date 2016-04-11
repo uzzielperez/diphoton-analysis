@@ -28,7 +28,7 @@
 //
 ///////////////////////////////////////////
 
-std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, int denomBin)
+std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin)
 {
 
   using namespace RooFit;
@@ -46,8 +46,12 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
   TFile *histojetfile = TFile::Open("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root");
   //TFile *histojetfile = TFile::Open("diphoton_fakeRate_QCD_Pt-300toInf_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
 
+  double sidebandLow = sideband.first;
+  double sidebandHigh = sideband.second;
+  TString postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
+
   // get histos
-  TH1F *hfakeTemplate = (TH1F*)histojetfile->Get( TString("sieie") + etaBin + TString("_faketemplate_pt") + ptBin );
+  TH1F *hfakeTemplate = (TH1F*)histojetfile->Get( TString("sieie") + etaBin + TString("_faketemplate_pt") + ptBin + postFix );
   hfakeTemplate->Print();
   TH1F *hrealTemplate = (TH1F*)historealmcfile->Get( TString("sieie") + etaBin + TString("_realtemplate_pt") + ptBin );
   hrealTemplate->Print();
@@ -127,7 +131,9 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
   legend->SetFillColor(kWhite);
   legend->SetLineColor(kWhite);
 
-  TString legendheaderTop = "p_{T} (GeV): " + ptBin + " in " + etaBin;
+  // TString legendheaderTop = "p_{T} (GeV): " + ptBin + " in " + etaBin;
+  TString chIsoString = TString::Format("Iso_{Ch} %dTo%d (GeV)",(int)sidebandLow,(int)sidebandHigh);
+  TString legendheaderTop = etaBin + "; p_{T} " + ptBin + " (GeV); " + chIsoString;
   TString legendheaderBottom = TString::Format("#chi^{2}/ndf = %f",fitres);
   TString legendheader = "#splitline{"+legendheaderTop+"}{"+legendheaderBottom+"}";
   cout<<"legend "<<legendheader.Data()<<endl;
@@ -171,7 +177,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
 
   gPad->SetLogy();
 
-  canvas->Print( TString("fakeRatePlot")+ etaBin + TString("_pT") + ptBin + TString(".png") );
+  canvas->Print( TString("fakeRatePlot")+ etaBin + TString("_pT") + ptBin + postFix + TString(".png") );
   
   // change to TH1D just so we can change the name
   TH1D *hobjdata;
@@ -187,10 +193,10 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, i
     if(objname.Contains("model") && objname.Contains("Background")) hobjfake = (TH1D*)xframe->findObject(objname.Data());
   }
 
-  hobjdata->SetName( TString("data") + etaBin + TString("_pt") + ptBin );
-  hobjmodel->SetName( TString("sigplusbkgfit") + etaBin + TString("_pt") + ptBin );
-  hobjsignal->SetName( TString("signalfit") + etaBin + TString("_pt") + ptBin );
-  hobjfake->SetName( TString("bkgfit") + etaBin + TString("_pt") + ptBin );
+  hobjdata->SetName( TString("data") + etaBin + TString("_pt") + ptBin + postFix );
+  hobjmodel->SetName( TString("sigplusbkgfit") + etaBin + TString("_pt") + ptBin + postFix );
+  hobjsignal->SetName( TString("signalfit") + etaBin + TString("_pt") + ptBin + postFix );
+  hobjfake->SetName( TString("bkgfit") + etaBin + TString("_pt") + ptBin + postFix );
   TFile outfile("fakeRatePlots.root","update");
   outfile.cd();
   hobjdata->Write();
