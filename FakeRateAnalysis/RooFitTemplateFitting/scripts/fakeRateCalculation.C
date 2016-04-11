@@ -26,8 +26,8 @@ void fakeRateCalculation() {
 
   std::vector<TGraphAsymmErrors*> fakeRatesEB;
   std::vector<TGraphAsymmErrors*> fakeRatesEE;
-  std::vector<TH1D*> bkgVsPtEBVec;
-  std::vector<TH1D*> bkgVsPtEEVec;
+  std::vector<TGraphAsymmErrors*> bkgVsPtEBVec;
+  std::vector<TGraphAsymmErrors*> bkgVsPtEEVec;
 
   for (unsigned int i=0; i<chIsoSidebands.size(); i++){
     double sidebandLow = chIsoSidebands.at(i).first;
@@ -36,11 +36,13 @@ void fakeRateCalculation() {
 
     TGraphAsymmErrors* fakeRateEB = new TGraphAsymmErrors();
     TGraphAsymmErrors* fakeRateEE = new TGraphAsymmErrors();
-    TH1D* bkgvsptEB = new TH1D("bkgvsptEB"+postFix,"",10,ptBinArray_double);
-    TH1D* bkgvsptEE = new TH1D("bkgvsptEE"+postFix,"",10,ptBinArray_double);
+    TGraphAsymmErrors* bkgvsptEB = new TGraphAsymmErrors();
+    TGraphAsymmErrors* bkgvsptEE = new TGraphAsymmErrors();
 
     fakeRateEB->SetName("fakeRateEB"+postFix);
     fakeRateEE->SetName("fakeRateEE"+postFix);
+    bkgvsptEB->SetName("bkgvsptEB"+postFix);
+    bkgvsptEE->SetName("bkgvsptEE"+postFix);
 
     fakeRateEB->GetXaxis()->SetTitle("Photon pT (GeV)");
     fakeRateEE->GetXaxis()->SetTitle("Photon pT (GeV)");
@@ -108,12 +110,19 @@ void fakeRateCalculation() {
       fakeRatesEE.at(j)->SetPoint(i,graphX_EE,graphY_EE);
       fakeRatesEE.at(j)->SetPointError(i,eXLow_EE,eXHigh_EE,ey_EE,ey_EE);
 
-      // record background fit result in TH1Ds
-      bkgVsPtEBVec.at(j)->SetBinContent(i+1,resEB.first);
-      bkgVsPtEBVec.at(j)->SetBinError(i+1,resEB.second);
+      // record background fit result
 
-      bkgVsPtEEVec.at(j)->SetBinContent(i+1,resEE.first);
-      bkgVsPtEEVec.at(j)->SetBinError(i+1,resEE.second);
+
+      bkgVsPtEBVec.at(j)->SetPoint(i,graphX_EB,resEB.first);
+      bkgVsPtEBVec.at(j)->SetPointError(i,eXLow_EB,eXHigh_EB,resEB.second,resEB.second);
+
+      bkgVsPtEEVec.at(j)->SetPoint(i,graphX_EE,resEE.first);
+      bkgVsPtEEVec.at(j)->SetPointError(i,eXLow_EE,eXHigh_EE,resEE.second,resEE.second);
+      // bkgVsPtEBVec.at(j)->SetBinContent(i+1,resEB.first);
+      // bkgVsPtEBVec.at(j)->SetBinError(i+1,resEB.second);
+
+      // bkgVsPtEEVec.at(j)->SetBinContent(i+1,resEE.first);
+      // bkgVsPtEEVec.at(j)->SetBinError(i+1,resEE.second);
 
     } // end loop over pT bins
   } // end loop over sidebands
