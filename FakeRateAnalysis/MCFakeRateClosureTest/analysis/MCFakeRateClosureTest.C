@@ -4,7 +4,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void MCFakeRateClosureTest::Loop(const Char_t * iMass, double sidebandLow, double sidebandHigh)
+void MCFakeRateClosureTest::Loop(const Char_t * iMass)
 {
 //   In a ROOT session, you can do:
 //      root> .L MCFakeRateClosureTest.C
@@ -36,6 +36,17 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass, double sidebandLow, doubl
   
   double ptBinArray[nBins] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 14.e3 };
 
+  // make vector of sidebands
+  std::vector< std::pair<double,double> > chIsoSidebands;
+  typedef std::vector< std::pair<double,double> >::const_iterator chIsoIt;
+  chIsoSidebands.push_back( std::make_pair(6.,11.) );
+  chIsoSidebands.push_back( std::make_pair(7.,12.) );
+  chIsoSidebands.push_back( std::make_pair(8.,13.) );
+  chIsoSidebands.push_back( std::make_pair(9.,14.) );
+  chIsoSidebands.push_back( std::make_pair(10.,15.) );
+  chIsoSidebands.push_back( std::make_pair(15.,20.) );
+  chIsoSidebands.push_back( std::make_pair(10.,20.) );
+
   // pt spectrum of denominator objects
   TH1D phoPtEB_denominator_varbin("phoPtEB_denominator_varbin","",nBins-1,ptBinArray);
   TH1D phoPtEE_denominator_varbin("phoPtEE_denominator_varbin","",nBins-1,ptBinArray);
@@ -43,8 +54,18 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass, double sidebandLow, doubl
   phoPtEE_denominator_varbin.Sumw2();
   
   // numerator and template histograms
-  std::vector<TH1D*> sIeIeFakeTemplateEB;
-  std::vector<TH1D*> sIeIeFakeTemplateEE;
+  std::vector< std::vector<TH1D*> > sIeIeFakeTemplatesEB; // for each pT bin, there will be a vector of templates, one for each chIso sideband definition
+  std::vector< std::vector<TH1D*> > sIeIeFakeTemplatesEE;
+
+  // create empty vectors to hold all the templates.  One vector for each pT bin
+  for (int i=0; i<nBins-1; i++){
+    std::vector<TH1D*> ebvec;
+    std::vector<TH1D*> eevec;
+    sIeIeFakeTemplatesEB.push_back(ebvec);
+    sIeIeFakeTemplatesEE.push_back(eevec);
+  }
+
+
   std::vector<TH1D*> sIeIeNumeratorEB;
   std::vector<TH1D*> sIeIeNumeratorEE;
 
@@ -53,13 +74,28 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass, double sidebandLow, doubl
     double binLowEdge = ptBinArray[i];
     double binUpperEdge = ptBinArray[i+1];  
     
-    TH1D *hEB_fakeTemplate = new TH1D(Form("sieieEB_faketemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
-    hEB_fakeTemplate->Sumw2();
-    sIeIeFakeTemplateEB.push_back(hEB_fakeTemplate);
+    // TH1D *hEB_fakeTemplate = new TH1D(Form("sieieEB_faketemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+    // hEB_fakeTemplate->Sumw2();
+    // sIeIeFakeTemplateEB.push_back(hEB_fakeTemplate);
     
-    TH1D *hEE_fakeTemplate = new TH1D(Form("sieieEE_faketemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",200,0.,0.1);
-    hEE_fakeTemplate->Sumw2();
-    sIeIeFakeTemplateEE.push_back(hEE_fakeTemplate);
+    // TH1D *hEE_fakeTemplate = new TH1D(Form("sieieEE_faketemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",200,0.,0.1);
+    // hEE_fakeTemplate->Sumw2();
+    // sIeIeFakeTemplateEE.push_back(hEE_fakeTemplate);
+
+    for (chIsoIt it = chIsoSidebands.begin(); it != chIsoSidebands.end(); ++it){
+
+      double sidebandLow = it->first;
+      double sidebandHigh = it->second;
+
+      TH1D* sieieEB_faketemplate = new TH1D(Form( "sieieEB_faketemplate_pt%dTo%d_chIso%dTo%d",(int)binLowEdge,(int)binUpperEdge,(int)sidebandLow,(int)sidebandHigh ),"",200,0.,0.1);
+      sieieEB_faketemplate->Sumw2();
+      sIeIeFakeTemplatesEB.at(i).push_back( sieieEB_faketemplate );
+
+      TH1D* sieieEE_faketemplate = new TH1D(Form( "sieieEE_faketemplate_pt%dTo%d_chIso%dTo%d",(int)binLowEdge,(int)binUpperEdge,(int)sidebandLow,(int)sidebandHigh ),"",200,0.,0.1);
+      sieieEE_faketemplate->Sumw2();
+      sIeIeFakeTemplatesEE.at(i).push_back( sieieEE_faketemplate );
+
+    } // end loop over sidebands
 
     TH1D *hEB_numerator = new TH1D(Form("sieieEB_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
     hEB_numerator->Sumw2();
@@ -82,9 +118,9 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass, double sidebandLow, doubl
       std::cout << "Number of entries looped over: " << jentry << std::endl;
 
     // fake rate object definitions
-    bool inChIsoSideband = (sidebandLow < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < sidebandHigh);
     bool isNumeratorObj = Photon_isNumeratorObjCand && Photon_passChIso;
-    bool isFakeTemplateObj = Photon_isNumeratorObjCand && inChIsoSideband;
+    // bool inChIsoSideband = (sidebandLow < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < sidebandHigh);
+    // bool isFakeTemplateObj = Photon_isNumeratorObjCand && inChIsoSideband;
     
     // reject beam halo
     //if (Event_beamHaloIDTight2015) continue;
@@ -112,17 +148,29 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass, double sidebandLow, doubl
       // pt cut
       if (binLowEdge < Photon_pt && Photon_pt < binUpperEdge) {
 
-	// fill fake template histograms
-	if (isFakeTemplateObj) {
-	  if (fabs(Photon_scEta) < 1.4442) sIeIeFakeTemplateEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-	  else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeFakeTemplateEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-	} // end fake template obj
+      	// fill fake template histograms
 
-	// fill numerator histograms
-	if (isNumeratorObj) {
-	  if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-	  else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeNumeratorEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-	} // end numerator obj
+      	// if (isFakeTemplateObj) {
+      	//   if (fabs(Photon_scEta) < 1.4442) sIeIeFakeTemplateEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+      	//   else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeFakeTemplateEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+      	// } // end fake template obj
+        for (unsigned int j=0; j < chIsoSidebands.size(); j++){
+          double sidebandLow = chIsoSidebands.at(j).first;
+          double sidebandHigh = chIsoSidebands.at(j).second;
+          bool inChIsoSideband = (sidebandLow < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < sidebandHigh);
+          bool isFakeTemplateObj = Photon_isNumeratorObjCand && inChIsoSideband;
+
+          if (isFakeTemplateObj){
+            if (fabs(Photon_scEta) < 1.4442) sIeIeFakeTemplatesEB.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5 );
+            else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeFakeTemplatesEE.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5 );
+          }
+        } // end loop over sidebands to fill fake templates
+
+      	// fill numerator histograms
+      	if (isNumeratorObj) {
+      	  if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+      	  else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeNumeratorEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+      	} // end numerator obj
 
       } // end pt cut
       
@@ -132,8 +180,8 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass, double sidebandLow, doubl
 
   // create output file containing histograms
   TString filename;
-  if (strcmp(iMass,"all") == 0) filename = TString::Format("diphoton_fakeRate_QCD_all_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms_chIsoSB%iTo%i.root",(int)sidebandLow,(int)sidebandHigh);
-  else filename = TString::Format("diphoton_fakeRate_QCD_Pt-%s_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms_chIsoSB%iTo%i.root",iMass,(int)sidebandLow,(int)sidebandHigh);
+  if (strcmp(iMass,"all") == 0) filename = "diphoton_fakeRate_QCD_all_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
+  else filename = TString::Format("diphoton_fakeRate_QCD_Pt-%s_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root",iMass);
   TFile file_out(filename,"RECREATE");
 
   // write denominator histograms
@@ -153,15 +201,29 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass, double sidebandLow, doubl
   }
 
   // scale fake template histograms to unity and write to file
-  for (vector<TH1D*>::iterator it = sIeIeFakeTemplateEB.begin() ; it != sIeIeFakeTemplateEB.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
-    (*it)->Scale(1.0/(*it)->Integral());
-    (*it)->Write();
-  }
-  for (vector<TH1D*>::iterator it = sIeIeFakeTemplateEE.begin() ; it != sIeIeFakeTemplateEE.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
-    (*it)->Scale(1.0/(*it)->Integral());
-    (*it)->Write();
+  // for (vector<TH1D*>::iterator it = sIeIeFakeTemplateEB.begin() ; it != sIeIeFakeTemplateEB.end(); ++it) {
+  //   cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  //   (*it)->Scale(1.0/(*it)->Integral());
+  //   (*it)->Write();
+  // }
+  // for (vector<TH1D*>::iterator it = sIeIeFakeTemplateEE.begin() ; it != sIeIeFakeTemplateEE.end(); ++it) {
+  //   cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  //   (*it)->Scale(1.0/(*it)->Integral());
+  //   (*it)->Write();
+  // }
+  for (int i = 0; i < nBins-1; i++){
+    for (unsigned int j=0; j < chIsoSidebands.size(); j++){
+      TH1D* tempHistEB = sIeIeFakeTemplatesEB.at(i).at(j);
+      TH1D* tempHistEE = sIeIeFakeTemplatesEE.at(i).at(j);
+
+      cout << tempHistEB->GetName() << "\t integral: " << tempHistEB->Integral() << endl;
+      tempHistEB->Scale(1./tempHistEB->Integral());
+      tempHistEB->Write();
+
+      cout << tempHistEE->GetName() << "\t integral: " << tempHistEE->Integral() << endl;
+      tempHistEE->Scale(1./tempHistEE->Integral());
+      tempHistEE->Write();
+    }
   }
   
   file_out.ls();
