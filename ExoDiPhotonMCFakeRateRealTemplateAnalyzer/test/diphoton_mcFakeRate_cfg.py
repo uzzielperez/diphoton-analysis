@@ -21,6 +21,9 @@ process = cms.Process("ExoDiPhoton")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
+process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.options.allowUnscheduled = cms.untracked.bool(True)
+
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( options.maxEvents ) )
 
 # for input file
@@ -29,7 +32,7 @@ process.source = cms.Source(
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
         #'file:myfile.root'
-        'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/04B53B17-24D9-E511-B1ED-00259075D72E.root'
+        'root://eoscms.cern.ch//store/mc/RunIIFall15MiniAODv2/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/04B53B17-24D9-E511-B1ED-00259075D72E.root'
         )
     )
 
@@ -55,6 +58,17 @@ my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonI
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
+## update AK4PFchs jet collection in MiniAOD JECs
+
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+
+updateJetCollection(
+   process,
+   jetSource = cms.InputTag('slimmedJets'),
+   labelName = 'UpdatedJEC',
+   jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')  # Do not forget 'L2L3Residual' on data!
+)
+
 # main analyzer and inputs
 process.diphoton = cms.EDAnalyzer(
     'ExoDiPhotonMCFakeRateRealTemplateAnalyzer',
@@ -63,7 +77,7 @@ process.diphoton = cms.EDAnalyzer(
     # genParticle tag
     genParticlesMiniAOD = cms.InputTag("prunedGenParticles"),
     # ak4 jets
-    jetsMiniAOD = cms.InputTag("slimmedJets"),
+    jetsMiniAOD = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
     jetPtThreshold = cms.double(30.),
     jetEtaThreshold = cms.double(2.5),
     # rho tag (use fixedGridRhoAll?)

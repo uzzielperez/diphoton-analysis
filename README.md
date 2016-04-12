@@ -10,8 +10,8 @@ export SCRAM_ARCH=slc6_amd64_gcc493
 setenv SCRAM_ARCH slc6_amd64_gcc493
 
 # setup cmssw release
-cmsrel CMSSW_7_6_3_patch2  
-cd CMSSW_7_6_3_patch2/src  
+cmsrel CMSSW_7_6_4  
+cd CMSSW_7_6_4/src  
 cmsenv  
 
 # clone repository

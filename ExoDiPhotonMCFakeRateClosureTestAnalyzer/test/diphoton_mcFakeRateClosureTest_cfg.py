@@ -20,6 +20,8 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("ExoDiPhoton")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
+process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.options.allowUnscheduled = cms.untracked.bool(True)
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( options.maxEvents ) )
 
@@ -56,6 +58,17 @@ my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonI
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
+## update AK4PFchs jet collection in MiniAOD JECs
+
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+
+updateJetCollection(
+   process,
+   jetSource = cms.InputTag('slimmedJets'),
+   labelName = 'UpdatedJEC',
+   jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')  # Do not forget 'L2L3Residual' on data!
+)
+
 # main analyzer and inputs
 process.diphoton = cms.EDAnalyzer(
     'ExoDiPhotonMCFakeRateClosureTestAnalyzer',
@@ -64,7 +77,7 @@ process.diphoton = cms.EDAnalyzer(
     # genParticle tag
     genParticlesMiniAOD = cms.InputTag("prunedGenParticles"),
     # ak4 jets
-    jetsMiniAOD = cms.InputTag("slimmedJets"),
+    jetsMiniAOD = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
     jetPtThreshold = cms.double(30.),
     jetEtaThreshold = cms.double(2.5),
     # rho tag (use fixedGridRhoAll?)
