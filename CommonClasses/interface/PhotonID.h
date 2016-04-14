@@ -101,6 +101,20 @@ namespace ExoDiPhotons{
     else return false;
   }
 
+  bool passChargedHadronDenomCut_keepIsoCutTightenPtCut(const pat::Photon* photon) {
+    double chIsoCut = 5.;
+    double chIso = photon->chargedHadronIso();
+    if ( chIso < std::min((double)5.*chIsoCut, (double)0.1*photon->pt()) ) return true;
+    else return false;
+  }
+
+  bool passChargedHadronDenomCut_dropIsoCutKeepPtCut(const pat::Photon* photon) {
+    // double chIsoCut = 5.;
+    double chIso = photon->chargedHadronIso();
+    if (chIso < (double)0.2*photon->pt()) return true;
+    else return false;
+  }
+
   // SIGMAiETAiETA
   bool passSigmaIetaIetaCut(const pat::Photon* photon, bool isSaturated) {
     double phoEta = fabs(photon->superCluster()->eta());
@@ -224,6 +238,30 @@ namespace ExoDiPhotons{
     else return false;
   }
 
+  bool passCorPhoIsoDenom_keepIsoCutTightenPtCut(const pat::Photon* photon, double rho) {
+    double phoEta = fabs(photon->superCluster()->eta());
+    double corPhoIsoCut = -999.9;
+    double corPhoIso = corPhoIsoHighPtID(photon,rho);
+
+    if (phoEta < 1.4442) corPhoIsoCut = 2.75;
+    if (1.560 < phoEta && phoEta < 2.5) corPhoIsoCut = 2.00;
+    
+    if ( corPhoIso < std::min((double)5.*corPhoIsoCut, (double)0.1*photon->pt()) ) return true;
+    else return false;
+  }
+
+  bool passCorPhoIsoDenom_dropIsoCutKeepPtCut(const pat::Photon* photon, double rho) {
+    // double phoEta = fabs(photon->superCluster()->eta());
+    // double corPhoIsoCut = -999.9;
+    double corPhoIso = corPhoIsoHighPtID(photon,rho);
+
+    // if (phoEta < 1.4442) corPhoIsoCut = 2.75;
+    // if (1.560 < phoEta && phoEta < 2.5) corPhoIsoCut = 2.00;
+
+    if (corPhoIso < 0.2*photon->pt()) return true;
+    else return false;
+  }
+
   bool passHighPtID(const pat::Photon* photon, double rho, bool isSat) {
     if (
       passHadTowerOverEmCut(photon) &&
@@ -259,6 +297,48 @@ namespace ExoDiPhotons{
     
     // now check if it pass the looser ID
     bool passLooseIso = passChargedHadronDenomCut(photon) && passCorPhoIsoDenom(photon,rho);
+    
+    // require object to pass CSEV
+    bool passCSEV = photon->passElectronVeto();
+    
+    if (failID && passLooseIso && passCSEV) return true;
+    else return false;
+  }
+
+  // Alternative denominator definition where we replace the current one with a tighter pT cut. This should have the effect of moving the EE local min in the fake rate to ~250 GeV.
+  // This is our denominator definition 1
+  bool passDenominatorCut_keepIsoCutTightenPtCut(const pat::Photon* photon, double rho, bool isSat) {
+    // first check if the photon fails at least one of the high pT ID cuts
+    bool failID = (
+      !passHadTowerOverEmCut(photon) ||
+      !passChargedHadronCut(photon) ||
+      !passSigmaIetaIetaCut(photon,isSat) ||
+      !passCorPhoIsoHighPtID(photon,rho)
+      );
+    
+    // now check if it pass the looser ID
+    bool passLooseIso = passChargedHadronDenomCut_keepIsoCutTightenPtCut(photon) && passCorPhoIsoDenom_keepIsoCutTightenPtCut(photon,rho);
+    
+    // require object to pass CSEV
+    bool passCSEV = photon->passElectronVeto();
+    
+    if (failID && passLooseIso && passCSEV) return true;
+    else return false;
+  }
+  
+  // Alternative denominator definition where we drop the cut on chIso altogether.  Hopefully this should make the EE fake rate distribution decay monotonically.
+  // This is our denominator definition 2
+  bool passDenominatorCut_dropIsoCutKeepPtCut(const pat::Photon* photon, double rho, bool isSat) {
+    // first check if the photon fails at least one of the high pT ID cuts
+    bool failID = (
+      !passHadTowerOverEmCut(photon) ||
+      !passChargedHadronCut(photon) ||
+      !passSigmaIetaIetaCut(photon,isSat) ||
+      !passCorPhoIsoHighPtID(photon,rho)
+      );
+    
+    // now check if it pass the looser ID
+    bool passLooseIso = passChargedHadronDenomCut_dropIsoCutKeepPtCut(photon) && passCorPhoIsoDenom_dropIsoCutKeepPtCut(photon,rho);
     
     // require object to pass CSEV
     bool passCSEV = photon->passElectronVeto();

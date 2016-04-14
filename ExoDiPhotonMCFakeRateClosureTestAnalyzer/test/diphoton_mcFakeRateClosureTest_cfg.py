@@ -10,6 +10,12 @@ options.register('globalTag',
                 VarParsing.varType.string,
                 "global tag to use when running"
 )
+options.register("denominatorDefinition",
+                    -1,
+                    VarParsing.multiplicity.singleton,
+                    VarParsing.varType.int,
+                    "which denominator definition to use"
+)
 ## 'maxEvents' is already registered by the Framework, changing default value
 options.setDefault('maxEvents', 100)
 
@@ -90,6 +96,7 @@ process.diphoton = cms.EDAnalyzer(
     phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
     phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
     phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
+    denominatorDefinition = cms.int32(options.denominatorDefinition),
     # gen event info
     genInfo = cms.InputTag("generator", "", "SIM")
     )

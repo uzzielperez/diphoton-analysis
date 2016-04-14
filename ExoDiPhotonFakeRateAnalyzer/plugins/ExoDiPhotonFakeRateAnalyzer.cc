@@ -105,6 +105,9 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
   // rho variable
   double rho_;
 
+  // denominator definition
+  int denominatorDefinition;
+
   // EGM eff. areas
   EffectiveAreas effAreaChHadrons_;
   EffectiveAreas effAreaNeuHadrons_;
@@ -185,6 +188,11 @@ ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet
 
   // Filter decisions
   filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","RECO") );
+
+  // denominator definition
+  denominatorDefinition = iConfig.getParameter<int>("denominatorDefinition");
+  if (denominatorDefinition < 0 || denominatorDefinition > 2) throw cms::Exception("DenominatorDecisionDefinitionException") << "0, 1, and 2 are the ONLY choices for the denominator definition, choose wisely...";
+  std::cout << "Denominator definition chosen: " << denominatorDefinition << std::endl;
   
 }
 
@@ -327,7 +335,7 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
 
     // fill photon info
     ExoDiPhotons::FillBasicPhotonInfo(fPhotonInfo, &(*pho));
-    ExoDiPhotons::FillPhotonIDInfo(fPhotonInfo, &(*pho), rho_, fPhotonInfo.isSaturated);
+    ExoDiPhotons::FillPhotonIDInfo(fPhotonInfo, &(*pho), rho_, fPhotonInfo.isSaturated, denominatorDefinition);
     
     // fill EGM ID info
     ExoDiPhotons::FillPhotonEGMidInfo(fPhotonInfo, &(*pho), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
@@ -335,9 +343,25 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
     fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
     fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
 
+    //get denominator decisions
+    // guide to denominator decision integer:
+    // 0 = the definition we've been using up until now
+    // 1 = tighten the pT cut to 0.1*phoPt and keep the loose iso cut
+    // 2 = drop the loose iso cut and keep the pT cut we've been using (0.2*pT)
+    // if anything other than 0, 1, or 2 is entered, the code will have already thrown an exception in the constructur.
+
+    bool passDenom0 = ExoDiPhotons::passDenominatorCut(&(*pho), rho_, fPhotonInfo.isSaturated);
+    bool passDenom1 = ExoDiPhotons::passDenominatorCut_keepIsoCutTightenPtCut(&(*pho), rho_, fPhotonInfo.isSaturated);
+    bool passDenom2 = ExoDiPhotons::passDenominatorCut_dropIsoCutKeepPtCut(&(*pho), rho_, fPhotonInfo.isSaturated);
+
+    std::map<int,bool> denomMap;
+    denomMap[0] = passDenom0;
+    denomMap[1] = passDenom1;
+    denomMap[2] = passDenom2;
+
     // fill our tree
     if ( ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) ||
-         ExoDiPhotons::passDenominatorCut(&(*pho), rho_, fPhotonInfo.isSaturated)
+         denomMap[denominatorDefinition] // our input integer denominatorDefinition chooses which denom. definition in the map we use
        ) fTree->Fill();
 										  
   } // end of photon loop

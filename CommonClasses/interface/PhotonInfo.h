@@ -182,7 +182,7 @@ namespace ExoDiPhotons
     photonInfo.isEBEEGap   = photon->isEBEEGap();
   }
 
-  void FillPhotonIDInfo(photonInfo_t &photonInfo, const pat::Photon *photon, double rho, double isSat)
+  void FillPhotonIDInfo(photonInfo_t &photonInfo, const pat::Photon *photon, double rho, double isSat, int denomDef)
   {
     // isolation
     photonInfo.rho              = rho;
@@ -225,6 +225,14 @@ namespace ExoDiPhotons
     photonInfo.passCorPhoIsoDenom    = ExoDiPhotons::passCorPhoIsoDenom(photon,rho);
     photonInfo.isNumeratorObjCand    = ExoDiPhotons::passNumeratorCandCut(photon,rho);
     photonInfo.isDenominatorObj      = ExoDiPhotons::passDenominatorCut(photon,rho,isSat);
+    if (denomDef == 1){
+        photonInfo.isDenominatorObj = ExoDiPhotons::passDenominatorCut_keepIsoCutTightenPtCut(photon,rho,isSat);
+        std::cout << "filled photonInfo object using ExoDiPhotons::passDenominatorCut_keepIsoCutTightenPtCut" << std::endl;
+    }
+    else if (denomDef == 2 ){
+        photonInfo.isDenominatorObj = ExoDiPhotons::passDenominatorCut_dropIsoCutKeepPtCut(photon,rho,isSat);
+        std::cout << "filled photonInfo object using ExoDiPhotons::passDenominatorCut_dropIsoCutKeepPtCut" << std::endl;
+    }
   }
 
   void FillPhotonEGMidInfo(photonInfo_t &photonInfo, const pat::Photon *photon, double rho, EffectiveAreas eaCH, EffectiveAreas eaNH, EffectiveAreas eaPho)
