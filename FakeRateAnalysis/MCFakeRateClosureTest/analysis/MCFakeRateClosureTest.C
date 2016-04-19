@@ -161,8 +161,8 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
           bool isFakeTemplateObj = Photon_isNumeratorObjCand && inChIsoSideband;
 
           if (isFakeTemplateObj){
-            if (fabs(Photon_scEta) < 1.4442) sIeIeFakeTemplatesEB.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5 );
-            else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeFakeTemplatesEE.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5 );
+            if (fabs(Photon_scEta) < 1.4442) sIeIeFakeTemplatesEB.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5, Event_weight );
+            else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeFakeTemplatesEE.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5, Event_weight );
           }
         } // end loop over sidebands to fill fake templates
 
