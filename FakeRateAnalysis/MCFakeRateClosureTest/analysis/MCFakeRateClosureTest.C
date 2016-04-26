@@ -65,10 +65,12 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
     sIeIeFakeTemplatesEE.push_back(eevec);
   }
 
-
+  
   std::vector<TH1D*> sIeIeNumeratorEB;
   std::vector<TH1D*> sIeIeNumeratorEE;
-
+  std::vector<TH1D*> denomPtEB;
+  std::vector<TH1D*> denomPtEE;
+  
   // loop over bins increments and create histograms
   for (int i = 0; i < nBins-1; i++) {
     double binLowEdge = ptBinArray[i];
