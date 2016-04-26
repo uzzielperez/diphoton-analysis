@@ -42,10 +42,13 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, s
   gSystem->Load("libRooFit"); 
   gSystem->AddIncludePath("-I$ROOFITSYS/include");
 
-  TFile *historealmcfile = TFile::Open("diphoton_fakeRate_GGJets_M-200To500_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
-  TFile *histojetfile = TFile::Open("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root");
-  //TFile *histojetfile = TFile::Open("diphoton_fakeRate_QCD_Pt-300toInf_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
-
+  // for real templates; same for data and MC as data
+  TFile *historealmcfile = TFile::Open("../../MCFakeRateAnalysis/analysis/diphoton_fakeRate_GGJets_M-200To500_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
+  // for data
+  TFile *histojetfile = TFile::Open("../../DataFakeRateAnalysis/analysis/diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root");
+  // for MC as data
+  //TFile *histojetfile = TFile::Open("../../MCFakeRateClosureTest/analysis/diphoton_fakeRate_QCD_Pt-300toInf_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
+  
   double sidebandLow = sideband.first;
   double sidebandHigh = sideband.second;
   TString postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
