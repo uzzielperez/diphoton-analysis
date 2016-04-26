@@ -74,6 +74,7 @@ void fakeRateCalculation() {
     for (int i = 0; i < 10; i++){  // loop over pT bins
       double ptLow = ptBinArray_double[i];
       double ptHigh = ptBinArray_double[i+1];
+      double ptBinSize = ptHigh - ptLow;
       TString binName = TString::Format("%iTo%i",ptBinArray[i],ptBinArray[i+1]);
       infile.cd();
 
@@ -113,11 +114,11 @@ void fakeRateCalculation() {
       // record background fit result
 
 
-      bkgVsPtEBVec.at(j)->SetPoint(i,graphX_EB,resEB.first);
-      bkgVsPtEBVec.at(j)->SetPointError(i,eXLow_EB,eXHigh_EB,resEB.second,resEB.second);
+      bkgVsPtEBVec.at(j)->SetPoint(i,graphX_EB,resEB.first/ptBinSize);
+      bkgVsPtEBVec.at(j)->SetPointError(i,eXLow_EB,eXHigh_EB,resEB.second/ptBinSize,resEB.second/ptBinSize);
 
-      bkgVsPtEEVec.at(j)->SetPoint(i,graphX_EE,resEE.first);
-      bkgVsPtEEVec.at(j)->SetPointError(i,eXLow_EE,eXHigh_EE,resEE.second,resEE.second);
+      bkgVsPtEEVec.at(j)->SetPoint(i,graphX_EE,resEE.first/ptBinSize);
+      bkgVsPtEEVec.at(j)->SetPointError(i,eXLow_EE,eXHigh_EE,resEE.second/ptBinSize,resEE.second/ptBinSize);
       // bkgVsPtEBVec.at(j)->SetBinContent(i+1,resEB.first);
       // bkgVsPtEBVec.at(j)->SetBinError(i+1,resEB.second);
 
@@ -129,8 +130,18 @@ void fakeRateCalculation() {
 
   //TFile infile("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root","read");
   infile.cd();
-  TH1D* denomvsptEB = (TH1D*)infile.Get("phoPtEB_denominator_varbin");
-  TH1D* denomvsptEE = (TH1D*)infile.Get("phoPtEE_denominator_varbin");
+  TH1D* denomvsptEB = (TH1D*)infile.Get("phoPtEB_denominator_varbin")->Clone();
+  TH1D* denomvsptEE = (TH1D*)infile.Get("phoPtEE_denominator_varbin")->Clone();
+
+  for (int i=1; i<=10; i++){
+    double binWidth = denomvsptEB->GetXaxis()->GetBinWidth(i);
+
+    denomvsptEB->SetBinContent(i,denomvsptEB->GetBinContent(i) / binWidth);
+    denomvsptEB->SetBinError(i,denomvsptEB->GetBinError(i) / binWidth);
+    denomvsptEE->SetBinContent(i,denomvsptEE->GetBinContent(i) / binWidth);
+    denomvsptEE->SetBinError(i,denomvsptEE->GetBinError(i) / binWidth);
+
+  }
 
   denomvsptEB->GetXaxis()->SetTitle("Photon pT (GeV/c)");
   denomvsptEE->GetXaxis()->SetTitle("Photon pT (GeV/c)");

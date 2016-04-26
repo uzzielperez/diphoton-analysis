@@ -269,7 +269,7 @@ void FakeRateAnalysis::Loop()
   // write histograms out to root files
   
   // TString outName = TString::Format("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_chIsoSB%iTo%i.root",(int)sidebandLow,(int)sidebandHigh);
-  TFile file_out("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root","RECREATE");
+  TFile file_out("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_DENOM1.root","RECREATE");
   
   // sigmaIetaIetaEB->Write();
   // sigmaIetaIetaEE->Write();
