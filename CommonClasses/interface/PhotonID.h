@@ -95,9 +95,10 @@ namespace ExoDiPhotons{
   }
 
   bool passChargedHadronDenomCut(const pat::Photon* photon) {
-    double chIsoCut = 5.;
+    // double chIsoCut = 5.;
     double chIso = photon->chargedHadronIso();
-    if ( chIso < std::min((double)5.*chIsoCut, (double)0.2*photon->pt()) ) return true;
+    // if ( chIso < std::min((double)5.*chIsoCut, (double)0.2*photon->pt()) ) return true;
+    if ( chIso < (double)0.2*photon->pt() ) return true; // updated denominator definition
     else return false;
   }
 
@@ -213,14 +214,15 @@ namespace ExoDiPhotons{
   }
 
   bool passCorPhoIsoDenom(const pat::Photon* photon, double rho) {
-    double phoEta = fabs(photon->superCluster()->eta());
-    double corPhoIsoCut = -999.9;
+    // double phoEta = fabs(photon->superCluster()->eta());
+    // double corPhoIsoCut = -999.9;
     double corPhoIso = corPhoIsoHighPtID(photon,rho);
 
-    if (phoEta < 1.4442) corPhoIsoCut = 2.75;
-    if (1.560 < phoEta && phoEta < 2.5) corPhoIsoCut = 2.00;
+    // if (phoEta < 1.4442) corPhoIsoCut = 2.75;
+    // if (1.560 < phoEta && phoEta < 2.5) corPhoIsoCut = 2.00;
     
-    if ( corPhoIso < std::min((double)5.*corPhoIsoCut, (double)0.2*photon->pt()) ) return true;
+    // if ( corPhoIso < std::min((double)5.*corPhoIsoCut, (double)0.2*photon->pt()) ) return true;
+    if ( corPhoIso < (double)0.2*photon->pt() ) return true; // updated denominator definition
     else return false;
   }
 
