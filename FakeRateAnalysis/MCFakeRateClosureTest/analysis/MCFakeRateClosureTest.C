@@ -104,6 +104,15 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
     TH1D *hEE_numerator = new TH1D(Form("sieieEE_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",200,0.,0.1);
     hEE_numerator->Sumw2();
     sIeIeNumeratorEE.push_back(hEE_numerator);
+
+    // pt binned denominator histograms
+    TH1D *hEB_denominator = new TH1D(Form("PtEB_denominator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEB",100,binLowEdge,binUpperEdge);
+    hEB_denominator->Sumw2();
+    denomPtEB.push_back(hEB_denominator);
+
+    TH1D *hEE_denominator = new TH1D(Form("PtEE_denominator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEE",100,binLowEdge,binUpperEdge);
+    hEE_denominator->Sumw2();
+    denomPtEE.push_back(hEE_denominator);
   }
 
   // loop over all entries
@@ -172,12 +181,18 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
       	  else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeNumeratorEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
       	} // end numerator obj
 
+	// fill denominator histograms
+	if (Photon_isDenominatorObj) {
+	  if (fabs(Photon_scEta) < 1.4442) denomPtEB.at(i)->Fill(Photon_pt,Event_weight);
+	  else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) denomPtEE.at(i)->Fill(Photon_pt,Event_weight);
+	}
+	
       } // end pt cut
       
     } // end loop over pt bins for fake template
     
   } // end loop over entries
-
+  
   // create output file containing histograms
   TString filename;
   if (strcmp(iMass,"all") == 0) filename = "diphoton_fakeRate_QCD_all_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
@@ -200,6 +215,16 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
     (*it)->Write();
   }
 
+  // write denominator histograms
+  for (vector<TH1D*>::iterator it = denomPtEB.begin() ; it != denomPtEB.end(); ++it) {
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    (*it)->Write();
+  }
+  for (vector<TH1D*>::iterator it = denomPtEE.begin() ; it != denomPtEE.end(); ++it) {
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    (*it)->Write();
+  }
+  
   // scale fake template histograms to unity and write to file
   // for (vector<TH1D*>::iterator it = sIeIeFakeTemplateEB.begin() ; it != sIeIeFakeTemplateEB.end(); ++it) {
   //   cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
