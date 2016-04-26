@@ -1,8 +1,6 @@
 #!/bin/bash
 
-#30to50 missing
-
-MASS="15to20 20to30 50to80 80to120 120to170 170to300 300toInf"
+MASS="15to20 20to30 30to50 50to80 80to120 120to170 170to300 300toInf"
 
 #for i in `seq 500 250 3000`; do 
 for i in `echo $MASS`; do
