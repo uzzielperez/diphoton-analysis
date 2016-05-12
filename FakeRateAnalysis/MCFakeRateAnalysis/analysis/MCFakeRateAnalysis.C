@@ -35,7 +35,7 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
   const int nBins = 11;
   
   // define our pT bin increments
-  double ptBinArray[nBins] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 14.e3 };
+  double ptBinArray[nBins] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
   
   // define vectors of desired histograms
   vector<TH1D*> sigmaIetaIetaEB;

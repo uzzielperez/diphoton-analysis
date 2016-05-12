@@ -34,7 +34,7 @@ void FakeRateAnalysis::Loop()
    // book histograms
 
    // double ptBinArray[17] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 350., 400., 450., 500., 550., 600., 14.e3 };
-   double ptBinArray[11] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 14.e3 };
+   double ptBinArray[11] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
 
    // pt spectrum of all photon objects
    TH1D phoPtEB("phoPtEB","",1000,0.,2500.);

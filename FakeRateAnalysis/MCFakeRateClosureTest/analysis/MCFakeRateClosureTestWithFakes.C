@@ -34,8 +34,14 @@ void MCFakeRateClosureTestWithFakes::Loop(const Char_t *iMass)
   // define number of bin edges
   const int nBins = 11;
   
-  double ptBinArray[nBins] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 14.e3 };
-
+  double ptBinArray[nBins] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
+  
+  // pt spectrum of passHighPtID objects
+  TH1D phoPtEB_passHighPtID_varbin("phoPtEB_passHighPtID_varbin","",nBins-1,ptBinArray);
+  TH1D phoPtEE_passHighPtID_varbin("phoPtEE_passHighPtID_varbin","",nBins-1,ptBinArray);
+  phoPtEB_passHighPtID_varbin.Sumw2();
+  phoPtEE_passHighPtID_varbin.Sumw2();
+  
   // numerator and template histograms
   std::vector<TH1D*> sIeIeFakeTemplateEB;
   std::vector<TH1D*> sIeIeFakeTemplateEE;
@@ -83,6 +89,20 @@ void MCFakeRateClosureTestWithFakes::Loop(const Char_t *iMass)
     //if (Event_beamHaloIDTight2015) continue;
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
 
+    // EB
+    if (fabs(Photon_scEta) < 1.4442) {
+      if (Photon_passHighPtID) {
+	phoPtEB_passHighPtID_varbin.Fill(Photon_pt,Event_weight);
+      }
+    } // end EB
+    
+    // EE
+    else if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+      if (Photon_passHighPtID) {
+	phoPtEE_passHighPtID_varbin.Fill(Photon_pt,Event_weight);
+      }
+    } // end EE
+    
     // loop over bin edges
     for (int i = 0; i < nBins-1; i++) {
       double binLowEdge = ptBinArray[i];
@@ -110,10 +130,40 @@ void MCFakeRateClosureTestWithFakes::Loop(const Char_t *iMass)
   } // end loop over entries
   
   TString filename;
-  if (strcmp(iMass,"all") == 0) filename = "diphoton_fakeRate_matchedFakes_QCD_all_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
-  else filename = TString::Format("diphoton_fakeRate_matchedFakes_QCD_Pt-%s_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root",iMass);
+  if (strcmp(iMass,"all") == 0) filename = "diphoton_fakeRate_matchedFakes_QCD_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
+  else filename = TString::Format("diphoton_fakeRate_matchedFakes_QCD_Pt_%s_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root",iMass);
   TFile file_out(filename,"RECREATE");
 
+  // write passHighPtID histograms
+  phoPtEB_passHighPtID_varbin.Write();
+  phoPtEE_passHighPtID_varbin.Write();
+
+  double bin_sum_EB = 0;
+  cout << phoPtEB_passHighPtID_varbin.GetName() << "\t integral: " << phoPtEB_passHighPtID_varbin.Integral() << endl;
+  for (int i = 1; i < phoPtEB_passHighPtID_varbin.GetSize()-1; i++) {
+    cout << phoPtEB_passHighPtID_varbin.GetName()
+	 << " bin "
+	 << phoPtEB_passHighPtID_varbin.GetBin(i)
+	 << " content: "
+	 << phoPtEB_passHighPtID_varbin.GetBinContent(i)
+	 << endl;
+    bin_sum_EB = bin_sum_EB + phoPtEB_passHighPtID_varbin.GetBinContent(i);
+  }
+  cout << phoPtEB_passHighPtID_varbin.GetName() << " bin sum: " << bin_sum_EB << endl;
+  
+  double bin_sum_EE = 0;
+  cout << phoPtEE_passHighPtID_varbin.GetName() << "\t integral: " << phoPtEE_passHighPtID_varbin.Integral() << endl;
+  for (int i = 1; i < phoPtEB_passHighPtID_varbin.GetSize()-1; i++) {  
+    cout << phoPtEE_passHighPtID_varbin.GetName()
+	 << " bin "
+	 << phoPtEE_passHighPtID_varbin.GetBin(i)
+	 << " content: "
+	 << phoPtEE_passHighPtID_varbin.GetBinContent(i)
+	 << endl;
+    bin_sum_EE = bin_sum_EE + phoPtEE_passHighPtID_varbin.GetBinContent(i);
+  }
+  cout << phoPtEB_passHighPtID_varbin.GetName() << " bin sum: " << bin_sum_EE << endl;
+  
   // write numerator histograms
   for (vector<TH1D*>::iterator it = sIeIeNumeratorEB.begin() ; it != sIeIeNumeratorEB.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;

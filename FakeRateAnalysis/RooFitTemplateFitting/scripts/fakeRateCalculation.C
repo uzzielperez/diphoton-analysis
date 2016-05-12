@@ -10,8 +10,8 @@ void fakeRateCalculation() {
   TStopwatch sw;
   sw.Start();
 
-  int ptBinArray[11] = { 30, 50, 70, 90, 110, 130, 150, 200, 250, 300, 14000 };
-  double ptBinArray_double[11] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 14000. };
+  int ptBinArray[11] = { 30, 50, 70, 90, 110, 130, 150, 200, 250, 300, 600 };
+  double ptBinArray_double[11] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
 
   // make vector of sidebands
   std::vector< std::pair<double,double> > chIsoSidebands;
@@ -69,9 +69,9 @@ void fakeRateCalculation() {
   outfile.Close(); // create the file so it can be updated in the rooFitFakeRateProducer, we don't need it open here too
 
   // for data
-  TFile infile("../../DataFakeRateAnalysis/analysis/diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root","read");
+  //TFile infile("../../DataFakeRateAnalysis/analysis/diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root","read");
   // for MC as data
-  //TFile infile("../../MCFakeRateClosureTest/analysis/diphoton_fakeRate_QCD_Pt-300toInf_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root","read");
+  TFile infile("../../MCFakeRateClosureTest/analysis/diphoton_fakeRate_QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root","read");
   
   for (unsigned int j=0; j<chIsoSidebands.size(); j++){ // loop over sidebands
     for (int i = 0; i < 10; i++){  // loop over pT bins

@@ -34,7 +34,7 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
   // define number of bin edges
   const int nBins = 11;
   
-  double ptBinArray[nBins] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 14.e3 };
+  double ptBinArray[nBins] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
 
   // make vector of sidebands
   std::vector< std::pair<double,double> > chIsoSidebands;
@@ -64,7 +64,6 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
     sIeIeFakeTemplatesEB.push_back(ebvec);
     sIeIeFakeTemplatesEE.push_back(eevec);
   }
-
   
   std::vector<TH1D*> sIeIeNumeratorEB;
   std::vector<TH1D*> sIeIeNumeratorEE;
@@ -85,7 +84,7 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
     // sIeIeFakeTemplateEE.push_back(hEE_fakeTemplate);
 
     for (chIsoIt it = chIsoSidebands.begin(); it != chIsoSidebands.end(); ++it){
-
+      
       double sidebandLow = it->first;
       double sidebandHigh = it->second;
 
@@ -139,15 +138,15 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
 
     // EB
     if (fabs(Photon_scEta) < 1.4442) {
-      if (Photon_isDenominatorObj){
-	phoPtEB_denominator_varbin.Fill(Photon_pt);
+      if (Photon_isDenominatorObj) {
+	phoPtEB_denominator_varbin.Fill(Photon_pt,Event_weight);
       }
     } // end EB
     
     // EE
     else if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
-      if (Photon_isDenominatorObj){
-	phoPtEE_denominator_varbin.Fill(Photon_pt);
+      if (Photon_isDenominatorObj) {
+	phoPtEE_denominator_varbin.Fill(Photon_pt,Event_weight);
       }
     } // end EE
     
@@ -197,8 +196,8 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
   
   // create output file containing histograms
   TString filename;
-  if (strcmp(iMass,"all") == 0) filename = "diphoton_fakeRate_QCD_all_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
-  else filename = TString::Format("diphoton_fakeRate_QCD_Pt-%s_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root",iMass);
+  if (strcmp(iMass,"all") == 0) filename = "diphoton_fakeRate_QCD_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
+  else filename = TString::Format("diphoton_fakeRate_QCD_Pt_%s_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root",iMass);
   TFile file_out(filename,"RECREATE");
 
   // write denominator histograms

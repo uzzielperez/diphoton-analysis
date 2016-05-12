@@ -34,8 +34,7 @@ void FakeRateAnalysis::Loop()
   // define number of bin edges
   const int nBins = 11;
   
-  // double ptBinArray[17] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 350., 400., 450., 500., 550., 600., 14.e3 };
-  double ptBinArray[nBins] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 14.e3 };
+  double ptBinArray[nBins] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
 
   // make vector of sidebands
   std::vector< std::pair<double,double> > chIsoSidebands;
