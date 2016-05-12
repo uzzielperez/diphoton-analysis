@@ -30,6 +30,7 @@ namespace ExoDiPhotons
 
     // shower shape variables
     double r9; // filled
+    double r9_5x5; // filled
     double sigmaIetaIeta; // filled
     double sigmaIetaIeta5x5; // filled
     double sigmaEtaEta; // filled
@@ -85,7 +86,7 @@ namespace ExoDiPhotons
     bool isSaturated; // filled in analyzer and passed to FillPhotonIDInfo
   };
 
-  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:r9:sigmaIetaIeta:sigmaIetaIeta5x5:sigmaEtaEta:sigmaIphiIphi:sigmaIphiIphi5x5:sigmaIetaIphi:sigmaIetaIphi5x5:maxEnergyXtal:iEta:iPhi:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:passChIsoDenom:passCorPhoIsoDenom:isFakeable:isNumeratorObjCand:isDenominatorObj:isSaturated");
+  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:r9:r9_5x5:sigmaIetaIeta:sigmaIetaIeta5x5:sigmaEtaEta:sigmaIphiIphi:sigmaIphiIphi5x5:sigmaIetaIphi:sigmaIetaIphi5x5:maxEnergyXtal:iEta:iPhi:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:passChIsoDenom:passCorPhoIsoDenom:isFakeable:isNumeratorObjCand:isDenominatorObj:isSaturated");
 
   void InitPhotonInfo(photonInfo_t &photonInfo)
   {
@@ -109,6 +110,7 @@ namespace ExoDiPhotons
 
     // shower shape variables 
     photonInfo.r9               = -9999.99;
+    photonInfo.r9_5x5           = -9999.99;
     photonInfo.sigmaIetaIeta    = -9999.99;
     photonInfo.sigmaIetaIeta5x5 = -9999.99;
     photonInfo.sigmaEtaEta      = -9999.99;
@@ -194,6 +196,7 @@ namespace ExoDiPhotons
 
     // shower shape variables
     photonInfo.r9               = photon->r9();
+    photonInfo.r9_5x5           = photon->full5x5_r9();
     photonInfo.sigmaIetaIeta    = photon->sigmaIetaIeta();
     photonInfo.sigmaIetaIeta5x5 = photon->full5x5_sigmaIetaIeta();
     photonInfo.sigmaEtaEta      = photon->sigmaEtaEta();
