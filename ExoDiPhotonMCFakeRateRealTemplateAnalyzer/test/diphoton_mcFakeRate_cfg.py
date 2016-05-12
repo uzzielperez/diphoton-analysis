@@ -80,8 +80,8 @@ process.diphoton = cms.EDAnalyzer(
     jetsMiniAOD = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
     jetPtThreshold = cms.double(30.),
     jetEtaThreshold = cms.double(2.5),
-    # rho tag (use fixedGridRhoAll?)
-    rho = cms.InputTag("fixedGridRhoFastjetAll"),
+    # rho tag
+    rho = cms.InputTag("fixedGridRhoAll"),
     # EGM eff. areas
     effAreaChHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfChargedHadrons_25ns_NULLcorrection.txt"),
     effAreaNeuHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfNeutralHadrons_25ns_90percentBased.txt"),

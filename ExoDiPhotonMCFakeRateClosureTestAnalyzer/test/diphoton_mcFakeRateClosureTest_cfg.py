@@ -11,7 +11,7 @@ options.register('globalTag',
                 "global tag to use when running"
 )
 ## 'maxEvents' is already registered by the Framework, changing default value
-options.setDefault('maxEvents', 100)
+options.setDefault('maxEvents', 1000)
 
 options.parseArguments()
 
@@ -32,7 +32,8 @@ process.source = cms.Source(
     fileNames = cms.untracked.vstring(
         #'file:myfile.root'
         #'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/GJets_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/00C4C9FA-65BB-E511-AB87-50465DE43BAC.root'
-        'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/QCD_Pt-120to170_EMEnriched_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/00C0C6C2-2FD1-E511-82D4-00266CFADD94.root'
+        #'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/QCD_Pt-120to170_EMEnriched_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/00C0C6C2-2FD1-E511-82D4-00266CFADD94.root'
+        'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/0023A3AF-8FB8-E511-85EF-0025905AC99A.root'
         )
     )
 
@@ -80,8 +81,8 @@ process.diphoton = cms.EDAnalyzer(
     jetsMiniAOD = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
     jetPtThreshold = cms.double(30.),
     jetEtaThreshold = cms.double(2.5),
-    # rho tag (use fixedGridRhoAll?)
-    rho = cms.InputTag("fixedGridRhoFastjetAll"),
+    # rho tag
+    rho = cms.InputTag("fixedGridRhoAll"),
     # EGM eff. areas
     effAreaChHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfChargedHadrons_25ns_NULLcorrection.txt"),
     effAreaNeuHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfNeutralHadrons_25ns_90percentBased.txt"),
