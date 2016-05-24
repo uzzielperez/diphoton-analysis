@@ -540,11 +540,12 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	    // will be overwritten in the case of ISR or FSR
 	    if (!photonMatch && matchedMother->mother(matchMotherIndex)->pt()==0) photonMatch = &(*matchedMother);
 
+	    // record is best mother is a hadron
+	    // dont condiser interacting proton a hadron mother
+	    if (fabs(matchedMother->pdgId()) > 99) isHadronMother = true;
+	    
 	    // matched particle now becomes best mother
 	    matchedMother = (reco::GenParticle *) matchedMother->mother(matchMotherIndex);
-
-	    // record is best mother is a hadron
-	    if (fabs(matchedMother->pdgId()) > 99) isHadronMother = true;
 
 	    // record is best mother is a photon
 	    if (matchedMother->pdgId()==22) isPhotonMother = true;
@@ -588,8 +589,8 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	      if (isQuarkFirstMother && matchedMother->pdgId() == 21) {
 		isFragmentation = true;
 	      }
-	    }
-
+	    } // end if first hardProcess mother
+	    
 	    // print best mother match
 	    cout << "FinalState Matched MOTHER: Status = " << matchedMother->status()  << "; ID = " << matchedMother->pdgId() << "; pt = "
 		 << matchedMother->pt() << "; eta = " << matchedMother->eta() << "; phi = " << matchedMother->phi()  << "; deltaR = " << minMotherMatchDeltaR << endl;
@@ -639,7 +640,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	    }
 	    // if not FSR, ISR, or fragmentation, then photon is unmatched
 	    // photonMatch determined in loop is stored
-	    if (!isFSR || !isISR || !isFragmentation) {
+	    if (!isFSR && !isISR && !isFragmentation) {
 	      fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kNoMatchType;
 	    }
 	  } // end if not hadron mother
@@ -655,7 +656,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 
 	// ------------------------------------------------------------------------------------------------------------------------
 	// if final state match is not a photon
-	if (!photonMatch_finalState->pdgId() == 22) {
+	if (photonMatch_finalState->pdgId() != 22) {
 
 	  // count number of non-photon final state matches according to matchCategory
 	  fPhotonGenMatchInfo.matchCategory = ExoDiPhotons::GenMatchingFlags::MatchCategoryFlags::kFinalStateNonPhotonMatch;
@@ -687,9 +688,9 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 		minMotherMatchDeltaR = deltaR;
 		matchMotherIndex = j;
 	      }
-
+	      
 	    } // end for loop through mothers
-
+	    
 	    // store match whose mother is one of the outgoing interacting partons
 	    // or whose mother is directly the interacting proton
 	    // will be overwritten in the case of ISR or FSR
