@@ -404,14 +404,15 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
     //}
     if (ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) &&
 	ExoDiPhotons::passDenominatorCut(&(*pho), rho_, fPhotonInfo.isSaturated)) {
-    
+      cout << "Numerator photon!" << endl;
+      
       // deltaR cut
       double minDeltaR_hardProcess  = 0.4;
       double minDeltaR_finalState   = 0.1;
       double minDeltaR_genParticles = 0.3;
       
       // no match when starting loop
-      const reco::GenParticle *photonMatch_hardProcess  = NULL;
+      const reco::GenParticle *photonMatch_hardProcess  = NULL; // not being used
       const reco::GenParticle *photonMatch_finalState   = NULL;
       const reco::GenParticle *photonMatch_genParticles = NULL;
       
@@ -452,225 +453,392 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
       
       } // end of genParticle loop
     
-      // photon match to be filled into tree
+      // photon's gen particle match to be filled into tree
       const reco::GenParticle *photonMatch = NULL;
     
-      // if match, then known fake photon
       if (photonMatch_hardProcess) {
 	//photonMatch = &(*photonMatch_hardProcess);
 	cout << "Hard process match." << endl;
-	//   cout << "HardProcess PhotonMatch: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
-	// 	   << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi() << "; deltaR = " << minDeltaR_hardProcess << endl;
+	//cout << "HardProcess PhotonMatch: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId()
+	//<< "; pt = " photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi() << "; deltaR = " << minDeltaR_hardProcess << endl;
       }
-    
-      //else
-      if (photonMatch_genParticles || photonMatch_finalState) {
-	const reco::GenParticle *matchedMother = NULL;
-	//cout << "No photon match in hard process with DeltaR <= " << minDeltaR_hardProcess << endl;
-	if (photonMatch_finalState) {
-	  cout << "Final state match." << endl;
-	  cout << "FinalState PhotonMatch   : Status = " << photonMatch_finalState->status()  << "; ID = " << photonMatch_finalState->pdgId() << "; pt = "
-	       << photonMatch_finalState->pt() << "; eta = " << photonMatch_finalState->eta() << "; phi = " << photonMatch_finalState->phi()  << "; deltaR = " << minDeltaR_finalState << endl;
-	
-	  fPhotonGenMatchInfo.matchCategory = 1;
 
-	  fPhotonGenMatchInfo.deltaR_match = minDeltaR_finalState;
-	
-	  matchedMother = &(*photonMatch_finalState);
-	}
-	else if (photonMatch_genParticles) {
-	  cout << "No final state match." << endl;
-	  cout << "GenParticle match." << endl;
-	  cout << "GenParticle PhotonMatch  : Status = " << photonMatch_genParticles->status()  << "; ID = " << photonMatch_genParticles->pdgId() << "; pt = "
-	       << photonMatch_genParticles->pt() << "; eta = " << photonMatch_genParticles->eta() << "; phi = " << photonMatch_genParticles->phi()  << "; deltaR = " << minDeltaR_genParticles << endl;
+      // **************************************************************************************************************************
+      // first consider final state matches
+      if (photonMatch_finalState) {
+	cout << "Final state match." << endl;
+	cout << "FinalState PhotonMatch   : Status = " << photonMatch_finalState->status()  << "; ID = " << photonMatch_finalState->pdgId() << "; pt = "
+	     << photonMatch_finalState->pt() << "; eta = " << photonMatch_finalState->eta() << "; phi = " << photonMatch_finalState->phi()  << "; deltaR = " << minDeltaR_finalState << endl;
 
-	  fPhotonGenMatchInfo.matchCategory = 2;
+	// store DeltaR between photon and final state match
+	fPhotonGenMatchInfo.deltaR_match = minDeltaR_finalState;
 
-	  fPhotonGenMatchInfo.deltaR_match = minDeltaR_genParticles;
-	
-	  matchedMother = &(*photonMatch_genParticles);
-	}
-      
-	//   // if there is a best final-state-from-hard-interaction match in deltaR <= 0.1, start from this instead of best overall match 
-	//   if (photonMatchFromHP) {
-	// 	photonMatch = &(*photonMatchFromHP);
-	// 	cout << "PhotonMatch RESTART: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
-	// 	     << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi()  << "; deltaR = " << minDeltaRfromHP << endl;
-	//   }
-      
-      
-	// loop over all mothers to find best match in deltaR. this is consider the true mother
-	// do this for each mother until its mother has pT = 0 (from hard interaction)
-	// photonMatch will always have at least one mother
+	// particle whose mothers will looped through
+	const reco::GenParticle *matchedMother = &(*photonMatch_finalState);
 
-	bool isFirstMother = true;
-	bool isHadronMother = false; // interacting proton isn't considered isHadronMother, i.e. matchedMother->pt() == 0 && matchedMother->pdgId() == 2212
-	bool isQuarkFirstMother  = false;
-	bool isSingleQuarkMother = false;
-	int  quarkMotherPdgId = 0;
-	bool isPhotonMother = false;
-	bool isFirstHardProcess = true; // set false after first hard process mother is found
-	//bool isProtonMother = false;
+	// ------------------------------------------------------------------------------------------------------------------------
+	// first consider photon matches
+	if (photonMatch_finalState->pdgId() == 22) {
+
+	  // count the number of photon matches according to matchCategory
+	  fPhotonGenMatchInfo.matchCategory = ExoDiPhotons::GenMatchingFlags::MatchCategoryFlags::kFinalStatePhotonMatch;
+
+	  // set to false after finidng first mother
+	  bool isFirstMother = true;
+	  // set to true if any mother is a hadron (interacting proton is not considered as true)
+	  bool isHadronMother = false;
+	  // keep track of the photon's first mother
+	  bool isQuarkFirstMother = false;
+	  // store pdgID of if photon's first mother is a quark
+	  int quarkMotherPdgId = 0;
+	  // set false after first hard process mother is found
+	  bool isFirstHardProcess = true;
+	  // flag ISR or FSR process
+	  bool isISR = false;
+	  bool isFSR = false;
+	  // check for fragmentation photon
+	  bool isFragmentation = false;
+	  // check if any mother is a photon
+	  bool isPhotonMother = false; // not currently used
+
+	  // save deltaR of first quark mother if ISR or FSR is determined
+	  double deltaR_quarkMother = -1111.1111;
       
-	double deltaR_quarkMother = -1111.0;
+	  // consider all mothers when tying to find best mother (no deltaR cut)
+	  double minMotherMatchDeltaR = 1000000;
+	  // store index of best mother
+	  int matchMotherIndex = 0;
+
+	  // loop through all mothers of our matched particle and choose mother with best deltaR match
+	  // this is considered the matched particle's ture mother
+	  // now find this mother's mother and repeat until no mother exists
+	  // this will trace back to the colliding proton which has pt()==0
+	  //while (!(matchedMother->pt() == 0 && matchedMother->pdgId() == 2212)) { // && !((reco::GenParticle *)matchedMother->mother())->isHardProcess()) {
+	  while (matchedMother->mother()) {
+	    //if (fabs(matchedMother->pdgId()) > 99) isHadronMother = true;
+
+	    // loop through all mothers and keep index of best deltaR match
+	    for (unsigned int j=0; j < matchedMother->numberOfMothers(); j++) {
+
+	      // calculate deltaR between particle and mother
+	      double deltaR = reco::deltaR(matchedMother->eta(),matchedMother->phi(),matchedMother->mother(j)->eta(),matchedMother->mother(j)->phi());
+
+	      // print each mother
+	      cout << "\t         Mother " << j << ": Status = " << matchedMother->mother(j)->status()  << "; ID = " << matchedMother->mother(j)->pdgId() << "; pt = "
+		   << matchedMother->mother(j)->pt() << "; eta = " << matchedMother->mother(j)->eta() << "; phi = " << matchedMother->mother(j)->phi()  << "; deltaR = " << deltaR << endl;
+
+	      // if current deltaR is smallest, save index
+	      if (deltaR < minMotherMatchDeltaR) {
+		minMotherMatchDeltaR = deltaR;
+		matchMotherIndex = j;
+	      }
+
+	    } // end for loop through mothers
+
+	    // store match whose mother is one of the outgoing interacting partons
+	    // or whose mother is directly the interacting proton
+	    // will be overwritten in the case of ISR or FSR
+	    if (!photonMatch && matchedMother->mother(matchMotherIndex)->pt()==0) photonMatch = &(*matchedMother);
+
+	    // matched particle now becomes best mother
+	    matchedMother = (reco::GenParticle *) matchedMother->mother(matchMotherIndex);
+
+	    // record is best mother is a hadron
+	    if (fabs(matchedMother->pdgId()) > 99) isHadronMother = true;
+
+	    // record is best mother is a photon
+	    if (matchedMother->pdgId()==22) isPhotonMother = true;
+
+	    // check if first mother is a quark and store deltaR between photon and quark mother
+	    if (isFirstMother && -9 < matchedMother->pdgId() && matchedMother->pdgId() < 9) {
+	      isQuarkFirstMother = true;
+	      quarkMotherPdgId = matchedMother->pdgId();
+	      deltaR_quarkMother = minMotherMatchDeltaR;
+	    }
+
+	    // check if first mother is a gluon
+	    if (isFirstMother && matchedMother->pdgId() == 21) {
+	      isFragmentation = true;
+	    }
+	    
+	    // if photon is radiated from colliding proton, then ISR
+	    if (isFirstMother && matchedMother->pdgId()==2212 && matchedMother->pt()==0) {
+	      isISR = true;
+	    }
+
+	    // checked first mother, so set to false
+	    isFirstMother = false;
+
+	    // check the first time the best mother is from the hard process
+	    if (isFirstHardProcess && matchedMother->isHardProcess()) {
+	      // reset so we don't check again
+	      isFirstHardProcess = false;
+	      // if photon's mother is a quark and that quark is unchanged from the hard process, then 
+	      if (isQuarkFirstMother && matchedMother->pdgId()==quarkMotherPdgId) {
+		// if hard interaction particle has no pT, then it's an incoming interaction particle, so we have ISR
+		if (matchedMother->pt()==0) isISR = true;
+		// if some pT, then it's an outgoing interacting particle, so FSR
+		else isFSR = true;
+	      }
+	      // if quark came from a different outgoing hard interaction quark, then fragmentation
+	      if (isQuarkFirstMother && matchedMother->pdgId() != quarkMotherPdgId && -9 < matchedMother->pdgId() && matchedMother->pdgId() < 9) {
+		isFragmentation = true;
+	      }
+	      // if quark came from a outgoing hard interacction gluon, then fragmentation
+	      if (isQuarkFirstMother && matchedMother->pdgId() == 21) {
+		isFragmentation = true;
+	      }
+	    }
+
+	    // print best mother match
+	    cout << "FinalState Matched MOTHER: Status = " << matchedMother->status()  << "; ID = " << matchedMother->pdgId() << "; pt = "
+		 << matchedMother->pt() << "; eta = " << matchedMother->eta() << "; phi = " << matchedMother->phi()  << "; deltaR = " << minMotherMatchDeltaR << endl;
+	    
+	    // reset cut!
+	    // so we will consider all mothers again during next loop
+	    minMotherMatchDeltaR = 1000000;
+
+	    // index could be > 0 and only one mother on next match and could be beam particle with very high deltaR
+	    // so reset index just to be safe
+	    matchMotherIndex = 0;
+	    
+	  } // end while loop through mothers
       
-	bool isISR = false;
-	bool isFSR = false;
-      
-	// consider all mothers when matching (no deltaR cut)
-	double minMotherMatchDeltaR = 1000000;
-	int matchMotherIndex = 0;
-      
-	// eventually trace back to colliding proton with pt()==0
-	while (!(matchedMother->pt() == 0 && matchedMother->pdgId() == 2212)) { // && !((reco::GenParticle *)matchedMother->mother())->isHardProcess()) {
-	  if (matchedMother->pdgId() > 99) isHadronMother = true;
-	  for (unsigned int j=0; j < matchedMother->numberOfMothers(); j++) {
-	    double deltaR = reco::deltaR(matchedMother->eta(),matchedMother->phi(),matchedMother->mother(j)->eta(),matchedMother->mother(j)->phi());
-	  
-	    cout << "\t         Mother " << j << ": Status = " << matchedMother->mother(j)->status()  << "; ID = " << matchedMother->mother(j)->pdgId() << "; pt = "
-		 << matchedMother->mother(j)->pt() << "; eta = " << matchedMother->mother(j)->eta() << "; phi = " << matchedMother->mother(j)->phi()  << "; deltaR = " << deltaR << endl;
-	  
-	    if (deltaR < minMotherMatchDeltaR) {
-	      minMotherMatchDeltaR = deltaR;
-	      matchMotherIndex = j;
+	  // print matchedMother mother
+	  // should be zero
+	  if (matchedMother->mother()) {
+	    for (unsigned int j=0; j < matchedMother->numberOfMothers(); j++) {
+	      cout << "\t FinalState Match MOTHER's MOTHER " << j << ": Status = " << matchedMother->mother(j)->status()  << "; ID = " << matchedMother->mother(j)->pdgId() << "; pt = "
+		   << matchedMother->mother(j)->pt() << "; eta = " << matchedMother->mother(j)->eta() << "; phi = " << matchedMother->mother(j)->phi()  << endl;
 	    }
 	  }
-	
-	  if (!photonMatch && matchedMother->mother(matchMotherIndex)->pt()==0) photonMatch = &(*matchedMother);
-	
-	  matchedMother = (reco::GenParticle *) matchedMother->mother(matchMotherIndex);
-	
-	  if (matchedMother->pdgId()==22) isPhotonMother = true;
-	
-	  if (isFirstMother && -9 < matchedMother->pdgId() && matchedMother->pdgId() < 9) {
-	    isQuarkFirstMother = true;
-	    quarkMotherPdgId = matchedMother->pdgId();
-	    deltaR_quarkMother = minMotherMatchDeltaR;
+
+	  // if photon has hadron mother, store photonMatch determined in loop
+	  // want to know if photon's mother is a quark or gluon
+	  if (isHadronMother) {
+	    fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kHadronMotherMatch;
 	  }
-	  if (isFirstMother && matchedMother->pdgId()==2212 && matchedMother->pt()==0) {
-	    //isProtonMother = true;
-	    isISR = true;
-	  }
-	
-	  isFirstMother = false;
-	
-	  if (isFirstHardProcess && matchedMother->isHardProcess()) {
-	    isFirstHardProcess = false;
-	    if (isQuarkFirstMother && matchedMother->pdgId()==quarkMotherPdgId) {
-	      isSingleQuarkMother = true;
-	      if (matchedMother->pt()==0) isISR = true;
-	      else isFSR = true;
-	    }
-	  }
-	
-	  cout << "FinalState Matched MOTHER: Status = " << matchedMother->status()  << "; ID = " << matchedMother->pdgId() << "; pt = "
-	       << matchedMother->pt() << "; eta = " << matchedMother->eta() << "; phi = " << matchedMother->phi()  << "; deltaR = " << minMotherMatchDeltaR << endl;
-	  // reset cut! 
-	  minMotherMatchDeltaR = 1000000;
-	  // index could be > 0 and only one mother on next match and could be beam particle with very high deltaR
-	  // so reset index just to be safe
-	  matchMotherIndex = 0;
-	} //while (matchedMother->pt() != 0);
-      
-	// this is our hard interaction match, with mother having pT = 0 (interacting parton)
-	//cout << "FinalState PhotonMatch END: Status = " << matchedMother->status()  << "; ID = " << matchedMother->pdgId() << "; pt = "
-	//<< matchedMother->pt() << "; eta = " << matchedMother->eta() << "; phi = " << matchedMother->phi()  << endl;
-      
-	// print matchedMother mother
-	// should be zero
-	if (matchedMother->mother()) {
-	  for (unsigned int j=0; j < matchedMother->numberOfMothers(); j++) {
-	    cout << "\t FinalState Match MOTHER's MOTHER " << j << ": Status = " << matchedMother->mother(j)->status()  << "; ID = " << matchedMother->mother(j)->pdgId() << "; pt = "
-		 << matchedMother->mother(j)->pt() << "; eta = " << matchedMother->mother(j)->eta() << "; phi = " << matchedMother->mother(j)->phi()  << endl;
-	  }
-	}
-      
-	if (isHadronMother) {
-	  cout << "Is hadron mother: " << isHadronMother << endl;
-	  fPhotonGenMatchInfo.matchType = 1;
-	  // matched genParticle is stored above
-	}
-	else {
-	  if (photonMatch_finalState) {
-	    if (photonMatch_finalState->pdgId()==22) {
-	      if (isFSR) {
-		fPhotonGenMatchInfo.matchType = 2;
-		fPhotonGenMatchInfo.deltaR_FSR = deltaR_quarkMother;
-	      }
-	      if (isISR) {
-		fPhotonGenMatchInfo.matchType = 3;
-		fPhotonGenMatchInfo.deltaR_FSR = deltaR_quarkMother;
-	      }
+	  // if not hadron mother, should be one of these distinct processes (e.g., can't be FSR and ISR, or FSR and fragmentation)
+	  if (!isHadronMother) {
+	    // if FSR, store photon and deltaR between photon and its first quark mother
+	    if (isFSR) {
+	      fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kFSRMatch;
+	      fPhotonGenMatchInfo.deltaR_FSR = deltaR_quarkMother;
 	      photonMatch = &(*photonMatch_finalState);
 	    }
-	    else {
-	      cout << "Fragmentation!" << endl;
-	      fPhotonGenMatchInfo.matchType = 4;
+	    // if ISR, store photon and deltaR between photon and its first quark mother
+	    if (isISR) {
+	      fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kISRMatch;
+	      fPhotonGenMatchInfo.deltaR_FSR = deltaR_quarkMother;
+	      photonMatch = &(*photonMatch_finalState);
 	    }
-	  }
-	  else if (photonMatch_genParticles) {
-	    if (photonMatch_genParticles->pdgId()==22) {
-	      if (isFSR) {
-		fPhotonGenMatchInfo.matchType = 2;
-		fPhotonGenMatchInfo.deltaR_FSR = deltaR_quarkMother;
+	    // determine if fragmentation
+	    // photonMatch determined in loop will be stored
+	    if (isFragmentation) {
+	      fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kFragmentationMatch;
+	    }
+	    // if not FSR, ISR, or fragmentation, then photon is unmatched
+	    // photonMatch determined in loop is stored
+	    if (!isFSR || !isISR || !isFragmentation) {
+	      fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kNoMatchType;
+	    }
+	  } // end if not hadron mother
+	  
+	  cout << "Is photon mother: " << isPhotonMother << endl;
+	  cout << "Is hadron mother: " << isHadronMother << endl;
+	  cout << "Is quark first mother: " << isQuarkFirstMother << endl;
+	  cout << "Is ISR: " << isISR << endl;
+	  cout << "Is FSR: " << isFSR << endl;
+	  cout << "Is fragmentation: " << isFragmentation << endl;
+	  
+	} // end if final state photon match
+
+	// ------------------------------------------------------------------------------------------------------------------------
+	// if final state match is not a photon
+	if (!photonMatch_finalState->pdgId() == 22) {
+
+	  // count number of non-photon final state matches according to matchCategory
+	  fPhotonGenMatchInfo.matchCategory = ExoDiPhotons::GenMatchingFlags::MatchCategoryFlags::kFinalStateNonPhotonMatch;
+
+	  bool isHadronOrHadronMother = false;
+	  bool isPhotonMother = false;
+
+	  // consider all mothers when tying to find best mother (no deltaR cut)
+	  double minMotherMatchDeltaR = 1000000;
+	  // store index of best mother
+	  int matchMotherIndex = 0;
+	  
+	  while (matchedMother->mother()) {
+	    // determine if final state match is hadron or if any of its mothers are
+	    if (fabs(matchedMother->pdgId()) > 99) isHadronOrHadronMother = true;
+	    
+	    // loop through all mothers and keep index of best deltaR match
+	    for (unsigned int j=0; j < matchedMother->numberOfMothers(); j++) {
+	      
+	      // calculate deltaR between particle and mother
+	      double deltaR = reco::deltaR(matchedMother->eta(),matchedMother->phi(),matchedMother->mother(j)->eta(),matchedMother->mother(j)->phi());
+	      
+	      // print each mother
+	      cout << "\t         Mother " << j << ": Status = " << matchedMother->mother(j)->status()  << "; ID = " << matchedMother->mother(j)->pdgId() << "; pt = "
+		   << matchedMother->mother(j)->pt() << "; eta = " << matchedMother->mother(j)->eta() << "; phi = " << matchedMother->mother(j)->phi()  << "; deltaR = " << deltaR << endl;
+	      
+	      // if current deltaR is smallest, save index
+	      if (deltaR < minMotherMatchDeltaR) {
+		minMotherMatchDeltaR = deltaR;
+		matchMotherIndex = j;
 	      }
-	      if (isISR) {
-		fPhotonGenMatchInfo.matchType = 3;
-		fPhotonGenMatchInfo.deltaR_FSR = deltaR_quarkMother;
-	      }
-	      photonMatch = &(*photonMatch_genParticles);
-	    }
-	    else {
-	      cout << "Fragmentation!" << endl;
-	      fPhotonGenMatchInfo.matchType = 4;
-	    }
+
+	    } // end for loop through mothers
+
+	    // store match whose mother is one of the outgoing interacting partons
+	    // or whose mother is directly the interacting proton
+	    // will be overwritten in the case of ISR or FSR
+	    if (!photonMatch && matchedMother->mother(matchMotherIndex)->pt()==0) photonMatch = &(*matchedMother);
+	    
+	    // matched particle now becomes best mother
+	    matchedMother = (reco::GenParticle *) matchedMother->mother(matchMotherIndex);
+	    
+	    // record is best mother is a photon
+	    if (matchedMother->pdgId()==22) isPhotonMother = true;
+	    
+	    // print best mother match
+	    cout << "FinalState Matched MOTHER: Status = " << matchedMother->status()  << "; ID = " << matchedMother->pdgId() << "; pt = "
+		 << matchedMother->pt() << "; eta = " << matchedMother->eta() << "; phi = " << matchedMother->phi()  << "; deltaR = " << minMotherMatchDeltaR << endl;
+	    
+	    // reset cut!
+	    // so we will consider all mothers again during next loop
+	    minMotherMatchDeltaR = 1000000;
+	    
+	    // index could be > 0 and only one mother on next match and could be beam particle with very high deltaR
+	    // so reset index just to be safe
+	    matchMotherIndex = 0;
+	    
+	  } // end while loop through mothers
+	  
+	  if (isHadronOrHadronMother) {
+	    fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kHadronMotherMatch;
 	  }
-	}
-	if (isPhotonMother) cout << "Real photon!" << endl;
-	cout << "Is quark first mother: " << isQuarkFirstMother << endl;
-	cout << "Is single quark mother: " << isSingleQuarkMother << endl;
-	cout << "Is ISR: " << isISR << endl;
-	cout << "Is FSR: " << isFSR << endl;
+	  
+	  if (!isHadronOrHadronMother) {
+	    fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kNoMatchType;
+	    // store traced back q or g, or store final state match?
+	  }
+	  
+	  cout << "Is photon mother: " << isPhotonMother << endl;
+	  cout << "Is hadron or hadron mother: " << isHadronOrHadronMother << endl;
+	  
+	} // end if NOT a final state photon match
+	
+	
       } // end if final state match
-      else {
-	//cout << "No photon match in hard process with DeltaR <= " << minDeltaR_hardProcess << ", or in final state with DeltaR <= " << minDeltaR_finalState << endl;
+      
+      // **************************************************************************************************************************
+      // no final state match BUT gen particle match
+      if (!photonMatch_finalState && photonMatch_genParticles) {
+	cout << "No final state match in DeltaR <= " << minDeltaR_finalState << endl;
+	cout << "GenParticle match." << endl;
+	cout << "GenParticle PhotonMatch  : Status = " << photonMatch_genParticles->status()  << "; ID = " << photonMatch_genParticles->pdgId() << "; pt = "
+	     << photonMatch_genParticles->pt() << "; eta = " << photonMatch_genParticles->eta() << "; phi = " << photonMatch_genParticles->phi()  << "; deltaR = " << minDeltaR_genParticles << endl;
+
+	// count number of gen particles matches according to matchCategory
+	fPhotonGenMatchInfo.matchCategory = ExoDiPhotons::GenMatchingFlags::MatchCategoryFlags::kGenParticleMatch;
+	
+	fPhotonGenMatchInfo.deltaR_match = minDeltaR_genParticles;
+	
+	const reco::GenParticle *matchedDaughter = &(*photonMatch_genParticles);
+	
+	// consider all daughters when tying to find best daughter (no deltaR cut)
+	double minDaughterMatchDeltaR = 1000000;
+	// store index of best daughter
+	int matchDaughterIndex = 0;
+	
+	while ((reco::GenParticle *)matchedDaughter->daughter(0)) {
+	  
+	  // loop through all daughters and keep index of best deltaR match
+	  for (unsigned int j=0; j < matchedDaughter->numberOfDaughters(); j++) {
+	    
+	    // calculate deltaR between particle and daughter
+	    double deltaR = reco::deltaR(matchedDaughter->eta(),matchedDaughter->phi(),matchedDaughter->daughter(j)->eta(),matchedDaughter->daughter(j)->phi());
+	    
+	    // print each daughter
+	    cout << "\t         Daughter " << j << ": Status = " << matchedDaughter->daughter(j)->status()  << "; ID = " << matchedDaughter->daughter(j)->pdgId() << "; pt = "
+		 << matchedDaughter->daughter(j)->pt() << "; eta = " << matchedDaughter->daughter(j)->eta() << "; phi = " << matchedDaughter->daughter(j)->phi()  << "; deltaR = " << deltaR << endl;
+	    
+	    // if current deltaR is smallest, save index
+	    if (deltaR < minDaughterMatchDeltaR) {
+	      minDaughterMatchDeltaR = deltaR;
+	      matchDaughterIndex = j;
+	    }
+	    
+	  } // end for loop through daughters
+	  
+	  // matched particle now becomes best daughter
+	  matchedDaughter = (reco::GenParticle *) matchedDaughter->daughter(matchDaughterIndex);
+	  
+	  // print best daughter match
+	  cout << "FinalState Matched DAUGHTER: Status = " << matchedDaughter->status()  << "; ID = " << matchedDaughter->pdgId() << "; pt = "
+	       << matchedDaughter->pt() << "; eta = " << matchedDaughter->eta() << "; phi = " << matchedDaughter->phi()  << "; deltaR = " << minDaughterMatchDeltaR << endl;
+	  
+	  // reset cut!
+	  // so we will consider all daughters again during next loop
+	  minDaughterMatchDeltaR = 1000000;
+	  
+	  // index could be > 0 and only one daughter on next match and could be beam particle with very high deltaR
+	  // so reset index just to be safe
+	  matchDaughterIndex = 0;
+	} // end while loop through daughters
+	
+      } // end if no final state match, but gen particle match
+      
+      // **************************************************************************************************************************
+      // no final state match AND no gen paticle match
+      if (!photonMatch_finalState && !photonMatch_genParticles) {
 	cout << "No photon match in final state with DeltaR <= " << minDeltaR_finalState << ", or among all gen particles with DeltaR <= " << minDeltaR_genParticles << endl;
-	fPhotonGenMatchInfo.matchCategory = 0;
-	fPhotonGenMatchInfo.matchType = 0;
-      }
+
+	// count number according to matchCategory
+	fPhotonGenMatchInfo.matchCategory = ExoDiPhotons::GenMatchingFlags::MatchCategoryFlags::kNoMatchCategory;
+	
+	// fill tree if no match
+	
+      } // end if no final state match, or gen particle match
 
       cout << "Match category: " << fPhotonGenMatchInfo.matchCategory << ", and match type: " << fPhotonGenMatchInfo.matchType << endl;
       cout << "DeltaR match  : " << fPhotonGenMatchInfo.deltaR_match << endl;
       cout << "DeltaR FSR    : " << fPhotonGenMatchInfo.deltaR_FSR << endl;
-    
-      // if photon match, fill our tree
+
+      // ===============================
+      // fill photon info into fTreeFake
+
+      // fill photon saturation
+      fPhotonMatchInfo.isSaturated = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+      //cout << "isSat: " << fPhotonMatchInfo.isSaturated << endl;
+      
+      // if photon match, print filled match and store info
       if (photonMatch) {
 	cout << "Filled PhotonMatch: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
 	     << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi() << endl;
-      
-	// fill photon saturation
-	fPhotonMatchInfo.isSaturated = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-	cout << "isSat: " << fPhotonMatchInfo.isSaturated << endl;
-      
+	
 	// fill photonMatch genParticle info
 	ExoDiPhotons::FillGenParticleInfo(fPhotonGenMatchInfo,photonMatch);
-      
-	// fill photon info
-	ExoDiPhotons::FillBasicPhotonInfo(fPhotonMatchInfo, &(*pho));
-	ExoDiPhotons::FillPhotonIDInfo(fPhotonMatchInfo, &(*pho), rho_, fPhotonMatchInfo.isSaturated);
-      
-	// fill EGM ID info
-	ExoDiPhotons::FillPhotonEGMidInfo(fPhotonMatchInfo, &(*pho), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
-	fPhotonMatchInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
-	fPhotonMatchInfo.passEGMMediumID = (*medium_id_decisions)[pho];
-	fPhotonMatchInfo.passEGMTightID  = (*tight_id_decisions)[pho];
-      
-	// fill our tree
-	if ( ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) &&
-	     ExoDiPhotons::passChargedHadronCut(&(*pho)) ) fTreeFake->Fill();
       } // end if photonMatch
-
+      
+      // fill photon info
+      ExoDiPhotons::FillBasicPhotonInfo(fPhotonMatchInfo, &(*pho));
+      ExoDiPhotons::FillPhotonIDInfo(fPhotonMatchInfo, &(*pho), rho_, fPhotonMatchInfo.isSaturated);
+      
+      // fill EGM ID info
+      ExoDiPhotons::FillPhotonEGMidInfo(fPhotonMatchInfo, &(*pho), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
+      fPhotonMatchInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
+      fPhotonMatchInfo.passEGMMediumID = (*medium_id_decisions)[pho];
+      fPhotonMatchInfo.passEGMTightID  = (*tight_id_decisions)[pho];
+      
+      // fill our tree
+      //if ( ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) &&
+      //ExoDiPhotons::passChargedHadronCut(&(*pho)) )
+      fTreeFake->Fill();
+      
     } // end if numerator photon
+    else cout << "Photon not a numerator object!" << endl;
     
   } // end of photon loop
   

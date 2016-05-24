@@ -3,6 +3,28 @@
 
 namespace ExoDiPhotons
 {
+
+  struct GenMatchingFlags {
+
+    enum MatchCategoryFlags {
+      // match category:
+      kNoMatchCategory = 0,      // 0 - no match category according to:
+      kFinalStatePhotonMatch,    // 1 - final state photon match in desired DeltaR core
+      kFinalStateNonPhotonMatch, // 2 - final state match NOT to photon in same DeltaR cone
+      kGenParticleMatch          // 3 - if no final state match, genParticle match of any status in desired DeltaR cone
+    };
+    
+    enum MatchTypeFlags {
+      // match type:
+      kNoMatchType = 0,   // 0 - no match type
+      kHadronMotherMatch, // 1 - hadron mother (fake)
+      kFSRMatch,          // 2 - FSR, only apples to photon matches (real)
+      kISRMatch,          // 3 - ISR, only applies to photon matches (real)
+      kFragmentationMatch // 4 - fragmentation photon, only applies to photon matches (fake)
+    };
+    
+  };
+  
   struct genParticleInfo_t {
     // gen info
     int status;
@@ -11,14 +33,20 @@ namespace ExoDiPhotons
     int pdgId;
     int motherPdgId;
     int grandmotherPdgId;
-
+    
+    // for matching 
+    int matchCategory;
+    int matchType;
+    double deltaR_match;
+    double deltaR_FSR;
+    
     // kinematics
     double pt;
     double eta;
     double phi;
   };
 
-  std::string genParticleBranchDefString("status/I:motherStatus:grandmotherStatus:pdgId:motherPdgId:grandmotherPdgId:pt/D:eta:phi");
+  std::string genParticleBranchDefString("status/I:motherStatus:grandmotherStatus:pdgId:motherPdgId:grandmotherPdgId:matchCategory:matchType:deltaR_match:deltaR_FSR:pt/D:eta:phi");
 
   void InitGenParticleInfo(genParticleInfo_t &genParticleInfo) {
     // gen info
@@ -29,6 +57,12 @@ namespace ExoDiPhotons
     genParticleInfo.motherPdgId       = -999999;
     genParticleInfo.grandmotherPdgId  = -999999;
 
+    // for matching
+    genParticleInfo.matchCategory = -999999;
+    genParticleInfo.matchType     = -999999;
+    genParticleInfo.deltaR_match  = -999999.99;
+    genParticleInfo.deltaR_FSR    = -999999.99;
+    
     // kinematics
     genParticleInfo.pt  = -999999.99;
     genParticleInfo.eta = -999999.99;
