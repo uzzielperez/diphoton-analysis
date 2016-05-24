@@ -250,7 +250,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
   ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
   ExoDiPhotons::FillBeamHaloEventInfo(fEventInfo, bhs);
   
-  cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
+  //cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
 
   // ==============
   // GEN EVENT INFO
@@ -310,7 +310,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
   iEvent.getByToken(rhoToken_,rhoH);
   rho_ = *rhoH;
   
-  cout << "rho: " << rho_ << endl;
+  //cout << "rho: " << rho_ << endl;
 
   // ======
   // EGM ID
@@ -375,11 +375,11 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
     const auto pho = photons->ptrAt(i);
     
     // print photon info
-    cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
+    //cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
 
     // fill photon saturation
     fPhotonInfo.isSaturated = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-    cout << "isSat: " << fPhotonInfo.isSaturated << endl;
+    //cout << "isSat: " << fPhotonInfo.isSaturated << endl;
     
     // fill photon info
     ExoDiPhotons::FillBasicPhotonInfo(fPhotonInfo, &(*pho));
@@ -405,6 +405,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
     if (ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) &&
 	ExoDiPhotons::passDenominatorCut(&(*pho), rho_, fPhotonInfo.isSaturated)) {
       cout << "Numerator photon!" << endl;
+      cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
       
       // deltaR cut
       double minDeltaR_hardProcess  = 0.4;
@@ -607,12 +608,12 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
       
 	  // print matchedMother mother
 	  // should be zero
-	  if (matchedMother->mother()) {
-	    for (unsigned int j=0; j < matchedMother->numberOfMothers(); j++) {
-	      cout << "\t FinalState Match MOTHER's MOTHER " << j << ": Status = " << matchedMother->mother(j)->status()  << "; ID = " << matchedMother->mother(j)->pdgId() << "; pt = "
-		   << matchedMother->mother(j)->pt() << "; eta = " << matchedMother->mother(j)->eta() << "; phi = " << matchedMother->mother(j)->phi()  << endl;
-	    }
-	  }
+	  //if (matchedMother->mother()) {
+	  //for (unsigned int j=0; j < matchedMother->numberOfMothers(); j++) {
+	  //cout << "\t FinalState Match MOTHER's MOTHER " << j << ": Status = " << matchedMother->mother(j)->status()  << "; ID = " << matchedMother->mother(j)->pdgId() << "; pt = "
+	  //<< matchedMother->mother(j)->pt() << "; eta = " << matchedMother->mother(j)->eta() << "; phi = " << matchedMother->mother(j)->phi()  << endl;
+	  //}
+	  //}
 
 	  // if photon has hadron mother, store photonMatch determined in loop
 	  // want to know if photon's mother is a quark or gluon
@@ -745,14 +746,20 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	fPhotonGenMatchInfo.matchCategory = ExoDiPhotons::GenMatchingFlags::MatchCategoryFlags::kGenParticleMatch;
 	
 	fPhotonGenMatchInfo.deltaR_match = minDeltaR_genParticles;
-	
+
+	// --------------------------------------------------------------------------------------------------------------------------
+	// since no final state match, investigate daughters
+
+	// starting particle to determine daughters from
 	const reco::GenParticle *matchedDaughter = &(*photonMatch_genParticles);
 	
 	// consider all daughters when tying to find best daughter (no deltaR cut)
 	double minDaughterMatchDeltaR = 1000000;
 	// store index of best daughter
 	int matchDaughterIndex = 0;
-	
+
+	// loop through all daughters until no daughter exists
+	// daughter constructor requires an argument
 	while ((reco::GenParticle *)matchedDaughter->daughter(0)) {
 	  
 	  // loop through all daughters and keep index of best deltaR match
@@ -789,17 +796,18 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	  matchDaughterIndex = 0;
 	} // end while loop through daughters
 	
+	// store final daugher
+	photonMatch = &(*matchedDaughter);
+	
       } // end if no final state match, but gen particle match
       
       // **************************************************************************************************************************
       // no final state match AND no gen paticle match
       if (!photonMatch_finalState && !photonMatch_genParticles) {
 	cout << "No photon match in final state with DeltaR <= " << minDeltaR_finalState << ", or among all gen particles with DeltaR <= " << minDeltaR_genParticles << endl;
-
+	
 	// count number according to matchCategory
 	fPhotonGenMatchInfo.matchCategory = ExoDiPhotons::GenMatchingFlags::MatchCategoryFlags::kNoMatchCategory;
-	
-	// fill tree if no match
 	
       } // end if no final state match, or gen particle match
 
@@ -839,7 +847,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
       fTreeFake->Fill();
       
     } // end if numerator photon
-    else cout << "Photon not a numerator object!" << endl;
+    //else cout << "Photon not a numerator object!" << endl;
     
   } // end of photon loop
   
