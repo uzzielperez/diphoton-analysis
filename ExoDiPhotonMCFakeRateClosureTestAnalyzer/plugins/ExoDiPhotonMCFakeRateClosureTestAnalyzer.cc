@@ -403,7 +403,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
     //continue;
     //}
     if (ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) &&
-	ExoDiPhotons::passDenominatorCut(&(*pho), rho_, fPhotonInfo.isSaturated)) {
+	ExoDiPhotons::passChargedHadronCut(&(*pho)) ) {
       cout << "Numerator photon!" << endl;
       cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
       
