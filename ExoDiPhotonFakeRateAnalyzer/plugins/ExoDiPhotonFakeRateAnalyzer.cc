@@ -29,6 +29,7 @@
 
 // from our CommomClasses
 #include "diphoton-analysis/CommonClasses/interface/EventInfo.h"
+#include "diphoton-analysis/CommonClasses/interface/TriggerInfo.h"
 #include "diphoton-analysis/CommonClasses/interface/JetInfo.h"
 #include "diphoton-analysis/CommonClasses/interface/PhotonID.h"
 #include "diphoton-analysis/CommonClasses/interface/PhotonInfo.h"
@@ -120,6 +121,12 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
 
   // Filter decisions token
   edm::EDGetToken filterDecisionToken_;
+
+  // Trigger decisions token
+  edm::EDGetToken triggerDecisionToken_;
+
+  // Trigger prescales token
+  edm::EDGetToken prescalesToken_;
   
   // trees
   TTree *fTree;
@@ -132,6 +139,9 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
   
   // event
   ExoDiPhotons::eventInfo_t fEventInfo;
+
+  //triggers
+  ExoDiPhotons::triggerInfo_t fTriggerInfo;
   
 };
 
@@ -164,6 +174,7 @@ ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet
   fTree = fs->make<TTree>("fTree","PhotonTree");
   fTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
   fTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
+  fTree->Branch("Trigger",&fTriggerInfo,ExoDiPhotons::triggerBranchDefString.c_str());
   fTree->Branch("Photon",&fPhotonInfo,ExoDiPhotons::photonBranchDefString.c_str());
   
   // MiniAOD tokens
@@ -185,6 +196,12 @@ ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet
 
   // Filter decisions
   filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","RECO") );
+
+  // Trigger decisions
+  triggerDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","HLT") );
+
+  // trigger prescales
+  prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","","RECO") );
   
 }
 
@@ -303,6 +320,22 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
     cout << "Event did not pass the EE Bad Supercrystal Filter, skip it!" << endl;
     return;
   }
+
+  // =====================
+  // TRIGGER DECISION INFO
+  // =====================
+
+  edm::Handle<edm::TriggerResults> triggerHandle;
+  iEvent.getByToken(triggerDecisionToken_,triggerHandle);
+  const edm::TriggerResults* triggerResults = triggerHandle.product();
+
+  edm::Handle<pat::PackedTriggerPrescales> prescalesHandle;
+  iEvent.getByToken(prescalesToken_,prescalesHandle);
+  const pat::PackedTriggerPrescales* prescales = prescalesHandle.product();
+
+  ExoDiPhotons::FillTriggerInfo(fTriggerInfo, triggerResults, prescales, iEvent);
+
+
 
   // =======
   // PHOTONS

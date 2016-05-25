@@ -34,7 +34,7 @@ process.source = cms.Source(
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
         #'file:myfile.root'
-        'root://cmsxrootd.fnal.gov//store/data/Run2015C_25ns/JetHT/MINIAOD/16Dec2015-v1/20000/B8EFF9C3-48B5-E511-87B3-3417EBE64444.root'
+        'root://cmsxrootd.fnal.gov//store/data/Run2015D/JetHT/MINIAOD/16Dec2015-v1/50000/1E73A933-51A9-E511-B71D-A0369F7F9170.root'
         )
     )
 
