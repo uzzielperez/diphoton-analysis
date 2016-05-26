@@ -456,10 +456,10 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
       
       // if best final state match is an electron, check for electron pair
       
-      // use same final state DeltaR cut
-      double minDeltaR_finalStateElectornPair = 0.1;
+      // increase final state DeltaR cut to allow for best final state electron close to cut and pair outside of cut
+      double minDeltaR_finalStateElectornPair = 0.3;
       const reco::GenParticle *photonMatch_finalStateElectronPair = NULL;
-
+      
       // is best final state match an electron
       if (photonMatch_finalState && fabs(photonMatch_finalState->pdgId()) == 11) {
 	
@@ -573,7 +573,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	    if (fabs(matchedMother->pdgId()) > 99) isHadronMother = true;
 
 	    // if quark is radiated from colliding proton giving rise to photon final state, then ISR
-	    if (isQuarkFirstMother && matchedMother->pdgId()==quarkMotherPdgId && !matchedMother->isHardProcess() &&
+	    if (isQuarkFirstMother && fabs(matchedMother->pdgId())==fabs(quarkMotherPdgId) && !matchedMother->isHardProcess() &&
 		matchedMother->mother(matchMotherIndex)->pdgId()==2212 && matchedMother->mother(matchMotherIndex)->pt()==0) {
 	      isISR = true;
 	    }

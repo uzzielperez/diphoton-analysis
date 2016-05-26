@@ -48,7 +48,7 @@ namespace ExoDiPhotons
     double phi;
   };
 
-  std::string genParticleBranchDefString("status/I:motherStatus:grandmotherStatus:pdgId:motherPdgId:grandmotherPdgId:matchCategory:matchType:deltaR_match:deltaR_FSR:pt/D:eta:phi");
+  std::string genParticleBranchDefString("status/I:motherStatus:grandmotherStatus:pdgId:motherPdgId:grandmotherPdgId:matchCategory:matchType:deltaR_match/D:deltaR_FSR:pt:eta:phi");
 
   void InitGenParticleInfo(genParticleInfo_t &genParticleInfo) {
     // gen info
