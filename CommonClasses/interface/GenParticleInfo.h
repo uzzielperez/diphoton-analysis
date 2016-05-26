@@ -11,16 +11,18 @@ namespace ExoDiPhotons
       kNoMatchCategory = 0,      // 0 - no match category according to:
       kFinalStatePhotonMatch,    // 1 - final state photon match in desired DeltaR core
       kFinalStateNonPhotonMatch, // 2 - final state match NOT to photon in same DeltaR cone
-      kGenParticleMatch          // 3 - if no final state match, genParticle match of any status in desired DeltaR cone
+      kGenParticlePhotonMatch,   // 3 - if no final state match, genParticle match of any status photon in desired DeltaR cone
+      kGenParticleNonPhotonMatch // 4 - if no final state match, non-photon genParticle match of any status in desired DeltaR cone
     };
     
     enum MatchTypeFlags {
       // match type:
-      kNoMatchType = 0,   // 0 - no match type
-      kHadronMotherMatch, // 1 - hadron mother (fake)
-      kFSRMatch,          // 2 - FSR, only apples to photon matches (real)
-      kISRMatch,          // 3 - ISR, only applies to photon matches (real)
-      kFragmentationMatch // 4 - fragmentation photon, only applies to photon matches (fake)
+      kNoMatchType = 0,         // 0 - no match type
+      kHadronMotherMatch,       // 1 - hadron mother (fake)
+      kFSRMatch,                // 2 - FSR, only apples to photon matches (real)
+      kISRMatch,                // 3 - ISR, only applies to photon matches (real)
+      kOtherFragmentationMatch, // 4 - other fragmentation photon, only applies to photon matches (fake)
+      kElectronPairMatch        // 5 - final state electron match and electron pair found with no hadron mother (real or fake?)
     };
     
   };

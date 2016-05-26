@@ -452,28 +452,55 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	  }	
 	}
       
-      } // end of genParticle loop
-    
+      } // end for genParticle loop
+      
+      // if best final state match is an electron, check for electron pair
+      
+      // use same final state DeltaR cut
+      double minDeltaR_finalStateElectornPair = 0.1;
+      const reco::GenParticle *photonMatch_finalStateElectronPair = NULL;
+
+      // is best final state match an electron
+      if (photonMatch_finalState && fabs(photonMatch_finalState->pdgId()) == 11) {
+	
+	// loop through all gen particles
+	for (size_t i = 0; i < genParticles->size(); ++i) {
+	  const auto gen = genParticles->ptrAt(i);
+	  
+	  // calculate deltaR for current genParticle
+	  double deltaR = reco::deltaR(pho->eta(),pho->phi(),gen->eta(),gen->phi());
+	  
+	  // check for best electron match among all gen particles in deltaR cut
+	  // igonre already found final state electron match
+	  if (&(*photonMatch_finalState) != &(*gen) && fabs(gen->pdgId()) == 11  && deltaR <= minDeltaR_finalStateElectornPair) {
+	    minDeltaR_finalStateElectornPair = deltaR;
+	    photonMatch_finalStateElectronPair = &(*gen);
+	  }
+	  
+	} // end for genParticle loop
+	
+      } // end if final state electron
+      
       // photon's gen particle match to be filled into tree
       const reco::GenParticle *photonMatch = NULL;
-    
+      
       if (photonMatch_hardProcess) {
 	//photonMatch = &(*photonMatch_hardProcess);
 	cout << "Hard process match." << endl;
 	//cout << "HardProcess PhotonMatch: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId()
 	//<< "; pt = " photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi() << "; deltaR = " << minDeltaR_hardProcess << endl;
       }
-
+      
       // **************************************************************************************************************************
       // first consider final state matches
       if (photonMatch_finalState) {
 	cout << "Final state match." << endl;
-	cout << "FinalState PhotonMatch   : Status = " << photonMatch_finalState->status()  << "; ID = " << photonMatch_finalState->pdgId() << "; pt = "
+	cout << "FinalState PhotonMatch     : Status = " << photonMatch_finalState->status()  << "; ID = " << photonMatch_finalState->pdgId() << "; pt = "
 	     << photonMatch_finalState->pt() << "; eta = " << photonMatch_finalState->eta() << "; phi = " << photonMatch_finalState->phi()  << "; deltaR = " << minDeltaR_finalState << endl;
 
 	// store DeltaR between photon and final state match
 	fPhotonGenMatchInfo.deltaR_match = minDeltaR_finalState;
-
+	
 	// particle whose mothers will looped through
 	const reco::GenParticle *matchedMother = &(*photonMatch_finalState);
 
@@ -498,7 +525,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	  bool isISR = false;
 	  bool isFSR = false;
 	  // check for fragmentation photon
-	  bool isFragmentation = false;
+	  bool isOtherFragmentation = false;
 	  // check if any mother is a photon
 	  bool isPhotonMother = false; // not currently used
 
@@ -525,9 +552,9 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	      double deltaR = reco::deltaR(matchedMother->eta(),matchedMother->phi(),matchedMother->mother(j)->eta(),matchedMother->mother(j)->phi());
 
 	      // print each mother
-	      cout << "\t         Mother " << j << ": Status = " << matchedMother->mother(j)->status()  << "; ID = " << matchedMother->mother(j)->pdgId() << "; pt = "
+	      cout << "\t           Mother " << j << ": Status = " << matchedMother->mother(j)->status()  << "; ID = " << matchedMother->mother(j)->pdgId() << "; pt = "
 		   << matchedMother->mother(j)->pt() << "; eta = " << matchedMother->mother(j)->eta() << "; phi = " << matchedMother->mother(j)->phi()  << "; deltaR = " << deltaR << endl;
-
+	      
 	      // if current deltaR is smallest, save index
 	      if (deltaR < minMotherMatchDeltaR) {
 		minMotherMatchDeltaR = deltaR;
@@ -544,6 +571,12 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	    // record is best mother is a hadron
 	    // dont condiser interacting proton a hadron mother
 	    if (fabs(matchedMother->pdgId()) > 99) isHadronMother = true;
+
+	    // if quark is radiated from colliding proton giving rise to photon final state, then ISR
+	    if (isQuarkFirstMother && matchedMother->pdgId()==quarkMotherPdgId && !matchedMother->isHardProcess() &&
+		matchedMother->mother(matchMotherIndex)->pdgId()==2212 && matchedMother->mother(matchMotherIndex)->pt()==0) {
+	      isISR = true;
+	    }
 	    
 	    // matched particle now becomes best mother
 	    matchedMother = (reco::GenParticle *) matchedMother->mother(matchMotherIndex);
@@ -560,14 +593,14 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 
 	    // check if first mother is a gluon
 	    if (isFirstMother && matchedMother->pdgId() == 21) {
-	      isFragmentation = true;
+	      isOtherFragmentation = true;
 	    }
 	    
 	    // if photon is radiated from colliding proton, then ISR
 	    if (isFirstMother && matchedMother->pdgId()==2212 && matchedMother->pt()==0) {
 	      isISR = true;
 	    }
-
+	    
 	    // checked first mother, so set to false
 	    isFirstMother = false;
 
@@ -584,16 +617,16 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	      }
 	      // if quark came from a different outgoing hard interaction quark, then fragmentation
 	      if (isQuarkFirstMother && matchedMother->pdgId() != quarkMotherPdgId && -9 < matchedMother->pdgId() && matchedMother->pdgId() < 9) {
-		isFragmentation = true;
+		isOtherFragmentation = true;
 	      }
 	      // if quark came from a outgoing hard interacction gluon, then fragmentation
 	      if (isQuarkFirstMother && matchedMother->pdgId() == 21) {
-		isFragmentation = true;
+		isOtherFragmentation = true;
 	      }
 	    } // end if first hardProcess mother
 	    
 	    // print best mother match
-	    cout << "FinalState Matched MOTHER: Status = " << matchedMother->status()  << "; ID = " << matchedMother->pdgId() << "; pt = "
+	    cout << "FinalState Matched MOTHER " << matchMotherIndex << ": Status = " << matchedMother->status()  << "; ID = " << matchedMother->pdgId() << "; pt = "
 		 << matchedMother->pt() << "; eta = " << matchedMother->eta() << "; phi = " << matchedMother->phi()  << "; deltaR = " << minMotherMatchDeltaR << endl;
 	    
 	    // reset cut!
@@ -636,12 +669,12 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	    }
 	    // determine if fragmentation
 	    // photonMatch determined in loop will be stored
-	    if (isFragmentation) {
-	      fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kFragmentationMatch;
+	    if (isOtherFragmentation) {
+	      fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kOtherFragmentationMatch;
 	    }
 	    // if not FSR, ISR, or fragmentation, then photon is unmatched
 	    // photonMatch determined in loop is stored
-	    if (!isFSR && !isISR && !isFragmentation) {
+	    if (!isFSR && !isISR && !isOtherFragmentation) {
 	      fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kNoMatchType;
 	    }
 	  } // end if not hadron mother
@@ -651,7 +684,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	  cout << "Is quark first mother: " << isQuarkFirstMother << endl;
 	  cout << "Is ISR: " << isISR << endl;
 	  cout << "Is FSR: " << isFSR << endl;
-	  cout << "Is fragmentation: " << isFragmentation << endl;
+	  cout << "Is other fragmentation: " << isOtherFragmentation << endl;
 	  
 	} // end if final state photon match
 
@@ -681,7 +714,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	      double deltaR = reco::deltaR(matchedMother->eta(),matchedMother->phi(),matchedMother->mother(j)->eta(),matchedMother->mother(j)->phi());
 	      
 	      // print each mother
-	      cout << "\t         Mother " << j << ": Status = " << matchedMother->mother(j)->status()  << "; ID = " << matchedMother->mother(j)->pdgId() << "; pt = "
+	      cout << "\t           Mother " << j << ": Status = " << matchedMother->mother(j)->status()  << "; ID = " << matchedMother->mother(j)->pdgId() << "; pt = "
 		   << matchedMother->mother(j)->pt() << "; eta = " << matchedMother->mother(j)->eta() << "; phi = " << matchedMother->mother(j)->phi()  << "; deltaR = " << deltaR << endl;
 	      
 	      // if current deltaR is smallest, save index
@@ -704,7 +737,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	    if (matchedMother->pdgId()==22) isPhotonMother = true;
 	    
 	    // print best mother match
-	    cout << "FinalState Matched MOTHER: Status = " << matchedMother->status()  << "; ID = " << matchedMother->pdgId() << "; pt = "
+	    cout << "FinalState Matched MOTHER " << matchMotherIndex << ": Status = " << matchedMother->status()  << "; ID = " << matchedMother->pdgId() << "; pt = "
 		 << matchedMother->pt() << "; eta = " << matchedMother->eta() << "; phi = " << matchedMother->phi()  << "; deltaR = " << minMotherMatchDeltaR << endl;
 	    
 	    // reset cut!
@@ -720,8 +753,13 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	  if (isHadronOrHadronMother) {
 	    fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kHadronMotherMatch;
 	  }
+
+	  if (!isHadronOrHadronMother && photonMatch_finalStateElectronPair) {
+	    fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kElectronPairMatch;
+	    // what to store?
+	  }
 	  
-	  if (!isHadronOrHadronMother) {
+	  if (!isHadronOrHadronMother && !photonMatch_finalStateElectronPair) {
 	    fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kNoMatchType;
 	    // store traced back q or g, or store final state match?
 	  }
@@ -739,11 +777,8 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
       if (!photonMatch_finalState && photonMatch_genParticles) {
 	cout << "No final state match in DeltaR <= " << minDeltaR_finalState << endl;
 	cout << "GenParticle match." << endl;
-	cout << "GenParticle PhotonMatch  : Status = " << photonMatch_genParticles->status()  << "; ID = " << photonMatch_genParticles->pdgId() << "; pt = "
+	cout << "GenParticle PhotonMatch    : Status = " << photonMatch_genParticles->status()  << "; ID = " << photonMatch_genParticles->pdgId() << "; pt = "
 	     << photonMatch_genParticles->pt() << "; eta = " << photonMatch_genParticles->eta() << "; phi = " << photonMatch_genParticles->phi()  << "; deltaR = " << minDeltaR_genParticles << endl;
-
-	// count number of gen particles matches according to matchCategory
-	fPhotonGenMatchInfo.matchCategory = ExoDiPhotons::GenMatchingFlags::MatchCategoryFlags::kGenParticleMatch;
 	
 	fPhotonGenMatchInfo.deltaR_match = minDeltaR_genParticles;
 
@@ -769,7 +804,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	    double deltaR = reco::deltaR(matchedDaughter->eta(),matchedDaughter->phi(),matchedDaughter->daughter(j)->eta(),matchedDaughter->daughter(j)->phi());
 	    
 	    // print each daughter
-	    cout << "\t         Daughter " << j << ": Status = " << matchedDaughter->daughter(j)->status()  << "; ID = " << matchedDaughter->daughter(j)->pdgId() << "; pt = "
+	    cout << "\t           Daughter " << j << ": Status = " << matchedDaughter->daughter(j)->status()  << "; ID = " << matchedDaughter->daughter(j)->pdgId() << "; pt = "
 		 << matchedDaughter->daughter(j)->pt() << "; eta = " << matchedDaughter->daughter(j)->eta() << "; phi = " << matchedDaughter->daughter(j)->phi()  << "; deltaR = " << deltaR << endl;
 	    
 	    // if current deltaR is smallest, save index
@@ -784,7 +819,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	  matchedDaughter = (reco::GenParticle *) matchedDaughter->daughter(matchDaughterIndex);
 	  
 	  // print best daughter match
-	  cout << "FinalState Matched DAUGHTER: Status = " << matchedDaughter->status()  << "; ID = " << matchedDaughter->pdgId() << "; pt = "
+	  cout << "FinalState Matched DAUGHTER :" << matchDaughterIndex << "Status = " << matchedDaughter->status()  << "; ID = " << matchedDaughter->pdgId() << "; pt = "
 	       << matchedDaughter->pt() << "; eta = " << matchedDaughter->eta() << "; phi = " << matchedDaughter->phi()  << "; deltaR = " << minDaughterMatchDeltaR << endl;
 	  
 	  // reset cut!
@@ -798,6 +833,17 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	
 	// store final daugher
 	photonMatch = &(*matchedDaughter);
+
+	// if genParticle photon match
+	if (photonMatch_genParticles->pdgId() == 22) {
+	  // count number of gen particles photon matches according to matchCategory
+	  fPhotonGenMatchInfo.matchCategory = ExoDiPhotons::GenMatchingFlags::MatchCategoryFlags::kGenParticlePhotonMatch;
+	} // end if genParticle photon match
+
+	// if genParticle non-photon match
+	if (photonMatch_genParticles->pdgId() != 22) {
+	  fPhotonGenMatchInfo.matchCategory = ExoDiPhotons::GenMatchingFlags::MatchCategoryFlags::kGenParticleNonPhotonMatch;
+	} // end if genParticle non-photon match
 	
       } // end if no final state match, but gen particle match
       
@@ -824,7 +870,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
       
       // if photon match, print filled match and store info
       if (photonMatch) {
-	cout << "Filled PhotonMatch: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
+	cout << "Filled gen particle PhotonMatch: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
 	     << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi() << endl;
 	
 	// fill photonMatch genParticle info
