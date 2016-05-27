@@ -141,7 +141,8 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
   ExoDiPhotons::eventInfo_t fEventInfo;
 
   //triggers
-  ExoDiPhotons::triggerInfo_t fTriggerInfo;
+  ExoDiPhotons::triggerInfo_t fTriggerBitInfo;
+  ExoDiPhotons::triggerInfo_t fTriggerPrescaleInfo;
   
 };
 
@@ -174,7 +175,8 @@ ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet
   fTree = fs->make<TTree>("fTree","PhotonTree");
   fTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
   fTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
-  fTree->Branch("Trigger",&fTriggerInfo,ExoDiPhotons::triggerBranchDefString.c_str());
+  fTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
+  fTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
   fTree->Branch("Photon",&fPhotonInfo,ExoDiPhotons::photonBranchDefString.c_str());
   
   // MiniAOD tokens
@@ -333,7 +335,8 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
   iEvent.getByToken(prescalesToken_,prescalesHandle);
   const pat::PackedTriggerPrescales* prescales = prescalesHandle.product();
 
-  ExoDiPhotons::FillTriggerInfo(fTriggerInfo, triggerResults, prescales, iEvent);
+  ExoDiPhotons::FillTriggerBits(fTriggerBitInfo, triggerResults, iEvent); // fill trigger bits into trigger bit branch
+  ExoDiPhotons::FillTriggerPrescales(fTriggerPrescaleInfo, triggerResults, prescales, iEvent); // fill trigger prescale info in trigger prescale branch
 
 
 
