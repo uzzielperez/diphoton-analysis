@@ -12,6 +12,8 @@ void fakeRateCalculation() {
 
   int ptBinArray[11] = { 30, 50, 70, 90, 110, 130, 150, 200, 250, 300, 600 };
   double ptBinArray_double[11] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
+  // int ptBinArray[11] = { 30, 50, 70, 90, 110, 130, 150, 200, 250, 300, 14000 };
+  // double ptBinArray_double[11] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 14.e3 };
 
   // make vector of sidebands
   std::vector< std::pair<double,double> > chIsoSidebands;
@@ -69,9 +71,13 @@ void fakeRateCalculation() {
   outfile.Close(); // create the file so it can be updated in the rooFitFakeRateProducer, we don't need it open here too
 
   // for data
-  //TFile infile("../../DataFakeRateAnalysis/analysis/diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root","read");
+  TFile infile("../../DataFakeRateAnalysis/analysis/diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_matchedToLeadingJetDr0p6.root","read");
   // for MC as data
-  TFile infile("../../MCFakeRateClosureTest/analysis/diphoton_fakeRate_QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root","read");
+  // TFile infile("../../MCFakeRateClosureTest/analysis/diphoton_fakeRate_QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root","read");
+
+  // debug vectors
+  std::vector<double> numVec;
+  std::vector<double> denomVec;
   
   for (unsigned int j=0; j<chIsoSidebands.size(); j++){ // loop over sidebands
     for (int i = 0; i < 10; i++){  // loop over pT bins
@@ -113,6 +119,12 @@ void fakeRateCalculation() {
       fakeRatesEB.at(j)->SetPointError(i,eXLow_EB,eXHigh_EB,ey_EB,ey_EB);
       fakeRatesEE.at(j)->SetPoint(i,graphX_EE,graphY_EE);
       fakeRatesEE.at(j)->SetPointError(i,eXLow_EE,eXHigh_EE,ey_EE,ey_EE);
+
+      // fill debug vectors
+      if (sidebandLow == 9.){
+        numVec.push_back(resEE.first);
+        denomVec.push_back(denomEE);
+      }
 
       // record background fit result
 
@@ -157,6 +169,15 @@ void fakeRateCalculation() {
 
   // fakeRateEB->Divide(denomvsptEB);
   // fakeRateEE->Divide(denomvsptEE);
+
+  // debug printout to see fake rate ratios
+  for (unsigned int i = 0; i < (numVec.size()-1); i++){
+    double numratio = numVec.at(i+1) / numVec.at(i);
+    double denomratio = denomVec.at(i) / denomVec.at(i+1);
+    cout << "EE Debug Info: ptBinLowEdge       n2/n1       d1/d2       FR" << endl;
+    cout << ptBinArray[i] << " " << numratio << " " << denomratio << " " << numratio*denomratio << endl;
+    cout << " " << endl;
+  }
 
   TFile outfile2("fakeRatePlots.root","update");
   outfile2.cd();

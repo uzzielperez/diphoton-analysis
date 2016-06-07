@@ -106,6 +106,15 @@ void FakeRateAnalysis::Loop()
     sIeIeFakeTemplatesEE.push_back(eevec);
   }
 
+  TH1D* jetPhoDrEB_numerator = new TH1D("jetPhoDrEB_numerator","jetPhoDrEB_numerator",500,0.,5.);
+  TH1D* jetPhoDrEE_numerator = new TH1D("jetPhoDrEE_numerator","jetPhoDrEE_numerator",500,0.,5.);
+
+  TH1D* jetPhoDrEB_faketemplate = new TH1D("jetPhoDrEB_faketemplate","jetPhoDrEB_faketemplate",500,0.,5.);
+  TH1D* jetPhoDrEE_faketemplate = new TH1D("jetPhoDrEE_faketemplate","jetPhoDrEE_faketemplate",500,0.,5.);
+
+  TH1D* jetPhoDrEB_denominator = new TH1D("jetPhoDrEB_denominator","jetPhoDrEB_denominator",500,0.,5.);
+  TH1D* jetPhoDrEE_denominator = new TH1D("jetPhoDrEE_denominator","jetPhoDrEE_denominator",500,0.,5.);
+
   std::vector<TH1D*> sIeIeNumeratorEB;
   std::vector<TH1D*> sIeIeNumeratorEE;
   std::vector<TH1D*> denomPtEB;
@@ -171,6 +180,23 @@ void FakeRateAnalysis::Loop()
     // reject beam halo
     //if (Event_beamHaloIDTight2015) continue;
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
+
+    // evaluate jet trigger groupings
+    // bool singleJetFired = TriggerBit_HLT_AK8DiPFJet280_200_TrimMass30_BTagCSV0p45_v3==1 || TriggerBit_HLT_AK8PFJet360_TrimMass30_v3==1 || TriggerBit_HLT_CaloJet500_NoJetID_v2==1 || TriggerBit_HLT_DiCaloJetAve140_v1==1 || TriggerBit_HLT_DiCaloJetAve200_v1==1 || TriggerBit_HLT_DiCaloJetAve260_v1==1 || TriggerBit_HLT_DiCaloJetAve320_v1==1 || TriggerBit_HLT_DiCaloJetAve400_v1==1 || TriggerBit_HLT_DiCaloJetAve40_v1==1 || TriggerBit_HLT_DiCaloJetAve500_v1==1 || TriggerBit_HLT_DiCaloJetAve60_v1==1 || TriggerBit_HLT_DiCaloJetAve80_v1==1 || TriggerBit_HLT_DiPFJetAve100_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve140_v2==1 || TriggerBit_HLT_DiPFJetAve160_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve200_v2==1 || TriggerBit_HLT_DiPFJetAve220_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve260_v2==1 || TriggerBit_HLT_DiPFJetAve300_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve30_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve320_v2==1 || TriggerBit_HLT_DiPFJetAve400_v2==1 || TriggerBit_HLT_DiPFJetAve40_v2==1 || TriggerBit_HLT_DiPFJetAve500_v2==1 || TriggerBit_HLT_DiPFJetAve60_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve60_v2==1 || TriggerBit_HLT_DiPFJetAve80_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve80_v2==1 || TriggerBit_HLT_PFJet140_v4==1 || TriggerBit_HLT_PFJet200_v4==1 || TriggerBit_HLT_PFJet260_v4==1 || TriggerBit_HLT_PFJet320_v4==1 || TriggerBit_HLT_PFJet400_v4==1 || TriggerBit_HLT_PFJet40_v4==1 || TriggerBit_HLT_PFJet450_v4==1 || TriggerBit_HLT_PFJet500_v4==1 || TriggerBit_HLT_PFJet60_v4==1 || TriggerBit_HLT_PFJet80_v4==1;
+
+    // bool htFired = TriggerBit_HLT_AK8PFHT600_TrimR0p1PT0p03Mass50_BTagCSV0p45_v2==1 || TriggerBit_HLT_AK8PFHT650_TrimR0p1PT0p03Mass50_v2==1 || TriggerBit_HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_v3==1 || TriggerBit_HLT_HT2000_v1==1 || TriggerBit_HLT_HT200_v1==1 || TriggerBit_HLT_HT2500_v1==1 || TriggerBit_HLT_HT275_v1==1 || TriggerBit_HLT_HT325_v1==1 || TriggerBit_HLT_HT425_v1==1 || TriggerBit_HLT_HT575_v1==1 || TriggerBit_HLT_L1_TripleJet_VBF_v4==1 || TriggerBit_HLT_PFHT200_v2==1 || TriggerBit_HLT_PFHT250_v2==1 || TriggerBit_HLT_PFHT300_v2==1 || TriggerBit_HLT_PFHT350_v3==1 || TriggerBit_HLT_PFHT400_SixJet30_BTagCSV0p55_2PFBTagCSV0p72_v3==1 || TriggerBit_HLT_PFHT400_SixJet30_v3==1 || TriggerBit_HLT_PFHT400_v2==1 || TriggerBit_HLT_PFHT450_SixJet40_PFBTagCSV0p72_v3==1 || TriggerBit_HLT_PFHT450_SixJet40_v3==1 || TriggerBit_HLT_PFHT475_v2==1 || TriggerBit_HLT_PFHT550_4JetPt50_v1==1 || TriggerBit_HLT_PFHT600_v3==1 || TriggerBit_HLT_PFHT650_4JetPt50_v1==1 || TriggerBit_HLT_PFHT650_WideJetMJJ900DEtaJJ1p5_v3==1 || TriggerBit_HLT_PFHT650_WideJetMJJ950DEtaJJ1p5_v3==1 || TriggerBit_HLT_PFHT650_v3==1 || TriggerBit_HLT_PFHT750_4JetPt50_v3==1 || TriggerBit_HLT_PFHT800_v2==1 || TriggerBit_HLT_QuadPFJet_VBF_v4==1;
+
+    // bool PFJet80Fired = TriggerBit_HLT_PFJet80_v4 == 1;
+    // bool PFJet400Fired = TriggerBit_HLT_PFJet400_v4 == 1;
+
+    TLorentzVector photon;
+    TLorentzVector leadingJet;
+    photon.SetPtEtaPhiM(Photon_pt,Photon_scEta,Photon_scPhi,0.);
+    leadingJet.SetPtEtaPhiM(Jet_leadingJetPt,Jet_leadingJetEta,Jet_leadingJetPhi,Jet_leadingJetMass);
+
+    double photonLeadingJetDr = photon.DeltaR(leadingJet);
+    bool matchedToLeadingJet = (photonLeadingJetDr < 0.6);
+    // if (!matchedToLeadingJet) continue;
       
     // plot fake templates first
     // start with pt plots
@@ -186,6 +212,7 @@ void FakeRateAnalysis::Loop()
     } 
 
     bool isNumeratorObj = Photon_isNumeratorObjCand && Photon_passChIso;
+
     // bool inChIsoSideband = (sidebandLow < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < sidebandHigh);
     // bool isFakeTemplateObj = Photon_isNumeratorObjCand && inChIsoSideband;
 
@@ -194,10 +221,12 @@ void FakeRateAnalysis::Loop()
       if (isNumeratorObj){
       	phoPtEB_numerator.Fill(Photon_pt);
       	phoPtEB_numerator_varbin.Fill(Photon_pt);
+        jetPhoDrEB_numerator->Fill(photonLeadingJetDr);
       }
       if (Photon_isDenominatorObj){
       	phoPtEB_denominator.Fill(Photon_pt);
       	phoPtEB_denominator_varbin.Fill(Photon_pt);
+        jetPhoDrEB_denominator->Fill(photonLeadingJetDr);
       }
       // if (isFakeTemplateObj){
       // 	phoPtEB_faketemplate.Fill(Photon_pt);
@@ -210,10 +239,12 @@ void FakeRateAnalysis::Loop()
       if (isNumeratorObj){
       	phoPtEE_numerator.Fill(Photon_pt);
       	phoPtEE_numerator_varbin.Fill(Photon_pt);
+        jetPhoDrEE_numerator->Fill(photonLeadingJetDr);
       }
       if (Photon_isDenominatorObj){
       	phoPtEE_denominator.Fill(Photon_pt);
       	phoPtEE_denominator_varbin.Fill(Photon_pt);
+        jetPhoDrEE_denominator->Fill(photonLeadingJetDr);
       }
       // if (isFakeTemplateObj){
       // 	phoPtEE_faketemplate.Fill(Photon_pt);
@@ -235,9 +266,15 @@ void FakeRateAnalysis::Loop()
         bool isFakeTemplateObj = Photon_isNumeratorObjCand && inChIsoSideband;
 
         if ( (binLowEdge < Photon_pt) && (Photon_pt < binUpperEdge) && isFakeTemplateObj ){
-          if (fabs(Photon_scEta) < 1.4442) sIeIeFakeTemplatesEB.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5 );
-          else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeFakeTemplatesEE.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5 );
-        }
+          if (fabs(Photon_scEta) < 1.4442){
+            sIeIeFakeTemplatesEB.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5 );
+            if (sidebandLow==9.) jetPhoDrEB_faketemplate->Fill(photonLeadingJetDr);
+          }
+          else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ){
+            sIeIeFakeTemplatesEE.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5 );
+            if (sidebandLow==9.) jetPhoDrEE_faketemplate->Fill(photonLeadingJetDr);            
+          }
+        } // end if statement on fake template obj and pT bin
       } // end loop over sidebands to fill fake templates
 
 
@@ -268,7 +305,8 @@ void FakeRateAnalysis::Loop()
   // write histograms out to root files
   
   // TString outName = TString::Format("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_chIsoSB%iTo%i.root",(int)sidebandLow,(int)sidebandHigh);
-  TFile file_out("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_DENOM1.root","RECREATE");
+  // TFile file_out("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_matchedToLeadingJetDr0p6.root","RECREATE");
+  TFile file_out("jetht_fakerate_withalldrplots.root","RECREATE");
   
   // sigmaIetaIetaEB->Write();
   // sigmaIetaIetaEE->Write();
@@ -337,6 +375,12 @@ void FakeRateAnalysis::Loop()
       tempHistEE->Write();
     }
   }
+  jetPhoDrEB_numerator->Write();
+  jetPhoDrEE_numerator->Write();
+  jetPhoDrEB_denominator->Write();
+  jetPhoDrEE_denominator->Write();
+  jetPhoDrEB_faketemplate->Write();
+  jetPhoDrEE_faketemplate->Write();
   
   file_out.ls();
   file_out.Close();
