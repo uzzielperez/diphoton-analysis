@@ -14,5 +14,7 @@ __init__.py
 
 # crab
 crab.history
+crab.log
 tmp_multicrab
 *NtupleJobs
+crab_*
