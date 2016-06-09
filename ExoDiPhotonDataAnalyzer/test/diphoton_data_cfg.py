@@ -74,6 +74,10 @@ process.diphoton = cms.EDAnalyzer(
     'ExoDiPhotonDataAnalyzer',
     # photon tag
     photonsMiniAOD = cms.InputTag("slimmedPhotons"),
+    # vertex tag
+    vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+    # beam spot tag
+    beamSpot = cms.InputTag("offlineBeamSpot", "", "RECO"),
     # ak4 jets
     jetsMiniAOD = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
     jetPtThreshold = cms.double(30.),

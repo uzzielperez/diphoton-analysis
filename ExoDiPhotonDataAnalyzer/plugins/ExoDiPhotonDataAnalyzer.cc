@@ -29,6 +29,8 @@
 
 // from our CommomClasses
 #include "diphoton-analysis/CommonClasses/interface/EventInfo.h"
+#include "diphoton-analysis/CommonClasses/interface/BeamSpotInfo.h"
+#include "diphoton-analysis/CommonClasses/interface/VertexInfo.h"
 #include "diphoton-analysis/CommonClasses/interface/TriggerInfo.h"
 #include "diphoton-analysis/CommonClasses/interface/JetInfo.h"
 #include "diphoton-analysis/CommonClasses/interface/PhotonID.h"
@@ -60,6 +62,13 @@
 // for trigger and filter decisions
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "FWCore/Common/interface/TriggerNames.h"
+
+// for beam spot
+#include "DataFormats/BeamSpot/interface/BeamSpot.h"
+
+// for vertex
+#include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
 
 //
 // class declaration
@@ -102,6 +111,12 @@ class ExoDiPhotonDataAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedReso
   
   // rho token
   edm::EDGetTokenT<double> rhoToken_;
+
+  // vertex token
+  edm::EDGetTokenT<reco::VertexCollection> verticesToken_;
+
+  // beam spot token
+  edm::EDGetTokenT<reco::BeamSpot> beamSpotToken_;
   
   // rho variable
   double rho_;
@@ -143,6 +158,13 @@ class ExoDiPhotonDataAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedReso
   
   // event
   ExoDiPhotons::eventInfo_t fEventInfo;
+
+  // vertex
+  ExoDiPhotons::vertexInfo_t fVertex0Info;
+  ExoDiPhotons::vertexInfo_t fPrimaryVertexInfo;
+  
+  // beam spot
+  ExoDiPhotons::beamSpotInfo_t fBeamSpotInfo;
   
   // triggers
   ExoDiPhotons::triggerInfo_t fTriggerBitInfo;
@@ -162,6 +184,8 @@ class ExoDiPhotonDataAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedReso
 //
 ExoDiPhotonDataAnalyzer::ExoDiPhotonDataAnalyzer(const edm::ParameterSet& iConfig)
   : rhoToken_(consumes<double> (iConfig.getParameter<edm::InputTag>("rho"))),
+    verticesToken_(consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"))),
+    beamSpotToken_(consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamSpot"))),
     effAreaChHadrons_( (iConfig.getParameter<edm::FileInPath>("effAreaChHadFile")).fullPath() ),
     effAreaNeuHadrons_( (iConfig.getParameter<edm::FileInPath>("effAreaNeuHadFile")).fullPath() ),
     effAreaPhotons_( (iConfig.getParameter<edm::FileInPath>("effAreaPhoFile")).fullPath() ),
@@ -177,6 +201,9 @@ ExoDiPhotonDataAnalyzer::ExoDiPhotonDataAnalyzer(const edm::ParameterSet& iConfi
   // tree for objects passing numerator or denominator definitions
   fTightTightTree = fs->make<TTree>("fTightTightTree","DiPhotonTightTightTree");
   fTightTightTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
+  fTightTightTree->Branch("BeamSpot",&fBeamSpotInfo,ExoDiPhotons::beamSpotBranchDefString.c_str());
+  fTightTightTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
+  fTightTightTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
   fTightTightTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
   fTightTightTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
   fTightTightTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
@@ -247,6 +274,48 @@ ExoDiPhotonDataAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup
   
   cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
 
+  // =========
+  // BEAM SPOT
+  // =========
+
+  ExoDiPhotons::InitBeamSpotInfo(fBeamSpotInfo);
+
+  edm::Handle<reco::BeamSpot> beamSpotHandle;
+  iEvent.getByToken(beamSpotToken_,beamSpotHandle);
+
+  ExoDiPhotons::FillBeamSpotInfo(fBeamSpotInfo,&(*beamSpotHandle));
+  
+  // ========
+  // VERTICES
+  // ========
+
+  ExoDiPhotons::InitVertexInfo(fVertex0Info);
+  ExoDiPhotons::InitVertexInfo(fPrimaryVertexInfo);
+
+  edm::Handle<reco::VertexCollection> vertices;
+  iEvent.getByToken(verticesToken_,vertices);
+
+  // fill vertex0
+  ExoDiPhotons::FillVertexInfo(fVertex0Info,&(vertices->at(0)));
+  
+  // select the primary vertex, if any
+  int nPV = 0;
+  const reco::Vertex *myPV = &(vertices->front());
+  bool foundPV = false;
+  for(unsigned int i = 0; i < vertices->size(); i++){
+    if(vertices->at(i).isValid() && !vertices->at(i).isFake()){
+      if (!foundPV) {
+	myPV = &(vertices->at(i));
+	foundPV = true;
+      }
+      nPV++;
+    }
+  }
+
+  // fill vertex0
+  ExoDiPhotons::FillVertexInfo(fPrimaryVertexInfo,&(*myPV));
+  
+  
   // ===
   // JET
   // ===
