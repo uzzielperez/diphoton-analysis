@@ -156,7 +156,7 @@ namespace ExoDiPhotons{
     } // end EB
     else if (1.566 < phoEta && phoEta < 2.5) {
       if (phoEta < 2.0) {
-	return 0.0045;
+	return 0.003;
       }
       else if (phoEta < 2.2) {
 	return 0.003;
