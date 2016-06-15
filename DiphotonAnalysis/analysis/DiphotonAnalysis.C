@@ -46,6 +46,14 @@ void DiphotonAnalysis::Loop()
   TH1D* diphotonMinvEBEE = new TH1D("diphotonMinvEBEE","",80,0.,1600.);
   diphotonMinvEBEB->Sumw2();
   diphotonMinvEBEE->Sumw2();
+  TH1D* photon1PtEBEB = new TH1D("photon1PtEBEB","",80,0.,1600.);
+  TH1D* photon1PtEBEE = new TH1D("photon1PtEBEE","",80,0.,1600.);
+  photon1PtEBEB->Sumw2();
+  photon1PtEBEE->Sumw2();
+  TH1D* photon2PtEBEB = new TH1D("photon2PtEBEB","",80,0.,1600.);
+  TH1D* photon2PtEBEE = new TH1D("photon2PtEBEE","",80,0.,1600.);
+  photon2PtEBEB->Sumw2();
+  photon2PtEBEE->Sumw2();
   
   Long64_t nentries = fChain->GetEntriesFast();   
   Long64_t nbytes = 0, nb = 0;
@@ -61,7 +69,7 @@ void DiphotonAnalysis::Loop()
     nPassTrigger++;
 
     // photon pt cut
-    if (Photon1_pt < 75 || Photon2_pt < 75) continue;
+    if (Photon1_pt < 75.0 || Photon2_pt < 75.0) continue;
     nPassPtCut++;
     
     // EBEB
@@ -71,6 +79,8 @@ void DiphotonAnalysis::Loop()
       if (Diphoton_Minv > 230) {
 	nEBEBAndMinvCut++;
 	diphotonMinvEBEB->Fill(Diphoton_Minv);
+	photon1PtEBEB->Fill(Photon1_pt);
+	photon2PtEBEB->Fill(Photon2_pt);
       } // end Minv cut
       if (Diphoton_Minv > 500) {
 	nEBEBAndMinv500Cut++;
@@ -79,11 +89,13 @@ void DiphotonAnalysis::Loop()
 
     // EBEE or EEBE
     if ((fabs(Photon1_scEta) < 1.4442 && 1.566 < fabs(Photon2_scEta) && fabs(Photon2_scEta) < 2.5) ||
-	(fabs(Photon2_scEta) < 1.4442 && 1.566 < fabs(Photon1_scEta) && fabs(Photon1_scEta)) ) {
+	(fabs(Photon2_scEta) < 1.4442 && 1.566 < fabs(Photon1_scEta) && fabs(Photon1_scEta) < 2.5) ) {
       nEBEEorEEEB++;
       if (Diphoton_Minv > 320) {
 	nEBEEorEEEBAndMinvCut++;
 	diphotonMinvEBEE->Fill(Diphoton_Minv);
+	photon1PtEBEE->Fill(Photon1_pt);
+	photon2PtEBEE->Fill(Photon2_pt);
       } // end Minv cut
       if (Diphoton_Minv > 500) {
 	nEBEEorEEEBAndMinv500Cut++;
@@ -108,6 +120,11 @@ void DiphotonAnalysis::Loop()
 
   diphotonMinvEBEB->Write();
   diphotonMinvEBEE->Write();
+
+  photon1PtEBEB->Write();
+  photon2PtEBEB->Write();
+  photon1PtEBEE->Write();
+  photon2PtEBEE->Write();
   
   file_out.ls();
   file_out.Close();

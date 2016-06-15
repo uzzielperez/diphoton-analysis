@@ -9,6 +9,12 @@ void plot_diphoton_minv() {
   TH1D *h_diphotonMinv_EBEB = (TH1D*) fData->Get("diphotonMinvEBEB");
   TH1D *h_diphotonMinv_EBEE = (TH1D*) fData->Get("diphotonMinvEBEE");
 
+  TH1D *h_photon1Pt_EBEB = (TH1D*) fData->Get("photon1PtEBEB");
+  TH1D *h_photon1Pt_EBEE = (TH1D*) fData->Get("photon1PtEBEE");
+
+  TH1D *h_photon2Pt_EBEB = (TH1D*) fData->Get("photon2PtEBEB");
+  TH1D *h_photon2Pt_EBEE = (TH1D*) fData->Get("photon2PtEBEE");
+  
   TCanvas *canvas = new TCanvas("canvas","canvas",1500,600);
   canvas->Divide(2,1);
 
@@ -35,4 +41,52 @@ void plot_diphoton_minv() {
   gPad->SetLogy();
 
   canvas->SaveAs("diphotonMinv_DoubleEG_Run2015D-16Dec2015-v2_final_selection.png");
+
+
+  TCanvas *c1_photon1Pt = new TCanvas("c1_photon1Pt","canvas",1500,600);
+  c1_photon1Pt->Divide(2,1);
+
+  c1_photon1Pt->cd(1);
+  h_photon1Pt_EBEB->Draw("E1");
+  h_photon1Pt_EBEB->SetTitle("EBEB");
+  h_photon1Pt_EBEB->GetXaxis()->SetTitle("#gamma_{1} p_{T} (GeV)");
+  h_photon1Pt_EBEB->GetXaxis()->SetRangeUser(50.,1000.);
+  h_photon1Pt_EBEB->GetYaxis()->SetTitle("Events / (20 GeV)");
+  h_photon1Pt_EBEB->GetYaxis()->SetTitleOffset(1.4);
+  gPad->SetLogy();
+  
+  c1_photon1Pt->cd(2);
+  h_photon1Pt_EBEE->Draw("E1");
+  h_photon1Pt_EBEE->SetTitle("EBEE");
+  h_photon1Pt_EBEE->GetXaxis()->SetTitle("#gamma_{1} p_{T} (GeV)");
+  h_photon1Pt_EBEE->GetXaxis()->SetRangeUser(50.,1000.);
+  h_photon1Pt_EBEE->GetYaxis()->SetTitle("Events / (20 GeV)");
+  h_photon1Pt_EBEE->GetYaxis()->SetTitleOffset(1.4);
+  gPad->SetLogy();
+
+  c1_photon1Pt->SaveAs("photon1Pt_DoubleEG_Run2015D-16Dec2015-v2_final_selection.png");
+
+
+  TCanvas *c1_photon2Pt = new TCanvas("c1_photon2Pt","canvas",1500,600);
+  c1_photon2Pt->Divide(2,1);
+
+  c1_photon2Pt->cd(1);
+  h_photon2Pt_EBEB->Draw("E1");
+  h_photon2Pt_EBEB->SetTitle("EBEB");
+  h_photon2Pt_EBEB->GetXaxis()->SetTitle("#gamma_{2} p_{T} (GeV)");
+  h_photon2Pt_EBEB->GetXaxis()->SetRangeUser(50.,700.);
+  h_photon2Pt_EBEB->GetYaxis()->SetTitle("Events / (20 GeV)");
+  h_photon2Pt_EBEB->GetYaxis()->SetTitleOffset(1.4);
+  gPad->SetLogy();
+  
+  c1_photon2Pt->cd(2);
+  h_photon2Pt_EBEE->Draw("E1");
+  h_photon2Pt_EBEE->SetTitle("EBEE");
+  h_photon2Pt_EBEE->GetXaxis()->SetTitle("#gamma_{2} p_{T} (GeV)");
+  h_photon2Pt_EBEE->GetXaxis()->SetRangeUser(50.,700.);
+  h_photon2Pt_EBEE->GetYaxis()->SetTitle("Events / (20 GeV)");
+  h_photon2Pt_EBEE->GetYaxis()->SetTitleOffset(1.4);
+  gPad->SetLogy();
+
+  c1_photon2Pt->SaveAs("photon2Pt_DoubleEG_Run2015D-16Dec2015-v2_final_selection.png");
 }
