@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Fri Jun  3 07:53:20 2016 by ROOT version 6.02/13
+// Tue Jun 14 00:16:20 2016 by ROOT version 6.02/13
 // from TTree fTree/PhotonTree
-// found on file: root://cmseos.fnal.gov//store/user/skaplan/noreplica/FakeRate/WithTriggerAndJetInfo/JetHT_Run2015D_15Dec2015ReReco_incomplete.root
+// found on file: root://cmsxrootd.fnal.gov//store/user/skaplan/noreplica/FakeRate/crab3_morejets/JetHT_Run2015C.root
 //////////////////////////////////////////////////////////
 
 #ifndef FakeRateAnalysis_h
@@ -44,6 +44,14 @@ public :
    Float_t         Jet_leadingJetEta;
    Float_t         Jet_leadingJetPhi;
    Float_t         Jet_leadingJetMass;
+   Float_t         Jet_secondleadingJetPt;
+   Float_t         Jet_secondleadingJetEta;
+   Float_t         Jet_secondleadingJetPhi;
+   Float_t         Jet_secondleadingJetMass;
+   Float_t         Jet_thirdleadingJetPt;
+   Float_t         Jet_thirdleadingJetEta;
+   Float_t         Jet_thirdleadingJetPhi;
+   Float_t         Jet_thirdleadingJetMass;
    Int_t           Jet_nJets;
    Int_t           TriggerBit_HLT_AK8DiPFJet280_200_TrimMass30_BTagCSV0p45_v3;
    Int_t           TriggerBit_HLT_AK8PFHT600_TrimR0p1PT0p03Mass50_BTagCSV0p45_v2;
@@ -536,11 +544,11 @@ FakeRateAnalysis::FakeRateAnalysis(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmseos.fnal.gov//store/user/skaplan/noreplica/FakeRate/WithTriggerAndJetInfo/JetHT_Run2015D_15Dec2015ReReco_incomplete.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmsxrootd.fnal.gov//store/user/skaplan/noreplica/FakeRate/crab3_morejets/JetHT_Run2015C.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("root://cmseos.fnal.gov//store/user/skaplan/noreplica/FakeRate/WithTriggerAndJetInfo/JetHT_Run2015D_15Dec2015ReReco_incomplete.root");
+         f = new TFile("root://cmsxrootd.fnal.gov//store/user/skaplan/noreplica/FakeRate/crab3_morejets/JetHT_Run2015C.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("root://cmseos.fnal.gov//store/user/skaplan/noreplica/FakeRate/WithTriggerAndJetInfo/JetHT_Run2015D_15Dec2015ReReco_incomplete.root:/diphoton");
+      TDirectory * dir = (TDirectory*)f->Get("root://cmsxrootd.fnal.gov//store/user/skaplan/noreplica/FakeRate/crab3_morejets/JetHT_Run2015C.root:/diphoton");
       dir->GetObject("fTree",tree);
 
    }

@@ -280,13 +280,15 @@ def makePlots2():
     # fname2 = "./denom2plots/fakeRatePlots.root"
 
     fname0 = "../../../../../../CMSSW_7_6_3_patch2/src/diphoton-analysis/FakeRateAnalysis/RooFitTemplateFitting/analysis/denom2plots/fakeRatePlots.root"
-    fname1 = "./notmatchedDr0p38/fakeRatePlots.root"
-    fname2 = "./notmatchedDr0p6/fakeRatePlots.root"
+    fname1 = "./notmatchedToLeadingJetDr0p6/fakeRatePlots.root"
+    fname2 = "./notmatchedToSecondLeadingJetDr0p6/fakeRatePlots.root"
+    fname3 = "./notmatchedToThirdLeadingJetDr0p6/fakeRatePlots.root"
 
     fnamedict = {
         0 : fname0,
         1 : fname1,
-        2 : fname2
+        2 : fname2,
+        3 : fname3
     }
 
     fakeratesEB=[]
@@ -295,15 +297,17 @@ def makePlots2():
     labels_fakeratesEE=[]
 
     for etaBin in ("EB","EE"):
-        for i in (0,1,2):
+        for i in (0,1,2,3):
             fakeratename = "fakeRate"+etaBin+"_chIso9To14"
             label = ""
             if i == 0:
                 label = "no jet matching"
             elif i == 1:
-                label = "dR(photon,leadingJet)>0.38"
+                label = "not matched to leading jet"
             elif i == 2:
-                label = "dR(photon,leadingJet)>0.6"
+                label = "not matched to subleading jet"
+            elif i == 3:
+                label = "not matched to third leading jet"
             fakerate = getDist(fnamedict[i],fakeratename)
             fakerate.GetXaxis().SetTitle("Photon pT (GeV/c)")
             fakerate.GetYaxis().SetTitle("Fake Rate")

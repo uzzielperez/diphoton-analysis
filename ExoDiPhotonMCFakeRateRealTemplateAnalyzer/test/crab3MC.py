@@ -12,7 +12,7 @@ config.JobType.pluginName = 'Analysis'
 config.section_('Data')
 config.Data.inputDataset = '/QCD_Pt_20_30_EMEnriched_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM'
 config.Data.outputDatasetTag = ''
-config.Data.outLFNDirBase = '/store/user/skaplan/noreplica/FakeRate/crab3/'
+config.Data.outLFNDirBase = '/store/user/skaplan/noreplica/FakeRate/crab3_morejets/'
 config.Data.publication = False
 config.Data.unitsPerJob = 100000
 config.Data.totalUnits = -1
@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     # We want to put all the CRAB project directories from the tasks we submit here into one common directory.
     # That's why we need to set this parameter (here or above in the configuration file, it does not matter, we will not overwrite it).
-    config.General.workArea = 'crab3fakeratemcjobs'
+    config.General.workArea = 'crab3fakeratemcjobs2'
 
     def submit(config):
         try:

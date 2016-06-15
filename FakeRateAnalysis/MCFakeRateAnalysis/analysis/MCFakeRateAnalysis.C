@@ -84,19 +84,37 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
     // bool PFJet400Fired = TriggerBit_HLT_PFJet400_v4 == 1;
 
     // if (!PFJet400Fired) continue;
+
     TLorentzVector photon;
     TLorentzVector leadingJet;
-    photon.SetPtEtaPhiM(Photon_pt,Photon_scEta,Photon_scPhi,0.);
-    leadingJet.SetPtEtaPhiM(Jet_leadingJetPt,Jet_leadingJetEta,Jet_leadingJetPhi,Jet_leadingJetMass);
+    TLorentzVector secondleadingJet;
+    TLorentzVector thirdleadingJet;
 
-    double photonLeadingJetDr = photon.DeltaR(leadingJet);
-    bool matchedToLeadingJet = (photonLeadingJetDr < 0.6);
+    double photonLeadingJetDr = -1.;
+    bool matched = false;
 
-    if (fabs(Photon_scEta) < 1.4442 && isNumeratorObject) jetPhoDrEB_realtemplate->Fill(photonLeadingJetDr,Event_weight);
-    else if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5 && isNumeratorObject) jetPhoDrEE_realtemplate->Fill(photonLeadingJetDr,Event_weight);
+    if (Jet_nJets >= 2){
 
+      photon.SetPtEtaPhiM(Photon_pt,Photon_scEta,Photon_scPhi,0.);
+      leadingJet.SetPtEtaPhiM(Jet_leadingJetPt,Jet_leadingJetEta,Jet_leadingJetPhi,Jet_leadingJetMass);
+      secondleadingJet.SetPtEtaPhiM(Jet_secondleadingJetPt,Jet_secondleadingJetEta,Jet_secondleadingJetPhi,Jet_secondleadingJetMass);
+      // thirdleadingJet.SetPtEtaPhiM(Jet_thirdleadingJetPt,Jet_thirdleadingJetEta,Jet_thirdleadingJetPhi,Jet_thirdleadingJetMass);
 
-    if (!matchedToLeadingJet) continue;
+      photonLeadingJetDr = photon.DeltaR(leadingJet);
+      double photonSecondLeadingJetDr = photon.DeltaR(secondleadingJet);
+      // double photonThirdLeadingJetDr = photon.DeltaR(thirdleadingJet);
+
+      double dRCut = 0.6;
+      // these will all work because the jet 4 vectors are filled with dummy information, but I'll only use them if they are real jets
+      bool matchedToLeadingJet = (photonLeadingJetDr < dRCut);
+      bool matchedToSecondLeadingJet = (photonSecondLeadingJetDr < dRCut);
+      // bool matchedToThirdLeadingJet = (photonThirdLeadingJetDr < dRCut);
+
+      matched = matchedToSecondLeadingJet;
+
+    }
+    
+    if (matched) continue;
     
     // loop over pT bin increments
     for (int i = 0; i < nBins-1; i++) {
@@ -121,8 +139,8 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
   } // end loop over entries
   
   TString filename;
-  if (strcmp(iMass,"all") == 0) filename = "diphoton_fakeRate_GGJets_all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms_matchedToLeadingJetDr0p6.root";
-  else filename = TString::Format("diphoton_fakeRate_GGJets_M-%s_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms_matchedToLeadingJetDr0p6.root",iMass);
+  if (strcmp(iMass,"all") == 0) filename = "GGJets_M-200To500_NOTmatchedtosecondleadingjet.root";
+  else filename = TString::Format("GGJets_M-%s_NOTmatchedtosecondleadingjet.root",iMass);
   TFile file_out(filename,"RECREATE");
 
   // write our histograms to file

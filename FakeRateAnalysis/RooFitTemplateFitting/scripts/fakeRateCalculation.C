@@ -71,7 +71,7 @@ void fakeRateCalculation() {
   outfile.Close(); // create the file so it can be updated in the rooFitFakeRateProducer, we don't need it open here too
 
   // for data
-  TFile infile("../../DataFakeRateAnalysis/analysis/diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_matchedToLeadingJetDr0p6.root","read");
+  TFile infile("../../DataFakeRateAnalysis/analysis/jetht_matchedtothirdleadingjet.root","read");
   // for MC as data
   // TFile infile("../../MCFakeRateClosureTest/analysis/diphoton_fakeRate_QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root","read");
 
