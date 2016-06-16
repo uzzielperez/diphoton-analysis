@@ -32,13 +32,14 @@ void FakeRateAnalysis::Loop()
   if (fChain == 0) return;
   // cout << "Now looping over data using the following chIso sideband definition: " << sidebandLow << "-" << sidebandHigh << " GeV." << endl;
   // define number of bin edges
-  const int nBins = 11;
+  const int nBins = 10;
   
-  double ptBinArray[nBins] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
+  double ptBinArray[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
 
   // make vector of sidebands
   std::vector< std::pair<double,double> > chIsoSidebands;
   typedef std::vector< std::pair<double,double> >::const_iterator chIsoIt;
+  chIsoSidebands.push_back( std::make_pair(5.,10.) );
   chIsoSidebands.push_back( std::make_pair(6.,11.) );
   chIsoSidebands.push_back( std::make_pair(7.,12.) );
   chIsoSidebands.push_back( std::make_pair(8.,13.) );

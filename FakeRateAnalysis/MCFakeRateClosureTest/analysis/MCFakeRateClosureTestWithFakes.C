@@ -32,9 +32,9 @@ void MCFakeRateClosureTestWithFakes::Loop(const Char_t *iMass)
   if (fChain == 0) return;
 
   // define number of bin edges
-  const int nBins = 11;
+  const int nBins = 10;
   
-  double ptBinArray[nBins] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
+  double ptBinArray[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
   
   // pt spectrum of passHighPtID objects
   TH1D phoPtEB_passHighPtID_varbin("phoPtEB_passHighPtID_varbin","",nBins-1,ptBinArray);

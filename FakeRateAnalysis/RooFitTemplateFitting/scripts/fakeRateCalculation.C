@@ -10,14 +10,17 @@ void fakeRateCalculation() {
   TStopwatch sw;
   sw.Start();
 
-  int ptBinArray[11] = { 30, 50, 70, 90, 110, 130, 150, 200, 250, 300, 600 };
-  double ptBinArray_double[11] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
+  const int nBins = 10;
+  
+  int ptBinArray[nBins] = { 50, 70, 90, 110, 130, 150, 200, 250, 300, 600 };
+  double ptBinArray_double[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
   // int ptBinArray[11] = { 30, 50, 70, 90, 110, 130, 150, 200, 250, 300, 14000 };
   // double ptBinArray_double[11] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 14.e3 };
 
   // make vector of sidebands
   std::vector< std::pair<double,double> > chIsoSidebands;
   typedef std::vector< std::pair<double,double> >::const_iterator chIsoIt;
+  chIsoSidebands.push_back( std::make_pair(5.,10.) );
   chIsoSidebands.push_back( std::make_pair(6.,11.) );
   chIsoSidebands.push_back( std::make_pair(7.,12.) );
   chIsoSidebands.push_back( std::make_pair(8.,13.) );
@@ -80,7 +83,7 @@ void fakeRateCalculation() {
   std::vector<double> denomVec;
   
   for (unsigned int j=0; j<chIsoSidebands.size(); j++){ // loop over sidebands
-    for (int i = 0; i < 10; i++){  // loop over pT bins
+    for (int i = 0; i < nBins-1; i++){  // loop over pT bins
       double ptLow = ptBinArray_double[i];
       double ptHigh = ptBinArray_double[i+1];
       double ptBinSize = ptHigh - ptLow;
@@ -148,7 +151,7 @@ void fakeRateCalculation() {
   TH1D* denomvsptEB = (TH1D*)infile.Get("phoPtEB_denominator_varbin")->Clone();
   TH1D* denomvsptEE = (TH1D*)infile.Get("phoPtEE_denominator_varbin")->Clone();
 
-  for (int i=1; i<=10; i++){
+  for (int i=1; i<=nBins-1; i++){
     double binWidth = denomvsptEB->GetXaxis()->GetBinWidth(i);
 
     denomvsptEB->SetBinContent(i,denomvsptEB->GetBinContent(i) / binWidth);
