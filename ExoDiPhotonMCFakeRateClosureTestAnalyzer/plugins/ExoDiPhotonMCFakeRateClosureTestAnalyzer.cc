@@ -409,6 +409,8 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
   //for (edm::View<pat::Photon>::const_iterator pho = photons->begin(); pho != photons->end(); ++pho) {
   for (size_t i = 0; i < photons->size(); ++i) {
     const auto pho = photons->ptrAt(i);
+
+    if (pho->pt() < 50.) continue;
     
     // print photon info
     //cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
@@ -560,14 +562,13 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	  // flag ISR or FSR process
 	  bool isISR = false;
 	  bool isFSR = false;
+	  // flag to print FSR daughters
+	  bool printFSRDaughters = true;
 	  // check for fragmentation photon
 	  bool isOtherFragmentation = false;
 	  // check if any mother is a photon
 	  bool isPhotonMother = false; // not currently used
 
-	  // save deltaR of first quark mother if ISR or FSR is determined
-	  double deltaR_quarkMother = -1111.1111;
-      
 	  // consider all mothers when tying to find best mother (no deltaR cut)
 	  double minMotherMatchDeltaR = 1000000;
 	  // store index of best mother
@@ -624,7 +625,6 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	    if (isFirstMother && -9 < matchedMother->pdgId() && matchedMother->pdgId() < 9) {
 	      isQuarkFirstMother = true;
 	      quarkMotherPdgId = matchedMother->pdgId();
-	      deltaR_quarkMother = minMotherMatchDeltaR;
 	    }
 
 	    // check if first mother is a gluon
@@ -664,6 +664,61 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	    // print best mother match
 	    cout << "FinalState Matched MOTHER " << matchMotherIndex << ": Status = " << matchedMother->status()  << "; ID = " << matchedMother->pdgId() << "; pt = "
 		 << matchedMother->pt() << "; eta = " << matchedMother->eta() << "; phi = " << matchedMother->phi()  << "; deltaR = " << minMotherMatchDeltaR << endl;
+
+	    if (isFSR && printFSRDaughters) {
+	      printFSRDaughters = false;
+	      // print daughters
+
+	      const reco::GenParticle *matchedDaughter = &(*matchedMother);
+
+	      while (-9 < matchedDaughter->pdgId() && matchedDaughter->pdgId() < 9) {
+	      
+	      double minDaughterMatchDeltaR = 1000000;
+	      int matchDaughterIndex = 0;
+		  
+	      // loop through all daughters and keep index of best deltaR match
+	      for (unsigned int j=0; j < matchedDaughter->numberOfDaughters(); j++) {
+		    
+		// calculate deltaR between particle and daughter
+		double deltaR = reco::deltaR(matchedDaughter->eta(),matchedDaughter->phi(),matchedDaughter->daughter(j)->eta(),matchedDaughter->daughter(j)->phi());
+		    
+		// print each daughter
+		cout << "\t\t\t          Daughter " << j << ": Status = " << matchedDaughter->daughter(j)->status()  << "; ID = " << matchedDaughter->daughter(j)->pdgId() << "; pt = "
+		     << matchedDaughter->daughter(j)->pt() << "; eta = " << matchedDaughter->daughter(j)->eta() << "; phi = "
+		     << matchedDaughter->daughter(j)->phi()  << "; deltaR = " << deltaR << endl;
+		    
+		// if current deltaR is smallest, save index
+		if (deltaR < minDaughterMatchDeltaR) {
+		  minDaughterMatchDeltaR = deltaR;
+		  matchDaughterIndex = j;
+		}
+		    
+	      } // end for loop through daughters
+	      
+	      if (fabs(matchedDaughter->daughter(matchDaughterIndex)->pdgId()) > 9) {
+
+		cout << "\t\t DeltaR FSR between: Photon pT " << photonMatch_finalState->pt() << " and Quark pT " << matchedDaughter->pt() << endl;
+		
+		// save deltaR between final state photon and quark after FSR
+		fPhotonGenMatchInfo.deltaR_FSR = reco::deltaR(matchedDaughter->eta(),matchedDaughter->phi(),photonMatch_finalState->eta(),photonMatch_finalState->phi());
+	      }
+	      
+	      // matched particle now becomes best daughter
+	      matchedDaughter = (reco::GenParticle *) matchedDaughter->daughter(matchDaughterIndex);
+	      
+	      
+	      if (fabs(matchedDaughter->pdgId()) < 9) {
+		// print best daughter match
+		cout << "\t\t\t Selected DAUGHTER " << matchDaughterIndex << ": status = " << matchedDaughter->status()  << "; ID = " << matchedDaughter->pdgId() << "; pt = "
+		     << matchedDaughter->pt() << "; eta = " << matchedDaughter->eta() << "; phi = " << matchedDaughter->phi()  << "; deltaR = " << minDaughterMatchDeltaR << endl;
+	      }
+	      
+	      minDaughterMatchDeltaR = 1000000;
+	      matchDaughterIndex = 0;
+	      
+	      } // end while matched daughter is a quark
+	      
+	    } // end if print FSR daughters
 	    
 	    // reset cut!
 	    // so we will consider all mothers again during next loop
@@ -694,13 +749,11 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	    // if FSR, store photon and deltaR between photon and its first quark mother
 	    if (isFSR) {
 	      fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kFSRMatch;
-	      fPhotonGenMatchInfo.deltaR_FSR = deltaR_quarkMother;
 	      photonMatch = &(*photonMatch_finalState);
 	    }
 	    // if ISR, store photon and deltaR between photon and its first quark mother
 	    if (isISR) {
 	      fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kISRMatch;
-	      fPhotonGenMatchInfo.deltaR_FSR = deltaR_quarkMother;
 	      photonMatch = &(*photonMatch_finalState);
 	    }
 	    // determine if fragmentation
@@ -855,7 +908,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	  matchedDaughter = (reco::GenParticle *) matchedDaughter->daughter(matchDaughterIndex);
 	  
 	  // print best daughter match
-	  cout << "FinalState Matched DAUGHTER :" << matchDaughterIndex << "Status = " << matchedDaughter->status()  << "; ID = " << matchedDaughter->pdgId() << "; pt = "
+	  cout << "FinalState Matched DAUGHTER " << matchDaughterIndex << ": Status = " << matchedDaughter->status()  << "; ID = " << matchedDaughter->pdgId() << "; pt = "
 	       << matchedDaughter->pt() << "; eta = " << matchedDaughter->eta() << "; phi = " << matchedDaughter->phi()  << "; deltaR = " << minDaughterMatchDeltaR << endl;
 	  
 	  // reset cut!
