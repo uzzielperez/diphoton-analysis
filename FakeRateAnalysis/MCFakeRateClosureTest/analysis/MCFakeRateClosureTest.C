@@ -31,6 +31,10 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
 //by  b_branchname->GetEntry(ientry); //read only this branch
   if (fChain == 0) return;
 
+  // count number of numerator photons
+  int nNumerator              = 0;
+  int nNumerator_passSipipCut = 0;
+  
   // define number of bin edges
   const int nBins = 11;
   
@@ -131,11 +135,15 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
     bool isNumeratorObj = Photon_isNumeratorObjCand && Photon_passChIso;
     // bool inChIsoSideband = (sidebandLow < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < sidebandHigh);
     // bool isFakeTemplateObj = Photon_isNumeratorObjCand && inChIsoSideband;
+
+    if (isNumeratorObj) nNumerator++;
     
     // reject beam halo
     //if (Event_beamHaloIDTight2015) continue;
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
 
+    if (isNumeratorObj) nNumerator_passSipipCut++;
+    
     // EB
     if (fabs(Photon_scEta) < 1.4442) {
       if (Photon_isDenominatorObj) {
@@ -193,6 +201,11 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
     } // end loop over pt bins for fake template
     
   } // end loop over entries
+  
+  cout << endl;
+  cout << "Number of numerator photons: " << nNumerator << endl;
+  cout << " ...passing sipip cut        : " << nNumerator_passSipipCut << endl;
+  cout << endl;
   
   // create output file containing histograms
   TString filename;

@@ -42,32 +42,32 @@ void MCFakeRateClosureTestWithFakes::Loop(const Char_t *iMass)
   phoPtEB_passHighPtID_varbin.Sumw2();
   phoPtEE_passHighPtID_varbin.Sumw2();
   
-  // numerator and template histograms
-  std::vector<TH1D*> sIeIeFakeTemplateEB;
-  std::vector<TH1D*> sIeIeFakeTemplateEE;
-  std::vector<TH1D*> sIeIeNumeratorEB;
-  std::vector<TH1D*> sIeIeNumeratorEE;
+  // numerator histograms
+  std::vector<TH1D*> sIeIeNumeratorEB_fromFakes;
+  std::vector<TH1D*> sIeIeNumeratorEE_fromFakes;
+  std::vector<TH1D*> sIeIeNumeratorEB_fromReal;
+  std::vector<TH1D*> sIeIeNumeratorEE_fromReal;
   
   // loop over bins increments and create histograms
   for (int i = 0; i < nBins-1; i++) {
     double binLowEdge = ptBinArray[i];
     double binUpperEdge = ptBinArray[i+1];  
     
-    TH1D *hEB_fakeTemplate = new TH1D(Form("sieieEB_faketemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
-    hEB_fakeTemplate->Sumw2();
-    sIeIeFakeTemplateEB.push_back(hEB_fakeTemplate);
+    TH1D *hEB_numerator_fakes = new TH1D(Form("sieieEB_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+    hEB_numerator_fakes->Sumw2();
+    sIeIeNumeratorEB_fromFakes.push_back(hEB_numerator_fakes);
     
-    TH1D *hEE_fakeTemplate = new TH1D(Form("sieieEE_faketemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",200,0.,0.1);
-    hEE_fakeTemplate->Sumw2();
-    sIeIeFakeTemplateEE.push_back(hEE_fakeTemplate);
-    
-    TH1D *hEB_numerator = new TH1D(Form("sieieEB_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
-    hEB_numerator->Sumw2();
-    sIeIeNumeratorEB.push_back(hEB_numerator);
+    TH1D *hEE_numerator_fakes = new TH1D(Form("sieieEE_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",200,0.,0.1);
+    hEE_numerator_fakes->Sumw2();
+    sIeIeNumeratorEE_fromFakes.push_back(hEE_numerator_fakes);
 
-    TH1D *hEE_numerator = new TH1D(Form("sieieEE_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",200,0.,0.1);
-    hEE_numerator->Sumw2();
-    sIeIeNumeratorEE.push_back(hEE_numerator);
+    TH1D *hEB_numerator_real = new TH1D(Form("sieieEB_numerator_real_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+    hEB_numerator_real->Sumw2();
+    sIeIeNumeratorEB_fromReal.push_back(hEB_numerator_real);
+    
+    TH1D *hEE_numerator_real = new TH1D(Form("sieieEE_numerator_real_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",200,0.,0.1);
+    hEE_numerator_real->Sumw2();
+    sIeIeNumeratorEE_fromReal.push_back(hEE_numerator_real);
   }
   
   Long64_t nentries = fChain->GetEntriesFast();
@@ -80,28 +80,28 @@ void MCFakeRateClosureTestWithFakes::Loop(const Char_t *iMass)
     if (jentry % 100000 == 0)
       std::cout << "Number of entries looped over: " << jentry << std::endl;
 
-    // fake rate object definitions
-    bool inChIsoSideband = (10. < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < 15.);
+    // numerator object definitions
     bool isNumeratorObj = Photon_isNumeratorObjCand && Photon_passChIso;
-    bool isFakeTemplateObj = Photon_isNumeratorObjCand && inChIsoSideband;
     
     // reject beam halo
     //if (Event_beamHaloIDTight2015) continue;
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
 
-    // EB
-    if (fabs(Photon_scEta) < 1.4442) {
-      if (Photon_passHighPtID) {
-	phoPtEB_passHighPtID_varbin.Fill(Photon_pt,Event_weight);
-      }
-    } // end EB
-    
-    // EE
-    else if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
-      if (Photon_passHighPtID) {
-	phoPtEE_passHighPtID_varbin.Fill(Photon_pt,Event_weight);
-      }
-    } // end EE
+    // don't consider number of not real photons
+    if ( !(PhotonGenMatch_matchCategory == 1 && (PhotonGenMatch_matchType == 2 || PhotonGenMatch_matchType == 3)) ) {
+      // EB
+      if (fabs(Photon_scEta) < 1.4442) {
+	if (Photon_passHighPtID) {
+	  phoPtEB_passHighPtID_varbin.Fill(Photon_pt,Event_weight);
+	}
+      } // end EB
+      // EE
+      else if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+	if (Photon_passHighPtID) {
+	  phoPtEE_passHighPtID_varbin.Fill(Photon_pt,Event_weight);
+	}
+      } // end EE
+    } // end if not real photons
     
     // loop over bin edges
     for (int i = 0; i < nBins-1; i++) {
@@ -111,16 +111,21 @@ void MCFakeRateClosureTestWithFakes::Loop(const Char_t *iMass)
       // pt cut
       if (binLowEdge < Photon_pt && Photon_pt < binUpperEdge) {
 
-	// fill fake template histograms
-	if (isFakeTemplateObj) {
-	  if (fabs(Photon_scEta) < 1.4442) sIeIeFakeTemplateEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-	  else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeFakeTemplateEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-	} // end fake template obj
-
 	// fill numerator histograms
 	if (isNumeratorObj) {
-	  if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-	  else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeNumeratorEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+
+	  // fake photons
+	  if ( !(PhotonGenMatch_matchCategory == 1 && (PhotonGenMatch_matchType == 2 || PhotonGenMatch_matchType == 3)) ) {
+	    if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	    else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeNumeratorEE_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	  }
+	  
+	  // real photons
+	  if ( PhotonGenMatch_matchCategory == 1 && (PhotonGenMatch_matchType == 2 || PhotonGenMatch_matchType == 3) ) {
+	    if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB_fromReal.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	    else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeNumeratorEE_fromReal.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	  }
+	  
 	} // end numerator obj
 
       } // end pt cut
@@ -165,24 +170,20 @@ void MCFakeRateClosureTestWithFakes::Loop(const Char_t *iMass)
   cout << phoPtEB_passHighPtID_varbin.GetName() << " bin sum: " << bin_sum_EE << endl;
   
   // write numerator histograms
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEB.begin() ; it != sIeIeNumeratorEB.end(); ++it) {
+  for (vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromFakes.begin() ; it != sIeIeNumeratorEB_fromFakes.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEE.begin() ; it != sIeIeNumeratorEE.end(); ++it) {
+  for (vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromFakes.begin() ; it != sIeIeNumeratorEE_fromFakes.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Write();
   }
-  
-  // scale fake template histograms to unity and write to file
-  for (vector<TH1D*>::iterator it = sIeIeFakeTemplateEB.begin() ; it != sIeIeFakeTemplateEB.end(); ++it) {
+  for (vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromReal.begin() ; it != sIeIeNumeratorEB_fromReal.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
-    (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeFakeTemplateEE.begin() ; it != sIeIeFakeTemplateEE.end(); ++it) {
+  for (vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromReal.begin() ; it != sIeIeNumeratorEE_fromReal.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
-    (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
   
