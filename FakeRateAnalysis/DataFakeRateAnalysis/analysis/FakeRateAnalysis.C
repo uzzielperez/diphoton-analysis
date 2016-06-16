@@ -106,14 +106,32 @@ void FakeRateAnalysis::Loop()
     sIeIeFakeTemplatesEE.push_back(eevec);
   }
 
-  TH1D* jetPhoDrEB_numerator = new TH1D("jetPhoDrEB_numerator","jetPhoDrEB_numerator",500,0.,5.);
-  TH1D* jetPhoDrEE_numerator = new TH1D("jetPhoDrEE_numerator","jetPhoDrEE_numerator",500,0.,5.);
+  TH1D* leadingjetPhoDrEB_numerator = new TH1D("leadingjetPhoDrEB_numerator","leadingjetPhoDrEB_numerator",500,0.,5.);
+  TH1D* leadingjetPhoDrEE_numerator = new TH1D("leadingjetPhoDrEE_numerator","leadingjetPhoDrEE_numerator",500,0.,5.);
 
-  TH1D* jetPhoDrEB_faketemplate = new TH1D("jetPhoDrEB_faketemplate","jetPhoDrEB_faketemplate",500,0.,5.);
-  TH1D* jetPhoDrEE_faketemplate = new TH1D("jetPhoDrEE_faketemplate","jetPhoDrEE_faketemplate",500,0.,5.);
+  TH1D* leadingjetPhoDrEB_faketemplate = new TH1D("leadingjetPhoDrEB_faketemplate","leadingjetPhoDrEB_faketemplate",500,0.,5.);
+  TH1D* leadingjetPhoDrEE_faketemplate = new TH1D("leadingjetPhoDrEE_faketemplate","leadingjetPhoDrEE_faketemplate",500,0.,5.);
 
-  TH1D* jetPhoDrEB_denominator = new TH1D("jetPhoDrEB_denominator","jetPhoDrEB_denominator",500,0.,5.);
-  TH1D* jetPhoDrEE_denominator = new TH1D("jetPhoDrEE_denominator","jetPhoDrEE_denominator",500,0.,5.);
+  TH1D* leadingjetPhoDrEB_denominator = new TH1D("leadingjetPhoDrEB_denominator","leadingjetPhoDrEB_denominator",500,0.,5.);
+  TH1D* leadingjetPhoDrEE_denominator = new TH1D("leadingjetPhoDrEE_denominator","leadingjetPhoDrEE_denominator",500,0.,5.);
+
+  TH1D* secondleadingjetPhoDrEB_numerator = new TH1D("secondleadingjetPhoDrEB_numerator","secondleadingjetPhoDrEB_numerator",500,0.,5.);
+  TH1D* secondleadingjetPhoDrEE_numerator = new TH1D("secondleadingjetPhoDrEE_numerator","secondleadingjetPhoDrEE_numerator",500,0.,5.);
+
+  TH1D* secondleadingjetPhoDrEB_faketemplate = new TH1D("secondleadingjetPhoDrEB_faketemplate","secondleadingjetPhoDrEB_faketemplate",500,0.,5.);
+  TH1D* secondleadingjetPhoDrEE_faketemplate = new TH1D("secondleadingjetPhoDrEE_faketemplate","secondleadingjetPhoDrEE_faketemplate",500,0.,5.);
+
+  TH1D* secondleadingjetPhoDrEB_denominator = new TH1D("secondleadingjetPhoDrEB_denominator","secondleadingjetPhoDrEB_denominator",500,0.,5.);
+  TH1D* secondleadingjetPhoDrEE_denominator = new TH1D("secondleadingjetPhoDrEE_denominator","secondleadingjetPhoDrEE_denominator",500,0.,5.);
+
+  TH1D* thirdleadingjetPhoDrEB_numerator = new TH1D("thirdleadingjetPhoDrEB_numerator","thirdleadingjetPhoDrEB_numerator",500,0.,5.);
+  TH1D* thirdleadingjetPhoDrEE_numerator = new TH1D("thirdleadingjetPhoDrEE_numerator","thirdleadingjetPhoDrEE_numerator",500,0.,5.);
+
+  TH1D* thirdleadingjetPhoDrEB_faketemplate = new TH1D("thirdleadingjetPhoDrEB_faketemplate","thirdleadingjetPhoDrEB_faketemplate",500,0.,5.);
+  TH1D* thirdleadingjetPhoDrEE_faketemplate = new TH1D("thirdleadingjetPhoDrEE_faketemplate","thirdleadingjetPhoDrEE_faketemplate",500,0.,5.);
+
+  TH1D* thirdleadingjetPhoDrEB_denominator = new TH1D("thirdleadingjetPhoDrEB_denominator","thirdleadingjetPhoDrEB_denominator",500,0.,5.);
+  TH1D* thirdleadingjetPhoDrEE_denominator = new TH1D("thirdleadingjetPhoDrEE_denominator","thirdleadingjetPhoDrEE_denominator",500,0.,5.);
 
   std::vector<TH1D*> sIeIeNumeratorEB;
   std::vector<TH1D*> sIeIeNumeratorEE;
@@ -191,12 +209,36 @@ void FakeRateAnalysis::Loop()
 
     TLorentzVector photon;
     TLorentzVector leadingJet;
-    photon.SetPtEtaPhiM(Photon_pt,Photon_scEta,Photon_scPhi,0.);
-    leadingJet.SetPtEtaPhiM(Jet_leadingJetPt,Jet_leadingJetEta,Jet_leadingJetPhi,Jet_leadingJetMass);
+    TLorentzVector secondleadingJet;
+    TLorentzVector thirdleadingJet;
 
-    double photonLeadingJetDr = photon.DeltaR(leadingJet);
-    bool matchedToLeadingJet = (photonLeadingJetDr < 0.6);
-    // if (!matchedToLeadingJet) continue;
+    double photonLeadingJetDr = -1.;
+    double photonSecondLeadingJetDr = -1.;
+    double photonThirdLeadingJetDr = -1.;
+    bool matched = false;
+
+    if (Jet_nJets >= 3){
+
+      photon.SetPtEtaPhiM(Photon_pt,Photon_scEta,Photon_scPhi,0.);
+      leadingJet.SetPtEtaPhiM(Jet_leadingJetPt,Jet_leadingJetEta,Jet_leadingJetPhi,Jet_leadingJetMass);
+      secondleadingJet.SetPtEtaPhiM(Jet_secondleadingJetPt,Jet_secondleadingJetEta,Jet_secondleadingJetPhi,Jet_secondleadingJetMass);
+      thirdleadingJet.SetPtEtaPhiM(Jet_thirdleadingJetPt,Jet_thirdleadingJetEta,Jet_thirdleadingJetPhi,Jet_thirdleadingJetMass);
+
+      photonLeadingJetDr = photon.DeltaR(leadingJet);
+      photonSecondLeadingJetDr = photon.DeltaR(secondleadingJet);
+      photonThirdLeadingJetDr = photon.DeltaR(thirdleadingJet);
+
+      double dRCut = 0.6;
+      // these will all work because the jet 4 vectors are filled with dummy information, but I'll only use them if they are real jets
+      bool matchedToLeadingJet = (photonLeadingJetDr < dRCut);
+      bool matchedToSecondLeadingJet = (photonSecondLeadingJetDr < dRCut);
+      bool matchedToThirdLeadingJet = (photonThirdLeadingJetDr < dRCut);
+
+      matched = matchedToThirdLeadingJet;
+
+    }
+    
+    // if (!matched) continue;
       
     // plot fake templates first
     // start with pt plots
@@ -221,12 +263,16 @@ void FakeRateAnalysis::Loop()
       if (isNumeratorObj){
       	phoPtEB_numerator.Fill(Photon_pt);
       	phoPtEB_numerator_varbin.Fill(Photon_pt);
-        jetPhoDrEB_numerator->Fill(photonLeadingJetDr);
+        if (Jet_nJets >= 1) leadingjetPhoDrEB_numerator->Fill(photonLeadingJetDr);
+        if (Jet_nJets >= 2) secondleadingjetPhoDrEB_numerator->Fill(photonSecondLeadingJetDr);
+        if (Jet_nJets >= 3) thirdleadingjetPhoDrEB_numerator->Fill(photonThirdLeadingJetDr);
       }
       if (Photon_isDenominatorObj){
       	phoPtEB_denominator.Fill(Photon_pt);
       	phoPtEB_denominator_varbin.Fill(Photon_pt);
-        jetPhoDrEB_denominator->Fill(photonLeadingJetDr);
+        if (Jet_nJets >= 1) leadingjetPhoDrEB_denominator->Fill(photonLeadingJetDr);
+        if (Jet_nJets >= 2) secondleadingjetPhoDrEB_denominator->Fill(photonSecondLeadingJetDr);
+        if (Jet_nJets >= 3) thirdleadingjetPhoDrEB_denominator->Fill(photonThirdLeadingJetDr);
       }
       // if (isFakeTemplateObj){
       // 	phoPtEB_faketemplate.Fill(Photon_pt);
@@ -239,12 +285,16 @@ void FakeRateAnalysis::Loop()
       if (isNumeratorObj){
       	phoPtEE_numerator.Fill(Photon_pt);
       	phoPtEE_numerator_varbin.Fill(Photon_pt);
-        jetPhoDrEE_numerator->Fill(photonLeadingJetDr);
+        if (Jet_nJets >= 1) leadingjetPhoDrEE_numerator->Fill(photonLeadingJetDr);
+        if (Jet_nJets >= 2) secondleadingjetPhoDrEE_numerator->Fill(photonSecondLeadingJetDr);
+        if (Jet_nJets >= 3) thirdleadingjetPhoDrEE_numerator->Fill(photonThirdLeadingJetDr);
       }
       if (Photon_isDenominatorObj){
       	phoPtEE_denominator.Fill(Photon_pt);
       	phoPtEE_denominator_varbin.Fill(Photon_pt);
-        jetPhoDrEE_denominator->Fill(photonLeadingJetDr);
+        if (Jet_nJets >= 1) leadingjetPhoDrEE_denominator->Fill(photonLeadingJetDr);
+        if (Jet_nJets >= 2) secondleadingjetPhoDrEE_denominator->Fill(photonSecondLeadingJetDr);
+        if (Jet_nJets >= 3) thirdleadingjetPhoDrEE_denominator->Fill(photonThirdLeadingJetDr);
       }
       // if (isFakeTemplateObj){
       // 	phoPtEE_faketemplate.Fill(Photon_pt);
@@ -268,11 +318,19 @@ void FakeRateAnalysis::Loop()
         if ( (binLowEdge < Photon_pt) && (Photon_pt < binUpperEdge) && isFakeTemplateObj ){
           if (fabs(Photon_scEta) < 1.4442){
             sIeIeFakeTemplatesEB.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5 );
-            if (sidebandLow==9.) jetPhoDrEB_faketemplate->Fill(photonLeadingJetDr);
+            if (sidebandLow==9.){
+              if (Jet_nJets >= 1) leadingjetPhoDrEB_faketemplate->Fill(photonLeadingJetDr);
+              if (Jet_nJets >= 2) secondleadingjetPhoDrEB_faketemplate->Fill(photonSecondLeadingJetDr);
+              if (Jet_nJets >= 3) thirdleadingjetPhoDrEB_faketemplate->Fill(photonThirdLeadingJetDr);
+            }
           }
           else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ){
             sIeIeFakeTemplatesEE.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5 );
-            if (sidebandLow==9.) jetPhoDrEE_faketemplate->Fill(photonLeadingJetDr);            
+            if (sidebandLow==9.){
+              if (Jet_nJets >= 1) leadingjetPhoDrEE_faketemplate->Fill(photonLeadingJetDr);
+              if (Jet_nJets >= 2) secondleadingjetPhoDrEE_faketemplate->Fill(photonSecondLeadingJetDr);
+              if (Jet_nJets >= 3) thirdleadingjetPhoDrEE_faketemplate->Fill(photonThirdLeadingJetDr);
+            }           
           }
         } // end if statement on fake template obj and pT bin
       } // end loop over sidebands to fill fake templates
@@ -375,12 +433,24 @@ void FakeRateAnalysis::Loop()
       tempHistEE->Write();
     }
   }
-  jetPhoDrEB_numerator->Write();
-  jetPhoDrEE_numerator->Write();
-  jetPhoDrEB_denominator->Write();
-  jetPhoDrEE_denominator->Write();
-  jetPhoDrEB_faketemplate->Write();
-  jetPhoDrEE_faketemplate->Write();
+  leadingjetPhoDrEB_numerator->Write();
+  leadingjetPhoDrEE_numerator->Write();
+  leadingjetPhoDrEB_denominator->Write();
+  leadingjetPhoDrEE_denominator->Write();
+  leadingjetPhoDrEB_faketemplate->Write();
+  leadingjetPhoDrEE_faketemplate->Write();
+  secondleadingjetPhoDrEB_numerator->Write();
+  secondleadingjetPhoDrEE_numerator->Write();
+  secondleadingjetPhoDrEB_denominator->Write();
+  secondleadingjetPhoDrEE_denominator->Write();
+  secondleadingjetPhoDrEB_faketemplate->Write();
+  secondleadingjetPhoDrEE_faketemplate->Write();
+  thirdleadingjetPhoDrEB_numerator->Write();
+  thirdleadingjetPhoDrEE_numerator->Write();
+  thirdleadingjetPhoDrEB_denominator->Write();
+  thirdleadingjetPhoDrEE_denominator->Write();
+  thirdleadingjetPhoDrEB_faketemplate->Write();
+  thirdleadingjetPhoDrEE_faketemplate->Write();
   
   file_out.ls();
   file_out.Close();
