@@ -17,7 +17,8 @@ void diphoton_fTree_looper(const Char_t *iMass) {
   
   // use input mass to specify input file
   cout << "Input Mass: " << iMass << endl;
-  TString filename = TString::Format("root://cmsxrootd.fnal.gov///store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD/diphoton_fakeRate_QCD_Pt-%s_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root",iMass);
+  //TString filename = TString::Format("root://cmsxrootd.fnal.gov///store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD/diphoton_fakeRate_QCD_Pt-%s_EMEnriched_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root",iMass);
+  TString filename = TString::Format("root://cmsxrootd.fnal.gov///store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD/diphoton_fakeRate_QCD_Pt_%s_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root",iMass);
   
   // use file to get tree data
   TFile *f = TFile::Open(filename);
