@@ -562,8 +562,8 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	  // flag ISR or FSR process
 	  bool isISR = false;
 	  bool isFSR = false;
-	  // flag to print FSR daughters
-	  bool printFSRDaughters = true;
+	  // flag to find FSR daughters
+	  bool findFSRDaughters = true;
 	  // check for fragmentation photon
 	  bool isOtherFragmentation = false;
 	  // check if any mother is a photon
@@ -665,60 +665,83 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	    cout << "FinalState Matched MOTHER " << matchMotherIndex << ": Status = " << matchedMother->status()  << "; ID = " << matchedMother->pdgId() << "; pt = "
 		 << matchedMother->pt() << "; eta = " << matchedMother->eta() << "; phi = " << matchedMother->phi()  << "; deltaR = " << minMotherMatchDeltaR << endl;
 
-	    if (isFSR && printFSRDaughters) {
-	      printFSRDaughters = false;
-	      // print daughters
-
+	    if (isFSR && findFSRDaughters) {
+	      findFSRDaughters = false;
+	      
 	      const reco::GenParticle *matchedDaughter = &(*matchedMother);
-
-	      while (-9 < matchedDaughter->pdgId() && matchedDaughter->pdgId() < 9) {
 	      
-	      double minDaughterMatchDeltaR = 1000000;
-	      int matchDaughterIndex = 0;
-		  
-	      // loop through all daughters and keep index of best deltaR match
-	      for (unsigned int j=0; j < matchedDaughter->numberOfDaughters(); j++) {
-		    
-		// calculate deltaR between particle and daughter
-		double deltaR = reco::deltaR(matchedDaughter->eta(),matchedDaughter->phi(),matchedDaughter->daughter(j)->eta(),matchedDaughter->daughter(j)->phi());
-		    
-		// print each daughter
-		cout << "\t\t\t          Daughter " << j << ": Status = " << matchedDaughter->daughter(j)->status()  << "; ID = " << matchedDaughter->daughter(j)->pdgId() << "; pt = "
-		     << matchedDaughter->daughter(j)->pt() << "; eta = " << matchedDaughter->daughter(j)->eta() << "; phi = "
-		     << matchedDaughter->daughter(j)->phi()  << "; deltaR = " << deltaR << endl;
-		    
-		// if current deltaR is smallest, save index
-		if (deltaR < minDaughterMatchDeltaR) {
-		  minDaughterMatchDeltaR = deltaR;
-		  matchDaughterIndex = j;
-		}
-		    
-	      } // end for loop through daughters
-	      
-	      if (fabs(matchedDaughter->daughter(matchDaughterIndex)->pdgId()) > 9) {
+	      //while (fabs(matchedDaughter->pdgId()) < 9) {
 
-		cout << "\t\t DeltaR FSR between: Photon pT " << photonMatch_finalState->pt() << " and Quark pT " << matchedDaughter->pt() << endl;
+	      bool isFSRPhotonDaughter = false;
+
+	      // since this is FSR, this photon will exist among the daughters, but
+	      // let's make sure the first daughter exists
+	      while (!isFSRPhotonDaughter && matchedDaughter->daughter(0)) {
+		double minDaughterMatchDeltaR = 1000000;
+		int matchDaughterIndex = 0;
 		
-		// save deltaR between final state photon and quark after FSR
-		fPhotonGenMatchInfo.deltaR_FSR = reco::deltaR(matchedDaughter->eta(),matchedDaughter->phi(),photonMatch_finalState->eta(),photonMatch_finalState->phi());
-	      }
-	      
-	      // matched particle now becomes best daughter
-	      matchedDaughter = (reco::GenParticle *) matchedDaughter->daughter(matchDaughterIndex);
-	      
-	      
-	      if (fabs(matchedDaughter->pdgId()) < 9) {
-		// print best daughter match
-		cout << "\t\t\t Selected DAUGHTER " << matchDaughterIndex << ": status = " << matchedDaughter->status()  << "; ID = " << matchedDaughter->pdgId() << "; pt = "
-		     << matchedDaughter->pt() << "; eta = " << matchedDaughter->eta() << "; phi = " << matchedDaughter->phi()  << "; deltaR = " << minDaughterMatchDeltaR << endl;
-	      }
-	      
-	      minDaughterMatchDeltaR = 1000000;
-	      matchDaughterIndex = 0;
-	      
+		// loop through all daughters and keep index of best deltaR match
+		for (unsigned int j=0; j < matchedDaughter->numberOfDaughters(); j++) {
+		  
+		  // calculate deltaR between particle and daughter
+		  double deltaR = reco::deltaR(matchedDaughter->eta(),matchedDaughter->phi(),matchedDaughter->daughter(j)->eta(),matchedDaughter->daughter(j)->phi());
+		  
+		  // print each daughter
+		  cout << "\t\t\t          Daughter " << j << ": Status = " << matchedDaughter->daughter(j)->status()  << "; ID = " << matchedDaughter->daughter(j)->pdgId() << "; pt = "
+		       << matchedDaughter->daughter(j)->pt() << "; eta = " << matchedDaughter->daughter(j)->eta() << "; phi = "
+		       << matchedDaughter->daughter(j)->phi()  << "; deltaR = " << deltaR << endl;
+
+		  if (&(*matchedDaughter->daughter(j)) == &(*photonMatch_finalState)) isFSRPhotonDaughter = true;
+		  
+		  // if current deltaR is smallest, save index
+		  if (deltaR < minDaughterMatchDeltaR) {
+		    minDaughterMatchDeltaR = deltaR;
+		    matchDaughterIndex = j;
+		  }
+		  
+		} // end for loop through daughters
+		
+		if (isFSRPhotonDaughter) {
+
+		  double minFSRDaughterMatchDeltaR = 1000000;
+		  int matchFSRDaughterIndex = 0;
+		  
+		  // choose same flavor / sign quark with best deltaR among all daughters
+		  for (unsigned int j=0; j < matchedDaughter->numberOfDaughters(); j++) {
+		    
+		    double deltaRforFSR = reco::deltaR(matchedDaughter->eta(),matchedDaughter->phi(),matchedDaughter->daughter(j)->eta(),matchedDaughter->daughter(j)->phi());
+
+		    if (matchedDaughter->daughter(j)->pdgId() == matchedMother->pdgId()) {
+		      if (deltaRforFSR < minFSRDaughterMatchDeltaR) {
+			minFSRDaughterMatchDeltaR = deltaRforFSR;
+			matchFSRDaughterIndex = j;
+		      }
+		    }
+		    
+		  } // end for loop through daughters
+		  
+		  cout << "\t\t DeltaR FSR between: Photon pT " << photonMatch_finalState->pt() << " and Quark pT " << matchedDaughter->daughter(matchFSRDaughterIndex)->pt() << endl;
+		  
+		  // save deltaR between final state photon and quark after FSR
+		  fPhotonGenMatchInfo.deltaR_FSR = reco::deltaR(matchedDaughter->daughter(matchFSRDaughterIndex)->eta(),matchedDaughter->daughter(matchFSRDaughterIndex)->phi(),
+								photonMatch_finalState->eta(),photonMatch_finalState->phi());
+		}
+		
+		// matched particle now becomes best daughter
+		matchedDaughter = (reco::GenParticle *) matchedDaughter->daughter(matchDaughterIndex);
+		
+		if (!isFSRPhotonDaughter) {
+		  // print best daughter match
+		  cout << "\t\t\t Selected DAUGHTER " << matchDaughterIndex << ": status = " << matchedDaughter->status()  << "; ID = " << matchedDaughter->pdgId() << "; pt = "
+		       << matchedDaughter->pt() << "; eta = " << matchedDaughter->eta() << "; phi = " << matchedDaughter->phi()  << "; deltaR = " << minDaughterMatchDeltaR << endl;
+		}
+		
+		minDaughterMatchDeltaR = 1000000;
+		matchDaughterIndex = 0;
+		
 	      } // end while matched daughter is a quark
 	      
-	    } // end if print FSR daughters
+	    } // end if find FSR daughters
 	    
 	    // reset cut!
 	    // so we will consider all mothers again during next loop
