@@ -610,7 +610,8 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	    if (fabs(matchedMother->pdgId()) > 99) isHadronMother = true;
 
 	    // if quark is radiated from colliding proton giving rise to photon final state, then ISR
-	    if (isQuarkFirstMother && fabs(matchedMother->pdgId())==fabs(quarkMotherPdgId) && !matchedMother->isHardProcess() &&
+	    // (added NOTisFSR because for FSR where the hard interaction quark had a status 53 (same) quark mother coming from the proton?!)
+	    if (!isFSR && isQuarkFirstMother && fabs(matchedMother->pdgId())==fabs(quarkMotherPdgId) && !matchedMother->isHardProcess() &&
 		matchedMother->mother(matchMotherIndex)->pdgId()==2212 && matchedMother->mother(matchMotherIndex)->pt()==0) {
 	      isISR = true;
 	    }
