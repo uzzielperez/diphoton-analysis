@@ -54,10 +54,9 @@ void MCFakeRateClosureTestWithFakes::Loop(const Char_t *iMass)
   //TH1D *h_genParticle_FSR_deltaR = new TH1D("h_genParticle_FSR_deltaR","",100,0.,10.);
   
   int nFinalStatePhotonFSRDeltaRIn03 = 0;
-  int nFinalStatePhotonISRDeltaRIn03 = 0;
+  int nFinalStatePhotonFSRDeltaRIn05 = 0;
   int nFinalStatePhotonFSRDeltaRIn07 = 0;
-  int nFinalStatePhotonISRDeltaRIn07 = 0;
-
+  
   int nGluonFakes = 0;
   int nQuarkFakes = 0;
   int nUnknownFakes = 0;
@@ -108,13 +107,12 @@ void MCFakeRateClosureTestWithFakes::Loop(const Char_t *iMass)
       if (PhotonGenMatch_matchType == 2) {
 	nFinalStatePhotonFSR++;
 	if (PhotonGenMatch_deltaR_FSR <= 0.3) nFinalStatePhotonFSRDeltaRIn03++;
+	if (PhotonGenMatch_deltaR_FSR <= 0.5) nFinalStatePhotonFSRDeltaRIn05++;
 	if (PhotonGenMatch_deltaR_FSR <= 0.7) nFinalStatePhotonFSRDeltaRIn07++;
       }
       // 3 - ISR
       if (PhotonGenMatch_matchType == 3) {
 	nFinalStatePhotonISR++;
-	if (PhotonGenMatch_deltaR_FSR <= 0.3) nFinalStatePhotonISRDeltaRIn03++;
-	if (PhotonGenMatch_deltaR_FSR <= 0.7) nFinalStatePhotonISRDeltaRIn07++;
       }
       // 4 - other fragmentation
       if (PhotonGenMatch_matchType == 4) {
@@ -178,9 +176,8 @@ void MCFakeRateClosureTestWithFakes::Loop(const Char_t *iMass)
   cout << "Sum of 3 match types                           : " << nFinalStateNonPhotonHadronMother+nFinalStateNonPhotonElectronPair+nFinalStateNonPhotonNoMatch << endl;
   cout << endl;
   cout << "Number of final state photon FSR with DeltaR <= 0.3: " << nFinalStatePhotonFSRDeltaRIn03 << endl;
-  cout << "Number of final state photon ISR with DeltaR <= 0.3: " << nFinalStatePhotonISRDeltaRIn03 << endl;
+  cout << "Number of final state photon FSR with DeltaR <= 0.5: " << nFinalStatePhotonFSRDeltaRIn05 << endl;
   cout << "Number of final state photon FSR with DeltaR <= 0.7: " << nFinalStatePhotonFSRDeltaRIn07 << endl;
-  cout << "Number of final state photon ISR with DeltaR <= 0.7: " << nFinalStatePhotonISRDeltaRIn07 << endl;
   cout << endl;
   cout << "Number of quark fakes  : " << nQuarkFakes << endl;
   cout << "Number of gluon fakes  : " << nGluonFakes << endl;

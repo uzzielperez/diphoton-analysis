@@ -88,7 +88,7 @@ void MCFakeRateClosureTestWithFakes::Loop(const Char_t *iMass)
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
 
     // don't consider number of not real photons
-    if ( !(PhotonGenMatch_matchCategory == 1 && (PhotonGenMatch_matchType == 2 || PhotonGenMatch_matchType == 3)) ) {
+    if ( !(PhotonGenMatch_matchCategory == 1 && ( (PhotonGenMatch_matchType == 2 && PhotonGenMatch_deltaR_FSR >= 0.3) || PhotonGenMatch_matchType == 3) ) ) {
       // EB
       if (fabs(Photon_scEta) < 1.4442) {
 	if (Photon_passHighPtID) {

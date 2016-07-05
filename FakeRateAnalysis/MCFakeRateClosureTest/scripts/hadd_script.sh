@@ -9,7 +9,7 @@
 # output directory: /eos/uscms/store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD
 
 # choose QCD, QCD_EMEnriched, or GJets
-set dataset = "QCD_EMEnriched"
+set dataset = "QCD"
 
 if ($dataset == "QCD") then
     foreach dir (`eosls /store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD | grep QCD`)

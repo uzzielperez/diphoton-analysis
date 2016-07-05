@@ -76,7 +76,9 @@ void fakeRateCalculation() {
   // for data
   TFile infile("../../DataFakeRateAnalysis/analysis/jetht_matchedtothirdleadingjet.root","read");
   // for MC as data
-  // TFile infile("../../MCFakeRateClosureTest/analysis/diphoton_fakeRate_QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root","read");
+  //TFile infile("../../MCFakeRateClosureTest/analysis/diphoton_fakeRate_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root","read");
+  // for MC as data using matched faketemplates
+  //TFile infile("../../MCFakeRateClosureTest/analysis/diphoton_fakeRate_matchedTemplates_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root","read");
 
   // debug vectors
   std::vector<double> numVec;
