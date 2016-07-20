@@ -1,5 +1,6 @@
 # runtime options
 from FWCore.ParameterSet.VarParsing import VarParsing
+from os.path import basename
 
 options = VarParsing ('python')
 
@@ -9,11 +10,24 @@ options.register('globalTag',
                 VarParsing.varType.string,
                 "global tag to use when running"
 )
-## 'maxEvents' is already registered by the Framework, changing default value
- 
+options.register('nEventsSample',
+                 100,
+                 VarParsing.multiplicity.singleton,
+                 VarParsing.varType.int,
+                 "Total number of events in dataset for event weight calculation.")
+## 'maxEvents' is already registered by the Framework, changing default value 
 options.setDefault('maxEvents', 100)
 
 options.parseArguments()
+
+outName = options.outputFile
+print "Default output name: " + outName
+if "output" in outName: # if an input file name is specified, event weights can be determined
+    outName = "out_" + basename(options.inputFiles[0])
+    print "Output root file name: " + outName
+else:
+    options.inputFiles = "file:GGJets_M-1000To2000_Pt-50_13TeV-sherpa.root"
+#    outName = "ExoDiphotonAnalyzer.root"
 
 import FWCore.ParameterSet.Config as cms
 
@@ -27,8 +41,7 @@ process.source = cms.Source(
     "PoolSource",
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
-        #'file:myfile.root'
-        'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/04B53B17-24D9-E511-B1ED-00259075D72E.root'
+        options.inputFiles
         )
     )
 
@@ -42,7 +55,7 @@ process.load("Configuration.StandardSequences.GeometryDB_cff")
 # for output file
 process.TFileService = cms.Service(
     "TFileService",
-    fileName = cms.string("ExoDiphotonAnalyzer.root")
+    fileName = cms.string(outName)
     )
 
 # Setup VID for EGM ID
@@ -76,7 +89,11 @@ process.diphoton = cms.EDAnalyzer(
     phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
     phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
     # gen event info
-    genInfo = cms.InputTag("generator", "", "SIM")
+    genInfo = cms.InputTag("generator", "", "SIM"),
+    # output file name
+    outputFile = cms.string(outName),
+    # number of events in the sample (for calculation of event weights)
+    nEventsSample = cms.uint32(options.nEventsSample)
     )
 
 # analyzer to print cross section

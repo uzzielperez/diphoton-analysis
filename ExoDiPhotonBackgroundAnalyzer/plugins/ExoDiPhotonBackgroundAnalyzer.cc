@@ -27,7 +27,7 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-// from our CommomClasses
+// from our CommonClasses
 #include "diphoton-analysis/CommonClasses/interface/EventInfo.h"
 #include "diphoton-analysis/CommonClasses/interface/JetInfo.h"
 #include "diphoton-analysis/CommonClasses/interface/PhotonID.h"
@@ -133,6 +133,11 @@ class ExoDiPhotonBackgroundAnalyzer : public edm::one::EDAnalyzer<edm::one::Shar
   edm::EDGetTokenT<edm::ValueMap<bool> > phoMediumIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > phoTightIdMapToken_;
   
+  // output file name
+  TString outputFile_;
+  // number of events in sample
+  uint32_t nEventsSample_;
+
   // trees
   TTree *fTree;
 
@@ -177,6 +182,8 @@ ExoDiPhotonBackgroundAnalyzer::ExoDiPhotonBackgroundAnalyzer(const edm::Paramete
     phoLooseIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoLooseIdMap"))),
     phoMediumIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoMediumIdMap"))),
     phoTightIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoTightIdMap"))),
+    outputFile_(TString(iConfig.getParameter<std::string>("outputFile"))),
+    nEventsSample_(iConfig.getParameter<uint32_t>("nEventsSample")),
     genInfoToken_(consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("genInfo")))
 {
   //now do what ever initialization is needed
@@ -266,6 +273,7 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
   iEvent.getByToken(genInfoToken_,genInfo);
   
   ExoDiPhotons::FillGenEventInfo(fEventInfo, &(*genInfo));
+  ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
   
   // ====
   // JETS

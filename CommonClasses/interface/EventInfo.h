@@ -7,6 +7,9 @@
 // for beam halo summary
 #include "DataFormats/METReco/interface/BeamHaloSummary.h"
 
+// cross sections
+#include "diphoton-analysis/CommonClasses/interface/CrossSections.h"
+
 namespace ExoDiPhotons
 {
   
@@ -23,6 +26,8 @@ namespace ExoDiPhotons
     float qscale;
     float weight0;
     float weight;
+    float weightLumi; // luminosity weight
+    float weightAll; // luminosity weight and average event weight
     int interactingParton1PdgId;
     int interactingParton2PdgId;
 
@@ -33,7 +38,7 @@ namespace ExoDiPhotons
   };
 
   // variables must be sorted in decreasing order of size
-  std::string eventBranchDefString("run/L:LS:evnum:processid:bx:orbit:ptHat/F:alphaqcd:alphaqed:qscale:weight0:weight:interactingParton1PdgId/I:interactingParton2PdgId:beamHaloIDLoose/O:beamHaloIDTight:beamHaloIDTight2015");
+  std::string eventBranchDefString("run/L:LS:evnum:processid:bx:orbit:ptHat/F:alphaqcd:alphaqed:qscale:weight0:weight:weightLumi:weightAll:interactingParton1PdgId/I:interactingParton2PdgId:beamHaloIDLoose/O:beamHaloIDTight:beamHaloIDTight2015");
   
   void InitEventInfo(eventInfo_t &eventInfo) {
     eventInfo.run       = (Long64_t) -99999.99;
@@ -48,6 +53,8 @@ namespace ExoDiPhotons
     eventInfo.qscale    = -99999.99;
     eventInfo.weight0   = -99999.99;
     eventInfo.weight    = -99999.99;
+    eventInfo.weightLumi= -99999.99;
+    eventInfo.weightAll = -99999.99;
     eventInfo.interactingParton1PdgId = (int) -99999.99;
     eventInfo.interactingParton2PdgId = (int) -99999.99;
     eventInfo.beamHaloIDLoose     = false;
@@ -78,6 +85,13 @@ namespace ExoDiPhotons
     eventInfo.weight0   = genInfo->weights()[0];
     eventInfo.weight    = genInfo->weight();
   }
+
+  void FillEventWeights(eventInfo_t &eventInfo, const TString& sample, double nEventsSample) {
+    double normalizationLumi = 1000.; // pb
+    eventInfo.weightLumi = crossSection(sample)*normalizationLumi/(nEventsSample*averageWeight(sample));
+    eventInfo.weightAll = eventInfo.weight*eventInfo.weightLumi;
+  }
+
 
 } // end of namespace
 
