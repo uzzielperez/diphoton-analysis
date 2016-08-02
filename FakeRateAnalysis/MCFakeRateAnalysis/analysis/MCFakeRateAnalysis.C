@@ -114,7 +114,7 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 
     }
     
-    if (matched) continue;
+    // if (matched) continue;
     
     // loop over pT bin increments
     for (int i = 0; i < nBins-1; i++) {
@@ -139,8 +139,8 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
   } // end loop over entries
   
   TString filename;
-  if (strcmp(iMass,"all") == 0) filename = "GGJets_M-200To500_NOTmatchedtosecondleadingjet.root";
-  else filename = TString::Format("GGJets_M-%s_NOTmatchedtosecondleadingjet.root",iMass);
+  if (strcmp(iMass,"all") == 0) filename = "GGJets_M-200To500_vanilla.root";
+  else filename = TString::Format("GGJets_M-%s_vanilla.root",iMass);
   TFile file_out(filename,"RECREATE");
 
   // write our histograms to file

@@ -218,27 +218,28 @@ void FakeRateAnalysis::Loop()
     double photonThirdLeadingJetDr = -1.;
     bool matched = false;
 
-    if (Jet_nJets >= 3){
+    if (Jet_nJets >= 1){
 
       photon.SetPtEtaPhiM(Photon_pt,Photon_scEta,Photon_scPhi,0.);
       leadingJet.SetPtEtaPhiM(Jet_leadingJetPt,Jet_leadingJetEta,Jet_leadingJetPhi,Jet_leadingJetMass);
-      secondleadingJet.SetPtEtaPhiM(Jet_secondleadingJetPt,Jet_secondleadingJetEta,Jet_secondleadingJetPhi,Jet_secondleadingJetMass);
-      thirdleadingJet.SetPtEtaPhiM(Jet_thirdleadingJetPt,Jet_thirdleadingJetEta,Jet_thirdleadingJetPhi,Jet_thirdleadingJetMass);
+      // secondleadingJet.SetPtEtaPhiM(Jet_secondleadingJetPt,Jet_secondleadingJetEta,Jet_secondleadingJetPhi,Jet_secondleadingJetMass);
+      // thirdleadingJet.SetPtEtaPhiM(Jet_thirdleadingJetPt,Jet_thirdleadingJetEta,Jet_thirdleadingJetPhi,Jet_thirdleadingJetMass);
 
       photonLeadingJetDr = photon.DeltaR(leadingJet);
-      photonSecondLeadingJetDr = photon.DeltaR(secondleadingJet);
-      photonThirdLeadingJetDr = photon.DeltaR(thirdleadingJet);
+      // photonSecondLeadingJetDr = photon.DeltaR(secondleadingJet);
+      // photonThirdLeadingJetDr = photon.DeltaR(thirdleadingJet);
 
       double dRCut = 0.6;
       // these will all work because the jet 4 vectors are filled with dummy information, but I'll only use them if they are real jets
       bool matchedToLeadingJet = (photonLeadingJetDr < dRCut);
-      bool matchedToSecondLeadingJet = (photonSecondLeadingJetDr < dRCut);
-      bool matchedToThirdLeadingJet = (photonThirdLeadingJetDr < dRCut);
+      // bool matchedToSecondLeadingJet = (photonSecondLeadingJetDr < dRCut);
+      // bool matchedToThirdLeadingJet = (photonThirdLeadingJetDr < dRCut);
 
-      matched = matchedToThirdLeadingJet;
+      matched = matchedToLeadingJet;
 
     }
     
+    // turn off jet matching for now
     // if (!matched) continue;
       
     // plot fake templates first
@@ -365,7 +366,7 @@ void FakeRateAnalysis::Loop()
   
   // TString outName = TString::Format("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_chIsoSB%iTo%i.root",(int)sidebandLow,(int)sidebandHigh);
   // TFile file_out("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms_matchedToLeadingJetDr0p6.root","RECREATE");
-  TFile file_out("jetht_fakerate_withalldrplots.root","RECREATE");
+  TFile file_out("jetht_fakerate_vanilla.root","RECREATE");
   
   // sigmaIetaIetaEB->Write();
   // sigmaIetaIetaEE->Write();

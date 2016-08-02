@@ -43,9 +43,9 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, s
   gSystem->AddIncludePath("-I$ROOFITSYS/include");
 
   // for real templates; same for data and MC as data
-  TFile *historealmcfile = TFile::Open("../../MCFakeRateAnalysis/analysis/diphoton_fakeRate_GGJets_M-200To500_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
+  TFile *historealmcfile = TFile::Open("../../MCFakeRateAnalysis/analysis/GGJets_M-200To500_vanilla.root");
   // for data
-  TFile *histojetfile = TFile::Open("../../DataFakeRateAnalysis/analysis/jetht_matchedtothirdleadingjet.root");
+  TFile *histojetfile = TFile::Open("../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root");
   // for MC as data
   //TFile *histojetfile = TFile::Open("../../MCFakeRateClosureTest/analysis/diphoton_fakeRate_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
   // for MC as data using matched faketemplates
