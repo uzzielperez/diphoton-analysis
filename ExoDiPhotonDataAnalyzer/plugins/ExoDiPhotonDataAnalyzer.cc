@@ -97,6 +97,7 @@ class ExoDiPhotonDataAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedReso
 
   // miniAOD photon token
   edm::EDGetToken photonsMiniAODToken_;
+  double fMinPt;
   
   // AK4 jet token and cuts
   edm::EDGetToken jetsMiniAODToken_;
@@ -252,6 +253,7 @@ ExoDiPhotonDataAnalyzer::ExoDiPhotonDataAnalyzer(const edm::ParameterSet& iConfi
   
   // MiniAOD tokens
   photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
+  fMinPt = iConfig.getParameter<double>("minPhotonPt");
   
   // AK4 jets token
   jetsMiniAODToken_ = mayConsume< edm::View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("jetsMiniAOD"));
@@ -479,6 +481,11 @@ ExoDiPhotonDataAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup
     
     // print photon info
     cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
+
+    if (pho->pt() < fMinPt){
+      cout << "Photon pt less than " << fMinPt << ", so we're skipping it!" << endl;
+      continue;
+    }
     
     // check if photon is saturated
     isSat = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));

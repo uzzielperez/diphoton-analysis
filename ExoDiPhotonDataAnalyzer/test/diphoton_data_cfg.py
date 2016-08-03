@@ -33,7 +33,8 @@ process.source = cms.Source(
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
         #'file:myfile.root'
-        'root://cmsxrootd.fnal.gov//store/data/Run2015D/DoubleEG/MINIAOD/16Dec2015-v2/00000/000298CD-87A6-E511-9E56-002590593878.root'
+        # 'root://cmsxrootd.fnal.gov//store/data/Run2015D/DoubleEG/MINIAOD/16Dec2015-v2/00000/000298CD-87A6-E511-9E56-002590593878.root'
+        'root://cmsxrootd.fnal.gov//store/data/Run2016B/DoubleEG/MINIAOD/PromptReco-v2/000/275/074/00000/AA970B76-6535-E611-AAAC-02163E0142FC.root'
         )
     )
 
@@ -50,6 +51,13 @@ process.TFileService = cms.Service(
     "TFileService",
     fileName = cms.string("ExoDiphotonAnalyzer.root")
     )
+
+process.primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
+                                           vertexCollection = cms.InputTag("offlineSlimmedPrimaryVertices"),
+                                           minimumNDOF = cms.uint32(4),
+                                           maxAbsZ = cms.double(24),    
+                                           maxd0 = cms.double(2)    
+)
 
 # Setup VID for EGM ID
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
@@ -74,6 +82,7 @@ process.diphoton = cms.EDAnalyzer(
     'ExoDiPhotonDataAnalyzer',
     # photon tag
     photonsMiniAOD = cms.InputTag("slimmedPhotons"),
+    minPhotonPt = cms.double(50.),
     # vertex tag
     vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
     # beam spot tag
@@ -94,5 +103,5 @@ process.diphoton = cms.EDAnalyzer(
     phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
     )
 
-process.p = cms.Path(process.egmPhotonIDSequence*
+process.p = cms.Path(process.primaryVertexFilter*process.egmPhotonIDSequence*
                      process.diphoton)
