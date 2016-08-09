@@ -55,14 +55,14 @@ void FakeRateAnalysis::Loop()
   // pt spectrum of all numerator objects
   TH1D phoPtEB_numerator("phoPtEB_numerator","",1000,0.,2500.);
   TH1D phoPtEE_numerator("phoPtEE_numerator","",1000,0.,2500.);
-  TH1D phoPtEB_numerator_varbin("phoPtEB_numerator_varbin","",10,ptBinArray);
-  TH1D phoPtEE_numerator_varbin("phoPtEE_numerator_varbin","",10,ptBinArray);
+  TH1D phoPtEB_numerator_varbin("phoPtEB_numerator_varbin","",nBins-1,ptBinArray);
+  TH1D phoPtEE_numerator_varbin("phoPtEE_numerator_varbin","",nBins-1,ptBinArray);
 
   // pt spectrum of denominator objects
   TH1D phoPtEB_denominator("phoPtEB_denominator","",1000,0.,2500.);
   TH1D phoPtEE_denominator("phoPtEE_denominator","",1000,0.,2500.);
-  TH1D phoPtEB_denominator_varbin("phoPtEB_denominator_varbin","",10,ptBinArray);
-  TH1D phoPtEE_denominator_varbin("phoPtEE_denominator_varbin","",10,ptBinArray);
+  TH1D phoPtEB_denominator_varbin("phoPtEB_denominator_varbin","",nBins-1,ptBinArray);
+  TH1D phoPtEE_denominator_varbin("phoPtEE_denominator_varbin","",nBins-1,ptBinArray);
 
   // pt spectrum of all objects passing fake template criteria
   // TH1D phoPtEB_faketemplate("phoPtEB_faketemplate","",1000,0.,2500.);
