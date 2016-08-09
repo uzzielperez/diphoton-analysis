@@ -15,11 +15,11 @@ namespace ExoDiPhotons {
     if(sample.Contains("GGJets_M-6000To8000_Pt-50_13TeV-sherpa")) xsec = 1.753e-08;
     if(sample.Contains("GGJets_M-8000To13000_Pt-50_13TeV-sherpa")) xsec = 7.053e-11;
     // cross sections from Table 2 of AN2015_241
-    if(sample.Contains("GJets HT-40To100-madgraphMLM-pythia8")) xsec = 2.121e+04;
-    if(sample.Contains("GJets HT-100To200-madgraphMLM-pythia8")) xsec = 9.863e+03;
-    if(sample.Contains("GJets HT-200To400-madgraphMLM-pythia8")) xsec = 2.298e+03;
-    if(sample.Contains("GJets HT-400To600-madgraphMLM-pythia8")) xsec = 2.816e+02;
-    if(sample.Contains("GJets HT-600ToInf-madgraphMLM-pythia8")) xsec = 9.465e+01;
+    if(sample.Contains("GJets_HT-40To100")) xsec = 2.121e+04;
+    if(sample.Contains("GJets_HT-100To200")) xsec = 9.863e+03;
+    if(sample.Contains("GJets_HT-200To400")) xsec = 2.298e+03;
+    if(sample.Contains("GJets_HT-400To600")) xsec = 2.816e+02;
+    if(sample.Contains("GJets_HT-600ToInf")) xsec = 9.465e+01;
     
     // do not use weights for data
     
