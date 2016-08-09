@@ -34,7 +34,10 @@ if "Run2016" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100
     config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-274421_13TeV_PromptReco_Collisions16_JSON.txt'
-                          
+if "Run2015" in taskname:
+    config.Data.splitting = 'LumiBased'
+    config.Data.unitsPerJob = 100
+    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt'
 else:
     config.Data.splitting = 'FileBased'
     config.Data.unitsPerJob = 5

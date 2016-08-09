@@ -1,15 +1,10 @@
 # runtime options
 from FWCore.ParameterSet.VarParsing import VarParsing
+import FWCore.ParameterSet.Config as cms
 from os.path import basename
 
 options = VarParsing ('python')
 
-options.register('globalTag',
-                '76X_mcRun2_asymptotic_v12',
-                VarParsing.multiplicity.singleton,
-                VarParsing.varType.string,
-                "global tag to use when running"
-)
 options.register('nEventsSample',
                  100,
                  VarParsing.multiplicity.singleton,
@@ -29,11 +24,34 @@ else:
     options.inputFiles = "file:GGJets_M-1000To2000_Pt-50_13TeV-sherpa.root"
 #    outName = "ExoDiphotonAnalyzer.root"
 
-import FWCore.ParameterSet.Config as cms
+isMC = True
+# data always has "Run201" in its filename
+if "Run201" in outName:
+    isMC = False
+
+# to avoid processing with an incorrect global tag, don't set a valid default
+globalTag = 'notset'
+
+
+# options for data
+JEC = cms.untracked.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
+if "Run2015" in outName:
+    globalTag = '76X_dataRun2_16Dec2015_v0'
+if "Run2016" in outName:
+    globalTag = '80X_dataRun2_v6'
+
+# override options for MC
+if isMC:
+    globalTag = '76X_mcRun2_asymptotic_v12'
+    JEC = cms.untracked.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
+
 
 process = cms.Process("ExoDiPhoton")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
+
+process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.options.allowUnscheduled = cms.untracked.bool(True)
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( options.maxEvents ) )
 
@@ -47,7 +65,7 @@ process.source = cms.Source(
 
 # for global tag
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
-process.GlobalTag.globaltag = options.globalTag
+process.GlobalTag.globaltag = globalTag
 
 # geometry for saturation
 process.load("Configuration.StandardSequences.GeometryDB_cff")
@@ -58,6 +76,14 @@ process.TFileService = cms.Service(
     fileName = cms.string(outName)
     )
 
+process.primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
+                                           vertexCollection = cms.InputTag("offlineSlimmedPrimaryVertices"),
+                                           minimumNDOF = cms.uint32(4),
+                                           maxAbsZ = cms.double(24),
+                                           maxd0 = cms.double(2)
+)
+
+
 # Setup VID for EGM ID
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
@@ -67,15 +93,29 @@ my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonI
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
+## update AK4PFchs jet collection in MiniAOD JECs
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+updateJetCollection(
+   process,
+   jetSource = cms.InputTag('slimmedJets'),
+   labelName = 'UpdatedJEC',
+   jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')  # Do not forget 'L2L3Residual' on data!
+)
+
 # main analyzer and inputs
 process.diphoton = cms.EDAnalyzer(
     'ExoDiPhotonBackgroundAnalyzer',
     # photon tag
     photonsMiniAOD = cms.InputTag("slimmedPhotons"),
+    minPhotonPt = cms.double(75.),
     # genParticle tag
     genParticlesMiniAOD = cms.InputTag("prunedGenParticles"),
+    # vertex tag
+    vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+    # beam spot tag
+    beamSpot = cms.InputTag("offlineBeamSpot", "", "RECO"),
     # ak4 jets
-    jetsMiniAOD = cms.InputTag("slimmedJets"),
+    jetsMiniAOD = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
     jetPtThreshold = cms.double(30.),
     jetEtaThreshold = cms.double(2.5),
     # rho tag
@@ -93,10 +133,14 @@ process.diphoton = cms.EDAnalyzer(
     # output file name
     outputFile = cms.string(outName),
     # number of events in the sample (for calculation of event weights)
-    nEventsSample = cms.uint32(options.nEventsSample)
+    nEventsSample = cms.uint32(options.nEventsSample),
+    isMC = cms.bool(isMC)
     )
 
 # analyzer to print cross section
 process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
 
-process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton * process.xsec)
+if isMC:
+    process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton * process.xsec)
+else:
+    process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton)
