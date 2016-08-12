@@ -249,6 +249,10 @@ namespace ExoDiPhotons
   bool comparePhotonsByPt(edm::Ptr<pat::Photon> photon1, edm::Ptr<pat::Photon> photon2) {
     return(photon1->pt()>=photon2->pt());
   }
+  // alternate version for considering true and fake photons simultaneously
+  bool comparePhotonPairsByPt(std::pair<edm::Ptr<pat::Photon>, int> photon1, std::pair<edm::Ptr<pat::Photon>, int> photon2) {
+    return(photon1.first->pt()>=photon2.first->pt());
+  }
   
 } // end of namespace
 

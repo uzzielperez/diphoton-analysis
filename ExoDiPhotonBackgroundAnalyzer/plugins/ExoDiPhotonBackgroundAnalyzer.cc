@@ -90,7 +90,9 @@ class ExoDiPhotonBackgroundAnalyzer : public edm::one::EDAnalyzer<edm::one::Shar
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
       void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles, const std::vector<edm::Ptr<pat::Photon>> selectedPhotons);
-
+      void photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons, const edm::Handle<EcalRecHitCollection>& recHitsEB, const edm::Handle<EcalRecHitCollection>& recHitsEE, 
+			const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+			ExoDiPhotons::photonInfo_t& photon1Info, ExoDiPhotons::photonInfo_t& photon2Info, ExoDiPhotons::diphotonInfo_t& diphotonInfo);
 
    private:
       virtual void beginJob() override;
@@ -127,12 +129,6 @@ class ExoDiPhotonBackgroundAnalyzer : public edm::one::EDAnalyzer<edm::one::Shar
 
   // trigger prescales token
   edm::EDGetToken prescalesToken_;
-  
-  // trees
-  TTree *fTightTightTree;
-  TTree *fTightFakeTree;
-  TTree *fFakeTightTree;
-  TTree *fFakeFakeTree;
 
   // rho token
   edm::EDGetTokenT<double> rhoToken_;
@@ -164,9 +160,13 @@ class ExoDiPhotonBackgroundAnalyzer : public edm::one::EDAnalyzer<edm::one::Shar
   // trees
   TTree *fTree;
 
-  // photons
+  // photons (all good)
   ExoDiPhotons::photonInfo_t fPhoton1Info; // leading
   ExoDiPhotons::photonInfo_t fPhoton2Info; // subleading
+
+  // photons (separated by whether each of the two leading photons are true or fake)
+  ExoDiPhotons::photonInfo_t fTrueOrFakePhoton1Info[2][2]; // leading, all combinations: TT, FT, TF and FF
+  ExoDiPhotons::photonInfo_t fTrueOrFakePhoton2Info[2][2]; // subleading, all combinations: TT, FT, TF and FF
 
   // jets
   ExoDiPhotons::jetInfo_t fJetInfo;
@@ -196,8 +196,32 @@ class ExoDiPhotonBackgroundAnalyzer : public edm::one::EDAnalyzer<edm::one::Shar
   ExoDiPhotons::genParticleInfo_t fGenPhoton2Info; // subleading
 
   // diphotons
-  ExoDiPhotons::diphotonInfo_t fDiphotonInfo;
+  ExoDiPhotons::diphotonInfo_t fDiphotonInfo; // all good photons
+  // photons (separated by whether each of the two leading photons are true or fake)
+  ExoDiPhotons::diphotonInfo_t fTrueOrFakeDiphotonInfo[2][2];
+
+  // gen diphoton (two true)
   ExoDiPhotons::diphotonInfo_t fGenDiphotonInfo;
+  const CaloSubdetectorTopology* subDetTopologyEB_;
+  const CaloSubdetectorTopology* subDetTopologyEE_;
+
+  // status flags
+  bool isGood_;
+  bool isTT_;
+  bool isTF_;
+  bool isFT_;
+  bool isFF_;
+
+  enum {
+    LOOSE = 0,
+    MEDIUM = 1,
+    TIGHT = 2
+  };
+
+  enum {
+    TRUE = 0,
+    FAKE = 1
+  };
 };
 
 //
@@ -234,62 +258,44 @@ ExoDiPhotonBackgroundAnalyzer::ExoDiPhotonBackgroundAnalyzer(const edm::Paramete
   // tree for objects passing numerator or denominator definitions
   fTree = fs->make<TTree>("fTree","DiPhotonTree");
   fTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
+  fTree->Branch("BeamSpot",&fBeamSpotInfo,ExoDiPhotons::beamSpotBranchDefString.c_str());
+  fTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
+  fTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
   fTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
+  fTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
+  fTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
   fTree->Branch("Photon1",&fPhoton1Info,ExoDiPhotons::photonBranchDefString.c_str());
   fTree->Branch("Photon2",&fPhoton2Info,ExoDiPhotons::photonBranchDefString.c_str());
   fTree->Branch("GenPhoton1",&fGenPhoton1Info,ExoDiPhotons::genParticleBranchDefString.c_str());
   fTree->Branch("GenPhoton2",&fGenPhoton2Info,ExoDiPhotons::genParticleBranchDefString.c_str());
   fTree->Branch("Diphoton",&fDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
   fTree->Branch("GenDiphoton",&fGenDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
-  
-  // define trees and branches
-  fTightTightTree = fs->make<TTree>("fTightTightTree","DiPhotonTightTightTree");
-  fTightTightTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
-  fTightTightTree->Branch("BeamSpot",&fBeamSpotInfo,ExoDiPhotons::beamSpotBranchDefString.c_str());
-  fTightTightTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
-  fTightTightTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
-  fTightTightTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
-  fTightTightTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fTightTightTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fTightTightTree->Branch("Photon1",&fPhoton1Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fTightTightTree->Branch("Photon2",&fPhoton2Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fTightTightTree->Branch("Diphoton",&fDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
 
-  fTightFakeTree = fs->make<TTree>("fTightFakeTree","DiPhotonTightFakeTree");
-  fTightFakeTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
-  fTightFakeTree->Branch("BeamSpot",&fBeamSpotInfo,ExoDiPhotons::beamSpotBranchDefString.c_str());
-  fTightFakeTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
-  fTightFakeTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
-  fTightFakeTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
-  fTightFakeTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fTightFakeTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fTightFakeTree->Branch("Photon1",&fPhoton1Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fTightFakeTree->Branch("Photon2",&fPhoton2Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fTightFakeTree->Branch("Diphoton",&fDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
+  // true and true photon
+  fTree->Branch("TTPhoton1",&(fTrueOrFakePhoton1Info[TRUE][TRUE]),ExoDiPhotons::photonBranchDefString.c_str());
+  fTree->Branch("TTPhoton2",&(fTrueOrFakePhoton2Info[TRUE][TRUE]),ExoDiPhotons::photonBranchDefString.c_str());
+  fTree->Branch("TTDiphoton",&(fTrueOrFakeDiphotonInfo[TRUE][TRUE]),ExoDiPhotons::diphotonBranchDefString.c_str());
 
-  fFakeTightTree = fs->make<TTree>("fFakeTightTree","DiPhotonFakeTightTree");
-  fFakeTightTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
-  fFakeTightTree->Branch("BeamSpot",&fBeamSpotInfo,ExoDiPhotons::beamSpotBranchDefString.c_str());
-  fFakeTightTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
-  fFakeTightTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
-  fFakeTightTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
-  fFakeTightTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fFakeTightTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fFakeTightTree->Branch("Photon1",&fPhoton1Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fFakeTightTree->Branch("Photon2",&fPhoton2Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fFakeTightTree->Branch("Diphoton",&fDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
+  // true and fake photon
+  fTree->Branch("TFPhoton1",&(fTrueOrFakePhoton1Info[TRUE][FAKE]),ExoDiPhotons::photonBranchDefString.c_str());
+  fTree->Branch("TFPhoton2",&(fTrueOrFakePhoton2Info[TRUE][FAKE]),ExoDiPhotons::photonBranchDefString.c_str());
+  fTree->Branch("TFDiphoton",&(fTrueOrFakeDiphotonInfo[TRUE][FAKE]),ExoDiPhotons::diphotonBranchDefString.c_str());
 
-  fFakeFakeTree = fs->make<TTree>("fFakeFakeTree","DiPhotonFakeFakeTree");
-  fFakeFakeTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
-  fFakeFakeTree->Branch("BeamSpot",&fBeamSpotInfo,ExoDiPhotons::beamSpotBranchDefString.c_str());
-  fFakeFakeTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
-  fFakeFakeTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
-  fFakeFakeTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
-  fFakeFakeTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fFakeFakeTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fFakeFakeTree->Branch("Photon1",&fPhoton1Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fFakeFakeTree->Branch("Photon2",&fPhoton2Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fFakeFakeTree->Branch("Diphoton",&fDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
+  // fake and true photon
+  fTree->Branch("FTPhoton1",&(fTrueOrFakePhoton1Info[FAKE][TRUE]),ExoDiPhotons::photonBranchDefString.c_str());
+  fTree->Branch("FTPhoton2",&(fTrueOrFakePhoton2Info[FAKE][TRUE]),ExoDiPhotons::photonBranchDefString.c_str());
+  fTree->Branch("FTDiphoton",&(fTrueOrFakeDiphotonInfo[FAKE][TRUE]),ExoDiPhotons::diphotonBranchDefString.c_str());
+
+  // fake and fake photon
+  fTree->Branch("FFPhoton1",&(fTrueOrFakePhoton1Info[FAKE][FAKE]),ExoDiPhotons::photonBranchDefString.c_str());
+  fTree->Branch("FFPhoton2",&(fTrueOrFakePhoton2Info[FAKE][FAKE]),ExoDiPhotons::photonBranchDefString.c_str());
+  fTree->Branch("FFDiphoton",&(fTrueOrFakeDiphotonInfo[FAKE][FAKE]),ExoDiPhotons::diphotonBranchDefString.c_str());
+
+  fTree->Branch("isGood", &isGood_);
+  fTree->Branch("isTT", &isTT_);
+  fTree->Branch("isTF", &isTF_);
+  fTree->Branch("isFT", &isFT_);
+  fTree->Branch("isFF", &isFF_);
 
   // photon token
   photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
@@ -344,6 +350,8 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
   using namespace std;
   using namespace pat;
   using namespace reco;
+
+  isGood_ = isTT_ = isTF_ = isFT_ = isFF_ = false;
 
   // ==========
   // EVENT INFO
@@ -482,13 +490,10 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
   // EGM ID
   // ======
   
-  // EGM ID decisions
-  edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
-  iEvent.getByToken(phoLooseIdMapToken_ ,loose_id_decisions);
-  edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
-  iEvent.getByToken(phoMediumIdMapToken_,medium_id_decisions);
-  edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
-  iEvent.getByToken(phoTightIdMapToken_ ,tight_id_decisions);
+  edm::Handle<edm::ValueMap<bool> > id_decisions[3];
+  iEvent.getByToken(phoLooseIdMapToken_, id_decisions[LOOSE]);
+  iEvent.getByToken(phoMediumIdMapToken_, id_decisions[MEDIUM]);
+  iEvent.getByToken(phoTightIdMapToken_ , id_decisions[TIGHT]);
 
   // =========
   // ECAL INFO
@@ -501,8 +506,6 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
   iEvent.getByToken(recHitsEEToken,recHitsEE);
 
   // ECAL Topology
-  const CaloSubdetectorTopology* subDetTopologyEB_;
-  const CaloSubdetectorTopology* subDetTopologyEE_;
   edm::ESHandle<CaloTopology> caloTopology;
   iSetup.get<CaloTopologyRecord>().get(caloTopology);
   subDetTopologyEB_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalBarrel);
@@ -513,6 +516,10 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
   // =========
 
   ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo);
+  ExoDiPhotons::InitDiphotonInfo(fTrueOrFakeDiphotonInfo[0][0]);
+  ExoDiPhotons::InitDiphotonInfo(fTrueOrFakeDiphotonInfo[0][1]);
+  ExoDiPhotons::InitDiphotonInfo(fTrueOrFakeDiphotonInfo[1][0]);
+  ExoDiPhotons::InitDiphotonInfo(fTrueOrFakeDiphotonInfo[1][1]);
   if(isMC_) ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo);
   
   // ============
@@ -535,6 +542,14 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
   ExoDiPhotons::InitPhotonInfo(fPhoton1Info);
   ExoDiPhotons::InitPhotonInfo(fPhoton2Info);
   
+  // loop over combinations of true and fake
+  for(unsigned int i=0; i<2; i++) {
+    for(unsigned int j=0; j<2; j++) {
+      ExoDiPhotons::InitPhotonInfo(fTrueOrFakePhoton1Info[i][j]);
+      ExoDiPhotons::InitPhotonInfo(fTrueOrFakePhoton2Info[i][j]);
+    }
+  }
+
   // get photon collection
   edm::Handle<edm::View<pat::Photon> > photons;
   iEvent.getByToken(photonsMiniAODToken_,photons);
@@ -543,8 +558,11 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
   bool isSat = false;
 
   // pointer to photon in collection that passes high pt ID
-  std::vector<edm::Ptr<pat::Photon>> selectedPhotons;
+  std::vector<edm::Ptr<pat::Photon>> goodPhotons;
+  std::vector<edm::Ptr<pat::Photon>> selectedPhotons[2][2]; // combinations of real and fake for both leading candidates
     
+  std::vector<std::pair<edm::Ptr<pat::Photon>, int> > realAndFakePhotons;
+
   //for (edm::View<pat::Photon>::const_iterator pho = photons->begin(); pho != photons->end(); ++pho) {
   for (size_t i = 0; i < photons->size(); ++i) {
     const auto pho = photons->ptrAt(i);
@@ -555,69 +573,50 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
     // check if photon is saturated
     isSat = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
 
+    bool passID = ExoDiPhotons::passHighPtID(&(*pho), rho_, isSat);
+    bool denominatorObject = ExoDiPhotons::passDenominatorCut(&(*pho), rho_, isSat);
     // fill photons that pass high pt ID
-    if( ExoDiPhotons::passHighPtID(&(*pho), rho_, isSat) ) selectedPhotons.push_back(pho);  
-    
+    if(passID) {
+      goodPhotons.push_back(pho);
+      realAndFakePhotons.push_back(std::pair<edm::Ptr<pat::Photon>, int>(pho, TRUE));
+    }
+    if(denominatorObject) {
+      realAndFakePhotons.push_back(std::pair<edm::Ptr<pat::Photon>, int>(pho, FAKE));
+    }
   } // end of photon loop
 
   // sort vector of photons by pt
-  sort(selectedPhotons.begin(),selectedPhotons.end(),ExoDiPhotons::comparePhotonsByPt);
+  sort(goodPhotons.begin(),goodPhotons.end(),ExoDiPhotons::comparePhotonsByPt);
+  sort(realAndFakePhotons.begin(), realAndFakePhotons.end(), ExoDiPhotons::comparePhotonPairsByPt);
 
-  if (selectedPhotons.size() >= 2) {
-    cout << "Photon 1 pt = " << selectedPhotons[0]->pt() << "; eta = " << selectedPhotons[0]->eta() << "; phi = " << selectedPhotons[0]->phi() << endl;
-    cout << "Photon 2 pt = " << selectedPhotons[1]->pt() << "; eta = " << selectedPhotons[1]->eta() << "; phi = " << selectedPhotons[1]->phi() << endl;
+  // sort events by whether the leading two photons are true or fake
+  if(realAndFakePhotons.size()>=2) {
+    // "first" is the photon candidate, "second" is "TRUE" or "FAKE"
+    int photon1TrueOrFake = realAndFakePhotons.at(0).second;
+    int photon2TrueOrFake = realAndFakePhotons.at(1).second;
+    selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].push_back(realAndFakePhotons.at(0).first);
+    selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].push_back(realAndFakePhotons.at(1).first);
+    photonFiller(selectedPhotons[photon1TrueOrFake][photon2TrueOrFake],
+		 recHitsEB, recHitsEE, &id_decisions[0],
+		 fTrueOrFakePhoton1Info[photon1TrueOrFake][photon2TrueOrFake],
+		 fTrueOrFakePhoton2Info[photon1TrueOrFake][photon2TrueOrFake],
+		 fTrueOrFakeDiphotonInfo[photon1TrueOrFake][photon2TrueOrFake]);
+    if(photon1TrueOrFake==TRUE && photon2TrueOrFake==TRUE) isTT_ = true;
+    else if(photon1TrueOrFake==TRUE && photon2TrueOrFake==FAKE) isTF_ = true;
+    else if(photon1TrueOrFake==FAKE && photon2TrueOrFake==TRUE) isFT_ = true;
+    else if(photon1TrueOrFake==FAKE && photon2TrueOrFake==FAKE) isFF_ = true;
+    else throw cms::Exception("If there are two photons, there should only be four true/fake combinations!");
+  }
 
-    // ==================
-    // fill photon 1 info
-    // ==================
-    // fill photon saturation
-    fPhoton1Info.isSaturated = ExoDiPhotons::isSaturated(&(*selectedPhotons[0]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-    cout << "Photon 1 isSat: " << fPhoton1Info.isSaturated << endl;
-    
-    // fill photon info
-    ExoDiPhotons::FillBasicPhotonInfo(fPhoton1Info, &(*selectedPhotons[0]));
-    ExoDiPhotons::FillPhotonIDInfo(fPhoton1Info, &(*selectedPhotons[0]), rho_, fPhoton1Info.isSaturated);
-    
-    // fill EGM ID info
-    ExoDiPhotons::FillPhotonEGMidInfo(fPhoton1Info, &(*selectedPhotons[0]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
-    fPhoton1Info.passEGMLooseID  = (*loose_id_decisions)[selectedPhotons[0]];
-    fPhoton1Info.passEGMMediumID = (*medium_id_decisions)[selectedPhotons[0]];
-    fPhoton1Info.passEGMTightID  = (*tight_id_decisions)[selectedPhotons[0]];
+  if (goodPhotons.size() >= 2) {
+    isGood_ = true;
+    photonFiller(goodPhotons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fDiphotonInfo);
+  }
 
-    // ==================
-    // fill photon 2 info
-    // ==================
-    // fill photon saturation
-    fPhoton2Info.isSaturated = ExoDiPhotons::isSaturated(&(*selectedPhotons[1]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-    cout << "Photon 2 isSat: " << fPhoton2Info.isSaturated << endl;
-    
-    // fill photon info
-    ExoDiPhotons::FillBasicPhotonInfo(fPhoton2Info, &(*selectedPhotons[1]));
-    ExoDiPhotons::FillPhotonIDInfo(fPhoton2Info, &(*selectedPhotons[1]), rho_, fPhoton2Info.isSaturated);
-    
-    // fill EGM ID info
-    ExoDiPhotons::FillPhotonEGMidInfo(fPhoton2Info, &(*selectedPhotons[1]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
-    fPhoton2Info.passEGMLooseID  = (*loose_id_decisions)[selectedPhotons[1]];
-    fPhoton2Info.passEGMMediumID = (*medium_id_decisions)[selectedPhotons[1]];
-    fPhoton2Info.passEGMTightID  = (*tight_id_decisions)[selectedPhotons[1]];
-
-    //cout << "fPhoton 1 pt = " << fPhoton1Info.pt << "; eta = " << fPhoton1Info.eta << "; phi = " << fPhoton1Info.phi << endl;
-    //cout << "fPhoton 2 pt = " << fPhoton2Info.pt << "; eta = " << fPhoton2Info.eta << "; phi = " << fPhoton2Info.phi << endl;
-
-    // ==================
-    // fill diphoton info
-    // ==================
-    ExoDiPhotons::FillDiphotonInfo(fDiphotonInfo,&(*selectedPhotons[0]),&(*selectedPhotons[1]));
-
-    
-    // fill our trees
-    if ( fPhoton1Info.passHighPtID && fPhoton2Info.passHighPtID ) fTightTightTree->Fill();
-    else if ( fPhoton1Info.passHighPtID && fPhoton2Info.isDenominatorObj ) fTightFakeTree->Fill();
-    else if ( fPhoton1Info.isDenominatorObj && fPhoton2Info.passHighPtID ) fFakeTightTree->Fill();
-    else if ( fPhoton1Info.isDenominatorObj && fPhoton2Info.isDenominatorObj ) fFakeFakeTree->Fill();
+  // really only the second is needed, but it's more understandable to write it this way
+  if(goodPhotons.size() >= 2 || realAndFakePhotons.size() >= 2) {
     fTree->Fill();
-    
-  } // end 2 photon check
+  }
   
   cout << endl;
   
@@ -713,7 +712,7 @@ void ExoDiPhotonBackgroundAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco
     fEventInfo.interactingParton1PdgId = interactingPartons[0];
     fEventInfo.interactingParton2PdgId = interactingPartons[1];
   }
-  else cout << "Exactly two interacting partons not found!" << endl;
+  else std::cout << "Exactly two interacting partons not found!" << std::endl;
 
   // fill gen photon info
   if (genPhoton1) ExoDiPhotons::FillGenParticleInfo(fGenPhoton1Info, genPhoton1);
@@ -723,6 +722,59 @@ void ExoDiPhotonBackgroundAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco
   if (genPhoton1 && genPhoton2) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo,genPhoton1,genPhoton2);
 
 }
+
+void ExoDiPhotonBackgroundAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
+						 const edm::Handle<EcalRecHitCollection>& recHitsEB, const edm::Handle<EcalRecHitCollection>& recHitsEE,
+						 const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+						 ExoDiPhotons::photonInfo_t& photon1Info, ExoDiPhotons::photonInfo_t& photon2Info, ExoDiPhotons::diphotonInfo_t& diphotonInfo)
+{
+  std::cout << "Photon 1 pt = " << photons[0]->pt() << "; eta = " << photons[0]->eta() << "; phi = " << photons[0]->phi() << std::endl;
+  std::cout << "Photon 2 pt = " << photons[1]->pt() << "; eta = " << photons[1]->eta() << "; phi = " << photons[1]->phi() << std::endl;
+
+  // ==================
+  // fill photon 1 info
+  // ==================
+  // fill photon saturation
+  photon1Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[0]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+  std::cout << "Photon 1 isSat: " << photon1Info.isSaturated << std::endl;
+
+  // fill photon info
+  ExoDiPhotons::FillBasicPhotonInfo(photon1Info, &(*photons[0]));
+  ExoDiPhotons::FillPhotonIDInfo(photon1Info, &(*photons[0]), rho_, photon1Info.isSaturated);
+
+  // fill EGM ID info
+  ExoDiPhotons::FillPhotonEGMidInfo(photon1Info, &(*photons[0]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
+  photon1Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[0]];
+  photon1Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[0]];
+  photon1Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[0]];
+
+  // ==================
+  // fill photon 2 info
+  // ==================
+  // fill photon saturation
+  photon2Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[1]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+  std::cout << "Photon 2 isSat: " << photon2Info.isSaturated << std::endl;
+
+  // fill photon info
+  ExoDiPhotons::FillBasicPhotonInfo(photon2Info, &(*photons[1]));
+  ExoDiPhotons::FillPhotonIDInfo(photon2Info, &(*photons[1]), rho_, photon2Info.isSaturated);
+
+  // fill EGM ID info
+  ExoDiPhotons::FillPhotonEGMidInfo(photon2Info, &(*photons[1]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
+  photon2Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[1]];
+  photon2Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[1]];
+  photon2Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[1]];
+
+  //cout << "photon 1 pt = " << photon1Info.pt << "; eta = " << photon1Info.eta << "; phi = " << photon1Info.phi << endl;
+  //cout << "photon 2 pt = " << photon2Info.pt << "; eta = " << photon2Info.eta << "; phi = " << photon2Info.phi << endl;
+
+  // ==================
+  // fill diphoton info
+  // ==================
+  ExoDiPhotons::FillDiphotonInfo(diphotonInfo,&(*photons[0]),&(*photons[1]));
+
+} // end photonFiller
+
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(ExoDiPhotonBackgroundAnalyzer);
