@@ -28,6 +28,18 @@ namespace ExoDiPhotons {
     if(sample.Contains("QCD_Pt-120to170_EMEnriched")) xsec = 477000*0.132; // filter efficiency error (MCM): 0.02
     if(sample.Contains("QCD_Pt-170to300_EMEnriched")) xsec = 114000*0.165; // filter efficiency error (MCM): 0.026
     if(sample.Contains("QCD_Pt-300toInf_EMEnriched")) xsec = 9000*0.15; // filter efficiency error (MCM): 0.036
+    // cross sections from https://twiki.cern.ch/twiki/bin/viewauth/CMS/SummaryTable1G25ns
+    if(sample.Contains("WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")) xsec = 405.271;
+    if(sample.Contains("ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")) xsec = 117.864;
+    if(sample.Contains("TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8")) xsec = 3.697;
+    if(sample.Contains("DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")) xsec = 1921.8*3;
+    // MCM cross sections (NLO)
+    if(sample.Contains("WToLNu_0J_13TeV-amcatnloFXFX-pythia8")) xsec = 5.844e+04; // +- 7.676e+01 pb
+    if(sample.Contains("WToLNu_1J_13TeV-amcatnloFXFX-pythia8")) xsec = 1.128e+04; // +- 3.873e+02 pb
+    if(sample.Contains("WToLNu_2J_13TeV-amcatnloFXFX-pythia8")) xsec = 2.544e+03; // +- 2.485e+02 pb
+    // from https://twiki.cern.ch/twiki/bin/view/LHCPhysics/TtbarNNLO
+    if(sample.Contains("TTJets_")) xsec = 815.96 ;
+
     
     // do not use weights for data
     
