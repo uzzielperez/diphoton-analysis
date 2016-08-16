@@ -12,6 +12,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 TString reformat(TString input);
 
@@ -103,7 +104,9 @@ void plot::output(std::string outputDirectory)
     // histName += "_";
     // histName += m_variable;
     hists.push_back(new TH1D(isample.name().c_str(), isample.name().c_str(), m_nbins, m_xmin, m_xmax));
+    std::cout << "Creating histogram " << isample.name() << " for variable " << m_variable << std::endl;
     isample.chain()->Project(isample.name().c_str(), m_variable.c_str(), newCut.Data());
+    std::cout << "Integral (" << isample.name() << "): " << hists.back()->Integral() << std::endl;
     hists.back()->SetLineStyle(isample.lineStyle());
     hists.back()->SetLineColor(isample.lineColor());
     hists.back()->SetFillStyle(isample.fillStyle());

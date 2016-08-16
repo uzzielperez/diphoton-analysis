@@ -1,5 +1,7 @@
 #include "easyplot.hh"
 
+#include "TMath.h"
+
 void basicplots() 
 {
   // configurable information
@@ -17,8 +19,16 @@ void basicplots()
   sample gg("gg", "#gamma#gamma", kfactor);
   sample gj("gj", "#gamma + jets");
   sample jj("jj", "Multijet");
+  sample vg("vg", "V#gamma");
+  sample w("w", "W");
+  sample dy("dy", "DY");
+  sample ttg("ttg", "t#bar{t}#gamma");
   std::vector<sample> samples;
   samples.push_back(data);
+  samples.push_back(ttg);
+  samples.push_back(w);
+  samples.push_back(vg);
+  samples.push_back(dy);
   samples.push_back(jj);
   samples.push_back(gj);
   samples.push_back(gg);
