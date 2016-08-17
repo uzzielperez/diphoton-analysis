@@ -16,6 +16,7 @@ If necessary to change the site to which the outputs should stage out, modify `c
 ```
 cd $CMSSW_BASE
 source /cvmfs/cms.cern.ch/crab3/crab.sh
+voms-proxy-init -voms cms -rfc
 ./ExoDiPhotonBackgroundAnalyzer/test/generate_crab_cfg.py
 ```
 
