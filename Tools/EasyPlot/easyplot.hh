@@ -94,6 +94,7 @@ plot::plot(std::vector<sample> samples, std::string variable, std::string cut, i
 void plot::output(std::string outputDirectory)
 {
   TCanvas *c = new TCanvas;
+  c->SetLogy();
   std::vector<TH1D*> hists;
   
   for(auto isample : m_samples) {
@@ -173,13 +174,14 @@ void plot::output(std::string outputDirectory)
 TString reformat(TString input)
 {
   TString output=input;
-  if(input.Contains("Minv") || input.Contains("pt")) output+=" (GeV)";
+  if(input.Contains("Minv") || input.Contains("pt") || input.Contains("qt")) output+=" (GeV)";
   output.ReplaceAll("Minv", "m_{#gamma#gamma}");
   output.ReplaceAll("Photon1.pt", "p_{T1}");
   output.ReplaceAll("Photon2.pt", "p_{T2}");
   output.ReplaceAll("Diphoton.qt", "q_{T,#gamma#gamma}");
   output.ReplaceAll("Diphoton.deltaPhi", "#Delta#phi_{#gamma#gamma}");
   output.ReplaceAll("Diphoton.deltaEta", "#Delta#eta_{#gamma#gamma}");
+  output.ReplaceAll("abs(Diphoton.cosThetaStar)", "|cos(#theta^{*})_{#gamma#gamma}|");
 
   return output;
 }

@@ -73,8 +73,8 @@ void init() {
   chains["ttg"] = chTTG;
 
   fillColors["data"]=kWhite;
-  fillColors["gg"]=kBlue;
-  fillColors["gj"]=kCyan;
+  fillColors["gg"]=kCyan;
+  fillColors["gj"]=kBlue;
   fillColors["jj"]=kSpring;
   fillColors["vg"]=kOrange;
   fillColors["w"]=kBlack;
