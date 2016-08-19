@@ -2,6 +2,8 @@
 from FWCore.ParameterSet.VarParsing import VarParsing
 import FWCore.ParameterSet.Config as cms
 from os.path import basename
+import os
+import sys
 
 options = VarParsing ('python')
 
@@ -38,11 +40,18 @@ JEC = cms.untracked.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Resid
 if "Run2015" in outName:
     globalTag = '76X_dataRun2_16Dec2015_v0'
 if "Run2016" in outName:
-    globalTag = '80X_dataRun2_v6'
+    globalTag = '80X_dataRun2_Prompt_ICHEP16JEC_v0'
 
 # override options for MC
 if isMC:
-    globalTag = '76X_mcRun2_asymptotic_v12'
+    version = os.getenv("CMSSW_VERSION")
+    if "CMSSW_8" in version:
+        globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
+    elif "CMSSW_7" in version:
+        globalTag = '76X_mcRun2_asymptotic_v12'
+    else:
+        print "Could not determine appropriate MC global tag from filename"
+        sys.exit()
     JEC = cms.untracked.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
 
 

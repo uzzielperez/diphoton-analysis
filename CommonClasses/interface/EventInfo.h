@@ -82,7 +82,7 @@ namespace ExoDiPhotons
     eventInfo.alphaqed  = genInfo->alphaQED();
     eventInfo.qscale    = genInfo->qScale();
     eventInfo.processid = genInfo->signalProcessID();
-    eventInfo.weight0   = genInfo->weights()[0];
+    eventInfo.weight0   = (genInfo->weights().size() > 0 ) ? genInfo->weights()[0] : 1.0;
     eventInfo.weight    = genInfo->weight();
   }
 

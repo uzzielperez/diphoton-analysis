@@ -57,7 +57,8 @@ namespace ExoDiPhotons {
     if(sample.Contains("WToLNu_2J_13TeV-amcatnloFXFX-pythia8")) xsec = 2.544e+03; // +- 2.485e+02 pb
     // from https://twiki.cern.ch/twiki/bin/view/LHCPhysics/TtbarNNLO
     if(sample.Contains("TTJets_")) xsec = 815.96 ;
-
+    // from running GenXsecAnalyzer on full sample
+    if(sample.Contains("GGGJets_13TeV-sherpa")) xsec = 1.814e-01;
     
     // do not use weights for data
     
