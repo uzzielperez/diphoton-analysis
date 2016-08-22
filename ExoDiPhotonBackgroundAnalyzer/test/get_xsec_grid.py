@@ -57,7 +57,7 @@ DATASETS.append(['/ADDGravToGG_MS-5000_NED-2_KK-1_M-2000To3000_13TeV-sherpa/RunI
 DATASETS.append(['/ADDGravToGG_MS-5000_NED-2_KK-1_M-3000To5000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
 DATASETS.append(['/ADDGravToGG_MS-5000_NED-2_KK-1_M-500To1000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
 DATASETS.append(['/ADDGravToGG_MS-5000_NED-2_KK-4_M-1000To2000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-# missing /ADDGravToGG_MS-5000_NED-2_KK-4_M-2000To3000_13TeV-sherpa for 76X
+# missing /ADDGravToGG_MS-5000_NED-2_KK-4_M-2000To3000_13TeV-sherpa MiniAODv2 76X
 DATASETS.append(['/ADDGravToGG_MS-5000_NED-2_KK-4_M-3000To5000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
 DATASETS.append(['/ADDGravToGG_MS-5000_NED-2_KK-4_M-500To1000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
 DATASETS.append(['/ADDGravToGG_MS-5000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
@@ -91,6 +91,13 @@ DATASETS.append(['/ADDGravToGG_MS-6000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/RunI
 DATASETS.append(['/ADDGravToGG_MS-6000_NED-4_KK-1_M-200To500_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
 DATASETS.append(['/ADDGravToGG_MS-6000_NED-4_KK-1_M-4000To6000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
 DATASETS.append(['/ADDGravToGG_MS-6000_NED-4_KK-1_M-500To1000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
+# background for ADD samples
+DATASETS.append(['/GG_M-200To500_Pt-70_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
+DATASETS.append(['/GG_M-500To1000_Pt-70_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
+DATASETS.append(['/GG_M-1000To2000_Pt-70_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
+DATASETS.append(['/GG_M-2000To4000_Pt-70_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
+DATASETS.append(['/GG_M-4000To8000_Pt-70_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
+DATASETS.append(['/GG_M-8000To13000_Pt-70_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
 
 for ilist in DATASETS:
   nevents = 0
@@ -113,4 +120,3 @@ for ilist in DATASETS:
     cmd = "crab submit -c " + outputfile
     os.system(cmd)
     print "Submitted ", ids
-
