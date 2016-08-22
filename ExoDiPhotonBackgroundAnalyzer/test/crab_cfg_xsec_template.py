@@ -35,4 +35,3 @@ config.Data.unitsPerJob = 100
 
 config.section_("Site")
 config.Site.storageSite = 'T2_CH_CERN' #'T3_US_FNALLPC'
-config.Site.blacklist = ['T1_RU_JINR']
