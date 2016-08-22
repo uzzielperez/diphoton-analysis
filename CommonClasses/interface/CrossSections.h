@@ -45,7 +45,6 @@ namespace ExoDiPhotons {
     if(sample.Contains("QCD_Pt_1800to2400_TuneCUETP8M1")) xsec = 0.114943;
     if(sample.Contains("QCD_Pt_2400to3200_TuneCUETP8M1")) xsec = 0.00682981;
     if(sample.Contains("QCD_Pt_3200toInf_TuneCUETP8M1")) xsec = 0.000165445;
-
     // cross sections from https://twiki.cern.ch/twiki/bin/viewauth/CMS/SummaryTable1G25ns
     if(sample.Contains("WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")) xsec = 405.271;
     if(sample.Contains("ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")) xsec = 117.864;
@@ -60,9 +59,99 @@ namespace ExoDiPhotons {
     // from running GenXsecAnalyzer on full sample
     if(sample.Contains("GGGJets_13TeV-sherpa")) xsec = 1.814e-01;
     
-    // do not use weights for data
+    // from running GenXsecAnalyzer on full sample
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 9.139e-02;
+    //if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-1_M-2000To3000_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-1_M-500To1000_13TeV-sherpa")) xsec = 1.397e-01;
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) xsec = 1.752e-02;
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-4_M-2000To3000_13TeV-sherpa")) xsec = 2.020e-02;
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-4_M-500To1000_13TeV-sherpa")) xsec = 7.331e-02;
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 5.164e-02;
+    //if(sample.Contains("ADDGravToGG_MS-3000_NED-4_KK-1_M-2000To3000_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-4_KK-1_M-200To500_13TeV-sherpa")) xsec = 8.985e-01;
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-4_KK-1_M-500To1000_13TeV-sherpa")) xsec = 8.966e-02;
+    if(sample.Contains("ADDGravToGG_MS-3500_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 4.510e-02;
+    //if(sample.Contains("ADDGravToGG_MS-3500_NED-2_KK-1_M-2000To3500_13TeV-sherpa")) xsec = ;
+    //if(sample.Contains("ADDGravToGG_MS-3500_NED-2_KK-1_M-500To1000_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("ADDGravToGG_MS-3500_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) xsec = 8.453e-03;
+    //if(sample.Contains("ADDGravToGG_MS-3500_NED-2_KK-4_M-2000To3500_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("ADDGravToGG_MS-3500_NED-2_KK-4_M-500To1000_13TeV-sherpa")) xsec = 7.398e-02;
+    if(sample.Contains("ADDGravToGG_MS-3500_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 2.126e-02;
+    if(sample.Contains("ADDGravToGG_MS-3500_NED-4_KK-1_M-2000To3500_13TeV-sherpa")) xsec = 2.365e-02;
+    if(sample.Contains("ADDGravToGG_MS-3500_NED-4_KK-1_M-200To500_13TeV-sherpa")) xsec = 8.924e-01;
+    if(sample.Contains("ADDGravToGG_MS-3500_NED-4_KK-1_M-500To1000_13TeV-sherpa")) xsec = 8.104e-02;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 2.553e-02;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-2_KK-1_M-2000To4000_13TeV-sherpa")) xsec = 6.604e-03;
+    //if(sample.Contains("ADDGravToGG_MS-4000_NED-2_KK-1_M-500To1000_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) xsec = 6.494e-03;
+    //if(sample.Contains("ADDGravToGG_MS-4000_NED-2_KK-4_M-2000To4000_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-2_KK-4_M-500To1000_13TeV-sherpa")) xsec = 7.427e-02;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 1.234e-02;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-4_KK-1_M-2000To4000_13TeV-sherpa")) xsec = 1.050e-02;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-4_KK-1_M-200To500_13TeV-sherpa")) xsec = 8.894e-01;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-4_KK-1_M-500To1000_13TeV-sherpa")) xsec = 7.821e-02;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 1.661e-02;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-1_M-2000To3000_13TeV-sherpa")) xsec = 3.809e-03;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-1_M-3000To4500_13TeV-sherpa")) xsec = 6.004e-04;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-1_M-500To1000_13TeV-sherpa")) xsec = 8.373e-02;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) xsec = 6.033e-03;
+    //if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-4_M-2000To3000_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-4_M-3000To4500_13TeV-sherpa")) xsec = 7.878e-04;
+    //if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-4_M-500To1000_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 9.129e-03;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-4_KK-1_M-2000To3000_13TeV-sherpa")) xsec = 2.688e-03;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-4_KK-1_M-200To500_13TeV-sherpa")) xsec = 8.966e-01;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-4_KK-1_M-3000To4500_13TeV-sherpa")) xsec = 2.270e-03;
+    //if(sample.Contains("ADDGravToGG_MS-4500_NED-4_KK-1_M-500To1000_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 1.221e-02;
+    //if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-1_M-2000To3000_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-1_M-3000To5000_13TeV-sherpa")) xsec = 5.167e-04;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-1_M-500To1000_13TeV-sherpa")) xsec = 8.025e-02;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) xsec = 5.999e-03;
+    // missing         "ADDGravToGG_MS-5000_NED-2_KK-4_M-2000To3000_13TeV-sherpa xsec
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-3000To5000_13TeV-sherpa")) xsec = 3.902e-04;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-500To1000_13TeV-sherpa")) xsec = 7.471e-02;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 7.829e-03;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-4_KK-1_M-2000To3000_13TeV-sherpa")) xsec = 1.382e-03;
+    //if(sample.Contains("ADDGravToGG_MS-5000_NED-4_KK-1_M-3000To5000_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-4_KK-1_M-200To500_13TeV-sherpa")) xsec = 8.940e-01;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-4_KK-1_M-500To1000_13TeV-sherpa")) xsec = 7.640e-02;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 9.948e-03;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-1_M-2000To4000_13TeV-sherpa")) xsec = 1.969e-03;
+    //if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-1_M-4000To5500_13TeV-sherpa")) xsec = ;
+    //if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-1_M-500To1000_13TeV-sherpa")) xsec = ;
+    //if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-4_M-2000To4000_13TeV-sherpa")) xsec = 3.688e-04;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-4_M-4000To5500_13TeV-sherpa")) xsec = 8.207e-05;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-4_M-500To1000_13TeV-sherpa")) xsec = 7.522e-02;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 7.209e-03;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-4_KK-1_M-2000To4000_13TeV-sherpa")) xsec = 1.218e-03;
+    //if(sample.Contains("ADDGravToGG_MS-5500_NED-4_KK-1_M-4000To5500_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-4_KK-1_M-200To500_13TeV-sherpa")) xsec = 8.947e-01;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-4_KK-1_M-500To1000_13TeV-sherpa")) xsec = 7.599e-02;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 8.717e-03;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-1_M-2000To4000_13TeV-sherpa")) xsec = 1.382e-03;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-1_M-4000To6000_13TeV-sherpa")) xsec = 4.460e-05;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-1_M-500To1000_13TeV-sherpa")) xsec = 7.819e-02;
+    //if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-4_M-2000To4000_13TeV-sherpa")) xsec = 2.640e-04;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-4_M-4000To6000_13TeV-sherpa")) xsec = 4.472e-05;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-4_M-500To1000_13TeV-sherpa")) xsec = 7.535e-02;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 6.887e-03;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-4_KK-1_M-2000To4000_13TeV-sherpa")) xsec = 7.727e-04;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-4_KK-1_M-4000To6000_13TeV-sherpa")) xsec = 1.393e-04;
+    //if(sample.Contains("ADDGravToGG_MS-6000_NED-4_KK-1_M-200To500_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-4_KK-1_M-500To1000_13TeV-sherpa")) xsec = 7.598e-02;  
+    // from running GenXsecAnalyzer on full sample
+    if(sample.Contains("GG_M-200To500_Pt-70_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("GG_M-500To1000_Pt-70_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("GG_M-1000To2000_Pt-70_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("GG_M-2000To4000_Pt-70_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("GG_M-4000To8000_Pt-70_13TeV-sherpa")) xsec = ;
+    if(sample.Contains("GG_M-8000To13000_Pt-70_13TeV-sherpa")) xsec = ;
     
-    if(sample.Contains("Run2015") || sample.Contains("Run2016")) xsec=1.0;
+    // do not use weights for data
+    if(sample.Contains("Run2015") || sample.Contains("Run2016")) xsec = 1.0;
 
     if(xsec<0) throw cms::Exception("Could not determine cross section from output file name");
 
@@ -96,6 +185,97 @@ namespace ExoDiPhotons {
     if(sample.Contains("WToLNu_2J_13TeV-amcatnloFXFX-pythia8")) average = 7.667901e+04*3.120579e-01;
     if(sample.Contains("TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8")) average = 2.115439e+01*3.198633e-01;
 
+    // from running GenXsecAnalyzer on full sample
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) average = 77795.8/98040;
+    //if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-1_M-2000To3000_13TeV-sherpa")) average = ;
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-1_M-500To1000_13TeV-sherpa")) average = 255994/99080;
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) average = 35458.9/96447;
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-4_M-2000To3000_13TeV-sherpa")) average = 14915.4/97712;
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-4_M-500To1000_13TeV-sherpa")) average = 164945/100000;
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) average = 70920/95112;
+    //if(sample.Contains("ADDGravToGG_MS-3000_NED-4_KK-1_M-2000To3000_13TeV-sherpa")) average = ;
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-4_KK-1_M-200To500_13TeV-sherpa")) average = 1.39693e+06/100000;
+    if(sample.Contains("ADDGravToGG_MS-3000_NED-4_KK-1_M-500To1000_13TeV-sherpa")) average = 176282/100000;
+    if(sample.Contains("ADDGravToGG_MS-3500_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) average = 46276.4/99769;
+    //if(sample.Contains("ADDGravToGG_MS-3500_NED-2_KK-1_M-2000To3500_13TeV-sherpa")) average = ;
+    //if(sample.Contains("ADDGravToGG_MS-3500_NED-2_KK-1_M-500To1000_13TeV-sherpa")) average = ;
+    if(sample.Contains("ADDGravToGG_MS-3500_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) average = 21258.5/99490;
+    //if(sample.Contains("ADDGravToGG_MS-3500_NED-2_KK-4_M-2000To3500_13TeV-sherpa")) average = ;
+    if(sample.Contains("ADDGravToGG_MS-3500_NED-2_KK-4_M-500To1000_13TeV-sherpa")) average = 165282/99665;
+    if(sample.Contains("ADDGravToGG_MS-3500_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) average = 33728.1/99638;
+    if(sample.Contains("ADDGravToGG_MS-3500_NED-4_KK-1_M-2000To3500_13TeV-sherpa")) average = 16369.8/99595;
+    if(sample.Contains("ADDGravToGG_MS-3500_NED-4_KK-1_M-200To500_13TeV-sherpa")) average = 1.40807e+06/99544;
+    if(sample.Contains("ADDGravToGG_MS-3500_NED-4_KK-1_M-500To1000_13TeV-sherpa")) average = 169794/99999;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) average = 31259.4/100000;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-2_KK-1_M-2000To4000_13TeV-sherpa")) average = 5803.46/99999;
+    //if(sample.Contains("ADDGravToGG_MS-4000_NED-2_KK-1_M-500To1000_13TeV-sherpa")) average = ;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) average = 14467.5/99999;
+    //if(sample.Contains("ADDGravToGG_MS-4000_NED-2_KK-4_M-2000To4000_13TeV-sherpa")) average = ;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-2_KK-4_M-500To1000_13TeV-sherpa")) average = 173853/94919;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) average = 21977.6/99337;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-4_KK-1_M-2000To4000_13TeV-sherpa")) average = 7118.14/99683;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-4_KK-1_M-200To500_13TeV-sherpa")) average = 1.42956e+06/100000;
+    if(sample.Contains("ADDGravToGG_MS-4000_NED-4_KK-1_M-500To1000_13TeV-sherpa")) average = 184721/100000;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) average = 24014.6/97750;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-1_M-2000To3000_13TeV-sherpa")) average = 4113.85/95680;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-1_M-3000To4500_13TeV-sherpa")) average = 679.93/99274;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-1_M-500To1000_13TeV-sherpa")) average = 192283/100000;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) average = 12852.7/98902;
+    //if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-4_M-2000To3000_13TeV-sherpa")) average = ;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-4_M-3000To4500_13TeV-sherpa")) average = 525.859/97620;
+    //if(sample.Contains("ADDGravToGG_MS-4500_NED-2_KK-4_M-500To1000_13TeV-sherpa")) average = ;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) average = 17844.1/100000;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-4_KK-1_M-2000To3000_13TeV-sherpa")) average = 3016.36/99488;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-4_KK-1_M-200To500_13TeV-sherpa")) average = 1.46046e+06/100000;
+    if(sample.Contains("ADDGravToGG_MS-4500_NED-4_KK-1_M-3000To4500_13TeV-sherpa")) average = 1410.83/99250;
+    //if(sample.Contains("ADDGravToGG_MS-4500_NED-4_KK-1_M-500To1000_13TeV-sherpa")) average = ;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) average = 20676.8/99893;
+    //if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-1_M-2000To3000_13TeV-sherpa")) average = ;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-1_M-3000To5000_13TeV-sherpa")) average = 549.056/95643;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-1_M-500To1000_13TeV-sherpa")) average = 191065/99999;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) average = 12631.3/99999;
+    // missing         "ADDGravToGG_MS-5000_NED-2_KK-4_M-2000To3000_13TeV-sherpa average
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-3000To5000_13TeV-sherpa")) average = 275.282/98081;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-500To1000_13TeV-sherpa")) average = 188312/100000;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) average = 17038.3/99999;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-4_KK-1_M-2000To3000_13TeV-sherpa")) average = 1671.08/99566;
+    //if(sample.Contains("ADDGravToGG_MS-5000_NED-4_KK-1_M-3000To5000_13TeV-sherpa")) average = ;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-4_KK-1_M-200To500_13TeV-sherpa")) average = 1.45482e+06/98914;
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-4_KK-1_M-500To1000_13TeV-sherpa")) average = 184316/97668;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) average = 19539.3/99999;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-1_M-2000To4000_13TeV-sherpa")) average = 1824.98/97064;
+    //if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-1_M-4000To5500_13TeV-sherpa")) average = ;
+    //if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-1_M-500To1000_13TeV-sherpa")) average = ;
+    //if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) average = ;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-4_M-2000To4000_13TeV-sherpa")) average = 731.727/98545;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-4_M-4000To5500_13TeV-sherpa")) average = 61.8908/97678;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-2_KK-4_M-500To1000_13TeV-sherpa")) average = 190496/100000;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) average = 17083.2/97598;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-4_KK-1_M-2000To4000_13TeV-sherpa")) average = 1194.2/99899;
+    //if(sample.Contains("ADDGravToGG_MS-5500_NED-4_KK-1_M-4000To5500_13TeV-sherpa")) average = ;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-4_KK-1_M-200To500_13TeV-sherpa")) average = 1.47938e+06/100000;
+    if(sample.Contains("ADDGravToGG_MS-5500_NED-4_KK-1_M-500To1000_13TeV-sherpa")) average = 190734/99998;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) average = 17914.8/99472;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-1_M-2000To4000_13TeV-sherpa")) average = 1464.92/99744;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-1_M-4000To6000_13TeV-sherpa")) average = 57.5828/99406;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-1_M-500To1000_13TeV-sherpa")) average = 182633/97928;
+    //if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) average = ;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-4_M-2000To4000_13TeV-sherpa")) average = 533.16/99998;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-4_M-4000To6000_13TeV-sherpa")) average = 37.7734/99684;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-2_KK-4_M-500To1000_13TeV-sherpa")) average = 190089/100000;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) average = 17099.2/100000;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-4_KK-1_M-2000To4000_13TeV-sherpa")) average = 907.075/97600;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-4_KK-1_M-4000To6000_13TeV-sherpa")) average = 112.4/98973;
+    //if(sample.Contains("ADDGravToGG_MS-6000_NED-4_KK-1_M-200To500_13TeV-sherpa")) average = ;
+    if(sample.Contains("ADDGravToGG_MS-6000_NED-4_KK-1_M-500To1000_13TeV-sherpa")) average = 188536/99098;
+    // from running GenXsecAnalyzer on full sample
+    if(sample.Contains("GG_M-200To500_Pt-70_13TeV-sherpa")) average = ;
+    if(sample.Contains("GG_M-500To1000_Pt-70_13TeV-sherpa")) average = ;
+    if(sample.Contains("GG_M-1000To2000_Pt-70_13TeV-sherpa")) average = ;
+    if(sample.Contains("GG_M-2000To4000_Pt-70_13TeV-sherpa")) average = ;
+    if(sample.Contains("GG_M-4000To8000_Pt-70_13TeV-sherpa")) average = ;
+    if(sample.Contains("GG_M-8000To13000_Pt-70_13TeV-sherpa")) average = ;
+    
     return average;
   }
 }
