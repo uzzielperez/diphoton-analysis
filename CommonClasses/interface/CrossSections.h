@@ -107,7 +107,7 @@ namespace ExoDiPhotons {
     if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-1_M-3000To5000_13TeV-sherpa")) xsec = 5.167e-04;
     if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-1_M-500To1000_13TeV-sherpa")) xsec = 8.025e-02;
     if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) xsec = 5.999e-03;
-    //if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-2000To3000_13TeV-sherpa")) xsec = ; // missing
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-2000To3000_13TeV-sherpa")) xsec = 3.925e-04;
     if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-3000To5000_13TeV-sherpa")) xsec = 3.902e-04;
     if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-500To1000_13TeV-sherpa")) xsec = 7.471e-02;
     if(sample.Contains("ADDGravToGG_MS-5000_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 7.829e-03;
@@ -232,7 +232,7 @@ namespace ExoDiPhotons {
     if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-1_M-3000To5000_13TeV-sherpa")) average = 549.056/95643;
     if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-1_M-500To1000_13TeV-sherpa")) average = 191065./99999;
     if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-1000To2000_13TeV-sherpa")) average = 12631.3/99999;
-    //if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-2000To3000_13TeV-sherpa")) average = ; // missing
+    if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-2000To3000_13TeV-sherpa")) average = 911.252/93574;
     if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-3000To5000_13TeV-sherpa")) average = 275.282/98081;
     if(sample.Contains("ADDGravToGG_MS-5000_NED-2_KK-4_M-500To1000_13TeV-sherpa")) average = 188312./100000;
     if(sample.Contains("ADDGravToGG_MS-5000_NED-4_KK-1_M-1000To2000_13TeV-sherpa")) average = 17038.3/99999;
