@@ -538,6 +538,9 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 
 	// store DeltaR between photon and final state match
 	fPhotonGenMatchInfo.deltaR_match = minDeltaR_finalState;
+
+	// pT difference between final state match and reco photon
+	fPhotonGenMatchInfo.ptDiff_match = fabs(pho->pt() - photonMatch_finalState->pt())/pho->pt(); 
 	
 	// particle whose mothers will looped through
 	const reco::GenParticle *matchedMother = &(*photonMatch_finalState);
@@ -548,7 +551,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 
 	  // count the number of photon matches according to matchCategory
 	  fPhotonGenMatchInfo.matchCategory = ExoDiPhotons::GenMatchingFlags::MatchCategoryFlags::kFinalStatePhotonMatch;
-
+	  
 	  // set to false after finidng first mother
 	  bool isFirstMother = true;
 	  // set to true if any mother is a hadron (interacting proton is not considered as true)
@@ -562,10 +565,13 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	  // flag ISR or FSR process
 	  bool isISR = false;
 	  bool isFSR = false;
-	  // flag to find FSR daughters
+	  // flag to find daughters
 	  bool findFSRDaughters = true;
-	  // check for fragmentation photon
-	  bool isOtherFragmentation = false;
+	  bool printFirstMotherDaughters = true;
+	  // check for other photon fragmentation where
+	  // photons mother is either a quark or gluon
+	  bool isOtherFragmentationGluon = false;
+	  bool isOtherFragmentationQuark = false;
 	  // check if any mother is a photon
 	  bool isPhotonMother = false; // not currently used
 
@@ -581,13 +587,13 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	  //while (!(matchedMother->pt() == 0 && matchedMother->pdgId() == 2212)) { // && !((reco::GenParticle *)matchedMother->mother())->isHardProcess()) {
 	  while (matchedMother->mother()) {
 	    //if (fabs(matchedMother->pdgId()) > 99) isHadronMother = true;
-
+	    
 	    // loop through all mothers and keep index of best deltaR match
 	    for (unsigned int j=0; j < matchedMother->numberOfMothers(); j++) {
-
+	      
 	      // calculate deltaR between particle and mother
 	      double deltaR = reco::deltaR(matchedMother->eta(),matchedMother->phi(),matchedMother->mother(j)->eta(),matchedMother->mother(j)->phi());
-
+	      
 	      // print each mother
 	      cout << "\t           Mother " << j << ": Status = " << matchedMother->mother(j)->status()  << "; ID = " << matchedMother->mother(j)->pdgId() << "; pt = "
 		   << matchedMother->mother(j)->pt() << "; eta = " << matchedMother->mother(j)->eta() << "; phi = " << matchedMother->mother(j)->phi()  << "; deltaR = " << deltaR << endl;
@@ -597,18 +603,18 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 		minMotherMatchDeltaR = deltaR;
 		matchMotherIndex = j;
 	      }
-
+	      
 	    } // end for loop through mothers
-
+	    
 	    // store match whose mother is one of the outgoing interacting partons
 	    // or whose mother is directly the interacting proton
 	    // will be overwritten in the case of ISR or FSR
 	    if (!photonMatch && matchedMother->mother(matchMotherIndex)->pt()==0) photonMatch = &(*matchedMother);
-
+	    
 	    // record is best mother is a hadron
 	    // dont condiser interacting proton a hadron mother
 	    if (fabs(matchedMother->pdgId()) > 99) isHadronMother = true;
-
+	    
 	    // if quark is radiated from colliding proton giving rise to photon final state, then ISR
 	    // (added NOTisFSR because for FSR where the hard interaction quark had a status 53 (same) quark mother coming from the proton?!)
 	    if (!isFSR && isQuarkFirstMother && fabs(matchedMother->pdgId())==fabs(quarkMotherPdgId) && !matchedMother->isHardProcess() &&
@@ -618,19 +624,25 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	    
 	    // matched particle now becomes best mother
 	    matchedMother = (reco::GenParticle *) matchedMother->mother(matchMotherIndex);
-
+	    
+	    // store number of first mother's daughters
+	    if (isFirstMother) {
+	      fPhotonGenMatchInfo.nPhotonMotherDaughters = matchedMother->numberOfDaughters();
+	      fPhotonGenMatchInfo.deltaR_matchDau = reco::deltaR(matchedMother->eta(),matchedMother->phi(),photonMatch_finalState->eta(),photonMatch_finalState->phi());
+	    }
+	    
 	    // record is best mother is a photon
 	    if (matchedMother->pdgId()==22) isPhotonMother = true;
-
+	    
 	    // check if first mother is a quark and store deltaR between photon and quark mother
 	    if (isFirstMother && -9 < matchedMother->pdgId() && matchedMother->pdgId() < 9) {
 	      isQuarkFirstMother = true;
 	      quarkMotherPdgId = matchedMother->pdgId();
 	    }
-
+	    
 	    // check if first mother is a gluon
 	    if (isFirstMother && matchedMother->pdgId() == 21) {
-	      isOtherFragmentation = true;
+	      isOtherFragmentationGluon = true;
 	    }
 	    
 	    // if photon is radiated from colliding proton, then ISR
@@ -638,9 +650,6 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	      isISR = true;
 	    }
 	    
-	    // checked first mother, so set to false
-	    isFirstMother = false;
-
 	    // check the first time the best mother is from the hard process
 	    if (isFirstHardProcess && matchedMother->isHardProcess()) {
 	      // reset so we don't check again
@@ -654,11 +663,11 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	      }
 	      // if quark came from a different outgoing hard interaction quark, then fragmentation
 	      if (isQuarkFirstMother && matchedMother->pdgId() != quarkMotherPdgId && -9 < matchedMother->pdgId() && matchedMother->pdgId() < 9) {
-		isOtherFragmentation = true;
+		isOtherFragmentationQuark = true;
 	      }
 	      // if quark came from a outgoing hard interacction gluon, then fragmentation
 	      if (isQuarkFirstMother && matchedMother->pdgId() == 21) {
-		isOtherFragmentation = true;
+		isOtherFragmentationQuark = true;
 	      }
 	    } // end if first hardProcess mother
 	    
@@ -666,8 +675,68 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	    cout << "FinalState Matched MOTHER " << matchMotherIndex << ": Status = " << matchedMother->status()  << "; ID = " << matchedMother->pdgId() << "; pt = "
 		 << matchedMother->pt() << "; eta = " << matchedMother->eta() << "; phi = " << matchedMother->phi()  << "; deltaR = " << minMotherMatchDeltaR << endl;
 
+	    // print daughters of photon's first mother
+	    if (isFirstMother && printFirstMotherDaughters) {
+	      printFirstMotherDaughters = false;
+
+	      cout << "\t\t           Printing daughters of photon's first mother" << endl;
+	      
+	      const reco::GenParticle *matchedDaughter = &(*matchedMother);
+	      
+	      // consider all daughters when tying to find best daughter (no deltaR cut)
+	      double minDaughterMatchDeltaR = 1000000;
+	      // store index of best daughter
+	      int matchDaughterIndex = 0;
+
+	      
+	      // loop through all daughters until no daughter exists
+	      // daughter constructor requires an argument
+	      while ((reco::GenParticle *)matchedDaughter->daughter(0)) {
+	  
+		// loop through all daughters and keep index of best deltaR match
+		for (unsigned int j=0; j < matchedDaughter->numberOfDaughters(); j++) {
+	    
+		  // calculate deltaR between particle and daughter
+		  double deltaR = reco::deltaR(matchedDaughter->eta(),matchedDaughter->phi(),matchedDaughter->daughter(j)->eta(),matchedDaughter->daughter(j)->phi());
+	    
+		  // print each daughter
+		  cout << "\t\t\t           Daughter " << j << ": Status = " << matchedDaughter->daughter(j)->status()  << "; ID = " << matchedDaughter->daughter(j)->pdgId() << "; pt = "
+		       << matchedDaughter->daughter(j)->pt() << "; eta = " << matchedDaughter->daughter(j)->eta() << "; phi = " << matchedDaughter->daughter(j)->phi()  << "; deltaR = " << deltaR << endl;
+	    
+		  // if current deltaR is smallest, save index
+		  if (deltaR < minDaughterMatchDeltaR) {
+		    minDaughterMatchDeltaR = deltaR;
+		    matchDaughterIndex = j;
+		  }
+	    
+		} // end for loop through daughters
+	  
+		// matched particle now becomes best daughter
+		matchedDaughter = (reco::GenParticle *) matchedDaughter->daughter(matchDaughterIndex);
+	  
+		// print best daughter match
+		cout << "\t\t           Selected DAUGHTER " << matchDaughterIndex << ": Status = " << matchedDaughter->status()  << "; ID = " << matchedDaughter->pdgId() << "; pt = "
+		     << matchedDaughter->pt() << "; eta = " << matchedDaughter->eta() << "; phi = " << matchedDaughter->phi()  << "; deltaR = " << minDaughterMatchDeltaR << endl;
+	  
+		// reset cut!
+		// so we will consider all daughters again during next loop
+		minDaughterMatchDeltaR = 1000000;
+	  
+		// index could be > 0 and only one daughter on next match and could be beam particle with very high deltaR
+		// so reset index just to be safe
+		matchDaughterIndex = 0;
+	      } // end while loop through daughters
+	      
+	      
+	    } // end print daughters of photon's first mother
+
+	    // checked first mother, so set to false
+	    isFirstMother = false;
+	    
 	    if (isFSR && findFSRDaughters) {
 	      findFSRDaughters = false;
+
+	      cout << "\t\t           Printing daughters of FSR photon's radiating quark mother" << endl;
 	      
 	      const reco::GenParticle *matchedDaughter = &(*matchedMother);
 	      
@@ -688,7 +757,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 		  double deltaR = reco::deltaR(matchedDaughter->eta(),matchedDaughter->phi(),matchedDaughter->daughter(j)->eta(),matchedDaughter->daughter(j)->phi());
 		  
 		  // print each daughter
-		  cout << "\t\t\t          Daughter " << j << ": Status = " << matchedDaughter->daughter(j)->status()  << "; ID = " << matchedDaughter->daughter(j)->pdgId() << "; pt = "
+		  cout << "\t\t\t           Daughter " << j << ": Status = " << matchedDaughter->daughter(j)->status()  << "; ID = " << matchedDaughter->daughter(j)->pdgId() << "; pt = "
 		       << matchedDaughter->daughter(j)->pt() << "; eta = " << matchedDaughter->daughter(j)->eta() << "; phi = "
 		       << matchedDaughter->daughter(j)->phi()  << "; deltaR = " << deltaR << endl;
 
@@ -721,7 +790,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 		    
 		  } // end for loop through daughters
 		  
-		  cout << "\t\t DeltaR FSR between: Photon pT " << photonMatch_finalState->pt() << " and Quark pT " << matchedDaughter->daughter(matchFSRDaughterIndex)->pt() << endl;
+		  cout << "\t\t           DeltaR FSR between: Photon pT " << photonMatch_finalState->pt() << " and Quark pT " << matchedDaughter->daughter(matchFSRDaughterIndex)->pt() << endl;
 		  
 		  // save deltaR between final state photon and quark after FSR
 		  fPhotonGenMatchInfo.deltaR_FSR = reco::deltaR(matchedDaughter->daughter(matchFSRDaughterIndex)->eta(),matchedDaughter->daughter(matchFSRDaughterIndex)->phi(),
@@ -733,7 +802,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 		
 		if (!isFSRPhotonDaughter) {
 		  // print best daughter match
-		  cout << "\t\t\t Selected DAUGHTER " << matchDaughterIndex << ": status = " << matchedDaughter->status()  << "; ID = " << matchedDaughter->pdgId() << "; pt = "
+		  cout << "\t\t           Selected DAUGHTER " << matchDaughterIndex << ": status = " << matchedDaughter->status()  << "; ID = " << matchedDaughter->pdgId() << "; pt = "
 		       << matchedDaughter->pt() << "; eta = " << matchedDaughter->eta() << "; phi = " << matchedDaughter->phi()  << "; deltaR = " << minDaughterMatchDeltaR << endl;
 		}
 		
@@ -782,12 +851,15 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	    }
 	    // determine if fragmentation
 	    // photonMatch determined in loop will be stored
-	    if (isOtherFragmentation) {
-	      fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kOtherFragmentationMatch;
+	    if (isOtherFragmentationGluon) {
+	      fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kOtherFragmentationGluon;
+	    }
+	    if (isOtherFragmentationQuark) {
+	      fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kOtherFragmentationQuark;
 	    }
 	    // if not FSR, ISR, or fragmentation, then photon is unmatched
 	    // photonMatch determined in loop is stored
-	    if (!isFSR && !isISR && !isOtherFragmentation) {
+	    if (!isFSR && !isISR && !isOtherFragmentationGluon && !isOtherFragmentationQuark) {
 	      fPhotonGenMatchInfo.matchType = ExoDiPhotons::GenMatchingFlags::MatchTypeFlags::kNoMatchType;
 	    }
 	  } // end if not hadron mother
@@ -797,8 +869,10 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	  cout << "Is quark first mother: " << isQuarkFirstMother << endl;
 	  cout << "Is ISR: " << isISR << endl;
 	  cout << "Is FSR: " << isFSR << endl;
-	  cout << "Is other fragmentation: " << isOtherFragmentation << endl;
-	  
+	  cout << "Is other photon fragmentation with "
+	       << "gluon mother: " << isOtherFragmentationGluon
+	       << ", quark mother: " << isOtherFragmentationQuark << endl;
+	  cout << "Number of daughters from photon's first matched mother: " << fPhotonGenMatchInfo.nPhotonMotherDaughters << endl;
 	} // end if final state photon match
 
 	// ------------------------------------------------------------------------------------------------------------------------
@@ -971,8 +1045,10 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
       } // end if no final state match, or gen particle match
 
       cout << "Match category: " << fPhotonGenMatchInfo.matchCategory << ", and match type: " << fPhotonGenMatchInfo.matchType << endl;
-      cout << "DeltaR match  : " << fPhotonGenMatchInfo.deltaR_match << endl;
-      cout << "DeltaR FSR    : " << fPhotonGenMatchInfo.deltaR_FSR << endl;
+      cout << "pT difference between reco photon and final state gen match: " << fPhotonGenMatchInfo.ptDiff_match << endl;
+      cout << "dR between reco photon and final state gen match           : " << fPhotonGenMatchInfo.deltaR_match << endl;
+      cout << "dR between final state photon match and first daughter     : " << fPhotonGenMatchInfo.deltaR_matchDau << endl;
+      cout << "dR FSR                                                     : " << fPhotonGenMatchInfo.deltaR_FSR << endl;
 
       // ===============================
       // fill photon info into fTreeFake

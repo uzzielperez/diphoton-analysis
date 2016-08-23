@@ -4,7 +4,7 @@
 
 void diphoton_makeClass() {
   // load file
-  TFile *f = TFile::Open("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD/diphoton_fakeRate_QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root");
+  TFile *f = TFile::Open("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_matching/160812_171833/0000/ExoDiphotonAnalyzer_1.root");
   
   // list the contents of this file
   f->ls();

@@ -61,9 +61,9 @@ void plot_closure_test_fake_rate() {
 
     h_fakeNumeratorEB->SetTitle("Closure test in EB");
     
-    gPad->SetLogy();
-    h_fakeNumeratorEB->SetMinimum(0.3);
-    h_fakeNumeratorEB->SetMaximum(100.);
+    //gPad->SetLogy();
+    h_fakeNumeratorEB->SetMinimum(0);//0.3);
+    h_fakeNumeratorEB->SetMaximum(14.);//100.);
         
     legendEB->Draw();
     
@@ -91,10 +91,10 @@ void plot_closure_test_fake_rate() {
     
     h_fakeNumeratorEE->SetTitle("Closure test in EE");
     
-    gPad->SetLogy();
-    h_fakeNumeratorEE->SetMinimum(0.3);
-    h_fakeNumeratorEE->SetMaximum(100.);
-        
+    //gPad->SetLogy();
+    h_fakeNumeratorEE->SetMinimum(0);//0.3);
+    h_fakeNumeratorEE->SetMaximum(14.); //100.);
+       
     legendEE->Draw();
     
     canvas->SaveAs("closure_test_fit_numerator_vs_fake_passHighPtID.png");

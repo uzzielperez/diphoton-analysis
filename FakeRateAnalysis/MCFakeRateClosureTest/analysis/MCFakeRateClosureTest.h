@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Tue Jun 14 16:03:47 2016 by ROOT version 6.02/13
+// Sun Aug 14 16:19:09 2016 by ROOT version 6.02/13
 // from TTree fTree/PhotonTree
-// found on file: root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD/diphoton_fakeRate_QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root
+// found on file: root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_matching/160812_171833/0000/ExoDiphotonAnalyzer_1.root
 //////////////////////////////////////////////////////////
 
 #ifndef MCFakeRateClosureTest_h
@@ -34,6 +34,8 @@ public :
    Float_t         Event_qscale;
    Float_t         Event_weight0;
    Float_t         Event_weight;
+   Float_t         Event_weightLumi;
+   Float_t         Event_weightAll;
    Int_t           Event_interactingParton1PdgId;
    Int_t           Event_interactingParton2PdgId;
    Bool_t          Event_beamHaloIDLoose;
@@ -454,6 +456,14 @@ public :
    Float_t         Jet_leadingJetEta;
    Float_t         Jet_leadingJetPhi;
    Float_t         Jet_leadingJetMass;
+   Float_t         Jet_secondleadingJetPt;
+   Float_t         Jet_secondleadingJetEta;
+   Float_t         Jet_secondleadingJetPhi;
+   Float_t         Jet_secondleadingJetMass;
+   Float_t         Jet_thirdleadingJetPt;
+   Float_t         Jet_thirdleadingJetEta;
+   Float_t         Jet_thirdleadingJetPhi;
+   Float_t         Jet_thirdleadingJetMass;
    Int_t           Jet_nJets;
    Double_t        Photon_pt;
    Double_t        Photon_eta;
@@ -523,7 +533,7 @@ public :
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual void     Loop(const Char_t *);
+   virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
 };
@@ -536,11 +546,11 @@ MCFakeRateClosureTest::MCFakeRateClosureTest(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD/diphoton_fakeRate_QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_matching/160812_171833/0000/ExoDiphotonAnalyzer_1.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD/diphoton_fakeRate_QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root");
+         f = new TFile("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_matching/160812_171833/0000/ExoDiphotonAnalyzer_1.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD/diphoton_fakeRate_QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root:/diphoton");
+      TDirectory * dir = (TDirectory*)f->Get("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_matching/160812_171833/0000/ExoDiphotonAnalyzer_1.root:/diphoton");
       dir->GetObject("fTree",tree);
 
    }
