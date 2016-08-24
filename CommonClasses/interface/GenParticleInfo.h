@@ -29,6 +29,20 @@ namespace ExoDiPhotons
   };
   
   struct genParticleInfo_t {
+    // kinematics
+    double pt;
+    double eta;
+    double phi;
+    
+    // for matching
+    double deltaR_match;
+    double deltaR_matchDau;
+    double deltaR_FSR;
+    double ptDiff_match;
+    int matchCategory;
+    int matchType;
+    int nPhotonMotherDaughters;
+    
     // gen info
     int status;
     int motherStatus;
@@ -36,25 +50,25 @@ namespace ExoDiPhotons
     int pdgId;
     int motherPdgId;
     int grandmotherPdgId;
-    
-    // for matching 
-    int matchCategory;
-    int matchType;
-    int nPhotonMotherDaughters;
-    double deltaR_match;
-    double deltaR_matchDau;
-    double deltaR_FSR;
-    double ptDiff_match;
-    
-    // kinematics
-    double pt;
-    double eta;
-    double phi;
   };
 
-  std::string genParticleBranchDefString("status/I:motherStatus:grandmotherStatus:pdgId:motherPdgId:grandmotherPdgId:matchCategory:matchType:nPhotonMotherDaughters:deltaR_match/D:deltaR_matchDau:deltaR_FSR:ptDiff_match:pt:eta:phi");
+  std::string genParticleBranchDefString("pt/D:eta:phi:deltaR_match:deltaR_matchDau:deltaR_FSR:ptDiff_match:matchCategory/I:matchType:nPhotonMotherDaughters:status:motherStatus:grandmotherStatus:pdgId:motherPdgId:grandmotherPdgId");
 
   void InitGenParticleInfo(genParticleInfo_t &genParticleInfo) {
+    // kinematics
+    genParticleInfo.pt  = -999999.99;
+    genParticleInfo.eta = -999999.99;
+    genParticleInfo.phi = -999999.99;
+    
+    // for matching
+    genParticleInfo.deltaR_match           = -999999.99;
+    genParticleInfo.deltaR_matchDau        = -999999.99;
+    genParticleInfo.deltaR_FSR             = -999999.99;
+    genParticleInfo.ptDiff_match           = -999999.99;
+    genParticleInfo.matchCategory          = -999999;
+    genParticleInfo.matchType              = -999999;
+    genParticleInfo.nPhotonMotherDaughters = -999999;
+    
     // gen info
     genParticleInfo.status            = -999999;
     genParticleInfo.motherStatus      = -999999;
@@ -62,20 +76,6 @@ namespace ExoDiPhotons
     genParticleInfo.pdgId             = -999999;
     genParticleInfo.motherPdgId       = -999999;
     genParticleInfo.grandmotherPdgId  = -999999;
-
-    // for matching
-    genParticleInfo.matchCategory          = -999999;
-    genParticleInfo.matchType              = -999999;
-    genParticleInfo.nPhotonMotherDaughters = -999999;
-    genParticleInfo.deltaR_match           = -999999.99;
-    genParticleInfo.deltaR_matchDau        = -999999.99;
-    genParticleInfo.deltaR_FSR             = -999999.99;
-    genParticleInfo.ptDiff_match           = -999999.99;
-    
-    // kinematics
-    genParticleInfo.pt  = -999999.99;
-    genParticleInfo.eta = -999999.99;
-    genParticleInfo.phi = -999999.99;
   }
 
   void FillGenParticleInfo(genParticleInfo_t &genParticleInfo, const reco::GenParticle *genParticle) {
