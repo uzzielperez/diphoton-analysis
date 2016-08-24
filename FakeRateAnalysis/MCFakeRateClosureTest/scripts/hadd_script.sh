@@ -8,6 +8,8 @@
 # input directory : /eos/uscms/store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD
 # output directory: /eos/uscms/store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD
 
+# hadd -f root://cmseos.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD/diphoton_fakeRate_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root `xrdfsls -u /store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_23aug/160823_151856/0000/ | grep \.root`
+
 # choose QCD, QCD_EMEnriched, or GJets
 set dataset = "QCD"
 
