@@ -2,10 +2,16 @@
 #define SAMPLELIST_HH
 
 #include "TChain.h"
-#include "tdrstyle.C"
+#include "TSystem.h"
 
 #include <string>
+#include <iostream>
 #include <map>
+
+#include <linux/limits.h>
+
+#include "tdrstyle.C"
+
 
 const double luminosity=2.2; // fb^-1
 
@@ -18,9 +24,17 @@ std::map<std::string, std::string> prettyName;
 
 TString filestring(TString sample)
 {
-  TString output(Form("/afs/cern.ch/user/c/cawest/links/%s/*root", sample.Data()));
+  TString directory(Form("/afs/cern.ch/user/c/cawest/links/%s", sample.Data()));
+  const char *epath = gSystem->ExpandPathName(directory.Data());
+  void *dir = gSystem->OpenDirectory(epath);
+  std::vector<TString> files;
+  char resolved_path[PATH_MAX];
+  realpath(epath, resolved_path);
+  TString mypath(resolved_path);
+  mypath.ReplaceAll("/afs/cern.ch/user/c/cawest/eos/cms", "root://eoscms.cern.ch/");
+  mypath += "/*.root";
 
-  return output;
+  return mypath;
 }
 
 void init() {

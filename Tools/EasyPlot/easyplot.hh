@@ -7,6 +7,7 @@
 #include "TChain.h"
 #include "TH1.h"
 #include "THStack.h"
+#include "TLatex.h"
 #include "TLegend.h"
 #include "TString.h"
 
@@ -20,12 +21,12 @@ TString reformat(TString input);
 class sample {
   
 public:
-  sample(std::string name, std::string label, double extraWeight, std::string extraCut);
+  sample(std::string name, std::string label, std::string extraWeight, std::string extraCut);
   sample();
 
   TChain* chain() { return chains[m_name]; }
   std::string name() { return m_name; }
-  double extraWeight() { return m_extraWeight; }
+  std::string extraWeight() { return m_extraWeight; }
   std::string extraCut() { return m_extraCut; }
   int lineStyle() { return m_lineStyle; }
   int lineColor() { return m_lineColor; }
@@ -37,7 +38,7 @@ public:
 private:
   std::string m_name;
   std::string m_label;
-  double m_extraWeight;
+  std::string m_extraWeight;
   std::string m_extraCut;
   int m_lineStyle;
   int m_lineColor;
@@ -45,7 +46,7 @@ private:
   int m_fillColor;
 };
 
-sample::sample(std::string name, std::string label, double extraWeight=1.0, std::string extraCut="1"):
+sample::sample(std::string name, std::string label, std::string extraWeight="1.0", std::string extraCut="1"):
   m_name(name),
   m_label(label),
   m_extraWeight(extraWeight),
@@ -99,8 +100,8 @@ void plot::output(std::string outputDirectory)
   
   for(auto isample : m_samples) {
     TString newCut(m_cut.c_str());
-    if(isample.name().find("data")==std::string::npos) newCut = Form("weightAll*%6.6e*%6.6e*((%s)*(%s))", 
-								     luminosity, isample.extraWeight(), m_cut.c_str(), isample.extraCut().c_str());
+    if(isample.name().find("data")==std::string::npos) newCut = Form("weightAll*%6.6e*(%s)*((%s)*(%s))",
+								     luminosity, isample.extraWeight().c_str(), m_cut.c_str(), isample.extraCut().c_str());
     // std::string histName(isample.name());
     // histName += "_";
     // histName += m_variable;
@@ -167,6 +168,12 @@ void plot::output(std::string outputDirectory)
 
   c->RedrawAxis();
 
+  TLatex *lat = new TLatex;
+  lat->SetTextSize(0.038);
+  lat->DrawLatexNDC(0.17, 0.96, "#font[62]{CMS} #scale[0.8]{#font[52]{Preliminary}}");
+  lat->SetTextFont(42);
+  lat->DrawLatexNDC(0.70, 0.96, Form("%1.1f fb^{-1} (13 TeV)", luminosity));
+
   c->Print(Form("%s/%s.pdf", outputDirectory.c_str(), variable().c_str()));
   c->Print(Form("%s/%s.root", outputDirectory.c_str(), variable().c_str()));
 }
@@ -181,7 +188,7 @@ TString reformat(TString input)
   output.ReplaceAll("Diphoton.qt", "q_{T,#gamma#gamma}");
   output.ReplaceAll("Diphoton.deltaPhi", "#Delta#phi_{#gamma#gamma}");
   output.ReplaceAll("Diphoton.deltaEta", "#Delta#eta_{#gamma#gamma}");
-  output.ReplaceAll("abs(Diphoton.cosThetaStar)", "|cos(#theta^{*})_{#gamma#gamma}|");
+  output.ReplaceAll("abs(Diphoton.cosThetaStar)", "|cos(#theta*)_{#gamma#gamma}|");
 
   return output;
 }

@@ -5,7 +5,7 @@
 void basicplots() 
 {
   // configurable information
-  double kfactor=1.4;
+  std::string kfactor="1.4";
   std::string cut("Photon1.pt>75&&Photon2.pt>75 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442 && isGood");
   int nbins=100;
   double xmin=0.0; // GeV
