@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Wed Aug 24 09:13:42 2016 by ROOT version 6.02/13
+// Thu Aug 25 06:25:52 2016 by ROOT version 6.02/13
 // from TTree fTreeFake/FakePhotonTree
-// found on file: root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_23aug/160823_151856/0000/ExoDiphotonAnalyzer_1.root
+// found on file: root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_24aug/160824_150746/0000/ExoDiphotonAnalyzer_1.root
 //////////////////////////////////////////////////////////
 
 #ifndef MCFakeRateClosureTestWithFakes_h
@@ -519,22 +519,22 @@ public :
    Bool_t          Photon_isNumeratorObjCand;
    Bool_t          Photon_isDenominatorObj;
    Bool_t          Photon_isSaturated;
+   Double_t        PhotonGenMatch_pt;
+   Double_t        PhotonGenMatch_eta;
+   Double_t        PhotonGenMatch_phi;
+   Double_t        PhotonGenMatch_deltaR_match;
+   Double_t        PhotonGenMatch_deltaR_matchDau;
+   Double_t        PhotonGenMatch_deltaR_FSR;
+   Double_t        PhotonGenMatch_ptDiff_match;
+   Int_t           PhotonGenMatch_matchCategory;
+   Int_t           PhotonGenMatch_matchType;
+   Int_t           PhotonGenMatch_nPhotonMotherDaughters;
    Int_t           PhotonGenMatch_status;
    Int_t           PhotonGenMatch_motherStatus;
    Int_t           PhotonGenMatch_grandmotherStatus;
    Int_t           PhotonGenMatch_pdgId;
    Int_t           PhotonGenMatch_motherPdgId;
    Int_t           PhotonGenMatch_grandmotherPdgId;
-   Int_t           PhotonGenMatch_matchCategory;
-   Int_t           PhotonGenMatch_matchType;
-   Int_t           PhotonGenMatch_nPhotonMotherDaughters;
-   Double_t        PhotonGenMatch_deltaR_match;
-   Double_t        PhotonGenMatch_deltaR_matchDau;
-   Double_t        PhotonGenMatch_deltaR_FSR;
-   Double_t        PhotonGenMatch_ptDiff_match;
-   Double_t        PhotonGenMatch_pt;
-   Double_t        PhotonGenMatch_eta;
-   Double_t        PhotonGenMatch_phi;
 
    // List of branches
    TBranch        *b_Event;   //!
@@ -563,11 +563,11 @@ MCFakeRateClosureTestWithFakes::MCFakeRateClosureTestWithFakes(TTree *tree) : fC
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_23aug/160823_151856/0000/ExoDiphotonAnalyzer_1.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_24aug/160824_150746/0000/ExoDiphotonAnalyzer_1.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_23aug/160823_151856/0000/ExoDiphotonAnalyzer_1.root");
+         f = new TFile("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_24aug/160824_150746/0000/ExoDiphotonAnalyzer_1.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_23aug/160823_151856/0000/ExoDiphotonAnalyzer_1.root:/diphoton");
+      TDirectory * dir = (TDirectory*)f->Get("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_24aug/160824_150746/0000/ExoDiphotonAnalyzer_1.root:/diphoton");
       dir->GetObject("fTreeFake",tree);
 
    }
@@ -620,7 +620,7 @@ void MCFakeRateClosureTestWithFakes::Init(TTree *tree)
    fChain->SetBranchAddress("TriggerPrescale", &TriggerPrescale_HLT_AK8DiPFJet280_200_TrimMass30_BTagCSV0p45_v3, &b_TriggerPrescale);
    fChain->SetBranchAddress("Jet", &Jet_jetHT, &b_Jet);
    fChain->SetBranchAddress("Photon", &Photon_pt, &b_Photon);
-   fChain->SetBranchAddress("PhotonGenMatch", &PhotonGenMatch_status, &b_PhotonGenMatch);
+   fChain->SetBranchAddress("PhotonGenMatch", &PhotonGenMatch_pt, &b_PhotonGenMatch);
    Notify();
 }
 
