@@ -5,19 +5,19 @@ config.General.transferOutputs = True
 config.General.requestName = 'crab3test'
 config.section_('JobType')
 config.JobType.psetName = 'diphoton_data_cfg.py'
-config.JobType.pyCfgParams = ["globalTag=80X_dataRun2_v6",]
+config.JobType.pyCfgParams = ["globalTag=80X_dataRun2_Prompt_ICHEP16JEC_v0",]
 config.JobType.pluginName = 'Analysis'
 #config.JobType.inputFiles = ['PileupDataAug10thHistogram.root', 'PileUpMC.root', 'Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver_v2.txt']
 #config.JobType.outputFiles = ['ExoDiPhotonAnalyzer.root']
 config.section_('Data')
 config.Data.inputDataset = '/QCD_Pt_20_30_EMEnriched_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM'
 config.Data.outputDatasetTag = ''
-config.Data.outLFNDirBase = '/store/user/skaplan/noreplica/NewCodeNtuples/Data2016/'
+config.Data.outLFNDirBase = '/store/user/skaplan/noreplica/NewCodeNtuples_UpdatedTriggers/Data2016/'
 config.Data.publication = False
-config.Data.unitsPerJob = 100
+config.Data.unitsPerJob = 200
 config.Data.totalUnits = -1
 config.Data.splitting = 'LumiBased'
-config.Data.lumiMask = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt' #ICHEP JSON file
+config.Data.lumiMask = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-278808_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt' # 20.1/fb, see https://hypernews.cern.ch/HyperNews/CMS/get/physics-validation/2703.html
 config.section_('User')
 config.section_('Site')
 config.Site.storageSite = 'T3_US_FNALLPC'
@@ -45,6 +45,7 @@ if __name__ == '__main__':
     ## From now on that's what users should modify: this is the a-la-CRAB2 configuration part. ##
     #############################################################################################
 
+    # DoubleEG
     config.General.requestName = 'DoubleEG_Run2016B_V1'
     config.Data.inputDataset = '/DoubleEG/Run2016B-PromptReco-v1/MINIAOD'
     submit(config)
@@ -65,17 +66,42 @@ if __name__ == '__main__':
     config.Data.inputDataset = '/DoubleEG/Run2016E-PromptReco-v2/MINIAOD'
     submit(config)
 
-    # config.General.requestName = 'JetHT_Run2016B_V1'
-    # config.Data.inputDataset = '/JetHT/Run2016B-PromptReco-v1/MINIAOD'
-    # submit(config)
+    config.General.requestName = 'DoubleEG_Run2016F_V1'
+    config.Data.inputDataset = '/DoubleEG/Run2016F-PromptReco-v1/MINIAOD'
+    submit(config)
 
-    # config.General.requestName = 'JetHT_Run2016B_V2'
-    # config.Data.inputDataset = '/JetHT/Run2016B-PromptReco-v2/MINIAOD'
-    # submit(config)
+    config.General.requestName = 'DoubleEG_Run2016G_V1'
+    config.Data.inputDataset = '/DoubleEG/Run2016G-PromptReco-v1/MINIAOD'
+    submit(config)
 
-    # config.General.requestName = 'JetHT_Run2016C_V2'
-    # config.Data.inputDataset = '/JetHT/Run2016C-PromptReco-v2/MINIAOD'
-    # submit(config)
+    # JetHT
+    config.General.requestName = 'JetHT_Run2016B_V1'
+    config.Data.inputDataset = '/JetHT/Run2016B-PromptReco-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'JetHT_Run2016B_V2'
+    config.Data.inputDataset = '/JetHT/Run2016B-PromptReco-v2/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'JetHT_Run2016C_V2'
+    config.Data.inputDataset = '/JetHT/Run2016C-PromptReco-v2/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'JetHT_Run2016D_V2'
+    config.Data.inputDataset = '/JetHT/Run2016D-PromptReco-v2/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'JetHT_Run2016E_V2'
+    config.Data.inputDataset = '/JetHT/Run2016E-PromptReco-v2/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'JetHT_Run2016F_V1'
+    config.Data.inputDataset = '/JetHT/Run2016F-PromptReco-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'JetHT_Run2016G_V1'
+    config.Data.inputDataset = '/JetHT/Run2016G-PromptReco-v1/MINIAOD'
+    submit(config)
 
     # config.General.requestName = 'SinglePhoton_Run2016B_V1'
     # config.Data.inputDataset = '/SinglePhoton/Run2016B-PromptReco-v1/MINIAOD'
