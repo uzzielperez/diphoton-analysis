@@ -143,12 +143,12 @@ namespace ExoDiPhotons {
     //if(sample.Contains("ADDGravToGG_MS-6000_NED-4_KK-1_M-200To500_13TeV-sherpa")) xsec = ;
     if(sample.Contains("ADDGravToGG_MS-6000_NED-4_KK-1_M-500To1000_13TeV-sherpa")) xsec = 7.598e-02;  
     // from running GenXsecAnalyzer on full sample
-    if(sample.Contains("GG_M-200To500_Pt-70_13TeV-sherpa")) xsec = ;
-    if(sample.Contains("GG_M-500To1000_Pt-70_13TeV-sherpa")) xsec = ;
-    if(sample.Contains("GG_M-1000To2000_Pt-70_13TeV-sherpa")) xsec = ;
-    if(sample.Contains("GG_M-2000To4000_Pt-70_13TeV-sherpa")) xsec = ;
-    if(sample.Contains("GG_M-4000To8000_Pt-70_13TeV-sherpa")) xsec = ;
-    if(sample.Contains("GG_M-8000To13000_Pt-70_13TeV-sherpa")) xsec = ;
+    // if(sample.Contains("GG_M-200To500_Pt-70_13TeV-sherpa")) xsec = ;
+    // if(sample.Contains("GG_M-500To1000_Pt-70_13TeV-sherpa")) xsec = ;
+    // if(sample.Contains("GG_M-1000To2000_Pt-70_13TeV-sherpa")) xsec = ;
+    // if(sample.Contains("GG_M-2000To4000_Pt-70_13TeV-sherpa")) xsec = ;
+    // if(sample.Contains("GG_M-4000To8000_Pt-70_13TeV-sherpa")) xsec = ;
+    // if(sample.Contains("GG_M-8000To13000_Pt-70_13TeV-sherpa")) xsec = ;
     
     // do not use weights for data
     if(sample.Contains("Run2015") || sample.Contains("Run2016")) xsec = 1.0;
@@ -269,12 +269,12 @@ namespace ExoDiPhotons {
     //if(sample.Contains("ADDGravToGG_MS-6000_NED-4_KK-1_M-200To500_13TeV-sherpa")) average = ;
     if(sample.Contains("ADDGravToGG_MS-6000_NED-4_KK-1_M-500To1000_13TeV-sherpa")) average = 188536/99098;
     // from running GenXsecAnalyzer on full sample
-    if(sample.Contains("GG_M-200To500_Pt-70_13TeV-sherpa")) average = ;
-    if(sample.Contains("GG_M-500To1000_Pt-70_13TeV-sherpa")) average = ;
-    if(sample.Contains("GG_M-1000To2000_Pt-70_13TeV-sherpa")) average = ;
-    if(sample.Contains("GG_M-2000To4000_Pt-70_13TeV-sherpa")) average = ;
-    if(sample.Contains("GG_M-4000To8000_Pt-70_13TeV-sherpa")) average = ;
-    if(sample.Contains("GG_M-8000To13000_Pt-70_13TeV-sherpa")) average = ;
+    // if(sample.Contains("GG_M-200To500_Pt-70_13TeV-sherpa")) average = ;
+    // if(sample.Contains("GG_M-500To1000_Pt-70_13TeV-sherpa")) average = ;
+    // if(sample.Contains("GG_M-1000To2000_Pt-70_13TeV-sherpa")) average = ;
+    // if(sample.Contains("GG_M-2000To4000_Pt-70_13TeV-sherpa")) average = ;
+    // if(sample.Contains("GG_M-4000To8000_Pt-70_13TeV-sherpa")) average = ;
+    // if(sample.Contains("GG_M-8000To13000_Pt-70_13TeV-sherpa")) average = ;
     
     return average;
   }

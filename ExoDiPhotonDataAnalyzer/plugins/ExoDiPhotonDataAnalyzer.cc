@@ -145,10 +145,11 @@ class ExoDiPhotonDataAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedReso
   edm::EDGetToken prescalesToken_;
   
   // trees
-  TTree *fTightTightTree;
-  TTree *fTightFakeTree;
-  TTree *fFakeTightTree;
-  TTree *fFakeFakeTree;
+  TTree* fTree;
+  // TTree *fTightTightTree;
+  // TTree *fTightFakeTree;
+  // TTree *fFakeTightTree;
+  // TTree *fFakeFakeTree;
   
   // photons
   ExoDiPhotons::photonInfo_t fPhoton1Info; // leading
@@ -203,53 +204,67 @@ ExoDiPhotonDataAnalyzer::ExoDiPhotonDataAnalyzer(const edm::ParameterSet& iConfi
   edm::Service<TFileService> fs;
   
   // define trees and branches
-  fTightTightTree = fs->make<TTree>("fTightTightTree","DiPhotonTightTightTree");
-  fTightTightTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
-  fTightTightTree->Branch("BeamSpot",&fBeamSpotInfo,ExoDiPhotons::beamSpotBranchDefString.c_str());
-  fTightTightTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
-  fTightTightTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
-  fTightTightTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
-  fTightTightTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fTightTightTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fTightTightTree->Branch("Photon1",&fPhoton1Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fTightTightTree->Branch("Photon2",&fPhoton2Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fTightTightTree->Branch("Diphoton",&fDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
 
-  fTightFakeTree = fs->make<TTree>("fTightFakeTree","DiPhotonTightFakeTree");
-  fTightFakeTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
-  fTightFakeTree->Branch("BeamSpot",&fBeamSpotInfo,ExoDiPhotons::beamSpotBranchDefString.c_str());
-  fTightFakeTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
-  fTightFakeTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
-  fTightFakeTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
-  fTightFakeTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fTightFakeTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fTightFakeTree->Branch("Photon1",&fPhoton1Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fTightFakeTree->Branch("Photon2",&fPhoton2Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fTightFakeTree->Branch("Diphoton",&fDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
+  fTree = fs->make<TTree>("fTree","DiPhotonTree");
+  fTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
+  fTree->Branch("BeamSpot",&fBeamSpotInfo,ExoDiPhotons::beamSpotBranchDefString.c_str());
+  fTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
+  fTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
+  fTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
+  fTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
+  fTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
+  fTree->Branch("Photon1",&fPhoton1Info,ExoDiPhotons::photonBranchDefString.c_str());
+  fTree->Branch("Photon2",&fPhoton2Info,ExoDiPhotons::photonBranchDefString.c_str());
+  fTree->Branch("Diphoton",&fDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
 
-  fFakeTightTree = fs->make<TTree>("fFakeTightTree","DiPhotonFakeTightTree");
-  fFakeTightTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
-  fFakeTightTree->Branch("BeamSpot",&fBeamSpotInfo,ExoDiPhotons::beamSpotBranchDefString.c_str());
-  fFakeTightTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
-  fFakeTightTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
-  fFakeTightTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
-  fFakeTightTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fFakeTightTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fFakeTightTree->Branch("Photon1",&fPhoton1Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fFakeTightTree->Branch("Photon2",&fPhoton2Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fFakeTightTree->Branch("Diphoton",&fDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
 
-  fFakeFakeTree = fs->make<TTree>("fFakeFakeTree","DiPhotonFakeFakeTree");
-  fFakeFakeTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
-  fFakeFakeTree->Branch("BeamSpot",&fBeamSpotInfo,ExoDiPhotons::beamSpotBranchDefString.c_str());
-  fFakeFakeTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
-  fFakeFakeTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
-  fFakeFakeTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
-  fFakeFakeTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fFakeFakeTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
-  fFakeFakeTree->Branch("Photon1",&fPhoton1Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fFakeFakeTree->Branch("Photon2",&fPhoton2Info,ExoDiPhotons::photonBranchDefString.c_str());
-  fFakeFakeTree->Branch("Diphoton",&fDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
+  // fTightTightTree = fs->make<TTree>("fTightTightTree","DiPhotonTightTightTree");
+  // fTightTightTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
+  // fTightTightTree->Branch("BeamSpot",&fBeamSpotInfo,ExoDiPhotons::beamSpotBranchDefString.c_str());
+  // fTightTightTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
+  // fTightTightTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
+  // fTightTightTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
+  // fTightTightTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
+  // fTightTightTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
+  // fTightTightTree->Branch("Photon1",&fPhoton1Info,ExoDiPhotons::photonBranchDefString.c_str());
+  // fTightTightTree->Branch("Photon2",&fPhoton2Info,ExoDiPhotons::photonBranchDefString.c_str());
+  // fTightTightTree->Branch("Diphoton",&fDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
+
+  // fTightFakeTree = fs->make<TTree>("fTightFakeTree","DiPhotonTightFakeTree");
+  // fTightFakeTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
+  // fTightFakeTree->Branch("BeamSpot",&fBeamSpotInfo,ExoDiPhotons::beamSpotBranchDefString.c_str());
+  // fTightFakeTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
+  // fTightFakeTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
+  // fTightFakeTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
+  // fTightFakeTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
+  // fTightFakeTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
+  // fTightFakeTree->Branch("Photon1",&fPhoton1Info,ExoDiPhotons::photonBranchDefString.c_str());
+  // fTightFakeTree->Branch("Photon2",&fPhoton2Info,ExoDiPhotons::photonBranchDefString.c_str());
+  // fTightFakeTree->Branch("Diphoton",&fDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
+
+  // fFakeTightTree = fs->make<TTree>("fFakeTightTree","DiPhotonFakeTightTree");
+  // fFakeTightTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
+  // fFakeTightTree->Branch("BeamSpot",&fBeamSpotInfo,ExoDiPhotons::beamSpotBranchDefString.c_str());
+  // fFakeTightTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
+  // fFakeTightTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
+  // fFakeTightTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
+  // fFakeTightTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
+  // fFakeTightTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
+  // fFakeTightTree->Branch("Photon1",&fPhoton1Info,ExoDiPhotons::photonBranchDefString.c_str());
+  // fFakeTightTree->Branch("Photon2",&fPhoton2Info,ExoDiPhotons::photonBranchDefString.c_str());
+  // fFakeTightTree->Branch("Diphoton",&fDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
+
+  // fFakeFakeTree = fs->make<TTree>("fFakeFakeTree","DiPhotonFakeFakeTree");
+  // fFakeFakeTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
+  // fFakeFakeTree->Branch("BeamSpot",&fBeamSpotInfo,ExoDiPhotons::beamSpotBranchDefString.c_str());
+  // fFakeFakeTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
+  // fFakeFakeTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
+  // fFakeFakeTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
+  // fFakeFakeTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
+  // fFakeFakeTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
+  // fFakeFakeTree->Branch("Photon1",&fPhoton1Info,ExoDiPhotons::photonBranchDefString.c_str());
+  // fFakeFakeTree->Branch("Photon2",&fPhoton2Info,ExoDiPhotons::photonBranchDefString.c_str());
+  // fFakeFakeTree->Branch("Diphoton",&fDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
   
   // MiniAOD tokens
   photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
@@ -545,10 +560,16 @@ ExoDiPhotonDataAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup
     ExoDiPhotons::FillDiphotonInfo(fDiphotonInfo,&(*selectedPhotons[0]),&(*selectedPhotons[1]));
     
     // fill our trees
-    if ( fPhoton1Info.passHighPtID && fPhoton2Info.passHighPtID ) fTightTightTree->Fill();
-    else if ( fPhoton1Info.passHighPtID && fPhoton2Info.isDenominatorObj ) fTightFakeTree->Fill();
-    else if ( fPhoton1Info.isDenominatorObj && fPhoton2Info.passHighPtID ) fFakeTightTree->Fill();
-    else if ( fPhoton1Info.isDenominatorObj && fPhoton2Info.isDenominatorObj ) fFakeFakeTree->Fill();
+    bool TT = fPhoton1Info.passHighPtID && fPhoton2Info.passHighPtID;
+    bool TL = fPhoton1Info.passHighPtID && fPhoton2Info.isDenominatorObj;
+    bool LT = fPhoton1Info.isDenominatorObj && fPhoton2Info.passHighPtID;
+    bool LL = fPhoton1Info.isDenominatorObj && fPhoton2Info.isDenominatorObj;
+
+    if (TT || TL || LT || LL) fTree->Fill();
+    // if ( fPhoton1Info.passHighPtID && fPhoton2Info.passHighPtID ) fTightTightTree->Fill();
+    // else if ( fPhoton1Info.passHighPtID && fPhoton2Info.isDenominatorObj ) fTightFakeTree->Fill();
+    // else if ( fPhoton1Info.isDenominatorObj && fPhoton2Info.passHighPtID ) fFakeTightTree->Fill();
+    // else if ( fPhoton1Info.isDenominatorObj && fPhoton2Info.isDenominatorObj ) fFakeFakeTree->Fill();
     
   } // end 2 photon check
 

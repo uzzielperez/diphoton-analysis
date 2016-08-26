@@ -33,8 +33,8 @@ process.source = cms.Source(
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
         #'file:myfile.root'
-        # 'root://cmsxrootd.fnal.gov//store/data/Run2015D/DoubleEG/MINIAOD/16Dec2015-v2/00000/000298CD-87A6-E511-9E56-002590593878.root'
-        'root://cmsxrootd.fnal.gov//store/data/Run2016B/DoubleEG/MINIAOD/PromptReco-v2/000/275/074/00000/AA970B76-6535-E611-AAAC-02163E0142FC.root'
+         'root://cmsxrootd.fnal.gov//store/data/Run2015D/DoubleEG/MINIAOD/16Dec2015-v2/00000/000298CD-87A6-E511-9E56-002590593878.root'
+        #'root://cmsxrootd.fnal.gov//store/data/Run2016B/DoubleEG/MINIAOD/PromptReco-v2/000/275/074/00000/AA970B76-6535-E611-AAAC-02163E0142FC.root'
         )
     )
 
