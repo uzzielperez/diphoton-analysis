@@ -93,6 +93,8 @@ class ExoDiPhotonBackgroundAnalyzer : public edm::one::EDAnalyzer<edm::one::Shar
       void photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons, const edm::Handle<EcalRecHitCollection>& recHitsEB, const edm::Handle<EcalRecHitCollection>& recHitsEE, 
 			const edm::Handle<edm::ValueMap<bool> >* id_decisions,
 			ExoDiPhotons::photonInfo_t& photon1Info, ExoDiPhotons::photonInfo_t& photon2Info, ExoDiPhotons::diphotonInfo_t& diphotonInfo);
+      void sherpaDiphotonFiller(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+				std::vector<edm::Ptr<const reco::GenParticle>> sherpaDiphotons);
 
    private:
       virtual void beginJob() override;
@@ -159,6 +161,7 @@ class ExoDiPhotonBackgroundAnalyzer : public edm::one::EDAnalyzer<edm::one::Shar
 
   // trees
   TTree *fTree;
+  TTree *fSherpaGenTree;
 
   // photons (all good)
   ExoDiPhotons::photonInfo_t fPhoton1Info; // leading
@@ -202,6 +205,11 @@ class ExoDiPhotonBackgroundAnalyzer : public edm::one::EDAnalyzer<edm::one::Shar
 
   // gen diphoton (two true)
   ExoDiPhotons::diphotonInfo_t fGenDiphotonInfo;
+  // sherpa gen information
+  ExoDiPhotons::genParticleInfo_t fSherpaGenPhoton1Info; // leading
+  ExoDiPhotons::genParticleInfo_t fSherpaGenPhoton2Info; // subleading
+  ExoDiPhotons::diphotonInfo_t fSherpaGenDiphotonInfo;
+
   const CaloSubdetectorTopology* subDetTopologyEB_;
   const CaloSubdetectorTopology* subDetTopologyEE_;
 
@@ -211,6 +219,13 @@ class ExoDiPhotonBackgroundAnalyzer : public edm::one::EDAnalyzer<edm::one::Shar
   bool isTF_;
   bool isFT_;
   bool isFF_;
+  bool isSherpaDiphoton_;
+
+  // extra variables that need to be handled by hand
+  double SherpaGenPhoton0_iso_;
+  double SherpaGenPhoton1_iso_;
+  double SherpaWeightAll_;
+  double isolationConeR_;
 
   enum {
     LOOSE = 0,
@@ -219,8 +234,8 @@ class ExoDiPhotonBackgroundAnalyzer : public edm::one::EDAnalyzer<edm::one::Shar
   };
 
   enum {
-    TRUE = 0,
-    FAKE = 1
+    FAKE = 0,
+    TRUE = 1
   };
 };
 
@@ -248,7 +263,8 @@ ExoDiPhotonBackgroundAnalyzer::ExoDiPhotonBackgroundAnalyzer(const edm::Paramete
     outputFile_(TString(iConfig.getParameter<std::string>("outputFile"))),
     nEventsSample_(iConfig.getParameter<uint32_t>("nEventsSample")),
     genInfoToken_(consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("genInfo"))),
-    isMC_(iConfig.getParameter<bool>("isMC"))
+    isMC_(iConfig.getParameter<bool>("isMC")),
+    isolationConeR_(iConfig.getParameter<double>("isolationConeR"))
 {
   //now do what ever initialization is needed
   usesResource("TFileService");
@@ -270,6 +286,23 @@ ExoDiPhotonBackgroundAnalyzer::ExoDiPhotonBackgroundAnalyzer(const edm::Paramete
   fTree->Branch("GenPhoton2",&fGenPhoton2Info,ExoDiPhotons::genParticleBranchDefString.c_str());
   fTree->Branch("Diphoton",&fDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
   fTree->Branch("GenDiphoton",&fGenDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
+
+  isSherpaDiphoton_ = outputFile_.Contains("GGJets_M");
+  // need a separate branch for sherpa photons so that k-factor reweighting can be applied
+  // even if there is no RECO match
+  if(isSherpaDiphoton_) {
+    fSherpaGenTree = fs->make<TTree>("fSherpaGenTree", "SherpaGenTree");
+    fSherpaGenTree->Branch("SherpaGenPhoton1",&fSherpaGenPhoton1Info,ExoDiPhotons::genParticleBranchDefString.c_str());
+    fSherpaGenTree->Branch("SherpaGenPhoton2",&fSherpaGenPhoton2Info,ExoDiPhotons::genParticleBranchDefString.c_str());
+    fSherpaGenTree->Branch("SherpaGenDiphoton",&fSherpaGenDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
+    // these are actually correct! the ntuple uses indices 1 and 2
+    // but the C++ code uses indices 0 and 1
+    fSherpaGenTree->Branch("SherpaGenPhoton1_iso", &SherpaGenPhoton0_iso_);
+    fSherpaGenTree->Branch("SherpaGenPhoton2_iso", &SherpaGenPhoton1_iso_);
+    // This is a duplicate of the value in the main tree.
+    // It is copied here to for convenience.
+    fSherpaGenTree->Branch("weightAll", &SherpaWeightAll_);
+  }
 
   // true and true photon
   fTree->Branch("TTPhoton1",&(fTrueOrFakePhoton1Info[TRUE][TRUE]),ExoDiPhotons::photonBranchDefString.c_str());
@@ -352,6 +385,9 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
   using namespace reco;
 
   isGood_ = isTT_ = isTF_ = isFT_ = isFF_ = false;
+  // set to a large value so that photons will not be considered
+  // isolated by default
+  SherpaGenPhoton0_iso_ = SherpaGenPhoton1_iso_ = 9999.99;
 
   // ==========
   // EVENT INFO
@@ -534,6 +570,19 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
     // get genParticle collection
     iEvent.getByToken(genParticlesMiniAODToken_,genParticles);
   }
+  if(isSherpaDiphoton_) {
+    std::vector<edm::Ptr<const reco::GenParticle>> sherpaDiphotons;
+
+    // find diphoton candidates
+    for(size_t i=0; i<genParticles->size(); i++) {
+      edm::Ptr<reco::GenParticle> gen = genParticles->ptrAt(i);
+      if(gen->status()==3 && gen->pdgId()==22) sherpaDiphotons.push_back(gen);
+    }
+
+    // the following assumes that we have exactly two photons
+    if(sherpaDiphotons.size()==2) sherpaDiphotonFiller(genParticles, sherpaDiphotons);
+    else throw cms::Exception("Should always have exactly two photons with status==3 in the diphoton sample");
+  }
 
   // =======
   // PHOTONS
@@ -611,13 +660,18 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
   if (goodPhotons.size() >= 2) {
     isGood_ = true;
     photonFiller(goodPhotons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fDiphotonInfo);
+    if(isMC_) fillGenInfo(genParticles, goodPhotons);
   }
+
 
   // really only the second is needed, but it's more understandable to write it this way
   if(goodPhotons.size() >= 2 || realAndFakePhotons.size() >= 2) {
     fTree->Fill();
   }
   
+  // fill tree with sherpa generator information
+  if(isSherpaDiphoton_) fSherpaGenTree->Fill();
+
   cout << endl;
   
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
@@ -775,6 +829,33 @@ void ExoDiPhotonBackgroundAnalyzer::photonFiller(const std::vector<edm::Ptr<pat:
 
 } // end photonFiller
 
+void ExoDiPhotonBackgroundAnalyzer::sherpaDiphotonFiller(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+							 std::vector<edm::Ptr<const reco::GenParticle>> sherpaDiphotons)
+{
+  // ntuple assumes that photon list is sorted by pT
+  sort(sherpaDiphotons.begin(), sherpaDiphotons.end(), ExoDiPhotons::comparePhotonsByPt);
+
+  ExoDiPhotons::FillGenParticleInfo(fSherpaGenPhoton1Info, sherpaDiphotons.at(0).get());
+  ExoDiPhotons::FillGenParticleInfo(fSherpaGenPhoton2Info, sherpaDiphotons.at(1).get());
+  // fill gen diphoton info
+  ExoDiPhotons::FillDiphotonInfo(fSherpaGenDiphotonInfo, sherpaDiphotons.at(0).get(), sherpaDiphotons.at(1).get());
+
+  // isolation sums for photons 0 and 1
+  SherpaGenPhoton0_iso_ = 0.0;
+  SherpaGenPhoton1_iso_ = 0.0;
+  // this is needed for the stitching together of Sherpa samples
+  SherpaWeightAll_ = fEventInfo.weightAll;
+
+  for(size_t k=0; k<genParticles->size(); k++ ){
+    const auto gen = genParticles->ptrAt(k);
+    //    if( gen->fromHardProcessFinalState() || (abs(gen->pdgId())>=11 && abs(gen->pdgId())<=16) ) continue;
+    if( gen->status()!=3 || gen->pdgId()==22 ) continue;
+    double deltaR0 = reco::deltaR(sherpaDiphotons.at(0)->eta(), sherpaDiphotons.at(0)->phi(), gen->eta(), gen->phi());
+    double deltaR1 = reco::deltaR(sherpaDiphotons.at(1)->eta(), sherpaDiphotons.at(1)->phi(), gen->eta(), gen->phi());
+    if( deltaR0 < isolationConeR_ ) SherpaGenPhoton0_iso_+=gen->pt();
+    if( deltaR1 < isolationConeR_ ) SherpaGenPhoton1_iso_+=gen->pt();
+  }
+}
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(ExoDiPhotonBackgroundAnalyzer);

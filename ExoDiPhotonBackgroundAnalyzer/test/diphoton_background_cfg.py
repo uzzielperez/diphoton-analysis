@@ -143,7 +143,8 @@ process.diphoton = cms.EDAnalyzer(
     outputFile = cms.string(outName),
     # number of events in the sample (for calculation of event weights)
     nEventsSample = cms.uint32(options.nEventsSample),
-    isMC = cms.bool(isMC)
+    isMC = cms.bool(isMC),
+    isolationConeR = cms.double(0.3)
     )
 
 # analyzer to print cross section
