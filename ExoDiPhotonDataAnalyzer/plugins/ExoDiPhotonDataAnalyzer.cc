@@ -467,6 +467,15 @@ ExoDiPhotonDataAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup
   ExoDiPhotons::FillTriggerBits(fTriggerBitInfo, triggerResults, iEvent); // fill trigger bits into trigger bit branch
   ExoDiPhotons::FillTriggerPrescales(fTriggerPrescaleInfo, triggerResults, prescales, iEvent); // fill trigger prescale info in trigger prescale branch
 
+  // test which triggers fired
+
+  // std::vector<std::string> trigNames2 = iEvent.triggerNames(*triggerResults).triggerNames();
+
+  // for (unsigned int i=0; i < trigNames2.size(); i++){
+  //   std::string currentTrigger = trigNames2.at(i);
+  //   if (triggerResults->accept(i)) std::cout << currentTrigger << " = " << triggerResults->accept(i) << std::endl;
+  // }
+
   // =========
   // DIPHOTONS
   // =========
@@ -566,6 +575,7 @@ ExoDiPhotonDataAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup
     bool LL = fPhoton1Info.isDenominatorObj && fPhoton2Info.isDenominatorObj;
 
     if (TT || TL || LT || LL) fTree->Fill();
+
     // if ( fPhoton1Info.passHighPtID && fPhoton2Info.passHighPtID ) fTightTightTree->Fill();
     // else if ( fPhoton1Info.passHighPtID && fPhoton2Info.isDenominatorObj ) fTightFakeTree->Fill();
     // else if ( fPhoton1Info.isDenominatorObj && fPhoton2Info.passHighPtID ) fFakeTightTree->Fill();
