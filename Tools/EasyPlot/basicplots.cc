@@ -2,11 +2,12 @@
 
 #include "TMath.h"
 
-void basicplots() 
+void basicplots(bool endcap=false)
 {
   // configurable information
   std::string kfactor="1.4";
   std::string cut("Photon1.pt>75&&Photon2.pt>75 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442 && isGood");
+  if(endcap) cut = "Photon1.pt>75&&Photon2.pt>75&& isGood && ( !(abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442) && ((abs(Photon1.eta)<1.4442 && (abs(Photon2.eta)>1.56&&abs(Photon2.eta)<2.5)) || (abs(Photon2.eta)<1.4442 && (abs(Photon1.eta)>1.56&&abs(Photon1.eta)<2.5))))";
   int nbins=100;
   double xmin=0.0; // GeV
   double xmax=2000; // GeV
@@ -18,7 +19,6 @@ void basicplots()
   sample data("data", "Data");
   sample gg("gg", "#gamma#gamma", kfactor);
   sample gj("gj", "#gamma + jets");
-  sample jj("jj", "Multijet");
   sample vg("vg", "V#gamma");
   sample w("w", "W");
   sample dy("dy", "DY");
@@ -29,7 +29,6 @@ void basicplots()
   samples.push_back(w);
   samples.push_back(vg);
   samples.push_back(dy);
-  //  samples.push_back(jj);
   samples.push_back(gj);
   samples.push_back(gg);
 

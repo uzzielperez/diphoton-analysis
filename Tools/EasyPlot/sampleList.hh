@@ -1,3 +1,8 @@
+// This file defines the samples that are used, the chains that specify their
+// locations and basic formatting for the samples.
+// It can be used by including the header and then calling
+// init()
+// to initialize the chains.
 #ifndef SAMPLELIST_HH
 #define SAMPLELIST_HH
 
@@ -27,12 +32,13 @@ std::map<std::string, int> fillColors;
 std::map<std::string, std::string> prettyName;
 
 TString filestring(TString sample);
-void init();
-void initADD();
-void listSamples();
+void init(); // initializes samples
+void initADD(); // initializes ADD samples; performed by a loop rather than being listed explicitly
+void listSamples(); // list the available samples
 
 TString filestring(TString sample)
 {
+  // paths are defined as symbolic links here
   TString directory(Form("/afs/cern.ch/user/c/cawest/links/%s", sample.Data()));
   char resolved_path[PATH_MAX];
 
@@ -61,6 +67,17 @@ void listSamples()
   for( auto ichain : chains) {
     std::cout << ichain.first << std::endl;
   }
+}
+
+std::vector<std::string> getSampleList()
+{
+  std::vector<std::string> list;
+
+  for( auto ichain : chains) {
+    list.push_back(ichain.first);
+  }
+
+  return list;
 }
 
 void init()
@@ -103,6 +120,12 @@ void init()
   chDY->Add(filestring("DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX"));
   TChain *chTTG = new TChain(treeType);
   chTTG->Add(filestring("TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX"));
+  // sum of minor backgrounds for use in limit setting
+  TChain *chOther = new TChain(treeType);
+  chOther->Add(chVG);
+  chOther->Add(chW);
+  chOther->Add(chDY);
+  chOther->Add(chTTG);
   TChain *chGGGen = new TChain("diphoton/fSherpaGenTree");
   chGGGen->Add(filestring("GGJets_M-60To200_Pt-50_13TeV-sherpa"));
   chGGGen->Add(filestring("GGJets_M-200To500_Pt-50_13TeV-sherpa"));
@@ -111,8 +134,17 @@ void init()
   chGGGen->Add(filestring("GGJets_M-2000To4000_Pt-50_13TeV-sherpa"));
   chGGGen->Add(filestring("GGJets_M-4000To6000_Pt-50_13TeV-sherpa"));
   chGGGen->Add(filestring("GGJets_M-6000To8000_Pt-50_13TeV-sherpa"));
+  // These samples are defined in the same way as the SM background in the signal samples.
+  // They are needed to take into account interference of the signal with SM backgrounds.
+  TChain *chGG70 = new TChain(treeType);
+  chGG70->Add(filestring("GG_M-200To500_Pt-70_13TeV-sherpa"));
+  chGG70->Add(filestring("GG_M-500To1000_Pt-70_13TeV-sherpa"));
+  chGG70->Add(filestring("GG_M-1000To2000_Pt-70_13TeV-sherpa"));
+  chGG70->Add(filestring("GG_M-2000To4000_Pt-70_13TeV-sherpa"));
+  chGG70->Add(filestring("GG_M-4000To8000_Pt-70_13TeV-sherpa"));
+  chGG70->Add(filestring("GG_M-8000To13000_Pt-70_13TeV-sherpa"));
 
-  std::vector<std::string> sampleNames = {"data", "gg", "gj", "jj", "vg", "w", "dy", "ttg"};
+  std::vector<std::string> sampleNames = {"data", "gg", "gj", "jj", "vg", "w", "dy", "ttg", "gg70"};
 
   chains["data"] = chData;
   chains["gg"] = chGG;
@@ -123,6 +155,8 @@ void init()
   chains["w"] = chW;
   chains["dy"] = chDY;
   chains["ttg"] = chTTG;
+  chains["gg70"] = chGG70;
+  chains["other"] = chOther;
 
   // ADD initialization done separately to avoid clutter
   initADD();
@@ -142,6 +176,7 @@ void init()
   fillColors["w"]=kBlack;
   fillColors["dy"]=kYellow;
   fillColors["ttg"]=kMagenta;
+  fillColors["gg70"]=kCyan;
 
   prettyName["data"]="Data";
   prettyName["gg"]="Diphoton";
@@ -151,6 +186,7 @@ void init()
   prettyName["w"]="W";
   prettyName["dy"]="DY";
   prettyName["ttg"]="t#bar{t}#gamma";
+  prettyName["gg70"]="Diphoton, p_{T,#gamma} > 70";
 
   setTDRStyle();
 }
@@ -163,13 +199,15 @@ void initADD()
   std::vector<std::string> NED = {"2", "4"};
   std::vector<std::string> KK = {"1", "4"};
   std::map<std::string, std::vector<std::string>> MggBins;
-  MggBins["3000"] = {"500To1000", "1000To2000", "2000To3000"};
-  MggBins["3500"] = {"500To1000", "1000To2000", "2000To3500"};
-  MggBins["4000"] = {"500To1000", "1000To2000", "2000To4000"};
-  MggBins["4500"] = {"500To1000", "1000To2000", "2000To3000", "3000To4500"};
-  MggBins["5000"] = {"500To1000", "1000To2000", "2000To3000", "3000To5000"};
-  MggBins["5500"] = {"500To1000", "1000To2000", "2000To4000", "4000To5500"};
-  MggBins["6000"] = {"500To1000", "1000To2000", "2000To4000", "4000To6000"};
+  // the 250To500 mass bin is only present for the NED=4, KK=1 sample
+  // but it is skipped manually later
+  MggBins["3000"] = {"250To500", "500To1000", "1000To2000", "2000To3000"};
+  MggBins["3500"] = {"250To500", "500To1000", "1000To2000", "2000To3500"};
+  MggBins["4000"] = {"250To500", "500To1000", "1000To2000", "2000To4000"};
+  MggBins["4500"] = {"250To500", "500To1000", "1000To2000", "2000To3000", "3000To4500"};
+  MggBins["5000"] = {"250To500", "500To1000", "1000To2000", "2000To3000", "3000To5000"};
+  MggBins["5500"] = {"250To500", "500To1000", "1000To2000", "2000To4000", "4000To5500"};
+  MggBins["6000"] = {"250To500", "500To1000", "1000To2000", "2000To4000", "4000To6000"};
 
   for(const auto iMS : MS) {
     for(const auto iNED : NED) {
@@ -185,6 +223,8 @@ void initADD()
 	pointName += iKK;
 	chains[pointName] = new TChain("diphoton/fTree");
 	for(std::string iMgg : MggBins[iMS] ) {
+	  // the 200To500 bins are only present for the NED=4 samples
+	  if(strcmp(iNED.c_str(), "2")==0 && strcmp(iMgg.c_str(), "250To500")==0) continue;
 	  std::string sampleName(pointName);
 	  sampleName += "_M-";
 	  sampleName += iMgg;
