@@ -1,3 +1,6 @@
+#ifndef TDRSTYLE_C
+#define TDRSTYLE_C
+
 #include "TStyle.h"
 #include "TPad.h"
 
@@ -162,3 +165,4 @@ void setTDRStyle() {
   tdrStyle->cd();
 
 }
+#endif

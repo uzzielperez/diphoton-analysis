@@ -1,9 +1,11 @@
-#include "easyplot.hh"
+#include "diphoton-analysis/Tools/interface/easyplot.hh"
 
 #include "TMath.h"
 
-void basicplots(bool endcap=false)
+int main()
 {
+  bool endcap=false;
+
   // configurable information
   std::string kfactor="1.4";
   std::string cut("Photon1.pt>75&&Photon2.pt>75 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442 && isGood");

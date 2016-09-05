@@ -1,0 +1,10 @@
+<!--bin file="makeDatacards.cc" name="makeDatacards.exe"/-->
+<use name="root"/>
+<use name="rootinteractive"/>
+<environment>
+  <bin file="basicplots.cc" name="basicplots.exe"/>
+  <bin file="signal.cc" name="signal.exe"/>
+  <bin file="makeHistograms.cc" name="makeHistograms.exe"/>
+  <bin file="makeDatacards.cc" name="makeDatacards.exe"/>
+</environment>
+

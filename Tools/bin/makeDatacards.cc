@@ -21,10 +21,9 @@ public:
 
 double getYield(const std::string& region, const std::string& sample, const int& minBin);
 void makeOneDatacard(const std::string& signalPoint);
-void makeDatacards();
 
 // Loop over ADD samples to make datacards for each
-void makeDatacards()
+int main()
 {
   // string scales
   std::vector<std::string> MS = {"3000", "3500", "4000", "4500",
@@ -55,7 +54,7 @@ void makeDatacards()
 void makeOneDatacard(const std::string& signalPoint)
 {
   // lower limit of bin number; for now only a single bin is supported
-  std::vector<int> binLowerLimits = {11};
+  std::vector<int> binLowerLimits = {36};
   std::vector<std::string> regions = {"BB", "BE"};
   // the following line assumes fakes taken from MC
   //  std::vector<std::string> processes = {signalPoint, "gg", "gj", "other"};
@@ -79,7 +78,7 @@ void makeOneDatacard(const std::string& signalPoint)
   allNuisances.push_back(eff);
   allNuisances.push_back(xsec_minor_bkg);
 
-  ofstream output;
+  std::ofstream output;
   std::string filename("datacards/");
   filename+=signalPoint;
   filename+=".dat";

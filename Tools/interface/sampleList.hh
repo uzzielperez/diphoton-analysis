@@ -19,7 +19,7 @@
 
 #include <linux/limits.h>
 
-#include "tdrstyle.C"
+#include "diphoton-analysis/Tools/interface/tdrstyle.hh"
 
 
 const double luminosity=2.2; // fb^-1
@@ -43,7 +43,6 @@ TString filestring(TString sample)
   char resolved_path[PATH_MAX];
 
   // resolve the symbolic link
-  struct stat sb;
   ssize_t r = readlink(directory.Data(), resolved_path, PATH_MAX);
   // if it fails, try filename directly
   if(r==-1) {
