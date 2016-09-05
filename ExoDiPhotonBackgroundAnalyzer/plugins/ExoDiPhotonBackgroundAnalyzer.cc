@@ -664,13 +664,20 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
   }
 
 
-  // really only the second is needed, but it's more understandable to write it this way
-  if(goodPhotons.size() >= 2 || realAndFakePhotons.size() >= 2) {
+  // fill tree with sherpa generator information
+  // need to save _all_ events for Sherpa so that PDF uncertainties
+  // can be calculated
+  if(isSherpaDiphoton_) {
+    fSherpaGenTree->Fill();
     fTree->Fill();
   }
+  else {
+  // really only the second is needed, but it's more understandable to write it this way
+    if(goodPhotons.size() >= 2 || realAndFakePhotons.size() >= 2) {
+      fTree->Fill();
+    }
+  }
   
-  // fill tree with sherpa generator information
-  if(isSherpaDiphoton_) fSherpaGenTree->Fill();
 
   cout << endl;
   
