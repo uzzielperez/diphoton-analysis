@@ -41,7 +41,7 @@ DATASETS = [[]]
 #   datasets.append(["/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM",
 #                   "/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2_ext1-v1/MINIAODSIM"])
 
-DATASETS.append(["/ADDGravToGG_MS-5000_NED-2_KK-4_M-2000To3000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM"])
+
 # diphoton samples (2016 data)
 if do2016data:
   DATASETS.append(["/DoubleEG/Run2016B-PromptReco-v1/MINIAOD"])
@@ -158,6 +158,7 @@ if do2015signal:
   DATASETS.append(['/ADDGravToGG_MS-5000_NED-2_KK-1_M-3000To5000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
   DATASETS.append(['/ADDGravToGG_MS-5000_NED-2_KK-1_M-500To1000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
   DATASETS.append(['/ADDGravToGG_MS-5000_NED-2_KK-4_M-1000To2000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
+  DATASETS.append(["/ADDGravToGG_MS-5000_NED-2_KK-4_M-2000To3000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM"])
   DATASETS.append(['/ADDGravToGG_MS-5000_NED-2_KK-4_M-3000To5000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
   DATASETS.append(['/ADDGravToGG_MS-5000_NED-2_KK-4_M-500To1000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
   DATASETS.append(['/ADDGravToGG_MS-5000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])

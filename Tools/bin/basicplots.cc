@@ -2,12 +2,28 @@
 
 #include "TMath.h"
 
-int main()
+int main(int argc, char *argv[])
 {
-  bool endcap=false;
+  std::string region;
+
+  if(argc!=2) {
+    std::cout << "Syntax: basicplots.exe [barrel/endcap]" << std::endl;
+    return -1;
+  }
+  else {
+    region = argv[1];
+    if(region!="barrel" and region!="endcap") {
+      std::cout << "Only 'barrel' and 'endcap' are allowed input parameters. " << std::endl;
+      return -1;
+    }
+  }
+
+  bool endcap = (region=="endcap");
 
   // configurable information
-  std::string kfactor="1.4";
+  // TODO: make this configurable externally
+  std::string kfactor="(1.25693+0.0656345e-05*Diphoton.Minv)";
+  if(endcap) kfactor="(1.14065+9.41013e-05*Diphoton.Minv)";
   std::string cut("Photon1.pt>75&&Photon2.pt>75 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442 && isGood");
   if(endcap) cut = "Photon1.pt>75&&Photon2.pt>75&& isGood && ( !(abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442) && ((abs(Photon1.eta)<1.4442 && (abs(Photon2.eta)>1.56&&abs(Photon2.eta)<2.5)) || (abs(Photon2.eta)<1.4442 && (abs(Photon1.eta)>1.56&&abs(Photon1.eta)<2.5))))";
   int nbins=100;

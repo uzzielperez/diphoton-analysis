@@ -8,23 +8,36 @@
 #include "TH1.h"
 #include "TFile.h"
 #include "TString.h"
+#include "TROOT.h"
+#include "TGraphAsymmErrors.h"
+#include "TLatex.h"
 
 #include <string>
 #include <map>
+#include <stdlib.h> // getenv()
 
-#include "../../../Tools/EasyPlot/tdrstyle.C"
+#include "diphoton-analysis/Tools/interface/tdrstyle.hh"
 
 TF1* getFakeRateFunction(const std::string& isolation, const std::string& region);
 
 
-void getFakeRates(bool isMC=false)
+int main()
 {
+  bool isMC=false;
+
   setTDRStyle();
   gROOT->ForceStyle();
 
-  std::string fakeRateFile("fakeRatePlots.root");
-  std::string fakeRateOutputFile("fakeRateFunctions_jetht.root");
-  if(isMC) fakeRateOutputFile = "fakeRateFunctions_mc.root"
+  const char *cmssw_base = getenv("CMSSW_BASE");
+  if(cmssw_base==NULL) {
+    std::cout << "Please issue cmsenv before running" << std::endl;
+    return -1;
+  }
+  const std::string cmssw_base_string(cmssw_base);
+  const std::string directory("/src/diphoton-analysis/FakeRateAnalysis/RooFitTemplateFitting/analysis/");
+  std::string fakeRateFile(cmssw_base_string + directory + "fakeRatePlots.root");
+  std::string fakeRateOutputFile(cmssw_base_string + directory + "fakeRateFunctions_jetht.root");
+  if(isMC) fakeRateOutputFile = cmssw_base_string + directory + "fakeRateFunctions_mc.root";
 
   std::vector<std::pair<int, int> > isolationRanges;
   isolationRanges.push_back(std::pair<int, int>(5, 10));
@@ -53,7 +66,7 @@ void getFakeRates(bool isMC=false)
   std::vector<std::string> regions = {"EB", "EE"};
 
   TFile *input = TFile::Open(fakeRateFile.c_str());
-  TFile *output = new TFile("fakeRateFunctions.root", "recreate");
+  TFile *output = new TFile("data/fakeRateFunctions.root", "recreate");
   
   for(unsigned int iIso = 0; iIso<isolationSidebands.size(); iIso++) {
     for(unsigned int iRegion = 0; iRegion<regions.size(); iRegion++) { 

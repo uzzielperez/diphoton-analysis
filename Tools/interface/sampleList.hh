@@ -86,6 +86,7 @@ void init()
   TChain *chData = new TChain(treeType);
   //  chData->Add("/afs/cern.ch/user/c/cawest/links/DoubleEG__Run2015D/out_DoubleEG_Run2015D-16Dec2015-v2_numEvent100_126.root");
   chData->Add(filestring("DoubleEG__Run2015D"));
+  chData->Add(filestring("DoubleEG__Run2015C_25ns"));
   TChain *chGG = new TChain(treeType);
   chGG->Add(filestring("GGJets_M-60To200_Pt-50_13TeV-sherpa"));
   chGG->Add(filestring("GGJets_M-200To500_Pt-50_13TeV-sherpa"));

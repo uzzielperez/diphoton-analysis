@@ -29,10 +29,18 @@ void fakePrediction::Loop(bool isMC=false)
   setTDRStyle();
   gROOT->ForceStyle();
 
-  std::string inputFile("fakeRateFunctions_jetht.root");
+  const char *cmssw_base = getenv("CMSSW_BASE");
+  if(cmssw_base==NULL) {
+    std::cout << "Please issue cmsenv before running" << std::endl;
+    exit(-1);
+  }
+  const std::string cmssw_base_string(cmssw_base);
+
+  std::string inputFile("fakeRateFunctions.root");
   if(isMC) inputFile = "fakeRateFunctions_mc.root";
-  
-  TFile *fakeRateFile = TFile::Open(Form("../../FakeRateAnalysis/RooFitTemplateFitting/analysis/%s", inputFile.c_str()));
+
+  TFile *fakeRateFile = TFile::Open(Form("%s/src/diphoton-analysis/Tools/data/%s",
+					 cmssw_base_string.c_str(), inputFile.c_str()));
   TF1 * fakeRate[2];
   
   fakeRateFile->GetObject("fakeRateEB_chIso5To10_fit", fakeRate[EB]);
