@@ -7,6 +7,8 @@
 #include "TH1.h"
 #include "TFile.h"
 
+#include "diphoton-analysis/Tools/interface/sampleList.hh" // integrated luminosity only defined once
+
 class nuisance {
 
 public:
@@ -54,7 +56,7 @@ int main()
 void makeOneDatacard(const std::string& signalPoint)
 {
   // lower limit of bin number; for now only a single bin is supported
-  std::vector<int> binLowerLimits = {36};
+  std::vector<int> binLowerLimits = {21};
   std::vector<std::string> regions = {"BB", "BE"};
   // the following line assumes fakes taken from MC
   //  std::vector<std::string> processes = {signalPoint, "gg", "gj", "other"};
@@ -175,6 +177,7 @@ double getYield(const std::string& region, const std::string& sample, const int&
     
     TH1D *hist = static_cast<TH1D*>(input->Get(histName.c_str()));
     integral = hist->Integral(minBin, hist->GetNbinsX()+1);
+    if(sample.find("data") == std::string::npos) integral *= luminosity;
 
     // if the sample is an ADD sample, need to subtract SM background
     if(sample.find("ADD") != std::string::npos) {
@@ -182,7 +185,7 @@ double getYield(const std::string& region, const std::string& sample, const int&
       gg70HistName+="/gg70";
       
       TH1D *gg70 = static_cast<TH1D*>(input->Get(gg70HistName.c_str()));
-      integral -= gg70->Integral(minBin, hist->GetNbinsX()+1);
+      integral -= luminosity*gg70->Integral(minBin, hist->GetNbinsX()+1);
     }
     input->Close();
   }

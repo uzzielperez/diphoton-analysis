@@ -22,7 +22,7 @@
 #include "diphoton-analysis/Tools/interface/tdrstyle.hh"
 
 
-const double luminosity=2.2; // fb^-1
+const double luminosity=2.69; // fb^-1
 
 std::map<std::string, TChain*> chains;
 std::map<std::string, int> lineStyles;

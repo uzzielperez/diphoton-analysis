@@ -37,6 +37,7 @@
 #include "diphoton-analysis/CommonClasses/interface/PhotonInfo.h"
 #include "diphoton-analysis/CommonClasses/interface/GenParticleInfo.h"
 #include "diphoton-analysis/CommonClasses/interface/DiPhotonInfo.h"
+#include "diphoton-analysis/CommonClasses/interface/PileupInfo.h"
 
 // for TFileService, trees
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
@@ -138,6 +139,9 @@ class ExoDiPhotonBackgroundAnalyzer : public edm::one::EDAnalyzer<edm::one::Shar
   // vertex token
   edm::EDGetTokenT<reco::VertexCollection> verticesToken_;
 
+  // Pileup summary token
+  edm::EDGetTokenT<std::vector<PileupSummaryInfo> > pileupToken_;
+
   // beam spot token
   edm::EDGetTokenT<reco::BeamSpot> beamSpotToken_;
 
@@ -226,6 +230,9 @@ class ExoDiPhotonBackgroundAnalyzer : public edm::one::EDAnalyzer<edm::one::Shar
   double SherpaGenPhoton1_iso_;
   double SherpaWeightAll_;
   double isolationConeR_;
+
+  // number of reconstructed primary vertices
+  int nPV_;
 
   enum {
     LOOSE = 0,
@@ -330,6 +337,9 @@ ExoDiPhotonBackgroundAnalyzer::ExoDiPhotonBackgroundAnalyzer(const edm::Paramete
   fTree->Branch("isFT", &isFT_);
   fTree->Branch("isFF", &isFF_);
 
+  // number of reconstructed primary vertices
+  fTree->Branch("nPV", &nPV_);
+
   // photon token
   photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
   fMinPt = iConfig.getParameter<double>("minPhotonPt");
@@ -350,6 +360,8 @@ ExoDiPhotonBackgroundAnalyzer::ExoDiPhotonBackgroundAnalyzer(const edm::Paramete
 
   // BeamHaloSummary
   beamHaloSummaryToken_ = consumes<reco::BeamHaloSummary>( edm::InputTag("BeamHaloSummary") );
+
+  pileupToken_ = consumes<std::vector<PileupSummaryInfo> >( edm::InputTag("slimmedAddPileupInfo") );
 
   // Filter decisions (created in "PAT" process in MC but "RECO" in data)
   filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","",isMC_?("PAT"):("RECO")) );
@@ -385,6 +397,7 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
   using namespace reco;
 
   isGood_ = isTT_ = isTF_ = isFT_ = isFF_ = false;
+  nPV_ = 0;
   // set to a large value so that photons will not be considered
   // isolated by default
   SherpaGenPhoton0_iso_ = SherpaGenPhoton1_iso_ = 9999.99;
@@ -410,9 +423,12 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
 
   // get genEventInfo
   edm::Handle<GenEventInfoProduct> genInfo;
+  edm::Handle<std::vector< PileupSummaryInfo > > puSummary;
   if(isMC_) {
     iEvent.getByToken(genInfoToken_,genInfo);
+    iEvent.getByToken(pileupToken_, puSummary);
     ExoDiPhotons::FillGenEventInfo(fEventInfo, &(*genInfo));
+    ExoDiPhotons::FillPileupInfo(fEventInfo, &(*puSummary));
   }
   ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
 
@@ -441,7 +457,6 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
   ExoDiPhotons::FillVertexInfo(fVertex0Info,&(vertices->at(0)));
   
   // select the primary vertex, if any
-  int nPV = 0;
   const reco::Vertex *myPV = &(vertices->front());
   bool foundPV = false;
   for(unsigned int i = 0; i < vertices->size(); i++){
@@ -450,7 +465,7 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
 	myPV = &(vertices->at(i));
 	foundPV = true;
       }
-      nPV++;
+      nPV_++;
     }
   }
 

@@ -10,6 +10,10 @@
 // cross sections
 #include "diphoton-analysis/CommonClasses/interface/CrossSections.h"
 
+// pileup reweighting
+#include "diphoton-analysis/CommonClasses/interface/PileupInfo.h"
+#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
+
 namespace ExoDiPhotons
 {
   
@@ -30,12 +34,16 @@ namespace ExoDiPhotons
     float pdf2; // value of PDF 2
     float weight0;
     float weight;
+    float weightPuUp;
+    float weightPu;
+    float weightPuDown;
     float weightLumi; // luminosity weight
     float weightAll; // luminosity weight and average event weight
     int interactingParton1PdgId;
     int interactingParton2PdgId;
     int pdf_id1;  // PDG ID of parton 1
     int pdf_id2;  // PDG ID of parton 2
+    int npv_true;
     // CSC Beam Halo ID decisions
     bool beamHaloIDLoose;
     bool beamHaloIDTight;
@@ -43,7 +51,7 @@ namespace ExoDiPhotons
   };
 
   // variables must be sorted in decreasing order of size
-  std::string eventBranchDefString("run/L:LS:evnum:processid:bx:orbit:ptHat/F:alphaqcd:alphaqed:qscale:x1:x2:pdf1:pdf2:weight0:weight:weightLumi:weightAll:interactingParton1PdgId/I:interactingParton2PdgId:pdf_id1:pdf_id2:beamHaloIDLoose/O:beamHaloIDTight:beamHaloIDTight2015");
+  std::string eventBranchDefString("run/L:LS:evnum:processid:bx:orbit:ptHat/F:alphaqcd:alphaqed:qscale:x1:x2:pdf1:pdf2:weight0:weight:weightPuUp:weightPu:weightPuDown:weightLumi:weightAll:interactingParton1PdgId/I:interactingParton2PdgId:pdf_id1:pdf_id2:npv_true:beamHaloIDLoose/O:beamHaloIDTight:beamHaloIDTight2015");
   
   void InitEventInfo(eventInfo_t &eventInfo) {
     eventInfo.run       = (Long64_t) -99999.99;
@@ -64,10 +72,14 @@ namespace ExoDiPhotons
     eventInfo.weight    = -99999.99;
     eventInfo.weightLumi= -99999.99;
     eventInfo.weightAll = -99999.99;
+    eventInfo.weightPuUp= 1.0;
+    eventInfo.weightPu  = 1.0;
+    eventInfo.weightPuDown = 1.0;
     eventInfo.interactingParton1PdgId = (int) -99999.99;
     eventInfo.interactingParton2PdgId = (int) -99999.99;
     eventInfo.pdf_id1   = (int)-99999.99;
     eventInfo.pdf_id2   = (int)-99999.99;
+    eventInfo.npv_true   = (int)-99999.99;
     eventInfo.beamHaloIDLoose     = false;
     eventInfo.beamHaloIDTight     = false;
     eventInfo.beamHaloIDTight2015 = false;
@@ -107,6 +119,20 @@ namespace ExoDiPhotons
     eventInfo.processid = genInfo->signalProcessID();
     eventInfo.weight0   = (genInfo->weights().size() > 0 ) ? genInfo->weights()[0] : 1.0;
     eventInfo.weight    = genInfo->weight();
+
+
+  }
+
+  void FillPileupInfo(eventInfo_t &eventInfo, const std::vector< PileupSummaryInfo > * puSummary) {
+    for(unsigned int ipu=0; ipu<puSummary->size(); ipu++) {
+      if(puSummary->at(ipu).getBunchCrossing()==0) {
+	eventInfo.npv_true = puSummary->at(ipu).getTrueNumInteractions();
+	eventInfo.weightPuDown = pileup::weight(eventInfo.npv_true, -1);
+	eventInfo.weightPu = pileup::weight(eventInfo.npv_true, 0);
+	eventInfo.weightPuUp = pileup::weight(eventInfo.npv_true, 1);
+	break;
+      }
+    }
   }
 
   void FillEventWeights(eventInfo_t &eventInfo, const TString& sample, double nEventsSample) {

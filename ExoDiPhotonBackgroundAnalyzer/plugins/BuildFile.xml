@@ -6,5 +6,5 @@
 <use name="RecoEgamma/EgammaTools"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="Geometry/CaloTopology"/>
-<flags CXXFLAGS="-Wall"/>
+<flags CXXFLAGS="-Wall -Werror"/>
 <flags EDM_PLUGIN="1"/>
