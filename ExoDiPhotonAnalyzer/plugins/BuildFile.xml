@@ -3,8 +3,10 @@
 <use name="FWCore/ParameterSet"/>
 <use name="DataFormats/PatCandidates"/>
 <use name="DataFormats/EgammaCandidates"/>
+<use name="DataFormats/VertexReco"/>
+<use name="DataFormats/BeamSpot"/>
 <use name="RecoEgamma/EgammaTools"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="Geometry/CaloTopology"/>
-<flags CXXFLAGS="-Wall -Werror"/>
+<use name="L1Trigger/L1TGlobal"/>
 <flags EDM_PLUGIN="1"/>
