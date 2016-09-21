@@ -84,10 +84,10 @@
 // constructor "usesResource("TFileService");"
 // This will improve performance in multithreaded jobs.
 
-class ExoDiPhotonBackgroundAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
+class ExoDiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
    public:
-      explicit ExoDiPhotonBackgroundAnalyzer(const edm::ParameterSet&);
-      ~ExoDiPhotonBackgroundAnalyzer();
+      explicit ExoDiPhotonAnalyzer(const edm::ParameterSet&);
+      ~ExoDiPhotonAnalyzer();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
       void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles, const std::vector<edm::Ptr<pat::Photon>> selectedPhotons);
@@ -257,7 +257,7 @@ class ExoDiPhotonBackgroundAnalyzer : public edm::one::EDAnalyzer<edm::one::Shar
 //
 // constructors and destructor
 //
-ExoDiPhotonBackgroundAnalyzer::ExoDiPhotonBackgroundAnalyzer(const edm::ParameterSet& iConfig)
+ExoDiPhotonAnalyzer::ExoDiPhotonAnalyzer(const edm::ParameterSet& iConfig)
   : rhoToken_(consumes<double> (iConfig.getParameter<edm::InputTag>("rho"))),
     verticesToken_(consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"))),
     beamSpotToken_(consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamSpot"))),
@@ -374,7 +374,7 @@ ExoDiPhotonBackgroundAnalyzer::ExoDiPhotonBackgroundAnalyzer(const edm::Paramete
 }
 
 
-ExoDiPhotonBackgroundAnalyzer::~ExoDiPhotonBackgroundAnalyzer()
+ExoDiPhotonAnalyzer::~ExoDiPhotonAnalyzer()
 {
  
    // do anything here that needs to be done at desctruction time
@@ -389,7 +389,7 @@ ExoDiPhotonBackgroundAnalyzer::~ExoDiPhotonBackgroundAnalyzer()
 
 // ------------ method called for each event  ------------
 void
-ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   using namespace edm;
   using namespace std;
@@ -710,19 +710,19 @@ ExoDiPhotonBackgroundAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
-ExoDiPhotonBackgroundAnalyzer::beginJob()
+ExoDiPhotonAnalyzer::beginJob()
 {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
 void 
-ExoDiPhotonBackgroundAnalyzer::endJob() 
+ExoDiPhotonAnalyzer::endJob() 
 {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
-ExoDiPhotonBackgroundAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+ExoDiPhotonAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
@@ -731,7 +731,7 @@ ExoDiPhotonBackgroundAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& 
 }
 
 
-void ExoDiPhotonBackgroundAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles, const std::vector<edm::Ptr<pat::Photon>> selectedPhotons) {
+void ExoDiPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles, const std::vector<edm::Ptr<pat::Photon>> selectedPhotons) {
   using namespace std;
 
   // ========================================
@@ -799,7 +799,7 @@ void ExoDiPhotonBackgroundAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco
 
 }
 
-void ExoDiPhotonBackgroundAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
+void ExoDiPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
 						 const edm::Handle<EcalRecHitCollection>& recHitsEB, const edm::Handle<EcalRecHitCollection>& recHitsEE,
 						 const edm::Handle<edm::ValueMap<bool> >* id_decisions,
 						 ExoDiPhotons::photonInfo_t& photon1Info, ExoDiPhotons::photonInfo_t& photon2Info, ExoDiPhotons::diphotonInfo_t& diphotonInfo)
@@ -851,7 +851,7 @@ void ExoDiPhotonBackgroundAnalyzer::photonFiller(const std::vector<edm::Ptr<pat:
 
 } // end photonFiller
 
-void ExoDiPhotonBackgroundAnalyzer::sherpaDiphotonFiller(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+void ExoDiPhotonAnalyzer::sherpaDiphotonFiller(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
 							 std::vector<edm::Ptr<const reco::GenParticle>> sherpaDiphotons)
 {
   // ntuple assumes that photon list is sorted by pT
@@ -880,4 +880,4 @@ void ExoDiPhotonBackgroundAnalyzer::sherpaDiphotonFiller(const edm::Handle<edm::
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(ExoDiPhotonBackgroundAnalyzer);
+DEFINE_FWK_MODULE(ExoDiPhotonAnalyzer);

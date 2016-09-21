@@ -113,7 +113,7 @@ updateJetCollection(
 
 # main analyzer and inputs
 process.diphoton = cms.EDAnalyzer(
-    'ExoDiPhotonBackgroundAnalyzer',
+    'ExoDiPhotonAnalyzer',
     # photon tag
     photonsMiniAOD = cms.InputTag("slimmedPhotons"),
     minPhotonPt = cms.double(75.),

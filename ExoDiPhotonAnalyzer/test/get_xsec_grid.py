@@ -107,7 +107,7 @@ for ilist in DATASETS:
     cmssw_base = os.getenv("CMSSW_BASE")
     datasetID = ids.replace('/', '', 1).replace('/', '_', 1)
     datasetID = datasetID[0:datasetID.find('/')]
-    inputfile = cmssw_base + "/src/diphoton-analysis/ExoDiPhotonBackgroundAnalyzer/test/crab_cfg_xsec_template.py"
+    inputfile = cmssw_base + "/src/diphoton-analysis/ExoDiPhotonAnalyzer/test/crab_cfg_xsec_template.py"
     outputfile = "crab_cfg_xsec" + datasetID + ".py"
 
     s = open(inputfile).read()
