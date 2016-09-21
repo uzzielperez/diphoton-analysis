@@ -27,6 +27,7 @@ namespace ExoDiPhotons
     double rhoCorPhotonIso03; // filled
     double corPhotonIso03; // filled
     double hadTowerOverEm; // filled
+    double hadronicOverEm; // filled
 
     // shower shape variables
     double r9; // filled
@@ -86,7 +87,7 @@ namespace ExoDiPhotons
     bool isSaturated; // filled in analyzer and passed to FillPhotonIDInfo
   };
 
-  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:r9:r9_5x5:sigmaIetaIeta:sigmaIetaIeta5x5:sigmaEtaEta:sigmaIphiIphi:sigmaIphiIphi5x5:sigmaIetaIphi:sigmaIetaIphi5x5:maxEnergyXtal:iEta:iPhi:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:passChIsoDenom:passCorPhoIsoDenom:isFakeable:isNumeratorObjCand:isDenominatorObj:isSaturated");
+  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:hadronicOverEm:r9:r9_5x5:sigmaIetaIeta:sigmaIetaIeta5x5:sigmaEtaEta:sigmaIphiIphi:sigmaIphiIphi5x5:sigmaIetaIphi:sigmaIetaIphi5x5:maxEnergyXtal:iEta:iPhi:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:passChIsoDenom:passCorPhoIsoDenom:isFakeable:isNumeratorObjCand:isDenominatorObj:isSaturated");
 
   void InitPhotonInfo(photonInfo_t &photonInfo)
   {
@@ -107,6 +108,7 @@ namespace ExoDiPhotons
     photonInfo.rhoCorPhotonIso03     = -9999.99;
     photonInfo.corPhotonIso03        = -9999.99;
     photonInfo.hadTowerOverEm        = -9999.99;
+    photonInfo.hadronicOverEm        = -9999.99;
 
     // shower shape variables 
     photonInfo.r9               = -9999.99;
@@ -193,6 +195,7 @@ namespace ExoDiPhotons
     photonInfo.photonIso03      = photon->photonIso();
     photonInfo.corPhotonIso03   = ExoDiPhotons::corPhoIsoHighPtID(photon,rho);
     photonInfo.hadTowerOverEm   = photon->hadTowOverEm();
+    photonInfo.hadronicOverEm   = photon->hadronicOverEm();
 
     // shower shape variables
     photonInfo.r9               = photon->r9();

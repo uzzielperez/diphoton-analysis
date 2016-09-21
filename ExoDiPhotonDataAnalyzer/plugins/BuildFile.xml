@@ -8,4 +8,5 @@
 <use name="RecoEgamma/EgammaTools"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="Geometry/CaloTopology"/>
+<use name="L1Trigger/L1TGlobal"/>
 <flags EDM_PLUGIN="1"/>

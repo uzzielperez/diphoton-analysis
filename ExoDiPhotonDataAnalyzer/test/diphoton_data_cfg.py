@@ -32,8 +32,38 @@ process.source = cms.Source(
     "PoolSource",
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
-        #'file:myfile.root'
-         'root://cmsxrootd.fnal.gov//store/data/Run2015D/DoubleEG/MINIAOD/16Dec2015-v2/00000/000298CD-87A6-E511-9E56-002590593878.root'
+        # 'file:failevent_MiniAOD_HoverELT005.root'
+        'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/passevents/JetHT/crab_pickEvents/160915_195723/0000/pickevents_1.root',
+        'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/passevents/JetHT/crab_pickEvents/160915_195723/0000/pickevents_2.root',
+        'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/passevents/JetHT/crab_pickEvents/160915_195723/0000/pickevents_3.root',
+        'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/passevents/JetHT/crab_pickEvents/160915_195723/0000/pickevents_4.root',
+        'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/passevents/JetHT/crab_pickEvents/160915_195723/0000/pickevents_5.root',
+        'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/passevents/JetHT/crab_pickEvents/160915_195723/0000/pickevents_6.root',
+        'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/passevents/JetHT/crab_pickEvents/160915_195723/0000/pickevents_7.root',
+        'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/passevents/JetHT/crab_pickEvents/160915_195723/0000/pickevents_8.root',
+        'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/passevents/JetHT/crab_pickEvents/160915_195723/0000/pickevents_9.root',
+        'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/passevents/JetHT/crab_pickEvents/160915_195723/0000/pickevents_10.root',
+        'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/passevents/JetHT/crab_pickEvents/160915_195723/0000/pickevents_11.root',
+        'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/passevents/JetHT/crab_pickEvents/160915_195723/0000/pickevents_12.root',
+        'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/passevents/JetHT/crab_pickEvents/160915_195723/0000/pickevents_13.root'
+
+        # 'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/failevents/JetHT/crab_pickEvents/160915_195949/0000/pickevents_1.root',
+        # 'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/failevents/JetHT/crab_pickEvents/160915_195949/0000/pickevents_2.root',
+        # 'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/failevents/JetHT/crab_pickEvents/160915_195949/0000/pickevents_3.root',
+        # 'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/failevents/JetHT/crab_pickEvents/160915_195949/0000/pickevents_4.root',
+        # 'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/failevents/JetHT/crab_pickEvents/160915_195949/0000/pickevents_5.root',
+        # 'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/failevents/JetHT/crab_pickEvents/160915_195949/0000/pickevents_6.root',
+        # 'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/failevents/JetHT/crab_pickEvents/160915_195949/0000/pickevents_7.root',
+        # 'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/failevents/JetHT/crab_pickEvents/160915_195949/0000/pickevents_8.root',
+        # 'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/failevents/JetHT/crab_pickEvents/160915_195949/0000/pickevents_9.root',
+        # 'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/failevents/JetHT/crab_pickEvents/160915_195949/0000/pickevents_10.root',
+        # 'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/failevents/JetHT/crab_pickEvents/160915_195949/0000/pickevents_11.root',
+        # 'root://eoscms.cern.ch//store/group/phys_exotica/diphoton/triggerstudy/failevents/JetHT/crab_pickEvents/160915_195949/0000/pickevents_12.root'
+
+        # "root://cmsxrootd.fnal.gov//store/user/skaplan/noreplica/jethtpickevents/JetHT/crab_pickEvents/160830_210824/0000/pickevents_1.root",
+        # "root://cmsxrootd.fnal.gov//store/user/skaplan/noreplica/jethtpickevents/JetHT/crab_pickEvents/160830_210824/0000/pickevents_2.root"
+        # 'file:pickevents.root'
+         # 'root://cmsxrootd.fnal.gov//store/data/Run2015D/DoubleEG/MINIAOD/16Dec2015-v2/00000/000298CD-87A6-E511-9E56-002590593878.root'
         #'root://cmsxrootd.fnal.gov//store/data/Run2016B/DoubleEG/MINIAOD/PromptReco-v2/000/275/074/00000/AA970B76-6535-E611-AAAC-02163E0142FC.root'
         )
     )
@@ -101,6 +131,9 @@ process.diphoton = cms.EDAnalyzer(
     phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
     phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
     phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
+    AlgInputTag = cms.InputTag("gtStage2Digis"),
+    l1tAlgBlkInputTag = cms.InputTag("gtStage2Digis"),
+    l1tExtBlkInputTag = cms.InputTag("gtStage2Digis")
     )
 
 process.p = cms.Path(process.primaryVertexFilter*process.egmPhotonIDSequence*

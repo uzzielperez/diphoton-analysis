@@ -70,6 +70,8 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
+#include "L1Trigger/L1TGlobal/interface/L1TGlobalUtil.h"
+
 //
 // class declaration
 //
@@ -174,6 +176,10 @@ class ExoDiPhotonDataAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedReso
   // triggers
   ExoDiPhotons::triggerInfo_t fTriggerBitInfo;
   ExoDiPhotons::triggerInfo_t fTriggerPrescaleInfo;
+
+  edm::EDGetToken algToken_;
+  l1t::L1TGlobalUtil* l1GtUtils_;
+  ExoDiPhotons::l1Info_t l1Info;
 };
 
 //
@@ -211,6 +217,7 @@ ExoDiPhotonDataAnalyzer::ExoDiPhotonDataAnalyzer(const edm::ParameterSet& iConfi
   fTree->Branch("Vertex0",&fVertex0Info,ExoDiPhotons::vertexBranchDefString.c_str());
   fTree->Branch("PrimaryVertex",&fPrimaryVertexInfo,ExoDiPhotons::vertexBranchDefString.c_str());
   fTree->Branch("Jet",&fJetInfo,ExoDiPhotons::jetBranchDefString.c_str());
+  fTree->Branch("L1",&l1Info,ExoDiPhotons::l1BranchDefString.c_str());
   fTree->Branch("TriggerBit",&fTriggerBitInfo,ExoDiPhotons::triggerBranchDefString.c_str());
   fTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
   fTree->Branch("Photon1",&fPhoton1Info,ExoDiPhotons::photonBranchDefString.c_str());
@@ -292,6 +299,10 @@ ExoDiPhotonDataAnalyzer::ExoDiPhotonDataAnalyzer(const edm::ParameterSet& iConfi
   
   // trigger prescales
   prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","","RECO") );
+
+  // L1
+  algToken_ = consumes<BXVector<GlobalAlgBlk>>( edm::InputTag("gtStage2Digis") );
+  l1GtUtils_ = new l1t::L1TGlobalUtil(iConfig,consumesCollector());
 }
 
 
@@ -473,7 +484,22 @@ ExoDiPhotonDataAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup
 
   // for (unsigned int i=0; i < trigNames2.size(); i++){
   //   std::string currentTrigger = trigNames2.at(i);
-  //   if (triggerResults->accept(i)) std::cout << currentTrigger << " = " << triggerResults->accept(i) << std::endl;
+  //   std::cout << currentTrigger << " = " << triggerResults->accept(i) << std::endl;
+  // }
+
+  // L1
+
+  //L1_SingleEG34 OR L1_SingleEG36 OR L1_SingleEG38 OR L1_SingleEG40 OR L1_DoubleEG_18_17 OR L1_DoubleEG_20_18 OR L1_DoubleEG_22_10 OR L1_DoubleEG_22_12 OR L1_DoubleEG_22_15 OR L1_DoubleEG_23_10 OR L1_DoubleEG_24_17 OR L1_DoubleEG_25_12 OR L1_SingleJet170 OR L1_SingleJet180 OR L1_SingleJet200 OR L1_SingleTau100er OR L1_SingleTau120er"
+  // std::vector<std::string> l1seeds_;
+  // l1seeds_.push_back("L1_SingleEG34"); l1seeds_.push_back("L1_SingleEG36"); l1seeds_.push_back("L1_SingleEG38"); l1seeds_.push_back("L1_SingleEG40"); l1seeds_.push_back("L1_DoubleEG_18_17"); l1seeds_.push_back("L1_DoubleEG_20_18"); l1seeds_.push_back("L1_DoubleEG_22_10"); l1seeds_.push_back("L1_DoubleEG_22_12"); l1seeds_.push_back("L1_DoubleEG_22_15"); l1seeds_.push_back("L1_DoubleEG_23_10"); l1seeds_.push_back("L1_DoubleEG_24_17"); l1seeds_.push_back("L1_DoubleEG_25_12"); l1seeds_.push_back("L1_SingleJet170"); l1seeds_.push_back("L1_SingleJet180"); l1seeds_.push_back("L1_SingleJet200"); l1seeds_.push_back("L1_SingleTau100er"); l1seeds_.push_back("L1_SingleTau120er");
+
+  l1GtUtils_->retrieveL1(iEvent,iSetup,algToken_);
+  ExoDiPhotons::InitL1Info(l1Info);
+  ExoDiPhotons::FillL1Info(l1Info,l1GtUtils_);
+  // for( unsigned int iseed = 0; iseed < l1seeds_.size(); iseed++ ) {
+  //   bool l1htbit = 0;
+  //   l1GtUtils_->getFinalDecisionByName(l1seeds_[iseed], l1htbit);
+  //   std::cout << l1seeds_[iseed] << " = " << l1htbit << std::endl;
   // }
 
   // =========
