@@ -1,4 +1,5 @@
 #include "diphoton-analysis/Tools/interface/sampleList.hh"
+#include "diphoton-analysis/Tools/interface/utilities.hh"
 
 #include "TCanvas.h"
 #include "TString.h"
@@ -46,8 +47,7 @@ void allSamples(const std::string &region)
     if( isample.compare("data") != 0 ) sampleCut+="*weightAll";
     else sampleCut+="*HLT_DoublePhoton60_v1";
     // apply k-factor to Sherpa GG sample
-    if( isample.compare("gg") == 0 && region.compare("BB") == 0 ) sampleCut+="*(1.08663+0.000141233*Diphoton.Minv)";
-    if( isample.compare("gg") == 0 && region.compare("BE") == 0 ) sampleCut+="*(1.15725+0.000126511*Diphoton.Minv)";
+    if( isample.compare("gg") == 0) sampleCut += "*" + kfactorString(region);
     std::cout << "Making histograms for sample " << isample << " with cut\n" << sampleCut << std::endl;
     TH1F *hist = new TH1F(isample.c_str(), isample.c_str(), nBins, xMin, xMax);
     std::cout << "Making histograms for sample " << hist->GetName() << " with cut\n" << sampleCut << std::endl;

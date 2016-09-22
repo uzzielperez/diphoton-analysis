@@ -1,4 +1,3 @@
-<!--bin file="makeDatacards.cc" name="makeDatacards.exe"/-->
 <use name="root"/>
 <use name="rootinteractive"/>
 <environment>
@@ -8,5 +7,7 @@
   <bin file="makeDatacards.cc" name="makeDatacards.exe"/>
   <bin file="getFakeRates.cc" name="getFakeRates.exe"/>
   <bin file="getFakePrediction.cc" name="getFakePrediction.exe"/>
+  <bin file="plotSherpaGen.cc" name="plotSherpaGen.exe"/>
+  <bin file="plotKFactor.cc" name="plotKFactor.exe"/>
 </environment>
-<flags CXXFLAGS="-Wall -Werror"/>
+<flags CXXFLAGS="-Wall -Werror -g"/>

@@ -1,4 +1,5 @@
 #include "diphoton-analysis/Tools/interface/easyplot.hh"
+#include "diphoton-analysis/Tools/interface/utilities.hh"
 
 #include "TMath.h"
 
@@ -20,10 +21,10 @@ int main(int argc, char *argv[])
 
   bool endcap = (region=="endcap");
 
-  // configurable information
-  // TODO: make this configurable externally
-  std::string kfactor="(1.08663+0.000141233*Diphoton.Minv)";
-  if(endcap) kfactor="(1.15725+0.000126511*Diphoton.Minv)";
+  std::string kfactor = kfactorString("BB");
+  if(endcap) kfactor = kfactorString("BE");
+  std::cout << kfactor << std::endl;
+  return 0;
   std::string cut("Photon1.pt>75&&Photon2.pt>75 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442 && isGood");
   if(endcap) cut = "Photon1.pt>75&&Photon2.pt>75&& isGood && ( !(abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442) && ((abs(Photon1.eta)<1.4442 && (abs(Photon2.eta)>1.56&&abs(Photon2.eta)<2.5)) || (abs(Photon2.eta)<1.4442 && (abs(Photon1.eta)>1.56&&abs(Photon1.eta)<2.5))))";
   int nbins=100;
