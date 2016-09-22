@@ -9,4 +9,5 @@
 <use name="CommonTools/UtilAlgos"/>
 <use name="Geometry/CaloTopology"/>
 <use name="L1Trigger/L1TGlobal"/>
+<flags CXXFLAGS="-Wall -Werror"/>
 <flags EDM_PLUGIN="1"/>

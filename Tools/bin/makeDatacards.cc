@@ -176,7 +176,9 @@ double getYield(const std::string& region, const std::string& sample, const int&
     histName+=sample;
     
     TH1D *hist = static_cast<TH1D*>(input->Get(histName.c_str()));
-    integral = hist->Integral(minBin, hist->GetNbinsX()+1);
+    // take max to avoid negative entries arising from
+    // negative weights in NLO samples
+    integral = std::max(hist->Integral(minBin, hist->GetNbinsX()+1), 0.0);
     if(sample.find("data") == std::string::npos) integral *= luminosity;
 
     // if the sample is an ADD sample, need to subtract SM background
