@@ -21,9 +21,23 @@
 TF1* getFakeRateFunction(const std::string& isolation, const std::string& region);
 
 
-int main()
+int main(int argc, char *argv[])
 {
-  bool isMC=false;
+  std::string source;
+
+  if(argc!=2) {
+    std::cout << "Syntax: getFakeRates.exe [data/mc]" << std::endl;
+    return -1;
+  }
+  else {
+    source = argv[1];
+    if(source!="mc" and source!="data") {
+      std::cout << "Only 'data' and 'mc' are allowed input parameters. " << std::endl;
+      return -1;
+    }
+  }
+
+  bool isMC=strcmp(source.c_str(), "mc")==0;
 
   setTDRStyle();
   gROOT->ForceStyle();
@@ -36,6 +50,8 @@ int main()
   const std::string cmssw_base_string(cmssw_base);
   const std::string directory("/src/diphoton-analysis/FakeRateAnalysis/RooFitTemplateFitting/analysis/");
   std::string fakeRateFile(cmssw_base_string + directory + "fakeRatePlots.root");
+  // the following line needs to be modified to point to a different set of plots
+  if(isMC) fakeRateFile = cmssw_base_string + directory + "fakeRatePlots.root";
   std::string fakeRateOutputFile(cmssw_base_string + directory + "fakeRateFunctions_jetht.root");
   if(isMC) fakeRateOutputFile = cmssw_base_string + directory + "fakeRateFunctions_mc.root";
 
