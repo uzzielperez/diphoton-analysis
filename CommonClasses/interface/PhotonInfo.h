@@ -157,11 +157,11 @@ namespace ExoDiPhotons
     photonInfo.passHighPtID     = false;
 
     // for fake rate
-    photonInfo.passChIsoDenom             = false;
-    photonInfo.passCorPhoIsoDenom         = false;
-    photonInfo.isFakeable                 = false;
-    photonInfo.isNumeratorObjCand         = false;
-    photonInfo.isDenominatorObj           = false;
+    photonInfo.passChIsoDenom     = false;
+    photonInfo.passCorPhoIsoDenom = false;
+    photonInfo.isFakeable         = false;
+    photonInfo.isNumeratorObjCand = false;
+    photonInfo.isDenominatorObj   = false;
 
     // saturation
     photonInfo.isSaturated = false;
@@ -169,23 +169,25 @@ namespace ExoDiPhotons
   
   void FillBasicPhotonInfo(photonInfo_t &photonInfo, const pat::Photon *photon)
   {
+    double photon_eta = std::abs(photon->superCluster()->eta());
+    
     // kinematics
     photonInfo.pt          = photon->pt();
     photonInfo.eta         = photon->eta();
     photonInfo.phi         = photon->phi();
     photonInfo.scEta       = photon->superCluster()->eta();
     photonInfo.scPhi       = photon->superCluster()->phi();
-
+    
     // fiducial flags
-    photonInfo.isEB        = photon->isEB();        
-    photonInfo.isEE        = photon->isEE();   
-    photonInfo.isEBEtaGap  = photon->isEBEtaGap();   
-    photonInfo.isEBPhiGap  = photon->isEBPhiGap();   
-    photonInfo.isEERingGap = photon->isEERingGap(); 
-    photonInfo.isEEDeeGap  = photon->isEEDeeGap();   
+    photonInfo.isEB        = photon_eta < 1.4442; //photon->isEB();
+    photonInfo.isEE        = 1.566 < photon_eta && photon_eta < 2.5; //photon->isEE();
+    photonInfo.isEBEtaGap  = photon->isEBEtaGap();
+    photonInfo.isEBPhiGap  = photon->isEBPhiGap();
+    photonInfo.isEERingGap = photon->isEERingGap();
+    photonInfo.isEEDeeGap  = photon->isEEDeeGap();
     photonInfo.isEBEEGap   = photon->isEBEEGap();
   }
-
+  
   void FillPhotonIDInfo(photonInfo_t &photonInfo, const pat::Photon *photon, double rho, double isSat)
   {
     // isolation
@@ -227,17 +229,17 @@ namespace ExoDiPhotons
     photonInfo.passHighPtID     = ExoDiPhotons::passHighPtID(photon,rho,isSat);
 
     // for fake rate
-    photonInfo.passChIsoDenom        = ExoDiPhotons::passChargedHadronDenomCut(photon);
-    photonInfo.passCorPhoIsoDenom    = ExoDiPhotons::passCorPhoIsoDenom(photon,rho);
-    photonInfo.isNumeratorObjCand    = ExoDiPhotons::passNumeratorCandCut(photon,rho);
-    photonInfo.isDenominatorObj      = ExoDiPhotons::passDenominatorCut(photon,rho,isSat);
+    photonInfo.passChIsoDenom     = ExoDiPhotons::passChargedHadronDenomCut(photon);
+    photonInfo.passCorPhoIsoDenom = ExoDiPhotons::passCorPhoIsoDenom(photon,rho);
+    photonInfo.isNumeratorObjCand = ExoDiPhotons::passNumeratorCandCut(photon,rho);
+    photonInfo.isDenominatorObj   = ExoDiPhotons::passDenominatorCut(photon,rho,isSat);
   }
 
   void FillPhotonEGMidInfo(photonInfo_t &photonInfo, const pat::Photon *photon, double rho, EffectiveAreas eaCH, EffectiveAreas eaNH, EffectiveAreas eaPho)
   {
-    double chEA  = eaCH.getEffectiveArea(fabs(photon->superCluster()->eta()));
-    double nhEA  = eaNH.getEffectiveArea(fabs(photon->superCluster()->eta()));
-    double phoEA = eaPho.getEffectiveArea(fabs(photon->superCluster()->eta()));
+    double chEA  = eaCH.getEffectiveArea(std::abs(photon->superCluster()->eta()));
+    double nhEA  = eaNH.getEffectiveArea(std::abs(photon->superCluster()->eta()));
+    double phoEA = eaPho.getEffectiveArea(std::abs(photon->superCluster()->eta()));
     
     photonInfo.chEAegmID   = chEA;
     photonInfo.nhEAegmID   = nhEA;
