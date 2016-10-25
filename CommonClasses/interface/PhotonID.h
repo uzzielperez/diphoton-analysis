@@ -11,7 +11,6 @@
 
 namespace ExoDiPhotons{
 
-  // why is this needed now, and not before? if(it != recHitsEB->end())
   // checking for saturated photons in 5x5 around seed crystal
   // considered saturated if any crystal is marked as saturated
   bool isSaturated(const pat::Photon *photon, const EcalRecHitCollection *recHitsEB, const EcalRecHitCollection *recHitsEE,
@@ -69,9 +68,6 @@ namespace ExoDiPhotons{
   // ========================
   // Using High pT ID V2 cuts
   // ========================
-
-  // define cuts here?
-  // double chIsoCut = 5.;
 
   // H/E
   bool passHadTowerOverEmCut(const pat::Photon* photon) {
@@ -207,7 +203,7 @@ namespace ExoDiPhotons{
     double corPhoIso = corPhoIsoHighPtID(photon,rho);
 
     if (phoEta < 1.4442) corPhoIsoCut = 2.75;
-    if (1.560 < phoEta && phoEta < 2.5) corPhoIsoCut = 2.00;
+    if (1.566 < phoEta && phoEta < 2.5) corPhoIsoCut = 2.00;
 
     if (corPhoIso < corPhoIsoCut) return true;
     else return false;
