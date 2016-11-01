@@ -1,32 +1,18 @@
 #!/bin/tcsh  
 
-# delete all pervious ntuples, so only one "dateDir" exists
+# delete all pervious ntuples, so only one CRAB3 date directory (e.g. 161025_234618) exists
 
-# example CRAB3 output 
-# /QCD/QCD_Pt_1000to1400_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_1000to1400_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD/160614_130418/0000
+# change input_base (and possibly ntuple_path) and out_path accordingly
 
-# input directory : /eos/uscms/store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD
-# output directory: /eos/uscms/store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD
+set input_base = "/store/user/abuccill/DiPhotonAnalysis/FakeRateClosureTest"
 
-# hadd -f root://cmseos.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD/diphoton_fakeRate_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root `xrdfsls -u /store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_23aug/160823_151856/0000/ | grep \.root`
-
-# choose QCD, QCD_EMEnriched, or GJets
-set dataset = "QCD"
-
-if ($dataset == "QCD") then
-    foreach dir (`eosls /store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD | grep QCD`)
-	echo $dir
-	set dateDir = `eosls /store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/${dir}/crab_${dir}_76X_MiniAOD`
-	hadd -f root://cmseos.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD/diphoton_fakeRate_${dir}_76X_MiniAOD_merged.root `xrdfsls -u /store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD/${dir}/crab_${dir}_76X_MiniAOD/${dateDir}/0000/ | grep \.root`
-	echo " "
-    end
-endif
-
-if ($dataset == "QCD_EMEnriched") then
-    foreach dir (`eosls /store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD_EMEnriched | grep QCD`)
-	echo $dir
-	set dateDir = `eosls /store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD_EMEnriched/${dir}/crab_${dir}_76X_MiniAOD`
-	hadd -f root://cmseos.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTestMerged/QCD_EMEnriched/diphoton_fakeRate_${dir}_76X_MiniAOD_merged.root `xrdfsls -u /store/user/abuccill/DiPhotonAnalysis/MCFakeRateClosureTest/QCD_EMEnriched/${dir}/crab_${dir}_76X_MiniAOD/${dateDir}/0000/ | grep \.root`
-	echo " "
-    end
-endif
+foreach dir (`eosls $input_base | grep QCD`)
+    echo $dir
+    set ntuple_path = "$input_base/$dir"
+    set ntuple_path = "$ntuple_path/`eosls $ntuple_path | grep QCD`"
+    set ntuple_path = "$ntuple_path/`eosls $ntuple_path | grep 16`"
+    set ntuple_path = "$ntuple_path/`eosls $ntuple_path | grep 00`"
+    set out_path = "/store/user/abuccill/diphoton-analysis/fake_rate_closure_test/QCD_merged_ntuples/diphoton_fake_rate_closure_test_${dir}_76X_MiniAOD_merged.root"
+    hadd -f root://cmseos.fnal.gov/$out_path `xrdfsls -u $ntuple_path/ | grep \.root`
+    echo " "
+end

@@ -3,15 +3,11 @@
 ## Produce updated headers if necessary
 If your ntuple tree structure has changed, run TTree::MakeClass():  
 ```
-cd analysis  
-root ../scripts/diphoton_makeClass.C  
+cd scripts  
+./make_class.sh
 ```  
-This script should point to one of the updated ntuples. 
-Note: Do not overwrite the .C files in analysis directory (rename them first, then change them back after).
-Edit the .h files so that Loop() take the following argument
-```
-virtual void Loop(const Char_t *);
-```
+The macro `diphoton_makeClass.C` should point to one of the updated ntuples. 
+Note: Do not overwrite the .C files in analysis directory.
 
 ## Merge ntuples
 Merge ntuples (modify as needed):  
@@ -27,31 +23,22 @@ fTreeFake is used for matching in the MC
 ## Produce historgrams
 ```
 cd analysis  
-./../scripts/bash_launcher.sh 
-```
-
-For a single binned MC sample run:  
-```
-cd analysis
-# x = fTree or fTreeFake
-root  
-.L ../scripts/diphoton_x_looper.C  
-diphoton_x_looper("300to470")  
+root ../scripts/diphoton_looper.C
 ```
 
 ## Outputs
 Treading MC as data:  
-diphoton_fakeRate_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root  
+diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root  
 For matching:  
-diphoton_fakeRate_matchedFakes_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root  
-If desired, outputted histograms can be combined by running:
+diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root  
+If desired, outputted histograms from these two files can be combined by running:
 ```
 cd analysis  
 root combine_mc_and_mc_matching_histograms_to_file.C
 ```
 
 # Plots
-In addition, to the closure test outputs, you need the real template outputs, outputs from data, and outputs from RooFit.  
+In addition to the closure test outputs, you need the real template outputs, outputs from data, and outputs from RooFit.  
 Plot closure test:  
 ```
 cd plots  
