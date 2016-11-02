@@ -4,7 +4,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void MCFakeRateClosureTest::Loop(const Char_t * iMass)
+void MCFakeRateClosureTest::Loop()
 {
 //   In a ROOT session, you can do:
 //      root> .L MCFakeRateClosureTest.C
@@ -148,14 +148,14 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
     // EB
     if (fabs(Photon_scEta) < 1.4442) {
       if (Photon_isDenominatorObj) {
-	phoPtEB_denominator_varbin.Fill(Photon_pt,Event_weight);
+	phoPtEB_denominator_varbin.Fill(Photon_pt,Event_weightAll);
       }
     } // end EB
     
     // EE
     else if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
       if (Photon_isDenominatorObj) {
-	phoPtEE_denominator_varbin.Fill(Photon_pt,Event_weight);
+	phoPtEE_denominator_varbin.Fill(Photon_pt,Event_weightAll);
       }
     } // end EE
     
@@ -170,8 +170,8 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
       	// fill fake template histograms
 
       	// if (isFakeTemplateObj) {
-      	//   if (fabs(Photon_scEta) < 1.4442) sIeIeFakeTemplateEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-      	//   else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeFakeTemplateEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+      	//   if (fabs(Photon_scEta) < 1.4442) sIeIeFakeTemplateEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+      	//   else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeFakeTemplateEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
       	// } // end fake template obj
         for (unsigned int j=0; j < chIsoSidebands.size(); j++){
           double sidebandLow = chIsoSidebands.at(j).first;
@@ -180,21 +180,21 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
           bool isFakeTemplateObj = Photon_isNumeratorObjCand && inChIsoSideband;
 
           if (isFakeTemplateObj){
-            if (fabs(Photon_scEta) < 1.4442) sIeIeFakeTemplatesEB.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5, Event_weight );
-            else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeFakeTemplatesEE.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5, Event_weight );
+            if (fabs(Photon_scEta) < 1.4442) sIeIeFakeTemplatesEB.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5, Event_weightAll );
+            else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeFakeTemplatesEE.at(i).at(j)->Fill( Photon_sigmaIetaIeta5x5, Event_weightAll );
           }
         } // end loop over sidebands to fill fake templates
 
       	// fill numerator histograms
       	if (isNumeratorObj) {
-      	  if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
-      	  else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeNumeratorEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+      	  if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+      	  else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeNumeratorEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
       	} // end numerator obj
 
 	// fill denominator histograms
 	if (Photon_isDenominatorObj) {
-	  if (fabs(Photon_scEta) < 1.4442) denomPtEB.at(i)->Fill(Photon_pt,Event_weight);
-	  else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) denomPtEE.at(i)->Fill(Photon_pt,Event_weight);
+	  if (fabs(Photon_scEta) < 1.4442) denomPtEB.at(i)->Fill(Photon_pt,Event_weightAll);
+	  else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) denomPtEE.at(i)->Fill(Photon_pt,Event_weightAll);
 	}
 	
       } // end pt cut
@@ -205,13 +205,11 @@ void MCFakeRateClosureTest::Loop(const Char_t * iMass)
   
   cout << endl;
   cout << "Number of numerator photons: " << nNumerator << endl;
-  cout << " ...passing sipip cut        : " << nNumerator_passSipipCut << endl;
+  cout << " ...passing sipip cut      : " << nNumerator_passSipipCut << endl;
   cout << endl;
   
   // create output file containing histograms
-  TString filename;
-  if (strcmp(iMass,"all") == 0) filename = "diphoton_fakeRate_QCD_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
-  else filename = TString::Format("diphoton_fakeRate_QCD_Pt_%s_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root",iMass);
+  TString filename = "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
   TFile file_out(filename,"RECREATE");
 
   // write denominator histograms

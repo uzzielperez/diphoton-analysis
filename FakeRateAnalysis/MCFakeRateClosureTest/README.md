@@ -17,8 +17,8 @@ cd scripts
 ```  
 
 ## Trees
-fTree is used for treating the MC as data  
-fTreeFake is used for matching in the MC
+`fTree` is used for treating the MC as data  
+`fTreeFake` is used for matching in the MC
 
 ## Produce historgrams
 ```
@@ -28,13 +28,13 @@ root ../scripts/diphoton_looper.C
 
 ## Outputs
 Treading MC as data:  
-diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root  
+`diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root`  
 For matching:  
-diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root  
+`diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root`  
 If desired, outputted histograms from these two files can be combined by running:
 ```
 cd analysis  
-root combine_mc_and_mc_matching_histograms_to_file.C
+root combine_fake_rate_histograms.C
 ```
 
 # Plots

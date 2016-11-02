@@ -1,16 +1,14 @@
 // used to take numerator distributions from fake matching
 // and use as faketemplates when treating MC as data
 
-void combine_mc_and_mc_matching_histograms_to_file() {
+void combine_fake_rate_histograms() {
   gROOT->SetStyle("Plain");
   gStyle->SetPalette(1,0);
   gStyle->SetNdivisions(505);
   gStyle->SetOptStat(0);
 
-  TString sample = "300to470";
-  
-  TFile *f_mc = TFile::Open("diphoton_fakeRate_QCD_Pt_"+sample+"_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");  
-  TFile *f_matching = TFile::Open("diphoton_fakeRate_matchedFakes_QCD_Pt_"+sample+"_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
+  TFile *f_mc = TFile::Open("diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");  
+  TFile *f_matching = TFile::Open("diphoton_fake_rate_closure_test_matching_QCD_Pt_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
 
   const int nBins = 10;
   double ptBinArray[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
@@ -26,7 +24,7 @@ void combine_mc_and_mc_matching_histograms_to_file() {
   chIsoSidebands.push_back( std::make_pair(15.,20.) );
   chIsoSidebands.push_back( std::make_pair(10.,20.) );
 
-  TFile file_out("diphoton_fakeRate_matchedTemplates_QCD_Pt_"+sample+"_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root","RECREATE");
+  TFile file_out("diphoton_fake_rate_closure_test_combined_templates_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root","RECREATE");
   
   for (int i = 0; i < 2; ++i) {
     TString region;
