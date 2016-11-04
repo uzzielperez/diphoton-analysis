@@ -17,13 +17,13 @@ namespace ExoDiPhotons
     
     enum MatchTypeFlags {
       // match type:
-      kNoMatchType = 0,         // 0 - no match type
-      kHadronMotherMatch,       // 1 - hadron mother (fake)
-      kFSRMatch,                // 2 - FSR, only apples to photon matches (real)
-      kISRMatch,                // 3 - ISR, only applies to photon matches (real)
-      kOtherFragmentationGluon, // 4 - other photon fragmentation where photons mother is a gluon (fake)
-      kOtherFragmentationQuark, // 5 - other photon fragmentation where photons mother is a quark (fake)
-      kElectronPairMatch        // 6 - final state electron match and electron pair found with no hadron mother (real or fake?)
+      kNoMatchType = 0,          // 0 - no match type
+      kHadronMother,             // 1 - is hadron final state match or has hadron mother (fake)
+      kISRfromProton,            // 2 - photon ISR directly from interacting proton (real)
+      kOtherPhotonRadiation,     // 3 - other photon radiation (real)
+      kGluonMotherPhotonFrag,    // 4 - photon fragmentation when photon's first mother is a gluon (fake)
+      kOtherPhotonFragmentation, // 5 - other photon fragmentation (fake)
+      kElectronPairMatch         // 6 - final state electron match and electron pair found with no hadron mother (real or fake?)
     };
     
   };
@@ -37,7 +37,6 @@ namespace ExoDiPhotons
     // for matching
     double deltaR_match;
     double deltaR_matchDau;
-    double deltaR_FSR;
     double ptDiff_match;
     int matchCategory;
     int matchType;
@@ -52,7 +51,7 @@ namespace ExoDiPhotons
     int grandmotherPdgId;
   };
 
-  std::string genParticleBranchDefString("pt/D:eta:phi:deltaR_match:deltaR_matchDau:deltaR_FSR:ptDiff_match:matchCategory/I:matchType:nPhotonMotherDaughters:status:motherStatus:grandmotherStatus:pdgId:motherPdgId:grandmotherPdgId");
+  std::string genParticleBranchDefString("pt/D:eta:phi:deltaR_match:deltaR_matchDau:ptDiff_match:matchCategory/I:matchType:nPhotonMotherDaughters:status:motherStatus:grandmotherStatus:pdgId:motherPdgId:grandmotherPdgId");
 
   void InitGenParticleInfo(genParticleInfo_t &genParticleInfo) {
     // kinematics
@@ -63,7 +62,6 @@ namespace ExoDiPhotons
     // for matching
     genParticleInfo.deltaR_match           = -999999.99;
     genParticleInfo.deltaR_matchDau        = -999999.99;
-    genParticleInfo.deltaR_FSR             = -999999.99;
     genParticleInfo.ptDiff_match           = -999999.99;
     genParticleInfo.matchCategory          = -999999;
     genParticleInfo.matchType              = -999999;

@@ -2,18 +2,35 @@
 
 from FWCore.ParameterSet.VarParsing import VarParsing
 
-options = VarParsing ('python')
+options = VarParsing('python')
 
 options.register('globalTag',
-                '76X_mcRun2_asymptotic_v12',
-                VarParsing.multiplicity.singleton,
-                VarParsing.varType.string,
-                "global tag to use when running"
-)
-## 'maxEvents' is already registered by the Framework, changing default value
-options.setDefault('maxEvents', 5000)
+                 '76X_mcRun2_asymptotic_v12',
+                 VarParsing.multiplicity.singleton,
+                 VarParsing.varType.string,
+                 "Global tag to use when running."
+                 )
+
+options.register('nEventsSample',
+                 5968960, # number of events in QCD_Pt_300to470_TuneCUETP8M1 sample
+                 VarParsing.multiplicity.singleton,
+                 VarParsing.varType.int,
+                 "Total number of events in dataset for event weight calculation."
+                 )
+
+options.register('outputFileName',
+                 "out_default_QCD_Pt_300to470_TuneCUETP8M1.root",
+                 VarParsing.multiplicity.singleton,
+                 VarParsing.varType.string,
+                 "Output filename."
+                 )
+
+options.setDefault('maxEvents', 100)
 
 options.parseArguments()
+
+print "Output file name: ", options.outputFileName
+print "Number of events in sample: ", options.nEventsSample
 
 import FWCore.ParameterSet.Config as cms
 
@@ -34,7 +51,8 @@ process.source = cms.Source(
         #'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/GJets_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/00C4C9FA-65BB-E511-AB87-50465DE43BAC.root'
         #'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/QCD_Pt-120to170_EMEnriched_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/00C0C6C2-2FD1-E511-82D4-00266CFADD94.root'
         #'root://eoscms.cern.ch//store/mc/RunIIFall15MiniAODv2/QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/0023A3AF-8FB8-E511-85EF-0025905AC99A.root'
-        'root://eoscms.cern.ch//store/mc/RunIIFall15MiniAODv2/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/02307605-8FB8-E511-9A1D-28924A33B9FE.root'
+        #'root://eoscms.cern.ch//store/mc/RunIIFall15MiniAODv2/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/02307605-8FB8-E511-9A1D-28924A33B9FE.root'
+        'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/047F51F9-8CB8-E511-89E5-28924A33B9FE.root'
         )
     )
 
@@ -48,7 +66,7 @@ process.load("Configuration.StandardSequences.GeometryDB_cff")
 # for output file
 process.TFileService = cms.Service(
     "TFileService",
-    fileName = cms.string("ExoDiphotonAnalyzer.root")
+    fileName = cms.string(options.outputFileName)
     )
 
 # Setup VID for EGM ID
@@ -92,6 +110,10 @@ process.diphoton = cms.EDAnalyzer(
     phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
     phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
     phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
+    # out file name
+    outputFile = cms.string(options.outputFileName),
+    # number of events in the sample (for calculation of event weights)
+    nEventsSample = cms.uint32(options.nEventsSample),
     # gen event info
     genInfo = cms.InputTag("generator", "", "SIM")
     )
