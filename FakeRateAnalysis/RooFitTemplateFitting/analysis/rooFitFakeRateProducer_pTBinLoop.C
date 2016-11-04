@@ -47,9 +47,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, s
   // for data
   TFile *histojetfile = TFile::Open("../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root");
   // for MC as data
-  //TFile *histojetfile = TFile::Open("../../MCFakeRateClosureTest/analysis/diphoton_fakeRate_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
-  // for MC as data using matched faketemplates
-  //TFile *histojetfile = TFile::Open("../../MCFakeRateClosureTest/analysis/diphoton_fakeRate_matchedTemplates_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
+  // TFile *histojetfile = TFile::Open("../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
   
   double sidebandLow = sideband.first;
   double sidebandHigh = sideband.second;
