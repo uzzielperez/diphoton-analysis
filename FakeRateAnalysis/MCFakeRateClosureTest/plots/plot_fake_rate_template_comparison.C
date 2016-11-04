@@ -10,8 +10,8 @@ void plot_fake_rate_template_comparison() {
   TFile *fData = TFile::Open("../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root");
   TFile *fMC = TFile::Open("../../MCFakeRateAnalysis/analysis/GGJets_M-200To500_vanilla.root");
   
-  TFile *fClosureTestMCasData = TFile::Open("../analysis/diphoton_fakeRate_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
-  TFile *fClosureTestMCmatching = TFile::Open("../analysis/diphoton_fakeRate_matchedFakes_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
+  TFile *fClosureTestMCasData = TFile::Open("../analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
+  TFile *fClosureTestMCmatching = TFile::Open("../analysis/diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
 
   TFile *f_fitResults = TFile::Open("../../RooFitTemplateFitting/analysis/fakeRatePlots.root");
 
