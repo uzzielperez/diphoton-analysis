@@ -21,8 +21,8 @@ int main(int argc, char *argv[])
 
   bool endcap = (region=="endcap");
 
-  std::string kfactor = kfactorString("BB");
-  if(endcap) kfactor = kfactorString("BE");
+  std::string kfactor = kfactorString("BB", "R1F1");
+  if(endcap) kfactor = kfactorString("BE", "R1F1");
   std::cout << kfactor << std::endl;
   return 0;
   std::string cut("Photon1.pt>75&&Photon2.pt>75 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442 && isGood");

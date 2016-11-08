@@ -20,7 +20,7 @@ TH1D* averageHist(const std::vector<TH1D*>& hists);
 void plotOneType(int histType, const TString& region);
 template <typename Type> 
 void meanAndSigma(const std::vector<Type> &variables, const std::vector<Type> &errors, double &mean, double &sigma);
-double crossSection(TH1D * hist);
+double crossSection(TH1D * hist, double& error);
 
 int main(int argc, char *argv[])
 {
@@ -55,7 +55,8 @@ void plotOneType(int histType, const TString& region)
   TString timestamp("2016-09-05-17-43-31");
 
   //  std::vector<TString> scales = {"R0p5F0p5", "R1F1", "R2F2"};
-  std::vector<TString> scales = {"R1F1"};
+  //  std::vector<TString> scales = {"R1F1"};
+  std::vector<TString> scales = {"R0p5F0p5"};
   std::vector<TString> orders = {"BORN", "NLO", "NNLO"};
   //  std::vector<TString> orders = {"BORN", "NLO", "NLO"};
   std::vector<int> jobids;
@@ -115,7 +116,10 @@ void plotOneType(int histType, const TString& region)
       if(iorder==0) averages.back()->Draw();
       else averages.back()->Draw("same");
       
-      std::cout << "cross section (pb): " << crossSection(averages.back()) << std::endl;
+      double xsec;
+      double xsecError = 0.0;
+      xsec = crossSection(averages.back(), xsecError);
+      std::cout << "cross section (pb): " << xsec << " +/-" << xsecError << std::endl;
 
       //      for(auto ifile : files) ifile->Close();
     }
@@ -137,7 +141,11 @@ void plotOneType(int histType, const TString& region)
       sherpaHist->Scale(1/binWidth);
       //    sherpaHist->Rebin();
       sherpaHist->Draw("same");
-      std::cout << "cross section (pb): " << crossSection(sherpaHist) << std::endl;
+
+      double xsec;
+      double xsecError = 0.0;
+      xsec = crossSection(sherpaHist, xsecError);
+      std::cout << "cross section (pb): " << xsec << " +/-" << xsecError << std::endl;
     }
   else {
     sherpaHist = 0;
@@ -182,7 +190,7 @@ void plotOneType(int histType, const TString& region)
       fitResult->Print("v");
       TF1 *fittedFunction = kfactorNNLOtoSherpa->GetFunction("pol1");
       fittedFunction->Print("v");
-      TFile *kfactorOutput = new TFile(Form("data/kfactor_%s.root", region.Data()), "recreate");
+      TFile *kfactorOutput = new TFile(Form("data/kfactor_%s_%s.root", region.Data(), iscale.Data()), "recreate");
       fittedFunction->Write();
       kfactorOutput->Close();
       delete kfactorOutput;
@@ -244,8 +252,8 @@ void meanAndSigma(const std::vector<Type> &variables, const std::vector<Type> &e
   }
 }
 
-double crossSection(TH1D * hist)
+double crossSection(TH1D * hist, double& error)
 {
   double binWidth = (hist->GetXaxis()->GetXmax()-hist->GetXaxis()->GetXmin())/hist->GetNbinsX();
-  return hist->Integral()*binWidth;
+  return hist->IntegralAndError(0, hist->GetNbinsX(), error)*binWidth;
 }

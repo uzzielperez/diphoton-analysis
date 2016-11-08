@@ -21,7 +21,9 @@ public:
   std::vector<std::string> m_contribution;
 };
 
+//double getYield(const std::string& region, const std::string& sample, const int& minBin, const TF1 * scaleFactor);
 double getYield(const std::string& region, const std::string& sample, const int& minBin);
+std::string getDiphotonYieldVariations(const std::string& region, const int& minBin, const std::string& variation);
 void makeOneDatacard(const std::string& signalPoint);
 
 // Loop over ADD samples to make datacards for each
@@ -59,13 +61,16 @@ void makeOneDatacard(const std::string& signalPoint)
   std::vector<int> binLowerLimits = {21};
   std::vector<std::string> regions = {"BB", "BE"};
   // the following line assumes fakes taken from MC
-  //  std::vector<std::string> processes = {signalPoint, "gg", "gj", "other"};
-  std::vector<std::string> processes = {signalPoint, "gg", "gjDataDriven", "other"};
+  std::vector<std::string> processes = {signalPoint, "gg", "gj", "other"};
+  //  std::vector<std::string> processes = {signalPoint, "gg", "gjDataDriven", "other"};
   unsigned int nchannels = regions.size()*binLowerLimits.size();
   unsigned int nbackgrounds = processes.size()-1;
 
   // define nuisances with dummy values for now
-  nuisance smkfactor("smkfactor", "lnN", {"-", "1.1", "-", "-"});
+  std::string diphotonkfactorStatValue = getDiphotonYieldVariations("BB", binLowerLimits.at(0), "diphotonkfactorStat");
+  nuisance diphotonkfactorStat("diphotonkfactorStat", "lnN", {"-", diphotonkfactorStatValue, "-", "-"});
+  std::string diphotonkfactorScalesValue = getDiphotonYieldVariations("BB", binLowerLimits.at(0), "diphotonkfactorScales");
+  nuisance diphotonkfactorScales("diphotonkfactorScales", "lnN", {"-", diphotonkfactorScalesValue, "-", "-"});
   nuisance lumi("lumi", "lnN", {"1.062", "1.062", "-", "1.062"});
   nuisance pileup("pileup", "lnN", {"1.05", "1.05", "-", "1.05"});
   nuisance fakes("fakes", "lnN", {"-", "-", "1.3", "-"});
@@ -73,7 +78,8 @@ void makeOneDatacard(const std::string& signalPoint)
   nuisance xsec_minor_bkg("xsec_minor_bkg", "lnN", {"-", "-", "-", "1.5"});
 
   std::vector<nuisance> allNuisances;
-  allNuisances.push_back(smkfactor);
+  allNuisances.push_back(diphotonkfactorStat);
+  allNuisances.push_back(diphotonkfactorScales);
   allNuisances.push_back(lumi);
   allNuisances.push_back(pileup);
   allNuisances.push_back(fakes);
@@ -154,6 +160,7 @@ void makeOneDatacard(const std::string& signalPoint)
   }
 }
 
+//double getYield(const std::string& region, const std::string& sample, const int& minBin, const TF1 * scaleFactor = 0)
 double getYield(const std::string& region, const std::string& sample, const int& minBin)
 {
   double integral = 0.0;
@@ -193,4 +200,20 @@ double getYield(const std::string& region, const std::string& sample, const int&
   }
 
   return integral;
+}
+
+std::string getDiphotonYieldVariations(const std::string& region, const int& minBin, const std::string& variation)
+{
+  // put dummy values here for now
+  if(strcmp(variation.c_str(), "diphotonkfactorStat")==0) return "1.05";
+  if(strcmp(variation.c_str(), "diphotonkfactorScales")==0) {
+
+    return "1.05";
+  }
+  if(strcmp(variation.c_str(), "diphotonFragmentation")==0) return "1.01";
+
+  std::cout << "Systematic variation not found!" << std::endl;
+  exit(-1);
+
+  return "";
 }

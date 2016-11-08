@@ -33,9 +33,11 @@ TChain* getChain()
 
 int main()
 {
-  std::map<TString, TString> cuts;
+  std::map<TString, TString> cuts, cutsNoIso;
   cuts["BB"] = ("SherpaGenPhoton1.pt>75 && SherpaGenPhoton2.pt>75 && abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442 && SherpaGenDiphoton.Minv>230 && SherpaGenDiphoton.Minv<2000 && SherpaGenPhoton1_iso<5 && SherpaGenPhoton2_iso<5");
   cuts["BE"] = ("SherpaGenPhoton1.pt>75 && SherpaGenPhoton2.pt>75 && !(abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442) && ((abs(SherpaGenPhoton1.eta)<1.4442 && (abs(SherpaGenPhoton2.eta)>1.56 && abs(SherpaGenPhoton2.eta)<2.5)) || (abs(SherpaGenPhoton2.eta)<1.4442 && (abs(SherpaGenPhoton1.eta)>1.56 && abs(SherpaGenPhoton1.eta)<2.5))) && SherpaGenDiphoton.Minv>320 && SherpaGenDiphoton.Minv<2000 && SherpaGenPhoton1_iso<5 && SherpaGenPhoton2_iso<5");
+  cutsNoIso["BB"] = ("SherpaGenPhoton1.pt>75 && SherpaGenPhoton2.pt>75 && abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442 && SherpaGenDiphoton.Minv>230");
+  cutsNoIso["BE"] = ("SherpaGenPhoton1.pt>75 && SherpaGenPhoton2.pt>75 && !(abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442) && ((abs(SherpaGenPhoton1.eta)<1.4442 && (abs(SherpaGenPhoton2.eta)>1.56 && abs(SherpaGenPhoton2.eta)<2.5)) || (abs(SherpaGenPhoton2.eta)<1.4442 && (abs(SherpaGenPhoton1.eta)>1.56 && abs(SherpaGenPhoton1.eta)<2.5))) && SherpaGenDiphoton.Minv>320 && SherpaGenDiphoton.Minv<2000");
   double lumi=0.001; // weights gives yield per fb^-1; we want yield per pb^-1
 
   TChain *ch = getChain();
@@ -60,8 +62,8 @@ int main()
     hists.push_back(getHist(ch, "hist9", 50, -2.5, 2.5, lumi, cuts[iregion]));
     hists.push_back(getHist(ch, "hist10", 100, -5, 5, lumi, cuts[iregion]));
     hists.push_back(getHist(ch, "hist11", 20, 0, 1, lumi, cuts[iregion]));
-    hists.push_back(getHist(ch, "hist12", 100, 0, 500, lumi, cuts[iregion]));
-    hists.push_back(getHist(ch, "hist13", 100, 0, 500, lumi, cuts[iregion]));
+    hists.push_back(getHist(ch, "hist12", 100, 0, 500, lumi, cutsNoIso[iregion]));
+    hists.push_back(getHist(ch, "hist13", 100, 0, 500, lumi, cutsNoIso[iregion]));
 
     for( auto ihist : hists) {
       ihist->Write();

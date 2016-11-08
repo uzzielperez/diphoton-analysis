@@ -1,3 +1,6 @@
+// the following line is a trick to allow the use of the default MakeClass template
+#define ntupleAnalyzerBase_cxx
+
 #define fakePrediction_cxx
 #include "fakePrediction.h"
 #include "TF1.h"
@@ -15,8 +18,10 @@ const double etaMinEndcap = 1.56;
 const double etaMaxEndcap = 2.5;
 const double ptMin = 75.0;
 
-void fakePrediction::Loop(bool isMC=false)
+void fakePrediction::Loop()
 {
+  double hadronicOverEmCut = 0.1;
+
   enum diphotonEventTypes { BB = 0, BE = 1};
   enum ecalRegions { EB = 0, EE = 1};
   const TString regions[2] = {"BB", "BE"};
@@ -80,35 +85,35 @@ void fakePrediction::Loop(bool isMC=false)
 
       // highest pT photons
       if(isGood) {
-	if(Photon1_pt > ptMin && Photon2_pt > ptMin) {
+	if(Photon1_pt > ptMin && Photon2_pt > ptMin && Photon1_hadronicOverEm < hadronicOverEmCut && Photon2_hadronicOverEm < hadronicOverEmCut ) {
 	  if(isBarrelBarrel(Photon1_eta, Photon2_eta)) good[BB]->Fill(Diphoton_Minv, weight);
 	  else if (isBarrelEndcap(Photon1_eta, Photon2_eta)) good[BE]->Fill(Diphoton_Minv, weight);
 	}
       }
       // true, true
       if(isTT) {
-	if(TTPhoton1_pt > ptMin && TTPhoton2_pt > ptMin) {
+	if(TTPhoton1_pt > ptMin && TTPhoton2_pt > ptMin && TTPhoton1_hadronicOverEm < hadronicOverEmCut && TTPhoton2_hadronicOverEm < hadronicOverEmCut) {
 	  if(isBarrelBarrel(TTPhoton1_eta, TTPhoton2_eta)) TT[BB]->Fill(TTDiphoton_Minv, weight);
 	  else if (isBarrelEndcap(TTPhoton1_eta, TTPhoton2_eta)) TT[BE]->Fill(TTDiphoton_Minv, weight);
 	}
       }
       // true, fake
       if(isTF) {
-	if(TFPhoton1_pt > ptMin && TFPhoton2_pt > ptMin) {
+	if(TFPhoton1_pt > ptMin && TFPhoton2_pt > ptMin && TFPhoton1_hadronicOverEm < hadronicOverEmCut && TFPhoton2_hadronicOverEm < hadronicOverEmCut) {
 	  if(isBarrelBarrel(TFPhoton1_eta, TFPhoton2_eta)) TF[BB]->Fill(TFDiphoton_Minv, weight*fakeRate[EB]->Eval(TFPhoton2_pt));
 	  else if (isBarrelEndcap(TFPhoton1_eta, TFPhoton2_eta)) TF[BE]->Fill(TFDiphoton_Minv, weight*fakeRate[EE]->Eval(TFPhoton2_pt));
 	}
       }
       // fake, true
       if(isFT) {
-	if(FTPhoton1_pt > ptMin && FTPhoton2_pt > ptMin) {
+	if(FTPhoton1_pt > ptMin && FTPhoton2_pt > ptMin && FTPhoton1_hadronicOverEm < hadronicOverEmCut && FTPhoton2_hadronicOverEm < hadronicOverEmCut) {
 	  if(isBarrelBarrel(FTPhoton1_eta, FTPhoton2_eta)) FT[BB]->Fill(FTDiphoton_Minv, weight*fakeRate[EB]->Eval(FTPhoton1_pt));
 	  else if (isBarrelEndcap(FTPhoton1_eta, FTPhoton2_eta)) FT[BE]->Fill(FTDiphoton_Minv, weight*fakeRate[EE]->Eval(FTPhoton1_pt));
 	}
       }
       // fake, fake
       if(isFF) {
-	if(FFPhoton1_pt > ptMin && FFPhoton2_pt > ptMin) {
+	if(FFPhoton1_pt > ptMin && FFPhoton2_pt > ptMin && FFPhoton1_hadronicOverEm < hadronicOverEmCut && FFPhoton2_hadronicOverEm < hadronicOverEmCut) {
 	  if(isBarrelBarrel(FFPhoton1_eta, FFPhoton2_eta)) FF[BB]->Fill(FFDiphoton_Minv, weight*fakeRate[EB]->Eval(FFPhoton1_pt)*fakeRate[EB]->Eval(FFPhoton2_pt));
 	  else if (isBarrelEndcap(FFPhoton1_eta, FFPhoton2_eta)) FF[BE]->Fill(FFDiphoton_Minv, weight*fakeRate[EE]->Eval(FFPhoton1_pt)*fakeRate[EE]->Eval(FFPhoton2_pt));
 	}
@@ -124,9 +129,12 @@ void fakePrediction::Loop(bool isMC=false)
    sum[BE] = static_cast<TH1D*>(TF[BE]->Clone("gjDataDrivenBE"));
    sum[BE]->Add(FT[BE]);
    sum[BE]->Add(FF[BE]);
+
+   std::cout << "Writing histograms." << std::endl;
    
    for(unsigned int i = 0; i < 2; i++) {
      output->cd(regions[i]);
+     std::cout << "Changed directory to " << gDirectory->GetName() << std::endl;
      good[i]->Write();
      TT[i]->Write();
      TF[i]->Write();
@@ -134,6 +142,9 @@ void fakePrediction::Loop(bool isMC=false)
      FF[i]->Write();
      sum[i]->Write();
    }
+   std::cout << "Closing output file." << std::endl;
+
+   output->Close();
 }
 
 bool fakePrediction::isBarrelBarrel(double eta1, double eta2)
@@ -148,3 +159,4 @@ bool fakePrediction::isBarrelEndcap(double eta1, double eta2)
 	  ((fabs(eta2) < etaMaxBarrel && (fabs(eta1) > etaMinEndcap && fabs(eta1) < etaMaxEndcap))));
 
 }
+

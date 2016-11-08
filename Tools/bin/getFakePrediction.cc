@@ -24,8 +24,11 @@ int main(int argc, char *argv[])
   init();
   TChain *ch = chains[source];
   fakePrediction f(ch);
-  if(source=="mc") f.Loop(true);
-  else f.Loop(false);
+
+  if(source=="mc") f.setIsMC(true);
+  else f.setIsMC(false);
+
+  f.Loop();
 
   return 0;
 }

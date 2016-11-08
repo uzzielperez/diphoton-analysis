@@ -6,7 +6,8 @@
 #include "TH1.h"
 #include "TFile.h"
 
-void allSamples(const std::string &region);
+void allSamples(const std::string &region, TFile * output);
+std::string getBase(const std::string & sampleName);
 
 int main()
 {
@@ -16,15 +17,15 @@ int main()
   output->mkdir("BB");
   output->mkdir("BE");
   output->cd("BE");
-  allSamples("BE");
+  allSamples("BE", output);
   output->cd("BB");
-  allSamples("BB");
+  allSamples("BB", output);
   output->Write();
   output->Close();
 
 }
 
-void allSamples(const std::string &region)
+void allSamples(const std::string &region, TFile * output)
 {
 
   int nBins = 120;
@@ -37,21 +38,40 @@ void allSamples(const std::string &region)
 
   std::vector<std::string> samples = getSampleList();
 
+  // add scale variations
+  samples.push_back("gg_R2F2");
+  samples.push_back("gg_R0p5F0p5");
+
   std::vector<int> stringScales = {3000, 3500, 4000, 4500, 5000, 5500, 6000};
 
   for(auto isample : samples) {
+    std::cout << isample << std::endl;
+  }
+  for(auto isample : samples) {
     std::string sampleCut = cuts[region];
+    std::cout << "Running on sample: " << isample << std::endl;
     // skip the Sherpa GEN trees
     if( isample.compare("ggGen") == 0) continue;
     // apply weights for all samples except data
     if( isample.compare("data") != 0 ) sampleCut+="*weightAll";
     else sampleCut+="*HLT_DoublePhoton60_v1";
     // apply k-factor to Sherpa GG sample
-    if( isample.compare("gg") == 0) sampleCut += "*" + kfactorString(region);
+    if( isample.compare("gg") == 0) sampleCut += "*" + kfactorString(region, "R1F1");
+    if( isample.compare("gg_R2F2") == 0) sampleCut += "*" + kfactorString(region, "R2F2");
+    if( isample.compare("gg_R0p5F0p5") == 0) sampleCut += "*" + kfactorString(region, "R0p5F0p5");
     std::cout << "Making histograms for sample " << isample << " with cut\n" << sampleCut << std::endl;
     TH1F *hist = new TH1F(isample.c_str(), isample.c_str(), nBins, xMin, xMax);
     std::cout << "Making histograms for sample " << hist->GetName() << " with cut\n" << sampleCut << std::endl;
-    chains[isample]->Project(isample.c_str(), "Minv",  sampleCut.c_str());
+    chains[getBase(isample)]->Project(isample.c_str(), "Minv",  sampleCut.c_str());
+    output->cd(region.c_str());
+    hist->Write();
   }
 
+}
+
+std::string getBase(const std::string & sampleName)
+{
+  if(sampleName.compare("gg_R2F2")) return "gg";
+  if(sampleName.compare("gg_R0p5F0p5")) return "gg";
+  return sampleName;
 }
