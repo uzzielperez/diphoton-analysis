@@ -735,22 +735,24 @@ void ExoDiPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParti
   using namespace std;
 
   // ========================================
-  // check for gen photon final state matches
+  // GEN photon information
   // ========================================
   // gen photons to match to
-  const reco::GenParticle *genPhoton1 = NULL;
-  const reco::GenParticle *genPhoton2 = NULL;
+  // const reco::GenParticle *genPhoton1 = NULL;
+  // const reco::GenParticle *genPhoton2 = NULL;
 
   // min deltaR cut
-  double minDeltaR1 = 0.1;
-  double minDeltaR2 = 0.1;
+  // double minDeltaR1 = 0.1;
+  // double minDeltaR2 = 0.1;
+
+  std::vector< edm::Ptr<const reco::GenParticle> > genPhotons;
 
   // store interacting partons in vector
   vector<int> interactingPartons;
 
   // loop over gen particle collection
   for (size_t i = 0; i < genParticles->size(); ++i) {
-    const auto gen = genParticles->ptrAt(i);
+    edm::Ptr<const reco::GenParticle> gen = genParticles->ptrAt(i);
 
     // find initial state particles in hard process
     // checked for GGJets
@@ -760,28 +762,32 @@ void ExoDiPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParti
       interactingPartons.push_back(gen->pdgId());
     }
 
+    if (gen->isHardProcess() && gen->pdgId() == 22) genPhotons.push_back( gen );
+
     // find photon matches in final state from hard process gen particles
-    if (gen->fromHardProcessFinalState()) {
-      //cout << "GenParticle fromHardProcessFinalState(): Status = " << gen->status()  << "; ID = " << gen->pdgId() << "; pt = "
-      //<< gen->pt() << "; eta = " << gen->eta() << "; phi = " << gen->phi() << endl;
+ //    if (gen->fromHardProcessFinalState()) {
+ //      //cout << "GenParticle fromHardProcessFinalState(): Status = " << gen->status()  << "; ID = " << gen->pdgId() << "; pt = "
+ //      //<< gen->pt() << "; eta = " << gen->eta() << "; phi = " << gen->phi() << endl;
 
-      // check for photon 1 (best) match
-      double deltaR1 = reco::deltaR(selectedPhotons[0]->eta(),selectedPhotons[0]->phi(),gen->eta(),gen->phi());
-      if (deltaR1 < minDeltaR1) {
-	minDeltaR1 = deltaR1;
-	genPhoton1 = &(*gen);
-      }
+ //      // check for photon 1 (best) match
+ //      double deltaR1 = reco::deltaR(selectedPhotons[0]->eta(),selectedPhotons[0]->phi(),gen->eta(),gen->phi());
+ //      if (deltaR1 < minDeltaR1) {
+	// minDeltaR1 = deltaR1;
+	// genPhoton1 = &(*gen);
+ //      }
 
-      // check for photon 2 (best) match
-      double deltaR2 = reco::deltaR(selectedPhotons[1]->eta(),selectedPhotons[1]->phi(),gen->eta(),gen->phi());
-      if (deltaR2 < minDeltaR2) {
-	minDeltaR2 = deltaR2;
-	genPhoton2 = &(*gen);
-      }
+ //      // check for photon 2 (best) match
+ //      double deltaR2 = reco::deltaR(selectedPhotons[1]->eta(),selectedPhotons[1]->phi(),gen->eta(),gen->phi());
+ //      if (deltaR2 < minDeltaR2) {
+	// minDeltaR2 = deltaR2;
+	// genPhoton2 = &(*gen);
+ //      }
 
-    } // end fromHardProcessFinalState check
+ //    } // end fromHardProcessFinalState check
 
-  } // end of genParticle loop
+  } // end of genParticle loop.
+
+  sort(genPhotons.begin(), genPhotons.end(), ExoDiPhotons::comparePhotonsByPt);  
 
     // fill interacting partons
   if (interactingPartons.size() == 2) {
@@ -789,6 +795,11 @@ void ExoDiPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParti
     fEventInfo.interactingParton2PdgId = interactingPartons[1];
   }
   else std::cout << "Exactly two interacting partons not found!" << std::endl;
+
+  if (genPhotons.size() < 2) throw cms::Exception("GenPhotonError") << "There aren't two hard process photons in the event. There are " << genPhotons.size() << ". How is this possible?!? Investigate.";
+
+  const reco::GenParticle *genPhoton1 = &(*genPhotons.at(0));
+  const reco::GenParticle *genPhoton2 = &(*genPhotons.at(1));  
 
   // fill gen photon info
   if (genPhoton1) ExoDiPhotons::FillGenParticleInfo(fGenPhoton1Info, genPhoton1);
