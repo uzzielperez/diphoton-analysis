@@ -12,7 +12,7 @@ config.JobType.pluginName = 'Analysis'
 config.section_('Data')
 config.Data.inputDataset = '/QCD_Pt_20_30_EMEnriched_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM'
 config.Data.outputDatasetTag = ''
-config.Data.outLFNDirBase = '/store/user/skaplan/noreplica/FakeRate/crab3_morejets/'
+config.Data.outLFNDirBase = '/store/user/skaplan/noreplica/FakeRate/WithVertexColl/'
 config.Data.publication = False
 config.Data.unitsPerJob = 100
 config.Data.totalUnits = -1
@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     # We want to put all the CRAB project directories from the tasks we submit here into one common directory.
     # That's why we need to set this parameter (here or above in the configuration file, it does not matter, we will not overwrite it).
-    config.General.workArea = 'crab3fakeratedatajobs2'
+    config.General.workArea = 'crab3fakeratedatajobs'
 
     def submit(config):
         try:
@@ -45,10 +45,14 @@ if __name__ == '__main__':
     ## From now on that's what users should modify: this is the a-la-CRAB2 configuration part. ##
     #############################################################################################
 
-    config.General.requestName = 'RunC'
+    config.General.requestName = 'JetHTRunC'
     config.Data.inputDataset = '/JetHT/Run2015C_25ns-16Dec2015-v1/MINIAOD'
     submit(config)
 
-    config.General.requestName = 'RunD'
+    config.General.requestName = 'JetHTRunD'
     config.Data.inputDataset = '/JetHT/Run2015D-16Dec2015-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'SingleMuonRunD'
+    config.Data.inputDataset = '/SingleMuon/Run2015D-16Dec2015-v1/MINIAOD'
     submit(config)
