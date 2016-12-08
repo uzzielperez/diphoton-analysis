@@ -41,7 +41,7 @@ void fakePrediction::Loop()
   }
   const std::string cmssw_base_string(cmssw_base);
 
-  std::string inputFile("fakeRateFunctions.root");
+  std::string inputFile("fakeRateFunctions_new.root");
   if(isMC) inputFile = "fakeRateFunctions_mc.root";
 
   TFile *fakeRateFile = TFile::Open(Form("%s/src/diphoton-analysis/Tools/data/%s",
@@ -83,37 +83,44 @@ void fakePrediction::Loop()
       double weight = 1.0;
       if(isMC) weight = Event_weightAll;
 
+      double cutLow = 5.;
+      double cutHigh = 10.;
       // highest pT photons
       if(isGood) {
-	if(Photon1_pt > ptMin && Photon2_pt > ptMin && Photon1_hadronicOverEm < hadronicOverEmCut && Photon2_hadronicOverEm < hadronicOverEmCut ) {
+	bool passIso = (Photon1_chargedHadIso03 > cutLow && Photon2_chargedHadIso03 < cutHigh);
+	if(passIso && Photon1_pt > ptMin && Photon2_pt > ptMin && Photon1_hadronicOverEm < hadronicOverEmCut && Photon2_hadronicOverEm < hadronicOverEmCut ) {
 	  if(isBarrelBarrel(Photon1_eta, Photon2_eta)) good[BB]->Fill(Diphoton_Minv, weight);
 	  else if (isBarrelEndcap(Photon1_eta, Photon2_eta)) good[BE]->Fill(Diphoton_Minv, weight);
 	}
       }
       // true, true
       if(isTT) {
-	if(TTPhoton1_pt > ptMin && TTPhoton2_pt > ptMin && TTPhoton1_hadronicOverEm < hadronicOverEmCut && TTPhoton2_hadronicOverEm < hadronicOverEmCut) {
+	bool passIsoTT = (TTPhoton1_chargedHadIso03 > cutLow && TTPhoton2_chargedHadIso03 < cutHigh);
+	if(passIsoTT && TTPhoton1_pt > ptMin && TTPhoton2_pt > ptMin && TTPhoton1_hadronicOverEm < hadronicOverEmCut && TTPhoton2_hadronicOverEm < hadronicOverEmCut) {
 	  if(isBarrelBarrel(TTPhoton1_eta, TTPhoton2_eta)) TT[BB]->Fill(TTDiphoton_Minv, weight);
 	  else if (isBarrelEndcap(TTPhoton1_eta, TTPhoton2_eta)) TT[BE]->Fill(TTDiphoton_Minv, weight);
 	}
       }
       // true, fake
       if(isTF) {
-	if(TFPhoton1_pt > ptMin && TFPhoton2_pt > ptMin && TFPhoton1_hadronicOverEm < hadronicOverEmCut && TFPhoton2_hadronicOverEm < hadronicOverEmCut) {
+	bool passIsoTF = (TFPhoton1_chargedHadIso03 > cutLow && TFPhoton2_chargedHadIso03 < cutHigh);
+	if(passIsoTF && TFPhoton1_pt > ptMin && TFPhoton2_pt > ptMin && TFPhoton1_hadronicOverEm < hadronicOverEmCut && TFPhoton2_hadronicOverEm < hadronicOverEmCut) {
 	  if(isBarrelBarrel(TFPhoton1_eta, TFPhoton2_eta)) TF[BB]->Fill(TFDiphoton_Minv, weight*fakeRate[EB]->Eval(TFPhoton2_pt));
 	  else if (isBarrelEndcap(TFPhoton1_eta, TFPhoton2_eta)) TF[BE]->Fill(TFDiphoton_Minv, weight*fakeRate[EE]->Eval(TFPhoton2_pt));
 	}
       }
       // fake, true
       if(isFT) {
-	if(FTPhoton1_pt > ptMin && FTPhoton2_pt > ptMin && FTPhoton1_hadronicOverEm < hadronicOverEmCut && FTPhoton2_hadronicOverEm < hadronicOverEmCut) {
+	bool passIsoFT = (FTPhoton1_chargedHadIso03 > cutLow && FTPhoton2_chargedHadIso03 < cutHigh);
+	if(passIsoFT && FTPhoton1_pt > ptMin && FTPhoton2_pt > ptMin && FTPhoton1_hadronicOverEm < hadronicOverEmCut && FTPhoton2_hadronicOverEm < hadronicOverEmCut) {
 	  if(isBarrelBarrel(FTPhoton1_eta, FTPhoton2_eta)) FT[BB]->Fill(FTDiphoton_Minv, weight*fakeRate[EB]->Eval(FTPhoton1_pt));
 	  else if (isBarrelEndcap(FTPhoton1_eta, FTPhoton2_eta)) FT[BE]->Fill(FTDiphoton_Minv, weight*fakeRate[EE]->Eval(FTPhoton1_pt));
 	}
       }
       // fake, fake
       if(isFF) {
-	if(FFPhoton1_pt > ptMin && FFPhoton2_pt > ptMin && FFPhoton1_hadronicOverEm < hadronicOverEmCut && FFPhoton2_hadronicOverEm < hadronicOverEmCut) {
+	bool passIsoFF = (FFPhoton1_chargedHadIso03 > cutLow && FFPhoton2_chargedHadIso03 < cutHigh);
+	if(passIsoFF && FFPhoton1_pt > ptMin && FFPhoton2_pt > ptMin && FFPhoton1_hadronicOverEm < hadronicOverEmCut && FFPhoton2_hadronicOverEm < hadronicOverEmCut) {
 	  if(isBarrelBarrel(FFPhoton1_eta, FFPhoton2_eta)) FF[BB]->Fill(FFDiphoton_Minv, weight*fakeRate[EB]->Eval(FFPhoton1_pt)*fakeRate[EB]->Eval(FFPhoton2_pt));
 	  else if (isBarrelEndcap(FFPhoton1_eta, FFPhoton2_eta)) FF[BE]->Fill(FFDiphoton_Minv, weight*fakeRate[EE]->Eval(FFPhoton1_pt)*fakeRate[EE]->Eval(FFPhoton2_pt));
 	}

@@ -161,7 +161,7 @@ void setTDRStyle() {
   // ****************************************************************
   //  tdrStyle->SetPadLeftMargin(0.18);
   tdrStyle->SetPadRightMargin(0.06);
-
+  tdrStyle->SetNdivisions(505, "XYZ");
   tdrStyle->cd();
 
 }
