@@ -2,11 +2,16 @@
 #define PILEUPINFO_H
 #include <vector>
 
+unsigned int year = 2016;
+
 class pileup {
  private:
   static std::vector<float> m_pileupWeightsMinus1Sigma;
   static std::vector<float> m_pileupWeights;
   static std::vector<float> m_pileupWeightsPlus1Sigma;
+  static std::vector<float> m_pileupWeightsMinus1Sigma2016;
+  static std::vector<float> m_pileupWeights2016;
+  static std::vector<float> m_pileupWeightsPlus1Sigma2016;
  public:
   static float weight(unsigned int npv, int type);
 };
@@ -46,17 +51,76 @@ std::vector<float> pileup::m_pileupWeightsMinus1Sigma = std::vector<float>({
       3.523e-11, 9.210e-12, 2.275e-12, 5.318e-13, 1.126e-13, 0.000e+00, 
       0.000e+00, 0.000e+00});
 
+std::vector<float> pileup::m_pileupWeightsPlus1Sigma2016 = std::vector<float>({
+    3.567e-01, 7.039e-01, 1.133e+00, 8.460e-01, 1.020e+00, 1.049e+00,
+      7.257e-01, 3.478e-01, 5.006e-01, 6.030e-01, 6.322e-01, 7.328e-01,
+      8.278e-01, 9.125e-01, 9.599e-01, 9.885e-01, 1.024e+00, 1.053e+00,
+      1.051e+00, 1.027e+00, 1.006e+00, 9.980e-01, 1.015e+00, 1.038e+00,
+      1.058e+00, 1.085e+00, 1.121e+00, 1.155e+00, 1.193e+00, 1.231e+00,
+      1.246e+00, 1.268e+00, 1.259e+00, 1.234e+00, 1.182e+00, 1.105e+00,
+      1.002e+00, 8.894e-01, 7.691e-01, 6.539e-01, 5.325e-01, 4.226e-01,
+      3.298e-01, 2.499e-01, 1.886e-01, 1.382e-01, 9.684e-02, 6.865e-02,
+      4.735e-02, 3.249e-02, 2.171e-02, 1.453e-02, 9.585e-03, 6.168e-03,
+      4.278e-03, 3.071e-03, 2.242e-03, 1.923e-03, 2.023e-03, 2.397e-03,
+      3.652e-03, 4.779e-03, 5.725e-03, 6.274e-03, 7.045e-03, 6.866e-03,
+      6.372e-03, 5.755e-03, 5.366e-03, 4.866e-03, 4.374e-03, 3.905e-03,
+      3.469e-03, 3.090e-03, 2.704e-03});
+
+std::vector<float> pileup::m_pileupWeights2016 = std::vector<float>({
+    3.661e-01, 8.939e-01, 1.198e+00, 9.627e-01, 1.121e+00, 1.165e+00,
+      7.956e-01, 4.958e-01, 7.422e-01, 8.789e-01, 9.642e-01, 1.072e+00,
+      1.125e+00, 1.176e+00, 1.202e+00, 1.208e+00, 1.200e+00, 1.183e+00,
+      1.144e+00, 1.097e+00, 1.066e+00, 1.051e+00, 1.052e+00, 1.051e+00,
+      1.050e+00, 1.058e+00, 1.072e+00, 1.083e+00, 1.096e+00, 1.108e+00,
+      1.095e+00, 1.083e+00, 1.041e+00, 9.858e-01, 9.108e-01, 8.209e-01,
+      7.168e-01, 6.100e-01, 5.031e-01, 4.048e-01, 3.092e-01, 2.279e-01,
+      1.637e-01, 1.132e-01, 7.730e-02, 5.092e-02, 3.189e-02, 2.009e-02,
+      1.226e-02, 7.426e-03, 4.380e-03, 2.608e-03, 1.566e-03, 9.714e-04,
+      7.292e-04, 6.727e-04, 7.305e-04, 9.488e-04, 1.355e-03, 1.894e-03,
+      3.082e-03, 4.097e-03, 4.874e-03, 5.256e-03, 5.785e-03, 5.515e-03,
+      5.000e-03, 4.410e-03, 4.012e-03, 3.548e-03, 3.108e-03, 2.702e-03,
+      2.337e-03, 2.025e-03, 1.723e-03});
+
+std::vector<float> pileup::m_pileupWeightsMinus1Sigma2016 = std::vector<float>({
+    3.793e-01, 1.141e+00, 1.260e+00, 1.099e+00, 1.250e+00, 1.281e+00,
+      9.202e-01, 7.677e-01, 1.093e+00, 1.337e+00, 1.486e+00, 1.528e+00,
+      1.498e+00, 1.501e+00, 1.497e+00, 1.444e+00, 1.368e+00, 1.299e+00,
+      1.227e+00, 1.166e+00, 1.125e+00, 1.091e+00, 1.064e+00, 1.040e+00,
+      1.019e+00, 1.006e+00, 9.970e-01, 9.849e-01, 9.728e-01, 9.565e-01,
+      9.147e-01, 8.722e-01, 8.071e-01, 7.343e-01, 6.510e-01, 5.614e-01,
+      4.664e-01, 3.745e-01, 2.885e-01, 2.145e-01, 1.497e-01, 9.989e-02,
+      6.434e-02, 3.959e-02, 2.389e-02, 1.382e-02, 7.566e-03, 4.156e-03,
+      2.215e-03, 1.187e-03, 6.427e-04, 3.841e-04, 2.728e-04, 2.434e-04,
+      2.896e-04, 3.958e-04, 5.440e-04, 7.828e-04, 1.151e-03, 1.604e-03,
+      2.568e-03, 3.340e-03, 3.880e-03, 4.079e-03, 4.373e-03, 4.058e-03,
+      3.579e-03, 3.068e-03, 2.712e-03, 2.327e-03, 1.978e-03, 1.667e-03,
+      1.397e-03, 1.172e-03, 9.649e-04});
+
 float pileup::weight(unsigned int npv, int type)
 {
-  if(type==-1) {
-    if(m_pileupWeightsMinus1Sigma.size()!=0 && npv<m_pileupWeightsMinus1Sigma.size()) return static_cast<float>(m_pileupWeightsMinus1Sigma.at(npv));
+  switch (year) {
+  case 2015:
+    if(type==-1) {
+      if(m_pileupWeightsMinus1Sigma.size()!=0 && npv<m_pileupWeightsMinus1Sigma.size()) return static_cast<float>(m_pileupWeightsMinus1Sigma.at(npv));
+    }
+    else if(type==1) {
+      if(m_pileupWeightsPlus1Sigma.size()!=0 && npv<m_pileupWeightsPlus1Sigma.size()) return static_cast<float>(m_pileupWeightsPlus1Sigma.at(npv));
+    }
+    else {
+      if(m_pileupWeights.size()!=0 && npv<m_pileupWeights.size()) return static_cast<float>(m_pileupWeights.at(npv));
+    }
+  case 2016:
+    if(type==-1) {
+      if(m_pileupWeightsMinus1Sigma2016.size()!=0 && npv<m_pileupWeightsMinus1Sigma2016.size()) return static_cast<float>(m_pileupWeightsMinus1Sigma2016.at(npv));
+    }
+    else if(type==1) {
+      if(m_pileupWeightsPlus1Sigma2016.size()!=0 && npv<m_pileupWeightsPlus1Sigma2016.size()) return static_cast<float>(m_pileupWeightsPlus1Sigma2016.at(npv));
+    }
+    else {
+      if(m_pileupWeights2016.size()!=0 && npv<m_pileupWeights2016.size()) return static_cast<float>(m_pileupWeights2016.at(npv));
+    }
   }
-  else if(type==1) {
-    if(m_pileupWeightsPlus1Sigma.size()!=0 && npv<m_pileupWeightsPlus1Sigma.size()) return static_cast<float>(m_pileupWeightsPlus1Sigma.at(npv));
-  }
-  else {
-    if(m_pileupWeights.size()!=0 && npv<m_pileupWeights.size()) return static_cast<float>(m_pileupWeights.at(npv));
-  }
+
   return 1.0;
 }
 #endif

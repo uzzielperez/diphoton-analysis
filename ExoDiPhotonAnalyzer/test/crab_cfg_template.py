@@ -33,11 +33,16 @@ config.Data.inputDBS = 'global'
 if "Run2016" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100
-    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-274421_13TeV_PromptReco_Collisions16_JSON.txt'
+    if "Prompt" in taskname:
+        config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-282092_13TeV_PromptReco_Collisions16_JSON.txt'
+    # otherwise, assume Re-Reco
+    else:
+        config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'
 if "Run2015" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100
-    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver_v2.txt '
+    # only use 16Dec2015 ReReco
+    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/Reprocessing/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_v2.txt'
 else:
     config.Data.splitting = 'FileBased'
     config.Data.unitsPerJob = 5

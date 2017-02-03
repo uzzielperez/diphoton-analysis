@@ -36,28 +36,38 @@ globalTag = 'notset'
 
 
 # options for data
-JEC = cms.untracked.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
+JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
 if "Run2015" in outName:
     globalTag = '76X_dataRun2_16Dec2015_v0'
 if "Run2016" in outName:
-    globalTag = '80X_dataRun2_Prompt_ICHEP16JEC_v0'
+#    Do not use ICHEP global tag
+#    globalTag = '80X_dataRun2_Prompt_ICHEP16JEC_v0'
+    if 'PromptReco' in outName:
+        globalTag = '80X_dataRun2_Prompt_v14'
+    else:
+        globalTag = '80X_dataRun2_2016SeptRepro_v4'
 
 # override options for MC
 if isMC:
     version = os.getenv("CMSSW_VERSION")
     if "CMSSW_8" in version:
-        globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
+        if "Spring16" in outName:
+            globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
+        if "Summer16" in outName:
+            globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
     elif "CMSSW_7" in version:
         globalTag = '76X_mcRun2_asymptotic_v12'
     else:
         print "Could not determine appropriate MC global tag from filename"
         sys.exit()
-    JEC = cms.untracked.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
+    JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
 
 
 process = cms.Process("ExoDiPhoton")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.suppressWarning.append('ExoDiPhotonAnalyzer')
 
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 process.options.allowUnscheduled = cms.untracked.bool(True)
@@ -108,7 +118,7 @@ updateJetCollection(
    process,
    jetSource = cms.InputTag('slimmedJets'),
    labelName = 'UpdatedJEC',
-   jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')  # Do not forget 'L2L3Residual' on data!
+   jetCorrections = ('AK4PFchs', JEC, 'None')  # Do not forget 'L2L3Residual' on data!
 )
 
 # main analyzer and inputs

@@ -6,6 +6,7 @@ namespace ExoDiPhotons {
   // provides cross sections (in pb) that are used to calculate event weights
   double crossSection(const TString& sample) {
     double xsec = -1.0;
+    if(sample.Contains("DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8")) xsec = 135.1;
     if(sample.Contains("GGJets_M-60To200_Pt-50_13TeV-sherpa")) xsec = 5.785e+00;
     if(sample.Contains("GGJets_M-200To500_Pt-50_13TeV-sherpa")) xsec = 2.244e+00;
     if(sample.Contains("GGJets_M-500To1000_Pt-50_13TeV-sherpa")) xsec = 1.510e-01;
@@ -175,6 +176,7 @@ namespace ExoDiPhotons {
 
     // Madgraph5_aMC@NLO samples at NLO have a non-zero average weight
     // that should be removed, as well as negative weights
+    if(sample.Contains("DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8")) average = 2.80907981496934667e+02*5.50762575783666608e-01;
     if(sample.Contains("WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")) average = 1.501086e+03*6.283186e-01;
     if(sample.Contains("ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")) average = 3.479100e+02*7.019238e-01;
     if(sample.Contains("DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")) average = 2.344342e+04*6.286050e-01;

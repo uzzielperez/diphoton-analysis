@@ -371,6 +371,10 @@ ExoDiPhotonAnalyzer::ExoDiPhotonAnalyzer(const edm::ParameterSet& iConfig)
 
   // trigger prescales
   prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","",isMC_?("PAT"):("RECO")) );
+
+  // set appropriate year (used for pileup reweighting)
+  if(outputFile_.Contains("2015")) year = 2015;
+  if(outputFile_.Contains("2016")) year = 2016;
 }
 
 

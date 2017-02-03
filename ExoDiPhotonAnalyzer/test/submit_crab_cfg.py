@@ -44,14 +44,18 @@ DATASETS = [[]]
 
 # diphoton samples (2016 data)
 if do2016data:
-  DATASETS.append(["/DoubleEG/Run2016B-PromptReco-v1/MINIAOD"])
-  DATASETS.append(["/DoubleEG/Run2016C-PromptReco-v2/MINIAOD"])
-  DATASETS.append(["/DoubleEG/Run2016D-PromptReco-v2/MINIAOD"])
-  DATASETS.append(["/DoubleEG/Run2016E-PromptReco-v2/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016B-23Sep2016-v3/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016C-23Sep2016-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016D-23Sep2016-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016E-23Sep2016-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016F-23Sep2016-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016G-23Sep2016-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016H-PromptReco-v3/MINIAOD"])
 
 # 8_0_X MC
 if do2016mc:
-  DATASETS.append(["/GGGJets_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"])
+#  DATASETS.append(["/GGGJets_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"])
+  DATASETS.append(["/DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"])
 
 # diphoton samples (2015 data)
 if do2015data:
