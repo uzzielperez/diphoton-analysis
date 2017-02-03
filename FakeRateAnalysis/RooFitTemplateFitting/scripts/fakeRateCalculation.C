@@ -1,22 +1,27 @@
-#include "rooFitFakeRateProducer_pTBinLoop.C"
+#include "rooFitFakeRateProducer.C"
 
-double fakeRateUncertainty(double denominator, double fakeerror, double fakerate){
+double fakeRateUncertainty(double denominator, double fakeerror, double fakerate) {
   double uncert = TMath::Sqrt((fakeerror*fakeerror/denominator/denominator) + (fakerate*fakerate/denominator));
   return uncert;
 }
 
 void fakeRateCalculation() {
+
+  // true - data
+  // false - mc (closure test)
+  bool is_data = true;
+  if (is_data) cout << "Running over data." << endl;
+  if (!is_data) cout << "Running over MC." << endl;
+  
   // use stopwatch to time
   TStopwatch sw;
   sw.Start();
 
+  // array of pt bin edges
   const int nBins = 10;
-  
   int ptBinArray[nBins] = { 50, 70, 90, 110, 130, 150, 200, 250, 300, 600 };
   double ptBinArray_double[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
-  // int ptBinArray[11] = { 30, 50, 70, 90, 110, 130, 150, 200, 250, 300, 14000 };
-  // double ptBinArray_double[11] = { 30., 50., 70., 90., 110., 130., 150., 200., 250., 300., 14.e3 };
-
+  
   // make vector of sidebands
   std::vector< std::pair<double,double> > chIsoSidebands;
   typedef std::vector< std::pair<double,double> >::const_iterator chIsoIt;
@@ -34,7 +39,7 @@ void fakeRateCalculation() {
   std::vector<TGraphAsymmErrors*> bkgVsPtEBVec;
   std::vector<TGraphAsymmErrors*> bkgVsPtEEVec;
 
-  for (unsigned int i=0; i<chIsoSidebands.size(); i++){
+  for (unsigned int i = 0; i < chIsoSidebands.size(); i++) {
     double sidebandLow = chIsoSidebands.at(i).first;
     double sidebandHigh = chIsoSidebands.at(i).second;
     TString postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
@@ -49,10 +54,10 @@ void fakeRateCalculation() {
     bkgvsptEB->SetName("bkgvsptEB"+postFix);
     bkgvsptEE->SetName("bkgvsptEE"+postFix);
 
-    fakeRateEB->GetXaxis()->SetTitle("Photon pT (GeV)");
-    fakeRateEE->GetXaxis()->SetTitle("Photon pT (GeV)");
-    bkgvsptEB->GetXaxis()->SetTitle("Photon pT (GeV)");
-    bkgvsptEE->GetXaxis()->SetTitle("Photon pT (GeV)");
+    fakeRateEB->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRateEE->GetXaxis()->SetTitle("p_{T} (GeV)");
+    bkgvsptEB->GetXaxis()->SetTitle("p_{T} (GeV)");
+    bkgvsptEE->GetXaxis()->SetTitle("p_{T} (GeV)");
 
     fakeRatesEB.push_back(fakeRateEB);
     fakeRatesEE.push_back(fakeRateEE);
@@ -60,34 +65,26 @@ void fakeRateCalculation() {
     bkgVsPtEBVec.push_back(bkgvsptEB);
     bkgVsPtEEVec.push_back(bkgvsptEE);
   }
-  // TGraphAsymmErrors fakeRateEB;
-  // TGraphAsymmErrors fakeRateEE;
-  // fakeRateEB.SetName("fakeRateEB");
-  // fakeRateEE.SetName("fakeRateEE");
-
-  // TH1D bkgvsptEB("bkgvsptEB","",10,ptBinArray_double);
-  // TH1D bkgvsptEE("bkgvsptEE","",10,ptBinArray_double);
-  // bkgvsptEB.GetXaxis()->SetTitle("Photon pT (GeV)");
-  // bkgvsptEE.GetXaxis()->SetTitle("Photon pT (GeV)");
-
+  
   TFile outfile("fakeRatePlots.root","recreate");
   outfile.Close(); // create the file so it can be updated in the rooFitFakeRateProducer, we don't need it open here too
 
-  // for data
-  TFile infile("../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root","read");
-  // for MC as data
-  // TFile infile("../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root","read");
+  TString input_filename;
+  if (is_data) input_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
+  if (!is_data) input_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
+  TFile infile(input_filename,"read");
   
   // debug vectors
   std::vector<double> numVec;
   std::vector<double> denomVec;
   
-  for (unsigned int j=0; j<chIsoSidebands.size(); j++){ // loop over sidebands
-    for (int i = 0; i < nBins-1; i++){  // loop over pT bins
+  for (unsigned int j = 0; j < chIsoSidebands.size(); j++) { // loop over sidebands
+    for (int i = 0; i < nBins-1; i++) {  // loop over pT bins
       double ptLow = ptBinArray_double[i];
       double ptHigh = ptBinArray_double[i+1];
       double ptBinSize = ptHigh - ptLow;
       TString binName = TString::Format("%iTo%i",ptBinArray[i],ptBinArray[i+1]);
+
       infile.cd();
 
       double sidebandLow = chIsoSidebands.at(j).first;
@@ -97,13 +94,12 @@ void fakeRateCalculation() {
       // run calculation twice, once for EB and once for EE
       std::pair<double,double> resEB = rooFitFakeRateProducer(binName,TString("EB"),chIsoSidebands.at(j),i+1); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
       std::pair<double,double> resEE = rooFitFakeRateProducer(binName,TString("EE"),chIsoSidebands.at(j),i+1);
+
       // record fake rate in TGraphs
-      //double graphX = (1.*ptBinArray[i] + 1.*ptBinArray[i+1])/2.;
       TString histNameEB = TString::Format("PtEB_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
       TString histNameEE = TString::Format("PtEE_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
       TH1D* histEB = (TH1D*)infile.Get(histNameEB);
       TH1D* histEE = (TH1D*)infile.Get(histNameEE);
-
 
       double denomEB = histEB->Integral();
       double denomEE = histEE->Integral();
@@ -124,55 +120,35 @@ void fakeRateCalculation() {
       fakeRatesEE.at(j)->SetPointError(i,eXLow_EE,eXHigh_EE,ey_EE,ey_EE);
 
       // fill debug vectors
-      if (sidebandLow == 9.){
+      if (sidebandLow == 9.) {
         numVec.push_back(resEE.first);
         denomVec.push_back(denomEE);
       }
-
+      
       // record background fit result
-
-
       bkgVsPtEBVec.at(j)->SetPoint(i,graphX_EB,resEB.first/ptBinSize);
       bkgVsPtEBVec.at(j)->SetPointError(i,eXLow_EB,eXHigh_EB,resEB.second/ptBinSize,resEB.second/ptBinSize);
-
       bkgVsPtEEVec.at(j)->SetPoint(i,graphX_EE,resEE.first/ptBinSize);
       bkgVsPtEEVec.at(j)->SetPointError(i,eXLow_EE,eXHigh_EE,resEE.second/ptBinSize,resEE.second/ptBinSize);
-      // bkgVsPtEBVec.at(j)->SetBinContent(i+1,resEB.first);
-      // bkgVsPtEBVec.at(j)->SetBinError(i+1,resEB.second);
-
-      // bkgVsPtEEVec.at(j)->SetBinContent(i+1,resEE.first);
-      // bkgVsPtEEVec.at(j)->SetBinError(i+1,resEE.second);
-
     } // end loop over pT bins
   } // end loop over sidebands
 
-  //TFile infile("diphoton_fakeRate_JetHT_Run2015_16Dec2015-v1_MINIAOD_histograms.root","read");
   infile.cd();
-  TH1D* denomvsptEB = (TH1D*)infile.Get("phoPtEB_denominator_varbin")->Clone();
-  TH1D* denomvsptEE = (TH1D*)infile.Get("phoPtEE_denominator_varbin")->Clone();
+  
+  TH1D* denomvsptEB = (TH1D*) infile.Get("phoPtEB_denominator_varbin")->Clone();
+  TH1D* denomvsptEE = (TH1D*) infile.Get("phoPtEE_denominator_varbin")->Clone();
 
-  for (int i=1; i<=nBins-1; i++){
+  for (int i = 1; i <= nBins-1; i++) {
     double binWidth = denomvsptEB->GetXaxis()->GetBinWidth(i);
-
-    denomvsptEB->SetBinContent(i,denomvsptEB->GetBinContent(i) / binWidth);
-    denomvsptEB->SetBinError(i,denomvsptEB->GetBinError(i) / binWidth);
-    denomvsptEE->SetBinContent(i,denomvsptEE->GetBinContent(i) / binWidth);
-    denomvsptEE->SetBinError(i,denomvsptEE->GetBinError(i) / binWidth);
-
+    denomvsptEB->SetBinContent(i, denomvsptEB->GetBinContent(i) / binWidth);
+    denomvsptEB->SetBinError  (i, denomvsptEB->GetBinError(i) / binWidth);
+    denomvsptEE->SetBinContent(i, denomvsptEE->GetBinContent(i) / binWidth);
+    denomvsptEE->SetBinError  (i, denomvsptEE->GetBinError(i) / binWidth);
   }
-
-  denomvsptEB->GetXaxis()->SetTitle("Photon pT (GeV/c)");
-  denomvsptEE->GetXaxis()->SetTitle("Photon pT (GeV/c)");
-
-  // TH1D* fakeRateEB = (TH1D*)bkgvsptEB.Clone();
-  // TH1D* fakeRateEE = (TH1D*)bkgvsptEE.Clone();
-
-  // fakeRateEB->SetName("fakeRateEB");
-  // fakeRateEE->SetName("fakeRateEE");
-
-  // fakeRateEB->Divide(denomvsptEB);
-  // fakeRateEE->Divide(denomvsptEE);
-
+  
+  denomvsptEB->GetXaxis()->SetTitle("p_{T} (GeV)");
+  denomvsptEE->GetXaxis()->SetTitle("p_{T} (GeV)");
+  
   // debug printout to see fake rate ratios
   for (unsigned int i = 0; i < (numVec.size()-1); i++){
     double numratio = numVec.at(i+1) / numVec.at(i);
@@ -186,7 +162,8 @@ void fakeRateCalculation() {
   outfile2.cd();
   denomvsptEB->Write();
   denomvsptEE->Write();
-  for (unsigned int j=0; j<chIsoSidebands.size(); j++){
+  
+  for (unsigned int j = 0; j < chIsoSidebands.size(); j++) {
     outfile2.cd();
     double sidebandLow = chIsoSidebands.at(j).first;
     double sidebandHigh = chIsoSidebands.at(j).second;
@@ -195,22 +172,27 @@ void fakeRateCalculation() {
     fakeRatesEE.at(j)->Write();
     bkgVsPtEBVec.at(j)->Write();
     bkgVsPtEEVec.at(j)->Write();
-
-    TCanvas c("c","",1200,800);
-    fakeRatesEB.at(j)->GetXaxis()->SetTitle("Photon pT (GeV/c)");
-    fakeRatesEB.at(j)->GetYaxis()->SetTitle("Fake Rate");
+  
+    TCanvas c("c","",1500,600);
+    c.Divide(2,1);
+    
+    c.cd(1);
     fakeRatesEB.at(j)->Draw();
-    c.SetLogx();
-    c.SaveAs("fakeRateEB" + postFix + ".png");
-
-    c.Clear();
-    fakeRatesEE.at(j)->GetXaxis()->SetTitle("Photon pT (GeV/c)");
-    fakeRatesEE.at(j)->GetYaxis()->SetTitle("Fake Rate");
-    fakeRatesEE.at(j)->GetYaxis()->SetTitleOffset(1.4);
+    fakeRatesEB.at(j)->SetTitle("EB");
+    fakeRatesEB.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRatesEB.at(j)->GetYaxis()->SetTitle("fake rate");
+    fakeRatesEB.at(j)->GetYaxis()->SetTitleOffset(1.6);
+    
+    c.cd(2);
     fakeRatesEE.at(j)->Draw();
-    c.SetLogx();
-    c.SaveAs("fakeRateEE" + postFix + ".png");
+    fakeRatesEE.at(j)->SetTitle("EE");
+    fakeRatesEE.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRatesEE.at(j)->GetYaxis()->SetTitle("fake rate");
+    fakeRatesEE.at(j)->GetYaxis()->SetTitleOffset(1.6);
+    
+    c.SaveAs("fake_rate"+postFix+".png");
   }
+  
   outfile2.Close();
 
   // stop stopwatch
