@@ -34,6 +34,7 @@
 #include "diphoton-analysis/CommonClasses/interface/PhotonID.h"
 #include "diphoton-analysis/CommonClasses/interface/PhotonInfo.h"
 #include "diphoton-analysis/CommonClasses/interface/GenParticleInfo.h"
+#include "diphoton-analysis/CommonClasses/interface/VertexInfo.h"
 
 // for TFileService, trees
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
@@ -139,6 +140,9 @@ class ExoDiPhotonMCFakeRateRealTemplateAnalyzer : public edm::one::EDAnalyzer<ed
   // Trigger prescales token
   edm::EDGetToken prescalesToken_;
 
+  // vertex token
+  edm::EDGetTokenT<reco::VertexCollection> verticesToken_;
+  
   // output file name
   TString outputFile_;
   
@@ -166,6 +170,9 @@ class ExoDiPhotonMCFakeRateRealTemplateAnalyzer : public edm::one::EDAnalyzer<ed
 
   // genParticles
   ExoDiPhotons::genParticleInfo_t fGenParticleInfo;
+
+  // vertex collection
+  ExoDiPhotons::vertexCollInfo_t fVertexCollInfo;
 };
 
 //
@@ -204,6 +211,18 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::ExoDiPhotonMCFakeRateRealTemplateAnal
   fTree->Branch("TriggerPrescale",&fTriggerPrescaleInfo,ExoDiPhotons::triggerBranchDefString.c_str());
   fTree->Branch("Photon",&fPhotonInfo,ExoDiPhotons::photonBranchDefString.c_str());
   fTree->Branch("PhotonGenMatch",&fGenParticleInfo,ExoDiPhotons::genParticleBranchDefString.c_str());
+
+  // vertex information branches
+  fTree->Branch("VertexCollInfo.vx","std::vector<double>",&fVertexCollInfo.vx);
+  fTree->Branch("VertexCollInfo.vy","std::vector<double>",&fVertexCollInfo.vy);
+  fTree->Branch("VertexCollInfo.vz","std::vector<double>",&fVertexCollInfo.vz);
+  fTree->Branch("VertexCollInfo.vxError","std::vector<double>",&fVertexCollInfo.vxError);
+  fTree->Branch("VertexCollInfo.vyError","std::vector<double>",&fVertexCollInfo.vyError);
+  fTree->Branch("VertexCollInfo.vzError","std::vector<double>",&fVertexCollInfo.vzError);
+  fTree->Branch("VertexCollInfo.ndof","std::vector<double>",&fVertexCollInfo.ndof);
+  fTree->Branch("VertexCollInfo.d0","std::vector<double>",&fVertexCollInfo.d0);
+  fTree->Branch("VertexCollInfo.nTracks","std::vector<int>",&fVertexCollInfo.nTracks);
+  fTree->Branch("VertexCollInfo.isFake","std::vector<int>",&fVertexCollInfo.isFake);
   
   // photon token
   photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
@@ -233,6 +252,9 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::ExoDiPhotonMCFakeRateRealTemplateAnal
 
   // trigger prescales
   prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","","PAT") );
+
+  // vertices
+  verticesToken_ = consumes<reco::VertexCollection>( edm::InputTag("offlineSlimmedPrimaryVertices") );
 }
 
 
@@ -335,6 +357,15 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
 
   ExoDiPhotons::FillTriggerBits(fTriggerBitInfo, triggerResults, iEvent); // fill trigger bits into trigger bit branch
   ExoDiPhotons::FillTriggerPrescales(fTriggerPrescaleInfo, triggerResults, prescales, iEvent); // fill trigger prescale info in trigger prescale branch
+
+  // ========
+  // VERTICES
+  // ========
+
+  edm::Handle<reco::VertexCollection> vertices;
+  iEvent.getByToken(verticesToken_,vertices);
+  const reco::VertexCollection* vtxColl = vertices.product();
+  ExoDiPhotons::FillVertexCollInfo(fVertexCollInfo,vtxColl);
   
   // ===
   // RHO
