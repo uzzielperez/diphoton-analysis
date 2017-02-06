@@ -443,37 +443,27 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
     cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
 
     // deltaR cut
-    double minDeltaR       = 0.1;
-    double minDeltaRfromHP = 0.1;
-
+    double minDeltaR = 0.1;
+    
     // no match when starting loop
-    const reco::GenParticle *photonMatch       = NULL;
-    const reco::GenParticle *photonMatchFromHP = NULL;
+    const reco::GenParticle *photonMatch = NULL;
     
     // loop through genParticles to find real photon matches
     //for (edm::View<reco::GenParticle>::const_iterator gen = genParticles->begin(); gen != genParticles->end(); ++gen) {
     for (size_t i = 0; i < genParticles->size(); ++i) {
       const auto gen = genParticles->ptrAt(i);
+
+      // only consider matching to final state gen particles
+      if (gen->status() != 1) continue;
       
-      // calculate deltaR for current genParticle
-      double deltaR = reco::deltaR(pho->eta(),pho->phi(),gen->eta(),gen->phi());
-
-      // find best match
-      if (deltaR < minDeltaR) {
-	//cout << "GenParticle match: Status = " << gen->status()  << "; ID = " << gen->pdgId() << "; pt = "
-	//<< gen->pt() << "; eta = " << gen->eta() << "; phi = " << gen->phi()  << "; deltaR = " << deltaR << endl;
-	minDeltaR = deltaR;
-	photonMatch = &(*gen);
-      }
-
-      // find best final state from hard process match
-      if (gen->fromHardProcessFinalState()) {
-	double deltaRfromHP = reco::deltaR(pho->eta(),pho->phi(),gen->eta(),gen->phi());
-	if (deltaRfromHP < minDeltaRfromHP) {
-	  cout << "GenParticle fromHPFS match: Status = " << gen->status()  << "; ID = " << gen->pdgId() << "; pt = "
-	       << gen->pt() << "; eta = " << gen->eta() << "; phi = " << gen->phi()  << "; deltaR = " << deltaRfromHP << endl;
-	  minDeltaRfromHP = deltaRfromHP;
-	  photonMatchFromHP = &(*gen);
+      // find best final state photon match with at least 85% agreement between pT (try to prevent the same gen photon matching to two reco photons)
+      if (gen->pdgId() == 22 /*&& gen->fromHardProcessFinalState()*/ && fabs(1 - pho->pt()/gen->pt()) < 0.15) {
+	double deltaR = reco::deltaR(pho->eta(),pho->phi(),gen->eta(),gen->phi());
+	if (deltaR <= minDeltaR) {
+	  //cout << "GenParticle fromHPFS match: Status = " << gen->status()  << "; ID = " << gen->pdgId() << "; pt = "
+	  //<< gen->pt() << "; eta = " << gen->eta() << "; phi = " << gen->phi()  << "; deltaR = " << deltaRfromHP << endl;
+	  minDeltaR = deltaR;
+	  photonMatch = &(*gen);
 	}
       }
       
@@ -485,23 +475,18 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
     // consider all mothers when matching (no deltaR cut)
     double minMotherMatchDeltaR = 10000;
     int matchMotherIndex = 0;
+    // check if each mother is a photon
+    bool is_mother_photon = true;
     
     if (photonMatch) {
       cout << "PhotonMatch START: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
 	   << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi()  << "; deltaR = " << minDeltaR << endl;
-
-      // if there is a best final-state-from-hard-interaction match in deltaR <= 0.1, start from this instead of best overall match 
-      if (photonMatchFromHP) {
-	photonMatch = &(*photonMatchFromHP);
-	cout << "PhotonMatch RESTART: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
-	     << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi()  << "; deltaR = " << minDeltaRfromHP << endl;
-      }
-
+      
       // loop over all mothers to find best match in deltaR. this is consider the true mother
       // do this for each mother until its mother has pT = 0 (from hard interaction)
       // photonMatch will always have at least one mother
       while (photonMatch->mother()->pt() != 0) {
-	for (unsigned int j=0; j < photonMatch->numberOfMothers(); j++) {
+	for (unsigned int j = 0; j < photonMatch->numberOfMothers(); j++) {
 	  double deltaR = reco::deltaR(photonMatch->eta(),photonMatch->phi(),photonMatch->mother(j)->eta(),photonMatch->mother(j)->phi());
 	  if (deltaR < minMotherMatchDeltaR) {
 	    minMotherMatchDeltaR = deltaR;
@@ -509,17 +494,23 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
 	  }
 	}
 	photonMatch = (reco::GenParticle *) photonMatch->mother(matchMotherIndex);
-	cout << "PhotonMatch WHILE: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
+	if (photonMatch->mother()->pt() == 0)
+	  cout << "PhotonMatch END: Status = ";
+	else
+	  cout << "PhotonMatch WHILE: Status = ";
+	cout << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
 	     << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi()  << "; deltaR = " << minMotherMatchDeltaR << endl;
-	// reset cut! 
+	if (photonMatch->pdgId() != 22) is_mother_photon = false;
+	// reset cut! (and index to be safe)
 	minMotherMatchDeltaR = 10000;
-      }
-      // this is our hard interaction match, with mother having pT = 0 (interacting parton)
-      cout << "PhotonMatch END: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
-	   << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi()  << endl;
+	matchMotherIndex = 0;
+      } // end while loop through mothers
 
-      // only fill tree if match is a hard interaction photon
-      if (photonMatch->pdgId() == 22) {
+      // if any mother is not a photon, then don't fill the match
+      if (!is_mother_photon) cout << "Not a photon. Not filling match." << endl;
+      
+      // only fill tree if every mother is a photon; in particular, the hard interatciton particle is a photon
+      if (is_mother_photon) {
 	// fill genParticle info
 	ExoDiPhotons::FillGenParticleInfo(fGenParticleInfo,photonMatch);
 	
@@ -542,7 +533,7 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
       }
       
     } // end if photonMatch
-    else cout << "No photon match in DeltaR <= 0.1" << endl;
+    else cout << "No photon match in dR <= " << minDeltaR << endl;
 
   } // end of photon loop
 
