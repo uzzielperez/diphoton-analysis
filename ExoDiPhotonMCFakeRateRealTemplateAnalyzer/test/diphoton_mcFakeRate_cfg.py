@@ -5,15 +5,30 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing ('python')
 
 options.register('globalTag',
-                '76X_mcRun2_asymptotic_v12',
-                VarParsing.multiplicity.singleton,
-                VarParsing.varType.string,
-                "global tag to use when running"
-)
-## 'maxEvents' is already registered by the Framework, changing default value
-options.setDefault('maxEvents', 100)
+                 '76X_mcRun2_asymptotic_v12',
+                 VarParsing.multiplicity.singleton,
+                 VarParsing.varType.string,
+                 "Global tag to use when running"
+                 )
+options.register('nEventsSample',
+                 999011, # number of events in GGJets_M-500To1000_Pt-50_13TeV-sherpa sample
+                 VarParsing.multiplicity.singleton,
+                 VarParsing.varType.int,
+                 "Total number of events in dataset for event weight calculation."
+                 )
+options.register('outputFileName',
+                 "out_default_GGJets_M-500To1000_Pt-50_13TeV-sherpa.root",
+                 VarParsing.multiplicity.singleton,
+                 VarParsing.varType.string,
+                 "Output filename."
+                 )
+
+options.setDefault('maxEvents', 1000)
 
 options.parseArguments()
+
+print "Output file name: ", options.outputFileName
+print "Number of events in sample: ", options.nEventsSample
 
 import FWCore.ParameterSet.Config as cms
 
@@ -32,7 +47,8 @@ process.source = cms.Source(
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
         #'file:myfile.root'
-        'root://eoscms.cern.ch//store/mc/RunIIFall15MiniAODv2/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/04B53B17-24D9-E511-B1ED-00259075D72E.root'
+        #'root://eoscms.cern.ch//store/mc/RunIIFall15MiniAODv2/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/04B53B17-24D9-E511-B1ED-00259075D72E.root'
+        'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/GGJets_M-500To1000_Pt-50_13TeV-sherpa/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/129F0188-B9D8-E511-9897-00259073E4F6.root'
         )
     )
 
@@ -46,7 +62,7 @@ process.load("Configuration.StandardSequences.GeometryDB_cff")
 # for output file
 process.TFileService = cms.Service(
     "TFileService",
-    fileName = cms.string("ExoDiphotonAnalyzer.root")
+    fileName = cms.string(options.outputFileName)
     )
 
 # Setup VID for EGM ID
@@ -90,6 +106,10 @@ process.diphoton = cms.EDAnalyzer(
     phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
     phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
     phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
+    # out file name
+    outputFile = cms.string(options.outputFileName),
+    # number of events in the sample (for calculation of event weights)
+    nEventsSample = cms.uint32(options.nEventsSample),
     # gen event info
     genInfo = cms.InputTag("generator", "", "SIM")
     )

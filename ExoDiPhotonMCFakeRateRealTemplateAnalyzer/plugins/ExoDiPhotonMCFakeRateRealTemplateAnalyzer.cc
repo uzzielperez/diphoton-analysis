@@ -138,6 +138,12 @@ class ExoDiPhotonMCFakeRateRealTemplateAnalyzer : public edm::one::EDAnalyzer<ed
 
   // Trigger prescales token
   edm::EDGetToken prescalesToken_;
+
+  // output file name
+  TString outputFile_;
+  
+  // number of events in sample
+  uint32_t nEventsSample_;
   
   // trees
   TTree *fTree;
@@ -181,6 +187,8 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::ExoDiPhotonMCFakeRateRealTemplateAnal
     phoLooseIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoLooseIdMap"))),
     phoMediumIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoMediumIdMap"))),
     phoTightIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoTightIdMap"))),
+    outputFile_(TString(iConfig.getParameter<std::string>("outputFile"))),
+    nEventsSample_(iConfig.getParameter<uint32_t>("nEventsSample")),
     genInfoToken_(consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("genInfo")))
 {
   //now do what ever initialization is needed
@@ -272,6 +280,7 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
   iEvent.getByToken(genInfoToken_,genInfo);
   
   ExoDiPhotons::FillGenEventInfo(fEventInfo, &(*genInfo));
+  ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
   
   // ====
   // JETS
@@ -307,7 +316,7 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
   bool passEEBadScFilter = filterResults->accept(EEBadScFilterNum);
 
   // Go to next photon if this filter is not passed
-  if (!passEEBadScFilter){
+  if (!passEEBadScFilter) {
     cout << "Event did not pass the EE Bad Supercrystal Filter, skip it!" << endl;
     return;
   }
@@ -396,7 +405,7 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
   iEvent.getByToken(photonsMiniAODToken_,photons);
 
   //for (edm::View<pat::Photon>::const_iterator pho = photons->begin(); pho != photons->end(); ++pho) {
-  for (size_t i = 0; i < photons->size(); ++i){
+  for (size_t i = 0; i < photons->size(); ++i) {
     const auto pho = photons->ptrAt(i);
 
     // print photon info
@@ -414,7 +423,6 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
     //for (edm::View<reco::GenParticle>::const_iterator gen = genParticles->begin(); gen != genParticles->end(); ++gen) {
     for (size_t i = 0; i < genParticles->size(); ++i) {
       const auto gen = genParticles->ptrAt(i);
-
       
       // calculate deltaR for current genParticle
       double deltaR = reco::deltaR(pho->eta(),pho->phi(),gen->eta(),gen->phi());
@@ -431,13 +439,15 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
       if (gen->fromHardProcessFinalState()) {
 	double deltaRfromHP = reco::deltaR(pho->eta(),pho->phi(),gen->eta(),gen->phi());
 	if (deltaRfromHP < minDeltaRfromHP) {
+	  cout << "GenParticle fromHPFS match: Status = " << gen->status()  << "; ID = " << gen->pdgId() << "; pt = "
+	       << gen->pt() << "; eta = " << gen->eta() << "; phi = " << gen->phi()  << "; deltaR = " << deltaRfromHP << endl;
 	  minDeltaRfromHP = deltaRfromHP;
 	  photonMatchFromHP = &(*gen);
 	}
       }
       
     } // end of genParticle loop
-
+    
     // ***************************************************************************
     // if photon match, determine if it came from a photon in the hard interaction
     // ***************************************************************************
