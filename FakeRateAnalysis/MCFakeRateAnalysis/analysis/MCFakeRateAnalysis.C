@@ -4,7 +4,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void MCFakeRateAnalysis::Loop(const Char_t *iMass)
+void MCFakeRateAnalysis::Loop()
 {
 //   In a ROOT session, you can do:
 //      root> .L MCFakeRateAnalysis.C
@@ -126,23 +126,21 @@ void MCFakeRateAnalysis::Loop(const Char_t *iMass)
 	if (isNumeratorObject) {
 	  // EB
 	  if (fabs(Photon_scEta) < 1.4442) {
-	    sigmaIetaIetaEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	    sigmaIetaIetaEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	  } // end EB
 	  // EE
 	  else if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
-	    sigmaIetaIetaEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weight);
+	    sigmaIetaIetaEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	  } // end EE
 	} // end numerator object
       } // end pt cut
     } // end loop over pt bin increments
     
   } // end loop over entries
-  
-  TString filename;
-  if (strcmp(iMass,"all") == 0) filename = "GGJets_M-200To500_vanilla.root";
-  else filename = TString::Format("GGJets_M-%s_vanilla.root",iMass);
-  TFile file_out(filename,"RECREATE");
 
+  TString filename = "diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
+  TFile file_out(filename,"RECREATE");
+  
   // write our histograms to file
   for (vector<TH1D*>::iterator it = sigmaIetaIetaEB.begin() ; it != sigmaIetaIetaEB.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;

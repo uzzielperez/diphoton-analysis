@@ -4,7 +4,7 @@
 
 void diphoton_makeClass() {
   // load file
-  TFile *f = TFile::Open("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/MCFakeRateMerged/diphoton_fakeRate_GGJets_M-1000To2000_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root");
+  TFile *f = TFile::Open("root://cmsxrootd.fnal.gov//store/user/abuccill/diphoton-analysis/fake_rate_real_templates/diphoton_fake_rate_real_templates_GGJets_M-4000To6000_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root");
   
   // list the contents of this file
   f->ls();

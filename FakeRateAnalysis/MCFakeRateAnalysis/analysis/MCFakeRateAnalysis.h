@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Mon Feb  6 12:11:51 2017 by ROOT version 6.02/13
+// Mon Feb  6 17:17:18 2017 by ROOT version 6.02/13
 // from TTree fTree/PhotonTree
-// found on file: ../../../ExoDiPhotonMCFakeRateRealTemplateAnalyzer/test/out_default_GGJets_M-500To1000_Pt-50_13TeV-sherpa.root
+// found on file: root://cmsxrootd.fnal.gov//store/user/abuccill/diphoton-analysis/fake_rate_real_templates/diphoton_fake_rate_real_templates_GGJets_M-4000To6000_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root
 //////////////////////////////////////////////////////////
 
 #ifndef MCFakeRateAnalysis_h
@@ -1000,7 +1000,7 @@ public :
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual void     Loop(const Char_t*);
+   virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
 };
@@ -1013,11 +1013,11 @@ MCFakeRateAnalysis::MCFakeRateAnalysis(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("../../../ExoDiPhotonMCFakeRateRealTemplateAnalyzer/test/out_default_GGJets_M-500To1000_Pt-50_13TeV-sherpa.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmsxrootd.fnal.gov//store/user/abuccill/diphoton-analysis/fake_rate_real_templates/diphoton_fake_rate_real_templates_GGJets_M-4000To6000_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("../../../ExoDiPhotonMCFakeRateRealTemplateAnalyzer/test/out_default_GGJets_M-500To1000_Pt-50_13TeV-sherpa.root");
+         f = new TFile("root://cmsxrootd.fnal.gov//store/user/abuccill/diphoton-analysis/fake_rate_real_templates/diphoton_fake_rate_real_templates_GGJets_M-4000To6000_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("../../../ExoDiPhotonMCFakeRateRealTemplateAnalyzer/test/out_default_GGJets_M-500To1000_Pt-50_13TeV-sherpa.root:/diphoton");
+      TDirectory * dir = (TDirectory*)f->Get("root://cmsxrootd.fnal.gov//store/user/abuccill/diphoton-analysis/fake_rate_real_templates/diphoton_fake_rate_real_templates_GGJets_M-4000To6000_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root:/diphoton");
       dir->GetObject("fTree",tree);
 
    }
