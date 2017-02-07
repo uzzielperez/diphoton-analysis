@@ -54,7 +54,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, s
   gSystem->AddIncludePath("-I$ROOFITSYS/include");
 
   // for real templates (same for data and mc)
-  TFile *historealmcfile = TFile::Open("../../MCFakeRateAnalysis/analysis/GGJets_M-200To500_vanilla.root");
+  TFile *historealmcfile = TFile::Open("../../MCFakeRateAnalysis/analysis/diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
   // numerator, fake templates, and denominator (choose data or mc)
   TFile *histojetfile;
   if (is_data) histojetfile = TFile::Open("../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root");
@@ -125,6 +125,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, s
   model.plotOn(xframe);
   model.plotOn(xframe,Components(extpdfsig),LineColor(2),LineStyle(2));
   model.plotOn(xframe,Components(extpdffake),LineColor(8),LineStyle(2));
+  data.plotOn(xframe);
 
   canvas->cd(1);
 
@@ -156,10 +157,10 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, s
   for (int i = 0; i < xframe->numItems(); i++) {
     cout << xframe->nameOf(i) << endl;
     TString objname = xframe->nameOf(i);
-    if (objname.Contains("data"))                                    objdata = (TObject*)xframe->findObject(objname.Data());
-    if (objname.Contains("model") && !objname.Contains("Comp"))      objmodel = (TObject*)xframe->findObject(objname.Data());
-    if (objname.Contains("model") && objname.Contains("Signal"))     objsignal = (TObject*)xframe->findObject(objname.Data());
-    if (objname.Contains("model") && objname.Contains("Background")) objfake = (TObject*)xframe->findObject(objname.Data());
+    if (objname.Contains("data"))                                    objdata = (TObject*) xframe->findObject(objname.Data());
+    if (objname.Contains("model") && !objname.Contains("Comp"))      objmodel = (TObject*) xframe->findObject(objname.Data());
+    if (objname.Contains("model") && objname.Contains("Signal"))     objsignal = (TObject*) xframe->findObject(objname.Data());
+    if (objname.Contains("model") && objname.Contains("Background")) objfake = (TObject*) xframe->findObject(objname.Data());
   }
 
   TLegend *legend = new TLegend(0.65,0.65,0.85,0.85);
@@ -189,7 +190,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, s
   
   gPad->SetLogy();
 
-  canvas->Print( TString("fakeRatePlot")+ etaBin + TString("_pT") + ptBin + postFix + TString(".png") );
+  canvas->Print( TString("fakeRatePlot")+ etaBin + TString("_pT") + ptBin + postFix + TString(".pdf") );
   
   // change to TH1D just so we can change the name
   TH1D *hobjdata;
@@ -197,12 +198,12 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, s
   TH1D *hobjsignal;
   TH1D *hobjfake;
   for (int i = 0; i < xframe->numItems(); i++) {
-    cout<<xframe->nameOf(i)<<endl;
+    cout << xframe->nameOf(i) << endl;
     TString objname = xframe->nameOf(i);
-    if (objname.Contains("data"))                                    hobjdata = (TH1D*)xframe->findObject(objname.Data());
-    if (objname.Contains("model") && !objname.Contains("Comp"))      hobjmodel = (TH1D*)xframe->findObject(objname.Data());
-    if (objname.Contains("model") && objname.Contains("Signal"))     hobjsignal = (TH1D*)xframe->findObject(objname.Data());
-    if (objname.Contains("model") && objname.Contains("Background")) hobjfake = (TH1D*)xframe->findObject(objname.Data());
+    if (objname.Contains("data"))                                    hobjdata = (TH1D*) xframe->findObject(objname.Data());
+    if (objname.Contains("model") && !objname.Contains("Comp"))      hobjmodel = (TH1D*) xframe->findObject(objname.Data());
+    if (objname.Contains("model") && objname.Contains("Signal"))     hobjsignal = (TH1D*) xframe->findObject(objname.Data());
+    if (objname.Contains("model") && objname.Contains("Background")) hobjfake = (TH1D*) xframe->findObject(objname.Data());
   }
 
   hobjdata->SetName( TString("data") + etaBin + TString("_pt") + ptBin + postFix );
