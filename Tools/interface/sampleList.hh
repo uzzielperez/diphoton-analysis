@@ -22,7 +22,9 @@
 #include "diphoton-analysis/Tools/interface/tdrstyle.hh"
 
 
-const double luminosity=2.69; // fb^-1
+ double luminosity = 2.69; // fb^-1
+const double luminosity2016 = 36.8; // fb^-1
+const double luminosityRatio = 36.8/2.69;
 
 std::map<std::string, TChain*> chains;
 std::map<std::string, int> lineStyles;
@@ -84,9 +86,18 @@ void init()
   TString treeType("diphoton/fTree");
 
   TChain *chData = new TChain(treeType);
-  //  chData->Add("/afs/cern.ch/user/c/cawest/links/DoubleEG__Run2015D/out_DoubleEG_Run2015D-16Dec2015-v2_numEvent100_126.root");
   chData->Add(filestring("DoubleEG__Run2015D"));
   chData->Add(filestring("DoubleEG__Run2015C_25ns"));
+  TChain *chData2016 = new TChain(treeType);
+  chData2016->Add(filestring("DoubleEG__Run2016B"));
+  chData2016->Add(filestring("DoubleEG__Run2016C"));
+  chData2016->Add(filestring("DoubleEG__Run2016D"));
+  chData2016->Add(filestring("DoubleEG__Run2016E"));
+  chData2016->Add(filestring("DoubleEG__Run2016F"));
+  chData2016->Add(filestring("DoubleEG__Run2016G"));
+  chData2016->Add(filestring("DoubleEG__Run2016H"));
+  // both -v2 and -v3 should be included
+  chData2016->Add(filestring("DoubleEG__Run2016H-PromptReco-v2"));
   TChain *chGG = new TChain(treeType);
   chGG->Add(filestring("GGJets_M-60To200_Pt-50_13TeV-sherpa"));
   chGG->Add(filestring("GGJets_M-200To500_Pt-50_13TeV-sherpa"));
@@ -147,6 +158,7 @@ void init()
   std::vector<std::string> sampleNames = {"data", "gg", "gj", "jj", "vg", "w", "dy", "ttg", "gg70"};
 
   chains["data"] = chData;
+  chains["data_2016"] = chData2016;
   chains["gg"] = chGG;
   chains["ggGen"] = chGGGen;
   chains["gj"] = chGJ;
@@ -169,6 +181,7 @@ void init()
   }
 
   fillColors["data"]=kWhite;
+  fillColors["data_2016"]=kWhite;
   fillColors["gg"]=kCyan;
   fillColors["gj"]=kBlue;
   fillColors["jj"]=kSpring;
@@ -179,6 +192,7 @@ void init()
   fillColors["gg70"]=kCyan;
 
   prettyName["data"]="Data";
+  prettyName["data_2016"]="Data (2016)";
   prettyName["gg"]="Diphoton";
   prettyName["gj"]="#gamma + jets";
   prettyName["jj"]="Multijet";

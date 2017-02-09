@@ -5,6 +5,8 @@
 
 int main(int argc, char *argv[])
 {
+  std::string data_year("2016");
+
   std::string region;
 
   if(argc!=2) {
@@ -23,10 +25,9 @@ int main(int argc, char *argv[])
 
   std::string kfactor = kfactorString("BB", "R1F1");
   if(endcap) kfactor = kfactorString("BE", "R1F1");
-  std::cout << kfactor << std::endl;
-  return 0;
-  std::string cut("Photon1.pt>75&&Photon2.pt>75 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442 && isGood");
-  if(endcap) cut = "Photon1.pt>75&&Photon2.pt>75&& isGood && ( !(abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442) && ((abs(Photon1.eta)<1.4442 && (abs(Photon2.eta)>1.56&&abs(Photon2.eta)<2.5)) || (abs(Photon2.eta)<1.4442 && (abs(Photon1.eta)>1.56&&abs(Photon1.eta)<2.5))))";
+
+  std::string cut("Photon1.pt>75&&Photon2.pt>75 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442 && Diphoton.Minv < 1000 && isGood");
+  if(endcap) cut = "Photon1.pt>75&&Photon2.pt>75 && Diphoton.Minv < 1000 && isGood && ( !(abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442) && ((abs(Photon1.eta)<1.4442 && (abs(Photon2.eta)>1.56&&abs(Photon2.eta)<2.5)) || (abs(Photon2.eta)<1.4442 && (abs(Photon1.eta)>1.56&&abs(Photon1.eta)<2.5))))";
   int nbins=100;
   double xmin=0.0; // GeV
   double xmax=2000; // GeV
@@ -35,7 +36,7 @@ int main(int argc, char *argv[])
   init();
 
   // define samples to be used in histograms
-  sample data("data", "Data");
+  sample data("data_" + data_year, "Data");
   sample gg("gg", "#gamma#gamma", kfactor);
   sample gj("gj", "#gamma + jets");
   sample vg("vg", "V#gamma");
@@ -59,12 +60,16 @@ int main(int argc, char *argv[])
   plot p5(samples, "Diphoton.deltaEta", cut, nbins/2, -5, 5);
   plot p6(samples, "abs(Diphoton.cosThetaStar)", cut, 20, 0, 1);
 
-  p0.output("outputdir");
-  p1.output("outputdir");
-  p2.output("outputdir");
-  p3.output("outputdir");
-  p4.output("outputdir");
-  p5.output("outputdir");
-  p6.output("outputdir");
+  std::string extraFilenameInfo(region);
+  extraFilenameInfo += "_";
+  extraFilenameInfo += data_year;
+
+  p0.output("outputdir", extraFilenameInfo);
+  p1.output("outputdir", extraFilenameInfo);
+  p2.output("outputdir", extraFilenameInfo);
+  p3.output("outputdir", extraFilenameInfo);
+  p4.output("outputdir", extraFilenameInfo);
+  p5.output("outputdir", extraFilenameInfo);
+  p6.output("outputdir", extraFilenameInfo);
 
 }

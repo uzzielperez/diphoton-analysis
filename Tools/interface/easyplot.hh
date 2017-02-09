@@ -56,7 +56,8 @@ sample::sample(std::string name, std::string label, std::string extraWeight="1.0
   m_fillStyle(fillStyles[m_name]),
   m_fillColor(fillColors[m_name])
 {
-  isData=false;
+  isData = false;
+  if(name.find("data")!=std::string::npos) isData = true;
 }
 
 // make compiler happy
@@ -66,11 +67,13 @@ class plot {
 
 public:
   plot(std::vector<sample> samples, std::string variable, std::string cut, int nbins, double xmin, double xmax);
-  void output(std::string outputDirectory);
+  void output(const std::string& outputDirectory, const std::string& extraString);
   std::string variable() { return m_variable; }
   std::string cut() {return m_cut; }
 
 private:
+  bool is2016Data();
+
   std::vector<sample> m_samples;
   std::string m_variable;
   std::string m_cut;
@@ -88,23 +91,33 @@ plot::plot(std::vector<sample> samples, std::string variable, std::string cut, i
   m_xmin(xmin),
   m_xmax(xmax)
 { 
+
+  if(is2016Data()) luminosity = luminosity2016;
 }
 
+// set luminosity to 2016 luminosity if one of the samples in the plot contains 2016 data
+bool plot::is2016Data()
+{
+  for(auto isample : m_samples) {
+    if(isample.name().find("2016") != std::string::npos) return true;
+  }
 
+  return false;
+}
 
-void plot::output(std::string outputDirectory)
+void plot::output(const std::string& outputDirectory, const std::string& extraString)
 {
   TCanvas *c = new TCanvas;
   c->SetLogy();
   std::vector<TH1D*> hists;
-  
+
+  THStack *hs = new THStack("hs", "hs");
   for(auto isample : m_samples) {
     TString newCut(m_cut.c_str());
-    if(isample.name().find("data")==std::string::npos) newCut = Form("weightAll*%6.6e*(%s)*((%s)*(%s))",
-								     luminosity, isample.extraWeight().c_str(), m_cut.c_str(), isample.extraCut().c_str());
-    // std::string histName(isample.name());
-    // histName += "_";
-    // histName += m_variable;
+    if(isample.isData) newCut = Form("(%s)*((%s)*(%s))",
+				     isample.extraWeight().c_str(), m_cut.c_str(), isample.extraCut().c_str());
+    else newCut = Form("weightAll*%6.6e*(%s)*((%s)*(%s))",
+				     luminosity, isample.extraWeight().c_str(), m_cut.c_str(), isample.extraCut().c_str());
     hists.push_back(new TH1D(isample.name().c_str(), isample.name().c_str(), m_nbins, m_xmin, m_xmax));
     std::cout << "Creating histogram " << isample.name() << " for variable " << m_variable << std::endl;
     isample.chain()->Project(isample.name().c_str(), m_variable.c_str(), newCut.Data());
@@ -113,13 +126,8 @@ void plot::output(std::string outputDirectory)
     hists.back()->SetLineColor(isample.lineColor());
     hists.back()->SetFillStyle(isample.fillStyle());
     hists.back()->SetFillColor(isample.fillColor());
-  }
-
-  THStack *hs = new THStack("hs", "hs");
-  for(auto ihist : hists) {
     // don't stack the data histogram
-    TString name(ihist->GetName());
-    if(!name.Contains("data")) hs->Add(ihist);
+    if(!isample.isData) hs->Add(hists.back());
   }
 
   TLegend *leg = new TLegend(0.6, 0.6, 0.9, 0.9);
@@ -174,8 +182,8 @@ void plot::output(std::string outputDirectory)
   lat->SetTextFont(42);
   lat->DrawLatexNDC(0.70, 0.96, Form("%1.1f fb^{-1} (13 TeV)", luminosity));
 
-  c->Print(Form("%s/%s.pdf", outputDirectory.c_str(), variable().c_str()));
-  c->Print(Form("%s/%s.root", outputDirectory.c_str(), variable().c_str()));
+  c->Print(Form("%s/%s_%s.pdf", outputDirectory.c_str(), variable().c_str(), extraString.c_str()));
+  c->Print(Form("%s/%s_%s.root", outputDirectory.c_str(), variable().c_str(), extraString.c_str()));
 }
 
 TString reformat(TString input)
