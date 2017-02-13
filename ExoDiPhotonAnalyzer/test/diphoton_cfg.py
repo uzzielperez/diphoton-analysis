@@ -37,6 +37,8 @@ globalTag = 'notset'
 
 # options for data
 JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
+# necessary because in re-MINIAOD the process labels are "PAT", not "RECO"
+isReMINIAOD = False
 if "Run2015" in outName:
     globalTag = '76X_dataRun2_16Dec2015_v0'
 if "Run2016" in outName:
@@ -44,6 +46,9 @@ if "Run2016" in outName:
 #    globalTag = '80X_dataRun2_Prompt_ICHEP16JEC_v0'
     if 'PromptReco' in outName:
         globalTag = '80X_dataRun2_Prompt_v14'
+    elif '03Feb2017' in outName:
+        globalTag = '80X_dataRun2_2016SeptRepro_v7'
+        isReMINIAOD = True
     else:
         globalTag = '80X_dataRun2_2016SeptRepro_v4'
 
@@ -54,7 +59,11 @@ if isMC:
         if "Spring16" in outName:
             globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
         if "Summer16" in outName:
-            globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
+            #globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
+            # the previous tag should only be used when to process
+            # samples intended to match data previous to the
+            # 03Feb2017 re-miniAOD
+            globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
     elif "CMSSW_7" in version:
         globalTag = '76X_mcRun2_asymptotic_v12'
     else:
@@ -85,6 +94,7 @@ process.source = cms.Source(
 # for global tag
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
 process.GlobalTag.globaltag = globalTag
+print "Using global tag: " + globalTag
 
 # geometry for saturation
 process.load("Configuration.StandardSequences.GeometryDB_cff")
@@ -154,6 +164,7 @@ process.diphoton = cms.EDAnalyzer(
     # number of events in the sample (for calculation of event weights)
     nEventsSample = cms.uint32(options.nEventsSample),
     isMC = cms.bool(isMC),
+    isReMINIAOD = cms.bool(isReMINIAOD),
     isolationConeR = cms.double(0.3)
     )
 

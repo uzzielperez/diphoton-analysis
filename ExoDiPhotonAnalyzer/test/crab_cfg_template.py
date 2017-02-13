@@ -42,11 +42,11 @@ elif "Run2015" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100
     # only use 16Dec2015 ReReco
-    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/Reprocessing/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_v2.txt'
+    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/Reprocessing/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver_v2.txt'
 else:
     config.Data.splitting = 'FileBased'
     config.Data.unitsPerJob = 5
 
 config.section_("Site")
 config.Site.storageSite = 'T2_CH_CERN'
-config.Site.blacklist = ['T1_RU_JINR']
+config.Site.blacklist = ['T1_RU_JINR', 'T2_US_Vanderbilt']

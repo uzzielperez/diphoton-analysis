@@ -197,6 +197,8 @@ class ExoDiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResource
 
   // flag to determine if sample is data or MC
   bool isMC_;
+  // flag to determine if sample is reco or re-reco
+  bool isReMINIAOD_;
 
   // genParticles
   ExoDiPhotons::genParticleInfo_t fGenPhoton1Info; // leading
@@ -271,6 +273,7 @@ ExoDiPhotonAnalyzer::ExoDiPhotonAnalyzer(const edm::ParameterSet& iConfig)
     nEventsSample_(iConfig.getParameter<uint32_t>("nEventsSample")),
     genInfoToken_(consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("genInfo"))),
     isMC_(iConfig.getParameter<bool>("isMC")),
+    isReMINIAOD_(iConfig.getParameter<bool>("isReMINIAOD")),
     isolationConeR_(iConfig.getParameter<double>("isolationConeR"))
 {
   //now do what ever initialization is needed
@@ -364,13 +367,13 @@ ExoDiPhotonAnalyzer::ExoDiPhotonAnalyzer(const edm::ParameterSet& iConfig)
   pileupToken_ = consumes<std::vector<PileupSummaryInfo> >( edm::InputTag("slimmedAddPileupInfo") );
 
   // Filter decisions (created in "PAT" process in MC but "RECO" in data)
-  filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","",isMC_?("PAT"):("RECO")) );
+  filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","",(isMC_||isReMINIAOD_)?("PAT"):("RECO")) );
 
   // Trigger decisions
   triggerDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","HLT") );
 
   // trigger prescales
-  prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","",isMC_?("PAT"):("RECO")) );
+  prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","",(isMC_||isReMINIAOD_)?("PAT"):("RECO")) );
 
   // set appropriate year (used for pileup reweighting)
   if(outputFile_.Contains("2015")) year = 2015;
