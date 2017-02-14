@@ -65,13 +65,13 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, s
   TString postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
 
   // get histos
-  TH1F *hfakeTemplate = (TH1F*)histojetfile->Get( TString("sieie") + etaBin + TString("_faketemplate_pt") + ptBin + postFix );
+  TH1F *hfakeTemplate = (TH1F*) histojetfile->Get( TString("sieie") + etaBin + TString("_faketemplate_pt") + ptBin + postFix );
   hfakeTemplate->Print();
-  TH1F *hrealTemplate = (TH1F*)historealmcfile->Get( TString("sieie") + etaBin + TString("_realtemplate_pt") + ptBin );
+  TH1F *hrealTemplate = (TH1F*) historealmcfile->Get( TString("sieie") + etaBin + TString("_realtemplate_pt") + ptBin );
   hrealTemplate->Print();
-  TH1F *hData = (TH1F*)histojetfile->Get( TString("sieie") + etaBin + TString("_numerator_pt") + ptBin);
+  TH1F *hData = (TH1F*) histojetfile->Get( TString("sieie") + etaBin + TString("_numerator_pt") + ptBin);
   hData->Print();
-  TH1F *hdenom = (TH1F*)histojetfile->Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );
+  TH1F *hdenom = (TH1F*) histojetfile->Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );
   hdenom->Print();
 
   // avoiding 0 entries in the histograms
@@ -113,8 +113,11 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, s
   RooAddPdf model("model","sig + background",RooArgList(extpdfsig,extpdffake));
   
   model.fitTo(data,RooFit::Minos(),SumW2Error(kTRUE),PrintEvalErrors(-1));
+
+  int n_bins = 200;
+  if (etaBin.Contains("EE")) n_bins = 100;
+  TH1D* fitHist = (TH1D*) model.createHistogram("sinin",n_bins);
   
-  TH1D* fitHist = (TH1D*)model.createHistogram("sinin",200);
   double fitres = hData->Chi2Test(fitHist,"CHI2/NDF");
   // cout << "CHI2 FIT RES = " << fitres << endl;
       
@@ -185,7 +188,8 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, s
   xframeClone->GetXaxis()->SetRangeUser(0.,0.03);
   if (etaBin.Contains("EE")) xframeClone->GetXaxis()->SetRangeUser(0.,0.08);
   xframeClone->GetYaxis()->SetRangeUser(1.e-1,10.0*xframemax);
-  xframeClone->GetYaxis()->SetTitle("Events / ( 0.0005 )");
+  xframeClone->GetYaxis()->SetTitle("Events / ( 0.0005 )"); // 200 bins from 0-0.1
+  if (etaBin.Contains("EE")) xframeClone->GetYaxis()->SetTitle("Events / ( 0.001 )"); // 100 bins from 0-0.1
   xframeClone->GetYaxis()->SetTitleOffset(1.2);
   
   gPad->SetLogy();
@@ -240,9 +244,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, s
   float RatioError = Ratio*sqrt( ((fakeerrormax/fakevalue)*(fakeerrormax/fakevalue) + (sigerrormax/sigvalue)*(sigerrormax/sigvalue)) );
   cout << "Ratio " << Ratio << " +- " << RatioError << endl;
 
-  int binnr = 21; // bin with upper edge = 0.0105, the sieie cut in the barrel
-  if (etaBin.Contains("EE")) binnr = 56; // bin with upper edge = 0.028, the sieie
-  float numerator = hData->Integral(0,binnr);
+  float numerator = hData->Integral(0,hData->FindBin(sininCut)-1); // integrate to bin with upper edge at sieie cute
   float denominator = hdenom->GetBinContent( denomBin ); // pT bin in denominator pT distribution
   float contamination = sigvalue;
 

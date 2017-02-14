@@ -190,7 +190,7 @@ void fakeRateCalculation() {
     fakeRatesEE.at(j)->GetYaxis()->SetTitle("fake rate");
     fakeRatesEE.at(j)->GetYaxis()->SetTitleOffset(1.6);
     
-    c.SaveAs("fake_rate"+postFix+".png");
+    c.SaveAs("fake_rate"+postFix+".pdf");
   }
   
   outfile2.Close();

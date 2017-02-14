@@ -50,7 +50,7 @@ void MCFakeRateAnalysis::Loop()
     hEB->Sumw2();
     sigmaIetaIetaEB.push_back(hEB);
     
-    TH1D *hEE = new TH1D(Form("sieieEE_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",200,0.,0.1);
+    TH1D *hEE = new TH1D(Form("sieieEE_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
     hEE->Sumw2();
     sigmaIetaIetaEE.push_back(hEE);
   }
