@@ -114,9 +114,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, s
   
   model.fitTo(data,RooFit::Minos(),SumW2Error(kTRUE),PrintEvalErrors(-1));
 
-  int n_bins = 200;
-  if (etaBin.Contains("EE")) n_bins = 100;
-  TH1D* fitHist = (TH1D*) model.createHistogram("sinin",n_bins);
+  TH1D* fitHist = (TH1D*) model.createHistogram("sinin",hData->GetNbinsX());
   
   double fitres = hData->Chi2Test(fitHist,"CHI2/NDF");
   // cout << "CHI2 FIT RES = " << fitres << endl;
@@ -184,12 +182,11 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, s
   
   xframeClone->Draw();
   xframe->Draw("same");
-  
+
   xframeClone->GetXaxis()->SetRangeUser(0.,0.03);
   if (etaBin.Contains("EE")) xframeClone->GetXaxis()->SetRangeUser(0.,0.08);
   xframeClone->GetYaxis()->SetRangeUser(1.e-1,10.0*xframemax);
-  xframeClone->GetYaxis()->SetTitle("Events / ( 0.0005 )"); // 200 bins from 0-0.1
-  if (etaBin.Contains("EE")) xframeClone->GetYaxis()->SetTitle("Events / ( 0.001 )"); // 100 bins from 0-0.1
+  xframeClone->GetYaxis()->SetTitle(xframe->GetYaxis()->GetTitle());
   xframeClone->GetYaxis()->SetTitleOffset(1.2);
   
   gPad->SetLogy();
