@@ -34,10 +34,10 @@ TChain* getChain()
 int main()
 {
   std::map<TString, TString> cuts, cutsNoIso;
-  cuts["BB"] = ("SherpaGenPhoton1.pt>75 && SherpaGenPhoton2.pt>75 && abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442 && SherpaGenDiphoton.Minv>230 && SherpaGenDiphoton.Minv<2500 && SherpaGenPhoton1_iso<5 && SherpaGenPhoton2_iso<5");
-  cuts["BE"] = ("SherpaGenPhoton1.pt>75 && SherpaGenPhoton2.pt>75 && !(abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442) && ((abs(SherpaGenPhoton1.eta)<1.4442 && (abs(SherpaGenPhoton2.eta)>1.56 && abs(SherpaGenPhoton2.eta)<2.5)) || (abs(SherpaGenPhoton2.eta)<1.4442 && (abs(SherpaGenPhoton1.eta)>1.56 && abs(SherpaGenPhoton1.eta)<2.5))) && SherpaGenDiphoton.Minv>320 && SherpaGenDiphoton.Minv<2500 && SherpaGenPhoton1_iso<5 && SherpaGenPhoton2_iso<5");
+  cuts["BB"] = ("SherpaGenPhoton1.pt>75 && SherpaGenPhoton2.pt>75 && abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442 && SherpaGenDiphoton.Minv>230 && SherpaGenDiphoton.Minv<4000 && SherpaGenPhoton1_iso<5 && SherpaGenPhoton2_iso<5");
+  cuts["BE"] = ("SherpaGenPhoton1.pt>75 && SherpaGenPhoton2.pt>75 && !(abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442) && ((abs(SherpaGenPhoton1.eta)<1.4442 && (abs(SherpaGenPhoton2.eta)>1.56 && abs(SherpaGenPhoton2.eta)<2.5)) || (abs(SherpaGenPhoton2.eta)<1.4442 && (abs(SherpaGenPhoton1.eta)>1.56 && abs(SherpaGenPhoton1.eta)<2.5))) && SherpaGenDiphoton.Minv>320 && SherpaGenDiphoton.Minv<4000 && SherpaGenPhoton1_iso<5 && SherpaGenPhoton2_iso<5");
   cutsNoIso["BB"] = ("SherpaGenPhoton1.pt>75 && SherpaGenPhoton2.pt>75 && abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442 && SherpaGenDiphoton.Minv>230");
-  cutsNoIso["BE"] = ("SherpaGenPhoton1.pt>75 && SherpaGenPhoton2.pt>75 && !(abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442) && ((abs(SherpaGenPhoton1.eta)<1.4442 && (abs(SherpaGenPhoton2.eta)>1.56 && abs(SherpaGenPhoton2.eta)<2.5)) || (abs(SherpaGenPhoton2.eta)<1.4442 && (abs(SherpaGenPhoton1.eta)>1.56 && abs(SherpaGenPhoton1.eta)<2.5))) && SherpaGenDiphoton.Minv>320 && SherpaGenDiphoton.Minv<2500");
+  cutsNoIso["BE"] = ("SherpaGenPhoton1.pt>75 && SherpaGenPhoton2.pt>75 && !(abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442) && ((abs(SherpaGenPhoton1.eta)<1.4442 && (abs(SherpaGenPhoton2.eta)>1.56 && abs(SherpaGenPhoton2.eta)<2.5)) || (abs(SherpaGenPhoton2.eta)<1.4442 && (abs(SherpaGenPhoton1.eta)>1.56 && abs(SherpaGenPhoton1.eta)<2.5))) && SherpaGenDiphoton.Minv>320 && SherpaGenDiphoton.Minv<4000");
   double lumi=0.001; // weights gives yield per fb^-1; we want yield per pb^-1
 
   TChain *ch = getChain();
@@ -51,7 +51,7 @@ int main()
     outFile->cd(iregion);
 
     std::vector<TH1D*> hists;
-    hists.push_back(getHist(ch, "hist1", 100, 500, 2500, lumi, cuts[iregion]));
+    hists.push_back(getHist(ch, "hist1", 70, 500, 4000, lumi, cuts[iregion]));
     hists.push_back(getHist(ch, "hist2", 100, 0, 2000, lumi, cuts[iregion]));
     hists.push_back(getHist(ch, "hist3", 100, 0, 2000, lumi, cuts[iregion]));
     hists.push_back(getHist(ch, "hist4", 100, 0, 2000, lumi, cuts[iregion]));
@@ -64,6 +64,8 @@ int main()
     hists.push_back(getHist(ch, "hist11", 20, 0, 1, lumi, cuts[iregion]));
     hists.push_back(getHist(ch, "hist12", 100, 0, 500, lumi, cutsNoIso[iregion]));
     hists.push_back(getHist(ch, "hist13", 100, 0, 500, lumi, cutsNoIso[iregion]));
+    hists.push_back(getHist(ch, "hist14", 70, 500, 4000, lumi, cutsNoIso[iregion]));
+    hists.push_back(getHist(ch, "hist15", 70, 500, 4000, lumi, cutsNoIso[iregion]));
 
     for( auto ihist : hists) {
       ihist->Write();
@@ -90,6 +92,8 @@ TString getVariableByHistName(TString histName)
   if(histName.EqualTo("hist11")) return "abs(SherpaGenDiphoton.cosThetaStar)";
   if(histName.EqualTo("hist12")) return "SherpaGenPhoton1_iso";
   if(histName.EqualTo("hist13")) return "SherpaGenPhoton2_iso";
+  if(histName.EqualTo("hist14")) return "SherpaGenPhoton1_iso";
+  if(histName.EqualTo("hist15")) return "SherpaGenPhoton2_iso";
 
 
 

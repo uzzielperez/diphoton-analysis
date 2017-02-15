@@ -22,9 +22,9 @@
 #include "diphoton-analysis/Tools/interface/tdrstyle.hh"
 
 
- double luminosity = 2.69; // fb^-1
-const double luminosity2016 = 36.8; // fb^-1
-const double luminosityRatio = 36.8/2.69;
+double luminosity = 2.69; // fb^-1
+const double luminosity2016 = 35.9; // fb^-1
+const double luminosityRatio = 35.9/2.69;
 
 std::map<std::string, TChain*> chains;
 std::map<std::string, int> lineStyles;
@@ -157,7 +157,7 @@ void init()
 
   std::vector<std::string> sampleNames = {"data", "gg", "gj", "jj", "vg", "w", "dy", "ttg", "gg70"};
 
-  chains["data"] = chData;
+  chains["data_2015"] = chData;
   chains["data_2016"] = chData2016;
   chains["gg"] = chGG;
   chains["ggGen"] = chGGGen;
