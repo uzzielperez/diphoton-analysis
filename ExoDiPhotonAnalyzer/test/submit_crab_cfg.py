@@ -44,7 +44,9 @@ DATASETS = [[]]
 
 # diphoton samples (2016 data)
 if do2016data:
-  DATASETS.append(["/DoubleEG/Run2016B-03Feb2017_ver1-v1/MINIAOD"])
+# The /DoubleEG/Run2016B-03Feb2017_ver1-v1 dataset does not contain any lumisections
+# passing the good run JSON
+#  DATASETS.append(["/DoubleEG/Run2016B-03Feb2017_ver1-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2016B-03Feb2017_ver2-v2/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2016C-03Feb2017-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2016D-03Feb2017-v1/MINIAOD"])

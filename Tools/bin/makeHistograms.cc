@@ -33,8 +33,8 @@ void allSamples(const std::string &region, TFile * output)
   double xMax = 6000.;
 
   std::map<std::string, std::string> cuts;
-  cuts["BB"] = "isGood*(Photon1.pt>75 && Photon2.pt>75 && Photon1.isEB && Photon2.isEB)";
-  cuts["BE"] = "isGood*(Photon1.pt>75 && Photon2.pt>75 && ( (Photon1.isEB && Photon2.isEE) || (Photon2.isEB &&  Photon1.isEE )))";
+  cuts["BB"] = "isGood*(Diphoton.deltaR > 0.45 && Photon1.pt>75 && Photon2.pt>75 && Photon1.isEB && Photon2.isEB)";
+  cuts["BE"] = "isGood*(Diphoton.deltaR > 0.45 && Photon1.pt>75 && Photon2.pt>75 && ( (Photon1.isEB && Photon2.isEE) || (Photon2.isEB &&  Photon1.isEE )))";
 
   std::vector<std::string> samples = getSampleList();
 
@@ -52,9 +52,8 @@ void allSamples(const std::string &region, TFile * output)
     // skip the Sherpa GEN trees
     if( isample.compare("ggGen") == 0) continue;
     // apply weights for all samples except data
-    if( isample.compare("data") != 0 ) sampleCut+="*weightAll";
-    // need to re-run to add this trigger
-    //    else sampleCut+="*HLT_DoublePhoton60_v1";
+    if( isample.find("data") == std::string::npos ) sampleCut+="*weightAll";
+    else sampleCut += "*(HLT_DoublePhoton60>0)";
     // apply k-factor to Sherpa GG sample
     if( isample.compare("gg") == 0) sampleCut += "*" + kfactorString(region, "R1F1");
     if( isample.compare("gg_R2F2") == 0) sampleCut += "*" + kfactorString(region, "R2F2");
