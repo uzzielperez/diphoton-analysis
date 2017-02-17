@@ -54,7 +54,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString ptBin, T
   TString data_filename = "";
   if (sample == "data") data_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
   if (sample == "mc_QCD") data_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "mc_GJets") data_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_merged.root";
+  if (sample == "mc_GJets") data_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
   TFile *histojetfile = TFile::Open(data_filename);
   
   double sidebandLow = sideband.first;
