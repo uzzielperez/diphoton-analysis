@@ -28,19 +28,13 @@
 //
 ////////////////////////////////////////////////////////
 
-std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin) {
-
+std::pair<double,double> rooFitFakeRateProducer(TString sample, TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin) {
+  
   cout << endl;
   cout << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" << endl;
     
-  // true - data
-  // false - mc (closure test)
-  bool is_data = true;
-  if (is_data) cout << "Running over data." << endl;
-  if (!is_data) cout << "Running over MC." << endl;
-
   cout << "Starting rooFitFakeRateProducer" << endl;
-  cout << "Using " << etaBin << ", pt " << ptBin << ", " << sideband.first << " < CHIso < " << sideband.second << endl;
+  cout << "Using " << sample << ", " << etaBin << ", pt " << ptBin << ", " << sideband.first << " < CHIso < " << sideband.second << endl;
   
   using namespace RooFit;
   using namespace std;
@@ -55,10 +49,13 @@ std::pair<double,double> rooFitFakeRateProducer(TString ptBin, TString etaBin, s
 
   // for real templates (same for data and mc)
   TFile *historealmcfile = TFile::Open("../../MCFakeRateAnalysis/analysis/diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
-  // numerator, fake templates, and denominator (choose data or mc)
-  TFile *histojetfile;
-  if (is_data) histojetfile = TFile::Open("../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root");
-  if (!is_data) histojetfile = TFile::Open("../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
+  
+  // for numerator, fake templates, and denominator (choose data or mc)
+  TString data_filename = "";
+  if (sample == "data") data_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
+  if (sample == "mc_QCD") data_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "mc_GJets") data_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_merged.root";
+  TFile *histojetfile = TFile::Open(data_filename);
   
   double sidebandLow = sideband.first;
   double sidebandHigh = sideband.second;

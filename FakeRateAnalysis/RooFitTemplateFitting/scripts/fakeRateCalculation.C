@@ -5,14 +5,17 @@ double fakeRateUncertainty(double denominator, double fakeerror, double fakerate
   return uncert;
 }
 
-void fakeRateCalculation() {
+void fakeRateCalculation(TString sample) {
 
-  // true - data
-  // false - mc (closure test)
-  bool is_data = true;
-  if (is_data) cout << "Running over data." << endl;
-  if (!is_data) cout << "Running over MC." << endl;
+  cout << "\nStarting fakeRateCalculation()\n" << endl;
   
+  if (sample != "data" && sample != "mc_QCD" && "mc_GJets") {
+    cout << "Choose sample: data, mc_QCD, or mc_GJets\n" << endl;
+    return;
+  }
+
+  cout << "Using sample: " << sample << endl;
+    
   // use stopwatch to time
   TStopwatch sw;
   sw.Start();
@@ -70,8 +73,9 @@ void fakeRateCalculation() {
   outfile.Close(); // create the file so it can be updated in the rooFitFakeRateProducer, we don't need it open here too
 
   TString input_filename;
-  if (is_data) input_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
-  if (!is_data) input_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "data") input_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
+  if (sample == "mc_QCD") input_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "mc_GJets") input_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_merged.root";  
   TFile infile(input_filename,"read");
   
   // debug vectors
@@ -92,8 +96,8 @@ void fakeRateCalculation() {
       TString postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
       
       // run calculation twice, once for EB and once for EE
-      std::pair<double,double> resEB = rooFitFakeRateProducer(binName,TString("EB"),chIsoSidebands.at(j),i+1); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
-      std::pair<double,double> resEE = rooFitFakeRateProducer(binName,TString("EE"),chIsoSidebands.at(j),i+1);
+      std::pair<double,double> resEB = rooFitFakeRateProducer(sample,binName,TString("EB"),chIsoSidebands.at(j),i+1); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
+      std::pair<double,double> resEE = rooFitFakeRateProducer(sample,binName,TString("EE"),chIsoSidebands.at(j),i+1);
 
       // record fake rate in TGraphs
       TString histNameEB = TString::Format("PtEB_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
@@ -195,6 +199,8 @@ void fakeRateCalculation() {
   
   outfile2.Close();
 
+  cout << "\nEnding fakeRateCalculation()\n" << endl;
+  
   // stop stopwatch
   sw.Stop();
 
