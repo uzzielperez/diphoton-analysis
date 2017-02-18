@@ -803,13 +803,15 @@ void ExoDiPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParti
   }
   else std::cout << "Exactly two interacting partons not found!" << std::endl;
 
-  if (genPhotons.size() < 2) throw cms::Exception("GenPhotonError") << "There aren't two hard process photons in the event. There are " << genPhotons.size() << ". How is this possible?!? Investigate.";
-
+  // Samples with only fakes may have no hard-process photons
+  if(genPhotons.size() < 1) return;
   const reco::GenParticle *genPhoton1 = &(*genPhotons.at(0));
-  const reco::GenParticle *genPhoton2 = &(*genPhotons.at(1));  
-
-  // fill gen photon info
   if (genPhoton1) ExoDiPhotons::FillGenParticleInfo(fGenPhoton1Info, genPhoton1);
+
+  // Samples with one fake may have only one hard-process photon
+  if(genPhotons.size() < 2) return;
+  // fill gen photon info
+  const reco::GenParticle *genPhoton2 = &(*genPhotons.at(1));
   if (genPhoton2) ExoDiPhotons::FillGenParticleInfo(fGenPhoton2Info, genPhoton2);
 
   // fill gen diphoton info
