@@ -22,9 +22,9 @@
 #include "diphoton-analysis/Tools/interface/tdrstyle.hh"
 
 
-double luminosity = 2.69; // fb^-1
+double luminosity = 2.62; // fb^-1
 const double luminosity2016 = 35.9; // fb^-1
-const double luminosityRatio = 35.9/2.69;
+const double luminosityRatio = 35.9/2.62;
 
 std::map<std::string, TChain*> chains;
 std::map<std::string, int> lineStyles;
@@ -88,16 +88,27 @@ void init()
   TChain *chData = new TChain(treeType);
   chData->Add(filestring("DoubleEG__Run2015D"));
   chData->Add(filestring("DoubleEG__Run2015C_25ns"));
+  TChain *chData2016_preREMINIAOD = new TChain(treeType);
+  // chData2016_preREMINIAOD->Add(filestring("DoubleEG__Run2016B"));
+  // chData2016_preREMINIAOD->Add(filestring("DoubleEG__Run2016C"));
+  // chData2016_preREMINIAOD->Add(filestring("DoubleEG__Run2016D"));
+  // chData2016_preREMINIAOD->Add(filestring("DoubleEG__Run2016E"));
+  // chData2016_preREMINIAOD->Add(filestring("DoubleEG__Run2016F"));
+  // chData2016_preREMINIAOD->Add(filestring("DoubleEG__Run2016G"));
+  // chData2016_preREMINIAOD->Add(filestring("DoubleEG__Run2016H"));
+  // // both -v2 and -v3 should be included
+  // chData2016_preREMINIAOD->Add(filestring("DoubleEG__Run2016H-PromptReco-v2"));
   TChain *chData2016 = new TChain(treeType);
-  chData2016->Add(filestring("DoubleEG__Run2016B"));
-  chData2016->Add(filestring("DoubleEG__Run2016C"));
-  chData2016->Add(filestring("DoubleEG__Run2016D"));
-  chData2016->Add(filestring("DoubleEG__Run2016E"));
-  chData2016->Add(filestring("DoubleEG__Run2016F"));
-  chData2016->Add(filestring("DoubleEG__Run2016G"));
-  chData2016->Add(filestring("DoubleEG__Run2016H"));
-  // both -v2 and -v3 should be included
-  chData2016->Add(filestring("DoubleEG__Run2016H-PromptReco-v2"));
+  chData2016->Add(filestring("DoubleEG__Run2016B-03Feb2017"));
+  chData2016->Add(filestring("DoubleEG__Run2016C-03Feb2017"));
+  chData2016->Add(filestring("DoubleEG__Run2016D-03Feb2017"));
+  chData2016->Add(filestring("DoubleEG__Run2016E-03Feb2017"));
+  chData2016->Add(filestring("DoubleEG__Run2016F-03Feb2017"));
+  chData2016->Add(filestring("DoubleEG__Run2016G-03Feb2017"));
+  // both _ver2 and _ver3 should be included, corresponding to -v2 and -v3
+  // of the PromptReco
+  chData2016->Add(filestring("DoubleEG__Run2016H-03Feb2017_ver2"));
+  chData2016->Add(filestring("DoubleEG__Run2016H-03Feb2017_ver3"));
   TChain *chGG = new TChain(treeType);
   chGG->Add(filestring("GGJets_M-60To200_Pt-50_13TeV-sherpa"));
   chGG->Add(filestring("GGJets_M-200To500_Pt-50_13TeV-sherpa"));
@@ -106,6 +117,8 @@ void init()
   chGG->Add(filestring("GGJets_M-2000To4000_Pt-50_13TeV-sherpa"));
   chGG->Add(filestring("GGJets_M-4000To6000_Pt-50_13TeV-sherpa"));
   chGG->Add(filestring("GGJets_M-6000To8000_Pt-50_13TeV-sherpa"));
+  TChain *chGG_aMC_2015 = new TChain(treeType);
+  chGG_aMC_2015->Add(filestring("DiPhotonJets_MGG-80toInf_2015"));
   TChain *chGJ = new TChain(treeType);
   chGJ->Add(filestring("GJets_HT-40To100"));
   chGJ->Add(filestring("GJets_HT-100To200"));
@@ -124,8 +137,10 @@ void init()
   chVG->Add(filestring("WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX"));
   chVG->Add(filestring("ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX"));
   TChain *chW = new TChain(treeType);
-  chW->Add(filestring("WToLNu_0J_13TeV-amcatnloFXFX"));
-  chW->Add(filestring("WToLNu_1J_13TeV-amcatnloFXFX"));
+  // The following samples have a bug and should be excluded.
+  // Should switch to a different W sample.
+  //  chW->Add(filestring("WToLNu_0J_13TeV-amcatnloFXFX"));
+  //  chW->Add(filestring("WToLNu_1J_13TeV-amcatnloFXFX"));
   chW->Add(filestring("WToLNu_2J_13TeV-amcatnloFXFX"));
   TChain *chDY = new TChain(treeType);
   chDY->Add(filestring("DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX"));
@@ -159,7 +174,9 @@ void init()
 
   chains["data_2015"] = chData;
   chains["data_2016"] = chData2016;
+  chains["data_2016_preREMINIAOD"] = chData2016_preREMINIAOD;
   chains["gg"] = chGG;
+  chains["gg_aMC_2015"] = chGG_aMC_2015;
   chains["ggGen"] = chGGGen;
   chains["gj"] = chGJ;
   chains["jj"] = chJJ;
@@ -182,7 +199,9 @@ void init()
 
   fillColors["data"]=kWhite;
   fillColors["data_2016"]=kWhite;
+  fillColors["data_2016_preREMINIAOD"]=kWhite;
   fillColors["gg"]=kCyan;
+  fillColors["gg_aMC_2015"]=kCyan;
   fillColors["gj"]=kBlue;
   fillColors["jj"]=kSpring;
   fillColors["vg"]=kOrange;
@@ -191,9 +210,11 @@ void init()
   fillColors["ttg"]=kMagenta;
   fillColors["gg70"]=kCyan;
 
-  prettyName["data"]="Data";
+  prettyName["data_2015"]="Data (2015)";
   prettyName["data_2016"]="Data (2016)";
-  prettyName["gg"]="Diphoton";
+  prettyName["data_2016_preREMINIAOD"]="Data (2016, pre-reMINIAOD)";
+  prettyName["gg"]="#gamma#gamma";
+  prettyName["gg_aMC_2015"]="#gamma#gamma (aMC@NLO)";
   prettyName["gj"]="#gamma + jets";
   prettyName["jj"]="Multijet";
   prettyName["vg"]="V#gamma";

@@ -2,6 +2,7 @@
 <use name="rootinteractive"/>
 <environment>
   <bin file="basicplots.cc" name="basicplots.exe"/>
+  <bin file="compareGenerators.cc" name="compareGenerators.exe"/>
   <bin file="signal.cc" name="signal.exe"/>
   <bin file="efficiency.cc" name="efficiency.exe"/>
   <bin file="makeHistograms.cc" name="makeHistograms.exe"/>

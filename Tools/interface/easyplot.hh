@@ -34,6 +34,7 @@ public:
   int fillColor() { return m_fillColor; }
 
   bool isData;
+  bool drawAsData;
 
 private:
   std::string m_name;
@@ -112,12 +113,14 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
   std::vector<TH1D*> hists;
 
   THStack *hs = new THStack("hs", "hs");
+  TString dataHistName;
   for(auto isample : m_samples) {
     TString newCut(m_cut.c_str());
     if(isample.isData) newCut = Form("(%s)*((%s)*(%s))",
 				     isample.extraWeight().c_str(), m_cut.c_str(), isample.extraCut().c_str());
     else newCut = Form("weightAll*%6.6e*(%s)*((%s)*(%s))",
 				     luminosity, isample.extraWeight().c_str(), m_cut.c_str(), isample.extraCut().c_str());
+    if(isample.isData || isample.drawAsData) dataHistName = isample.name();
     hists.push_back(new TH1D(isample.name().c_str(), isample.name().c_str(), m_nbins, m_xmin, m_xmax));
     std::cout << "Creating histogram " << isample.name() << " for variable " << m_variable << std::endl;
     isample.chain()->Project(isample.name().c_str(), m_variable.c_str(), newCut.Data());
@@ -126,8 +129,12 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
     hists.back()->SetLineColor(isample.lineColor());
     hists.back()->SetFillStyle(isample.fillStyle());
     hists.back()->SetFillColor(isample.fillColor());
+    // move overflow to last bin
+    float overflow = hists.back()->GetBinContent(hists.back()->GetNbinsX()+1);
+    hists.back()->SetBinContent(hists.back()->GetNbinsX(), overflow);
+    hists.back()->SetBinContent(hists.back()->GetNbinsX()+1, 0.0);
     // don't stack the data histogram
-    if(!isample.isData) hs->Add(hists.back());
+    if(!isample.isData && !isample.drawAsData) hs->Add(hists.back());
   }
 
   TLegend *leg = new TLegend(0.6, 0.6, 0.9, 0.9);
@@ -140,10 +147,11 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
     ihist->SetLineColor(kBlack);
     ihist->GetXaxis()->SetNdivisions(505);
     ihist->GetXaxis()->SetTitle(reformat(m_variable.c_str()));
-    ihist->SetTitle(reformat(m_cut.c_str()));
+    //    ihist->SetTitle(reformat(m_cut.c_str()));
 
     int binWidth=static_cast<int>((m_xmax-m_xmin)/m_nbins);
-    TString yTitle(Form("Events / %d", binWidth));
+    TString yTitle("Events");
+    if(binWidth!=1) Form("Events / %d", binWidth);
     // if the bin width was rounded to zero, use a double instead
     if(binWidth==0) {
       double binWidthD = static_cast<double>((m_xmax-m_xmin)/m_nbins);
@@ -155,9 +163,9 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
     ihist->GetYaxis()->SetTitle(reformat(yTitle));
     ihist->GetYaxis()->SetTitleOffset(1.35);
 
-    if(name.Contains("data")) {
+    if(name.EqualTo(dataHistName)) {
       ihist->Draw("e");
-      leg->AddEntry(ihist, prettyName[ihist->GetName()].c_str(), "ELP");
+      leg->AddEntry(ihist, prettyName[ihist->GetName()].c_str(), "EP");
     }
     else {
       leg->AddEntry(ihist, prettyName[ihist->GetName()].c_str(), "F");
@@ -192,10 +200,12 @@ TString reformat(TString input)
   if(input.Contains("Minv") || input.Contains("pt") || input.Contains("qt")) output+=" (GeV)";
   output.ReplaceAll("Minv", "m_{#gamma#gamma}");
   output.ReplaceAll("Photon1.pt", "p_{T1}");
+  output.ReplaceAll("nPV", "n_{PV}");
   output.ReplaceAll("Photon2.pt", "p_{T2}");
   output.ReplaceAll("Diphoton.qt", "q_{T,#gamma#gamma}");
   output.ReplaceAll("Diphoton.deltaPhi", "#Delta#phi_{#gamma#gamma}");
   output.ReplaceAll("Diphoton.deltaEta", "#Delta#eta_{#gamma#gamma}");
+  output.ReplaceAll("Diphoton.deltaR", "#DeltaR_{#gamma#gamma}");
   output.ReplaceAll("abs(Diphoton.cosThetaStar)", "|cos(#theta*)_{#gamma#gamma}|");
 
   return output;

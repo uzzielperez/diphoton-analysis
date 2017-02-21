@@ -190,12 +190,12 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& datacard
   std::ofstream output;
   std::string filename("datacards/");
   filename+=signalPoint;
-  filename+="_";
-  filename+=datacardYear;
   if(useInterference) {
     filename+="_";
     filename+=interferenceType;
   }
+  filename+="_";
+  filename+=datacardYear;
   filename+="_bins";
   filename+=std::to_string(binLowerLimits.at(iBin));
   filename+="to";

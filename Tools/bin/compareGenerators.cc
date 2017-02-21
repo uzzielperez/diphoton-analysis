@@ -9,8 +9,8 @@ int main(int argc, char *argv[])
 
   std::string region;
 
-  if(argc!=3) {
-    std::cout << "Syntax: basicplots.exe [barrel/endcap] [2015/2016]" << std::endl;
+  if(argc!=2) {
+    std::cout << "Syntax: compareGenerators.exe [barrel/endcap]" << std::endl;
     return -1;
   }
   else {
@@ -19,17 +19,9 @@ int main(int argc, char *argv[])
       std::cout << "Only 'barrel' and 'endcap' are allowed regions. " << std::endl;
       return -1;
     }
-    data_year = argv[2];
-    if(data_year.compare("2015") !=0 && data_year.compare("2016") != 0 ) {
-      std::cout << "Only '2015' and '2016' are allowed years." << std::endl;
-      return -1;
-    }
   }
 
   bool endcap = (region=="endcap");
-
-  std::string kfactor = kfactorString("BB", "R1F1");
-  if(endcap) kfactor = kfactorString("BE", "R1F1");
 
   std::string cut("Photon1.pt>75&&Photon2.pt>75 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442 && Diphoton.Minv > 230 && Diphoton.Minv < 1000 && isGood");
   if(endcap) cut = "Photon1.pt>75&&Photon2.pt>75 && Diphoton.Minv > 320 && Diphoton.Minv < 1000 && isGood && ( !(abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442) && ((abs(Photon1.eta)<1.4442 && (abs(Photon2.eta)>1.56&&abs(Photon2.eta)<2.5)) || (abs(Photon2.eta)<1.4442 && (abs(Photon1.eta)>1.56&&abs(Photon1.eta)<2.5))))";
@@ -41,23 +33,14 @@ int main(int argc, char *argv[])
   init();
 
   // define samples to be used in histograms
-  sample data("data_" + data_year, "Data");
-  sample gg("gg", "#gamma#gamma", kfactor);
-  sample gj("gj", "#gamma + jets");
-  sample vg("vg", "V#gamma");
-  sample w("w", "W");
-  sample dy("dy", "DY");
-  sample ttg("ttg", "t#bar{t}#gamma");
+  sample gg("gg", "#gamma#gamma (Sherpa)");
+  gg.drawAsData = true; // display as if it is data
+  sample gg_aMC("gg_aMC_2015", "#gamma#gamma (aMC@NLO)");
   std::vector<sample> samples;
-  samples.push_back(data);
-  samples.push_back(ttg);
-  samples.push_back(w);
-  samples.push_back(vg);
-  samples.push_back(dy);
-  samples.push_back(gj);
   samples.push_back(gg);
+  samples.push_back(gg_aMC);
 
-  plot p0(samples, "Minv", cut, nbins/2, xmin, xmax);
+  plot p0(samples, "Diphoton.Minv", cut, nbins/2, xmin, xmax);
   plot p1(samples, "Photon1.pt", cut, nbins/2, xmin, xmax/2);
   plot p2(samples, "Photon2.pt", cut, nbins/2, xmin, xmax/2);
   plot p3(samples, "Diphoton.qt", cut, nbins/2, xmin, xmax/2);
@@ -68,8 +51,7 @@ int main(int argc, char *argv[])
   plot p8(samples, "Diphoton.deltaR", cut, nbins/2, 0, 5);
 
   std::string extraFilenameInfo(region);
-  extraFilenameInfo += "_";
-  extraFilenameInfo += data_year;
+  extraFilenameInfo += "_comparison";
 
   p0.output("plots", extraFilenameInfo);
   p1.output("plots", extraFilenameInfo);

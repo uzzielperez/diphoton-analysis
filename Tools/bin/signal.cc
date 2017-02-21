@@ -8,6 +8,7 @@
 
 void allSamples(const std::string &region);
 void oneSignal(int ned, int kk, bool bkgSub);
+TString prettyNameADD(const TString& name);
 
 int main()
 {
@@ -22,6 +23,16 @@ int main()
   oneSignal(4, 1, true);
 }
 
+TString prettyNameADD(const TString& name)
+{
+  TString newName(name);
+  newName.ReplaceAll("ADDGravToGG_", "");
+  newName.ReplaceAll("MS-", "M_{S} = ");
+  newName.ReplaceAll("_NED-", " GeV, N_{ED} = ");
+  newName.ReplaceAll("_KK-", ", KK = ");
+
+  return newName;
+}
 
 void oneSignal(int ned, int kk, bool bkgSub)
 {
@@ -41,24 +52,24 @@ void oneSignal(int ned, int kk, bool bkgSub)
   l->SetFillStyle(0);
   // draw SM background first
   TH1F *histSM = new TH1F("gg70", "gg70", nBins, xMin, xMax);
-  chains["gg70"]->Project("gg70", "Minv", barrelCut);
+  chains["gg70"]->Project("gg70", "Diphoton.Minv", barrelCut);
   for(size_t i=0; i<stringScales.size(); i++) {
     TString sample(Form("ADDGravToGG_MS-%d_NED-%d_KK-%d", stringScales.at(i), ned, kk));
     TH1F *hist = new TH1F(sample, sample, nBins, xMin, xMax);
     chains[sample.Data()]->Project(sample, "Minv",  barrelCut);
-    hist->SetTitle(";M_{#gamma#gamma} (GeV);Events / 50 GeV");
+    hist->SetTitle(";m_{#gamma#gamma} (GeV);Events / 50 GeV");
     hist->SetLineColor(kBlue-4+i%4);
     hist->SetMarkerColor(kBlue-4+i%4);
     if(bkgSub) hist->Add(histSM, -1.0);
     if(i==0) hist->Draw();
     else hist->Draw("same");  
-    l->AddEntry(sample, sample, "L");
+    l->AddEntry(sample, prettyNameADD(sample), "EP");
   }
   l->Draw();
   
-  TString outputFilename(Form("ADDGravToGG_NED-%d_KK-%d.pdf", ned, kk));
+  TString outputFilename(Form("plots/ADDGravToGG_NED-%d_KK-%d.pdf", ned, kk));
   if(bkgSub) {
-    outputFilename = Form("ADDGravToGG_NED-%d_KK-%d_bkg_sub.pdf", ned, kk);
+    outputFilename = Form("plots/ADDGravToGG_NED-%d_KK-%d_bkg_sub.pdf", ned, kk);
   }
   c->Print(outputFilename);
 }

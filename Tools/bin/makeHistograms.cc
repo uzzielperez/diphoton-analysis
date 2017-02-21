@@ -9,17 +9,29 @@
 void allSamples(const std::string &region, TFile * output);
 std::string getBase(const std::string & sampleName);
 
-int main()
+int main(int argc, char *argv[])
 {
+  std::string region;
+
+  if(argc!=2) {
+    std::cout << "Syntax: makeHistograms.exe [BB/BE]" << std::endl;
+      return -1;
+  }
+  else {
+    region = argv[1];
+    if(region!="BB" and region!="BE") {
+      std::cout << "Only 'BB' and 'BE' are allowed regions. " << std::endl;
+      return -1;
+    }
+  }
+
   init();
 
-  TFile *output = new TFile("data/Minv_histos.root", "recreate");
-  output->mkdir("BB");
+  TFile *output = new TFile(Form("data/Minv_histos_%s.root", region.c_str()), "recreate");
+  output->mkdir(region.c_str());
   output->mkdir("BE");
-  output->cd("BE");
-  allSamples("BE", output);
-  output->cd("BB");
-  allSamples("BB", output);
+  output->cd(region.c_str());
+  allSamples(region.c_str(), output);
   output->Write();
   output->Close();
 
