@@ -31,6 +31,16 @@ void MCFakeRateAnalysis::Loop()
 //by  b_branchname->GetEntry(ientry); //read only this branch
   if (fChain == 0) return;
 
+  // input what sample is being run on
+  TString sample = "";
+  cout << "Enter sample being run on (GGJets or GJets): ";
+  cin >> sample;
+  if (sample != "GGJets" && sample != "GJets") {
+    cout << "Invalid choice!" << endl;
+    return;
+  }
+  cout << "\nUsing sample: " << sample << endl << endl;
+  
   // define number of bin edges
   const int nBins = 10;
   
@@ -138,7 +148,9 @@ void MCFakeRateAnalysis::Loop()
     
   } // end loop over entries
 
-  TString filename = "diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
+  TString filename = "";
+  if (sample == "GGJets") filename = "diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
+  if (sample == "GJets") filename = "diphoton_fake_rate_real_templates_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
   TFile file_out(filename,"RECREATE");
   
   // write our histograms to file
