@@ -25,6 +25,8 @@
 double luminosity = 2.62; // fb^-1
 const double luminosity2016 = 35.9; // fb^-1
 const double luminosityRatio = 35.9/2.62;
+const double luminosityError = 0.023;
+const double luminosity2016Error = 0.026;
 
 std::map<std::string, TChain*> chains;
 std::map<std::string, int> lineStyles;

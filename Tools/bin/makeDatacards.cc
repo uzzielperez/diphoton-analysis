@@ -158,7 +158,9 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& datacard
   nuisance diphotonkfactorStat3("diphotonkfactorStat3", "lnN", {"-", diphotonkfactorStatValue3, "-", "-"});
   std::string diphotonkfactorScalesValue = getDiphotonYieldVariations("BB", binLowerLimits.at(iBin), binUpperLimits.at(iBin), "diphotonkfactorScales");
   nuisance diphotonkfactorScales("diphotonkfactorScales", "lnN", {"-", diphotonkfactorScalesValue, "-", "-"});
-  nuisance lumi("lumi", "lnN", {"1.062", "1.062", "-", "1.062"});
+  std::string lumiError = std::to_string(1 + luminosityError);
+  if(datacardYear.compare("2016") == 0) lumiError = std::to_string(1 + luminosity2016Error);
+  nuisance lumi("lumi", "lnN", {lumiError, lumiError, "-", lumiError});
   nuisance pileup("pileup", "lnN", {"1.05", "1.05", "-", "1.05"});
   nuisance fakes("fakes", "lnN", {"-", "-", "1.3", "-"});
   nuisance eff("eff", "lnN", {"1.1", "1.1", "1.05", "1.05"});
@@ -219,7 +221,7 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& datacard
     output << "\n";
     output << "observation  ";
     for(auto iregion : regions) {
-      output << getYield(iregion, "data", binLowerLimits.at(iBin), binUpperLimits.at(iBin), yieldError) << " " ;
+      output << getYield(iregion, "data_" + datacardYear, binLowerLimits.at(iBin), binUpperLimits.at(iBin), yieldError) << " " ;
     }
     output << "\n";
     
@@ -300,6 +302,7 @@ double getYield(const std::string& region, const std::string& sample, const int&
     TFile *input = TFile::Open(filename);
     histName+=sample;
     
+    std::cout << "Getting histogram " << histName << std::endl;
     TH1D *hist = static_cast<TH1D*>(input->Get(histName.c_str()));
     // take max to avoid negative entries arising from
     // negative weights in NLO samples

@@ -58,6 +58,7 @@ sample::sample(std::string name, std::string label, std::string extraWeight="1.0
   m_fillColor(fillColors[m_name])
 {
   isData = false;
+  drawAsData = false;
   if(name.find("data")!=std::string::npos) isData = true;
 }
 
