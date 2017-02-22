@@ -45,14 +45,18 @@ if __name__ == '__main__':
     ## From now on that's what users should modify: this is the a-la-CRAB2 configuration part. ##
     #############################################################################################
 
-    config.General.requestName = 'JetHTRunC'
-    config.Data.inputDataset = '/JetHT/Run2015C_25ns-16Dec2015-v1/MINIAOD'
+    # config.General.requestName = 'JetHTRunC'
+    # config.Data.inputDataset = '/JetHT/Run2015C_25ns-16Dec2015-v1/MINIAOD'
+    # submit(config)
+
+    # config.General.requestName = 'JetHTRunD'
+    # config.Data.inputDataset = '/JetHT/Run2015D-16Dec2015-v1/MINIAOD'
+    # submit(config)
+
+    config.General.requestName = 'DoubleMuonRunC'
+    config.Data.inputDataset = '/DoubleMuon/Run2015C_25ns-16Dec2015-v1/MINIAOD'
     submit(config)
 
-    config.General.requestName = 'JetHTRunD'
-    config.Data.inputDataset = '/JetHT/Run2015D-16Dec2015-v1/MINIAOD'
-    submit(config)
-
-    config.General.requestName = 'SingleMuonRunD'
-    config.Data.inputDataset = '/SingleMuon/Run2015D-16Dec2015-v1/MINIAOD'
+    config.General.requestName = 'DoubleMuonRunD'
+    config.Data.inputDataset = '/DoubleMuon/Run2015D-16Dec2015-v1/MINIAOD'
     submit(config)
