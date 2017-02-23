@@ -18,7 +18,18 @@ echo " "
 
 set input_base = "/store/user/abuccill/DiPhotonAnalysis/RealTemplates"
 
-foreach dir (`eosls $input_base | grep $sample`)
+
+set grep_string = ""
+
+if ( $sample == "GGJets" ) then
+	set grep_string = "GGJets_M"
+    else if ( $sample == "GJets" ) then
+	set grep_string = "GJets_H"
+    else 
+	set grep_string = $sample
+endif
+
+foreach dir (`eosls $input_base | grep  $grep_string`)
     echo $dir
     set ntuple_path = "$input_base/$dir"
     set ntuple_path = "$ntuple_path/`eosls $ntuple_path | grep $sample`"
