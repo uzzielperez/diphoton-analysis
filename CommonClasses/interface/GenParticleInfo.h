@@ -23,7 +23,9 @@ namespace ExoDiPhotons
       kOtherPhotonRadiation,     // 3 - other photon radiation (real)
       kGluonMotherPhotonFrag,    // 4 - photon fragmentation when photon's first mother is a gluon (fake)
       kOtherPhotonFragmentation, // 5 - other photon fragmentation (fake)
-      kElectronPairMatch         // 6 - final state electron match and electron pair found with no hadron mother (real or fake?)
+      kElectronPairMatch,        // 6 - final state electron match and electron pair found with no hadron mother (real or fake?)
+      kPhotonMother,             // 7 - real photon with hard interaction photon mother
+      kRealTemplatePhoton        // 8 - real template photon
     };
     
   };
