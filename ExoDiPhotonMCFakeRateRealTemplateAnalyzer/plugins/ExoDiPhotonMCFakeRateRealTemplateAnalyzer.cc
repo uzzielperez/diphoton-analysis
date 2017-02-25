@@ -456,8 +456,8 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
       // only consider matching to final state gen particles
       if (gen->status() != 1) continue;
       
-      // find best final state photon match with at least 85% agreement between pT (try to prevent the same gen photon matching to two reco photons)
-      if (gen->pdgId() == 22 /*&& gen->fromHardProcessFinalState()*/ && fabs(1 - pho->pt()/gen->pt()) < 0.15) {
+      // find best final state photon match with at least 60% agreement between pT (try to prevent the same gen photon matching to two reco photons)
+      if (gen->pdgId() == 22 /*&& gen->fromHardProcessFinalState()*/ && fabs(1 - pho->pt()/gen->pt()) < 0.40) {
 	double deltaR = reco::deltaR(pho->eta(),pho->phi(),gen->eta(),gen->phi());
 	if (deltaR <= minDeltaR) {
 	  //cout << "GenParticle fromHPFS match: Status = " << gen->status()  << "; ID = " << gen->pdgId() << "; pt = "
@@ -479,28 +479,37 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
     bool is_mother_photon = true;
     
     if (photonMatch) {
-      cout << "PhotonMatch START: Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
+      cout << "PhotonMatch START   : Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
 	   << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi()  << "; deltaR = " << minDeltaR << endl;
+
+      bool is_first_mother = true;
+      bool photon_check = true;
       
-      // loop over all mothers to find best match in deltaR. this is consider the true mother
-      // do this for each mother until its mother has pT = 0 (from hard interaction)
-      // photonMatch will always have at least one mother
-      while (photonMatch->mother()->pt() != 0) {
+      // trace back match to hard interaction proton by finding mothers
+      // each mother may have multiple mothers, so sole, "true" mother is best dR match among all mothers
+      while (photonMatch->mother()) {
 	for (unsigned int j = 0; j < photonMatch->numberOfMothers(); j++) {
 	  double deltaR = reco::deltaR(photonMatch->eta(),photonMatch->phi(),photonMatch->mother(j)->eta(),photonMatch->mother(j)->phi());
+	  cout << "\t    Mother " << j << ": Status = " << photonMatch->mother(j)->status()  << "; ID = " << photonMatch->mother(j)->pdgId() << "; pt = "
+	       << photonMatch->mother(j)->pt() << "; eta = " << photonMatch->mother(j)->eta() << "; phi = " << photonMatch->mother(j)->phi()  << "; deltaR = " << deltaR << endl;
 	  if (deltaR < minMotherMatchDeltaR) {
 	    minMotherMatchDeltaR = deltaR;
 	    matchMotherIndex = j;
 	  }
 	}
+	// select best mother as sole mother
 	photonMatch = (reco::GenParticle *) photonMatch->mother(matchMotherIndex);
-	if (photonMatch->mother()->pt() == 0)
-	  cout << "PhotonMatch END: Status = ";
-	else
-	  cout << "PhotonMatch WHILE: Status = ";
-	cout << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
+	// check if photon's first (and only) mother is the interacting proton
+	if (is_first_mother && photonMatch->pdgId() == 2212 && photonMatch->pt() == 0) is_mother_photon = false;
+	// stop checking for photon history when the interacting (incoming) parton is found
+	if (photonMatch->pt() == 0) photon_check = false;
+	// check if each mother in photon's history is a photon until the incoming, interacting parton is found
+	if (photon_check && photonMatch->pdgId() != 22) is_mother_photon = false;
+	// print each mother
+	cout << "PhotonMatch MOTHER "<< matchMotherIndex <<": Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
 	     << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi()  << "; deltaR = " << minMotherMatchDeltaR << endl;
-	if (photonMatch->pdgId() != 22) is_mother_photon = false;
+	// first mother found
+	is_first_mother = false;
 	// reset cut! (and index to be safe)
 	minMotherMatchDeltaR = 10000;
 	matchMotherIndex = 0;
@@ -511,6 +520,9 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
       
       // only fill tree if every mother is a photon; in particular, the hard interatciton particle is a photon
       if (is_mother_photon) {
+	
+	cout << "Real template photon." << endl;
+	
 	// fill genParticle info
 	ExoDiPhotons::FillGenParticleInfo(fGenParticleInfo,photonMatch);
 	
