@@ -10,6 +10,7 @@
 #include "TString.h"
 #include "TROOT.h"
 #include "TGraphAsymmErrors.h"
+#include "TFitResult.h"
 #include "TLatex.h"
 
 #include <string>
@@ -18,26 +19,23 @@
 
 #include "diphoton-analysis/Tools/interface/tdrstyle.hh"
 
-TF1* getFakeRateFunction(const std::string& isolation, const std::string& region);
-
+TF1* getFakeRateFunction(const std::string& isolation, const std::string& region, const std::string& year);
 
 int main(int argc, char *argv[])
 {
   std::string source;
 
   if(argc!=2) {
-    std::cout << "Syntax: getFakeRates.exe [data/mc]" << std::endl;
+    std::cout << "Syntax: getFakeRates.exe [2015/2016]" << std::endl;
     return -1;
   }
   else {
     source = argv[1];
-    if(source!="mc" and source!="data") {
-      std::cout << "Only 'data' and 'mc' are allowed input parameters. " << std::endl;
+    if(source!="2015" and source!="2016") {
+      std::cout << "Only '2015' and '2016' are allowed input parameters. " << std::endl;
       return -1;
     }
   }
-
-  bool isMC=strcmp(source.c_str(), "mc")==0;
 
   setTDRStyle();
   gROOT->ForceStyle();
@@ -48,12 +46,9 @@ int main(int argc, char *argv[])
     return -1;
   }
   const std::string cmssw_base_string(cmssw_base);
-  const std::string directory("/src/diphoton-analysis/FakeRateAnalysis/RooFitTemplateFitting/analysis/");
-  std::string fakeRateFile(cmssw_base_string + directory + "fakeRatePlots.root");
-  // the following line needs to be modified to point to a different set of plots
-  if(isMC) fakeRateFile = cmssw_base_string + directory + "fakeRatePlots.root";
-  std::string fakeRateOutputFile(cmssw_base_string + directory + "fakeRateFunctions_jetht.root");
-  if(isMC) fakeRateOutputFile = cmssw_base_string + directory + "fakeRateFunctions_mc.root";
+  const std::string directory("/src/diphoton-analysis/Tools/data/");
+  std::string fakeRateFile(cmssw_base_string + directory + "fr" + source + ".root");
+  std::string fakeRateOutputFile(cmssw_base_string + directory + "fakeRateFunctions_" + source + ".root");
 
   std::vector<std::pair<int, int> > isolationRanges;
   isolationRanges.push_back(std::pair<int, int>(5, 10));
@@ -94,23 +89,26 @@ int main(int argc, char *argv[])
       c->SetLeftMargin(0.18);
       std::cout << "Getting fake rate function for isolation sideband " << isolationSidebands[iIso]
 		<< " and region " << regions[iRegion] << std::endl;
-      TF1 * func = getFakeRateFunction(isolationSidebands[iIso], regions[iRegion]);
-      graph->Fit(func);
+      TF1 * func = getFakeRateFunction(isolationSidebands[iIso], regions[iRegion], source);
+      TFitResultPtr fitResult = graph->Fit(func, "vse");
       graph->SetMarkerStyle(kFullCircle);
+      graph->SetMarkerSize(0.5);
       graph->SetTitle(";Photon p_{T} (GeV);Fake rate");
       graph->GetYaxis()->SetTitleOffset(1.5); // times the standard value
       graph->SetMinimum(0.0);
+      graph->SetMaximum(0.2);
       graph->Draw("AP");
 
       TLatex *latex = new TLatex;
       latex->SetNDC(true);
-      latex->DrawLatex(0.5, 0.7, displayDictionary[regions[iRegion]].c_str());
+      latex->DrawLatex(0.5, 0.7, Form("%s, %s", displayDictionary[regions[iRegion]].c_str(), source.c_str()));
       TString isoString(Form("%d < Iso_{ch} < %d GeV", isolationRanges[iIso].first, isolationRanges[iIso].second));
       latex->DrawLatex(0.5, 0.65, isoString);
 
+      fitResult->Write();
       graph->Write();
       func->Write();
-      c->Print(Form("plots/%s.pdf", histName.Data()));
+      c->Print(Form("plots/%s_%s.pdf", histName.Data(), source.c_str()));
     }
   }
 
@@ -119,25 +117,31 @@ int main(int argc, char *argv[])
 
 }
 
-TF1* getFakeRateFunction(const std::string& isolation, const std::string& region) 
+TF1* getFakeRateFunction(const std::string& isolation, const std::string& region, const std::string& year)
 {
   // fit range
-  double xmin = 75.;
+  double xmin = 50.;
   double xmax = 2000.;
+
+  std::string functionType(region);
+  functionType += "_";
+  functionType += year;
 
   // list of possible fit functions
   std::map<std::string, std::string> fitFunc;
-  fitFunc["EB"] = "[0]+[1]/(x^[2])";
-  fitFunc["EE"] = "(x<175)*([0]+[1]*(x-175)+[2]*(x-175)^2)+(x>175)*([3]+x*[4])";
+  fitFunc["EB_2015"] = "[0]+[1]/(x^[2])";
+  fitFunc["EB_2016"] = "[0]+[1]/(x^[2])";
+  fitFunc["EE_2015"] = "(x<175)*([0]+[1]*(x-175)+[2]*(x-175)^2)+(x>175)*([0]+(x-175)*[1])";
+  fitFunc["EE_2016"] = "[0]+[1]/(x^[2])";
 
   TString fitName(Form("fakeRate%s_%s_fit", region.c_str(), isolation.c_str()));
 
-  TF1* fakeRate = new TF1(fitName, fitFunc[region].c_str(), xmin, xmax);
+  TF1* fakeRate = new TF1(fitName, fitFunc[functionType].c_str(), xmin, xmax);
 
   // decent initial guesses are needed for the fit to converge
-  if(region=="EB") fakeRate->SetParameters(0.00225253, 30882, 3.25285);
-  if(region=="EE") fakeRate->SetParameters(0.00984487675098, 0.00001462335960, 0.00000249248908,
-					   0.00728578882033, 0.00001462335960);
+  if(region=="EB") fakeRate->SetParameters(0.02695594369285, 337.46692070018906, 2.10557989223267);
+  if(region=="EE" && year=="2015") fakeRate->SetParameters(0.07583295145724, 0.00003927399330, 0.00000255676015);
+  if(region=="EE" && year=="2016") fakeRate->SetParameters(0.07418438826983, 10599.81194434755525, 3.12901762171298);
 
   return fakeRate;		    
 }

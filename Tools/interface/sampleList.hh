@@ -121,6 +121,8 @@ void init()
   chGG->Add(filestring("GGJets_M-6000To8000_Pt-50_13TeV-sherpa"));
   TChain *chGG_aMC_2015 = new TChain(treeType);
   chGG_aMC_2015->Add(filestring("DiPhotonJets_MGG-80toInf_2015"));
+  TChain *chGG_2016 = new TChain(treeType);
+  chGG_2016->Add(filestring("DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa"));
   TChain *chGJ = new TChain(treeType);
   chGJ->Add(filestring("GJets_HT-40To100"));
   chGJ->Add(filestring("GJets_HT-100To200"));
@@ -179,6 +181,7 @@ void init()
   chains["data_2016_preREMINIAOD"] = chData2016_preREMINIAOD;
   chains["gg"] = chGG;
   chains["gg_aMC_2015"] = chGG_aMC_2015;
+  chains["gg_2016"] = chGG_2016;
   chains["ggGen"] = chGGGen;
   chains["gj"] = chGJ;
   chains["jj"] = chJJ;
@@ -203,6 +206,7 @@ void init()
   fillColors["data_2016"]=kWhite;
   fillColors["data_2016_preREMINIAOD"]=kWhite;
   fillColors["gg"]=kCyan;
+  fillColors["gg_2016"]=kCyan;
   fillColors["gg_aMC_2015"]=kCyan;
   fillColors["gj"]=kBlue;
   fillColors["jj"]=kSpring;
@@ -216,6 +220,7 @@ void init()
   prettyName["data_2016"]="Data (2016)";
   prettyName["data_2016_preREMINIAOD"]="Data (2016, pre-reMINIAOD)";
   prettyName["gg"]="#gamma#gamma";
+  prettyName["gg_2016"]="#gamma#gamma (2016)";
   prettyName["gg_aMC_2015"]="#gamma#gamma (aMC@NLO)";
   prettyName["gj"]="#gamma + jets";
   prettyName["jj"]="Multijet";

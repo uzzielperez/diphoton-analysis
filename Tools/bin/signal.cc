@@ -5,6 +5,7 @@
 #include "TH1.h"
 #include "TFile.h"
 #include "TLegend.h"
+#include "TLatex.h"
 
 void allSamples(const std::string &region);
 void oneSignal(int ned, int kk, bool bkgSub);
@@ -47,12 +48,13 @@ void oneSignal(int ned, int kk, bool bkgSub)
 
   TCanvas *c = new TCanvas;
   c->SetLogy();
-  TLegend *l = new TLegend(0.6, 0.6, 0.9, 0.9);
+  TLegend *l = new TLegend(0.6, 0.55, 0.9, 0.85);
   l->SetBorderSize(0);
   l->SetFillStyle(0);
   // draw SM background first
   TH1F *histSM = new TH1F("gg70", "gg70", nBins, xMin, xMax);
   chains["gg70"]->Project("gg70", "Diphoton.Minv", barrelCut);
+  TLatex * lat = new TLatex;
   for(size_t i=0; i<stringScales.size(); i++) {
     TString sample(Form("ADDGravToGG_MS-%d_NED-%d_KK-%d", stringScales.at(i), ned, kk));
     TH1F *hist = new TH1F(sample, sample, nBins, xMin, xMax);
@@ -61,9 +63,12 @@ void oneSignal(int ned, int kk, bool bkgSub)
     hist->SetLineColor(kBlue-4+i%4);
     hist->SetMarkerColor(kBlue-4+i%4);
     if(bkgSub) hist->Add(histSM, -1.0);
-    if(i==0) hist->Draw();
+    if(i==0) {
+      hist->Draw();
+      lat->DrawLatexNDC(0.6, 0.87, Form("N_{ED} = %d, KK = %d", ned, kk));
+    }
     else hist->Draw("same");  
-    l->AddEntry(sample, prettyNameADD(sample), "EP");
+    l->AddEntry(sample, Form("M_{S} = %d GeV", stringScales.at(i)), "EP");
   }
   l->Draw();
   
