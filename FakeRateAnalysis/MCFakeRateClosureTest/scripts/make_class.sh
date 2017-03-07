@@ -15,3 +15,8 @@ mv MCFakeRateClosureTestWithFakes.h ../analysis
 echo "Done"
 
 echo " "
+echo "Add these lines to MCFakeRateClosureTest.h:"
+echo "virtual double   FakeRateEB(double pt);"
+echo "virtual double   FakeRateEE(double pt);"
+
+echo " "
