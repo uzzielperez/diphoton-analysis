@@ -9,8 +9,8 @@ void fakeRateCalculation(TString sample) {
 
   cout << "\nStarting fakeRateCalculation()\n" << endl;
   
-  if (sample != "data" && sample != "mc_QCD" && sample != "mc_GJets") {
-    cout << "Choose sample: data, mc_QCD, or mc_GJets\n" << endl;
+  if (sample != "data" && sample != "mc" && sample != "mc_QCD" && sample != "mc_GJets" && sample != "mc_GGJets") {
+    cout << "Choose sample: data, mc, mc_QCD, mc_GJets, or mc_GGJets\n" << endl;
     return;
   }
 
@@ -74,8 +74,10 @@ void fakeRateCalculation(TString sample) {
 
   TString input_filename;
   if (sample == "data") input_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
+  if (sample == "mc") input_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_all_QCD_GJets_GGJets_76X_MiniAOD_histograms.root";
   if (sample == "mc_QCD") input_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "mc_GJets") input_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";  
+  if (sample == "mc_GJets") input_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "mc_GGJets") input_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
   TFile infile(input_filename,"read");
   
   // debug vectors

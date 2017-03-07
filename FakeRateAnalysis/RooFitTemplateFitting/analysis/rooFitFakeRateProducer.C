@@ -38,9 +38,9 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString ptBin, T
   
   using namespace RooFit;
   using namespace std;
-
+  
   gROOT->SetBatch();
-
+  
   TCanvas *canvas = new TCanvas("canvas","Fit Result",1600,600);
   canvas->Divide(2,1);
 
@@ -48,13 +48,15 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString ptBin, T
   gSystem->AddIncludePath("-I$ROOFITSYS/include");
 
   // for real templates (same for data and mc)
-  TFile *historealmcfile = TFile::Open("../../MCFakeRateAnalysis/analysis/diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
+  TFile *historealmcfile = TFile::Open("../../MCFakeRateAnalysis/analysis/diphoton_fake_rate_real_templates_all_GGJets_GJets_76X_MiniAOD_histograms.root");
   
   // for numerator, fake templates, and denominator (choose data or mc)
   TString data_filename = "";
   if (sample == "data") data_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
+  if (sample == "mc") data_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_all_QCD_GJets_GGJets_76X_MiniAOD_histograms.root";
   if (sample == "mc_QCD") data_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
   if (sample == "mc_GJets") data_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "mc_GGJets") data_filename = "../../MCFakeRateClosureTest/analysis/diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
   TFile *histojetfile = TFile::Open(data_filename);
   
   double sidebandLow = sideband.first;
@@ -161,12 +163,12 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString ptBin, T
     if (objname.Contains("model") && objname.Contains("Background")) objfake = (TObject*) xframe->findObject(objname.Data());
   }
 
-  TLegend *legend = new TLegend(0.65,0.65,0.85,0.85);
+  TLegend *legend = new TLegend(0.55,0.65,0.85,0.85);
   legend->SetTextSize(0.03);
   legend->SetFillColor(0);
   legend->SetLineColor(0);
   legend->SetFillStyle(0);
-  legend->AddEntry(objdata," Numerator","ep");
+  legend->AddEntry(objdata," Numerator candidates","ep");
   legend->AddEntry(objsignal," Real template","l");
   legend->AddEntry(objfake," Fake template","l");
   legend->AddEntry(objmodel," Combined fit","l");
