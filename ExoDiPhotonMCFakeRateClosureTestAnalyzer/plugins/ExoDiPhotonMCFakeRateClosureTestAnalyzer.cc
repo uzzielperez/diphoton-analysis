@@ -546,7 +546,7 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	}
 
 	// aviod low reco/gen matches in pT (at least 10% agreement)
-	if (fabs(1 - pho->pt()/gen->pt()) > 0.90) continue;
+	//if (fabs(1 - pho->pt()/gen->pt()) > 0.90) continue;
 	
 	// check for best match among all gen particles (just for curiosity's sake)
 	if (deltaR <= minDeltaR_genParticles) {
@@ -569,9 +569,9 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
 	  // 	 << ", eta = " << mother->eta() << ", phi = " << mother->phi() << endl;
 	  // }
 	}
-
-	// check for best match among final state photons with at least 60% pT gen/reco match (real template selection)
-	if (gen->status() == 1 && gen->pdgId() == 22 && fabs(1 - pho->pt()/gen->pt()) < 0.40) {
+	
+	// check for best match among final state photons //with at least 60% pT gen/reco match (real template selection)
+	if (gen->status() == 1 && gen->pdgId() == 22) { //&& fabs(1 - pho->pt()/gen->pt()) < 0.40) {
 	  if (deltaR <= minDeltaR_realTemplate) {
 	    minDeltaR_realTemplate = deltaR;
 	    photonMatch_realTemplate = &(*gen);
@@ -711,10 +711,10 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
       if (photonMatch_finalState && !is_match_real_template_photon) {
 
 	// if photonMatch_realTemplate was found however, then this match supersedes photonMatch_finalState
-	if (photonMatch_realTemplate) {
-	  photonMatch_finalState = &(*photonMatch_realTemplate);
-	  minDeltaR_finalState = minDeltaR_realTemplate;
-	} 
+	// if (photonMatch_realTemplate) {
+	//   photonMatch_finalState = &(*photonMatch_realTemplate);
+	//   minDeltaR_finalState = minDeltaR_realTemplate;
+	// }
 	
 	cout << "Final state match." << endl;
 	cout << "FinalState PhotonMatch     : Status = " << photonMatch_finalState->status()  << "; ID = " << photonMatch_finalState->pdgId() << "; pt = "

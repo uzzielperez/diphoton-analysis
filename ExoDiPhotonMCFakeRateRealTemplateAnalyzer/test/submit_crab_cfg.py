@@ -27,7 +27,7 @@ def get_number_of_events(dataset):
       sumevents += idata.get('result').get('value')
     return sumevents
 
-do_2015_GGJets = False
+do_2015_GGJets = True
 do_2015_GJets = True
 
 DATASETS = [[]]

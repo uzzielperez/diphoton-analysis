@@ -435,12 +435,14 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
   edm::Handle<edm::View<pat::Photon> > photons;
   iEvent.getByToken(photonsMiniAODToken_,photons);
 
+  bool print_photon_info = false;
+  
   //for (edm::View<pat::Photon>::const_iterator pho = photons->begin(); pho != photons->end(); ++pho) {
   for (size_t i = 0; i < photons->size(); ++i) {
     const auto pho = photons->ptrAt(i);
 
     // print photon info
-    cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
+    if (print_photon_info) cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
 
     // deltaR cut
     double minDeltaR = 0.1;
@@ -456,8 +458,8 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
       // only consider matching to final state gen particles
       if (gen->status() != 1) continue;
       
-      // find best final state photon match with at least 60% agreement between pT (try to prevent the same gen photon matching to two reco photons)
-      if (gen->pdgId() == 22 /*&& gen->fromHardProcessFinalState()*/ && fabs(1 - pho->pt()/gen->pt()) < 0.40) {
+      // find best final state photon match //with at least 60% agreement between pT (try to prevent the same gen photon matching to two reco photons)
+      if (gen->pdgId() == 22) { /*&& gen->fromHardProcessFinalState() && fabs(1 - pho->pt()/gen->pt()) < 0.40*/
 	double deltaR = reco::deltaR(pho->eta(),pho->phi(),gen->eta(),gen->phi());
 	if (deltaR <= minDeltaR) {
 	  //cout << "GenParticle fromHPFS match: Status = " << gen->status()  << "; ID = " << gen->pdgId() << "; pt = "
@@ -479,8 +481,10 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
     bool is_mother_photon = true;
     
     if (photonMatch) {
-      cout << "PhotonMatch START   : Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
-	   << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi()  << "; deltaR = " << minDeltaR << endl;
+
+      if (print_photon_info)
+	cout << "PhotonMatch START   : Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
+	     << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi()  << "; deltaR = " << minDeltaR << endl;
 
       bool is_first_mother = true;
       bool photon_check = true;
@@ -490,8 +494,9 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
       while (photonMatch->mother()) {
 	for (unsigned int j = 0; j < photonMatch->numberOfMothers(); j++) {
 	  double deltaR = reco::deltaR(photonMatch->eta(),photonMatch->phi(),photonMatch->mother(j)->eta(),photonMatch->mother(j)->phi());
-	  cout << "\t    Mother " << j << ": Status = " << photonMatch->mother(j)->status()  << "; ID = " << photonMatch->mother(j)->pdgId() << "; pt = "
-	       << photonMatch->mother(j)->pt() << "; eta = " << photonMatch->mother(j)->eta() << "; phi = " << photonMatch->mother(j)->phi()  << "; deltaR = " << deltaR << endl;
+	  if (print_photon_info)
+	    cout << "\t    Mother " << j << ": Status = " << photonMatch->mother(j)->status()  << "; ID = " << photonMatch->mother(j)->pdgId() << "; pt = "
+		 << photonMatch->mother(j)->pt() << "; eta = " << photonMatch->mother(j)->eta() << "; phi = " << photonMatch->mother(j)->phi()  << "; deltaR = " << deltaR << endl;
 	  if (deltaR < minMotherMatchDeltaR) {
 	    minMotherMatchDeltaR = deltaR;
 	    matchMotherIndex = j;
@@ -506,8 +511,9 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
 	// check if each mother in photon's history is a photon until the incoming, interacting parton is found
 	if (photon_check && photonMatch->pdgId() != 22) is_mother_photon = false;
 	// print each mother
-	cout << "PhotonMatch MOTHER "<< matchMotherIndex <<": Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
-	     << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi()  << "; deltaR = " << minMotherMatchDeltaR << endl;
+	if (print_photon_info)
+	  cout << "PhotonMatch MOTHER "<< matchMotherIndex <<": Status = " << photonMatch->status()  << "; ID = " << photonMatch->pdgId() << "; pt = "
+	       << photonMatch->pt() << "; eta = " << photonMatch->eta() << "; phi = " << photonMatch->phi()  << "; deltaR = " << minMotherMatchDeltaR << endl;
 	// first mother found
 	is_first_mother = false;
 	// reset cut! (and index to be safe)
@@ -528,7 +534,7 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
 	
 	// fill photon saturation
 	fPhotonInfo.isSaturated = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-	cout << "isSat: " << fPhotonInfo.isSaturated << endl;
+	if (print_photon_info) cout << "isSat: " << fPhotonInfo.isSaturated << endl;
 	
 	// fill photon info
 	ExoDiPhotons::FillBasicPhotonInfo(fPhotonInfo, &(*pho));
