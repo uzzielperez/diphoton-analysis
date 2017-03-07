@@ -11,7 +11,11 @@ void plot_sieie_templates() {
   gStyle->SetOptStat("ourmei");
 
   // get real template file
-  TFile *f = TFile::Open("../analysis/diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
+  // from GGJets+GJets
+  TFile *f = TFile::Open("../analysis/diphoton_fake_rate_real_templates_all_GGJets_GJets_76X_MiniAOD_histograms.root");
+  // from GGJets
+  // TFile *f = TFile::Open("../analysis/diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
+  
   
   // pt bins
   const int nBins = 10;

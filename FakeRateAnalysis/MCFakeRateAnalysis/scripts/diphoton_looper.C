@@ -3,9 +3,9 @@
 void diphoton_looper() {
   // input what sample to run on
   TString sample = "";
-  cout << "Enter sample being run on (GGJets or GJets): ";
+  cout << "Enter sample being run on (GGJets, GJets, or all): ";
   cin >> sample;
-  if (sample != "GGJets" && sample != "GJets") {
+  if (sample != "GGJets" && sample != "GJets" && sample != "all") {
     cout << "Invalid choice!" << endl;
     return;
   }
@@ -23,7 +23,7 @@ void diphoton_looper() {
   
   // wildcard not supported when using xrootd
   // added ",0" to print correct number of entries, not entries=1234567890
-  if (sample == "GGJets") {
+  if (sample == "all" || sample == "GGJets") {
     chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_real_templates_GGJets_M-60To200_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root",0);
     chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_real_templates_GGJets_M-200To500_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root",0);
     chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_real_templates_GGJets_M-500To1000_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root",0);
@@ -34,7 +34,7 @@ void diphoton_looper() {
     chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_real_templates_GGJets_M-8000To13000_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root",0);
   }
 
-  if (sample == "GJets") {
+  if (sample == "all" || sample == "GJets") {
     chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_real_templates_GJets_HT-40To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_merged.root",0);
     chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_real_templates_GJets_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_merged.root",0);
     chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_real_templates_GJets_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_merged.root",0);

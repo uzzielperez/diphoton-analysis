@@ -33,9 +33,9 @@ void MCFakeRateAnalysis::Loop()
 
   // input what sample is being run on
   TString sample = "";
-  cout << "Enter sample being run on (GGJets or GJets): ";
+  cout << "Enter sample being run on (GGJets, GJets, or all): ";
   cin >> sample;
-  if (sample != "GGJets" && sample != "GJets") {
+  if (sample != "GGJets" && sample != "GJets" && sample != "all") {
     cout << "Invalid choice!" << endl;
     return;
   }
@@ -151,6 +151,7 @@ void MCFakeRateAnalysis::Loop()
   TString filename = "";
   if (sample == "GGJets") filename = "diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
   if (sample == "GJets") filename = "diphoton_fake_rate_real_templates_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "all") filename = "diphoton_fake_rate_real_templates_all_GGJets_GJets_76X_MiniAOD_histograms.root";
   TFile file_out(filename,"RECREATE");
   
   // write our histograms to file

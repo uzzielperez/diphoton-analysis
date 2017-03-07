@@ -3,7 +3,7 @@
 # delete all pervious ntuples, so only one CRAB3 date directory (e.g. 161025_234618) exists
 # change input_base (and possibly ntuple_path) and out_path accordingly
 
-if ( "$1" != "GGJets" && "$1" != "GJets") then
+if ( "$1" != "GGJets" && "$1" != "GJets" ) then
     echo " "
     echo "Set argument 1 as: GGJets or GJets"
     echo " "
@@ -18,18 +18,15 @@ echo " "
 
 set input_base = "/store/user/abuccill/DiPhotonAnalysis/RealTemplates"
 
-
-set grep_string = ""
-
 if ( $sample == "GGJets" ) then
-	set grep_string = "GGJets_M"
-    else if ( $sample == "GJets" ) then
-	set grep_string = "GJets_H"
-    else 
-	set grep_string = $sample
+    set sample = "GGJets_M"
 endif
 
-foreach dir (`eosls $input_base | grep  $grep_string`)
+if ( $sample == "GJets" ) then
+    set sample = "GJets_H"
+endif
+
+foreach dir (`eosls $input_base | grep $sample`)
     echo $dir
     set ntuple_path = "$input_base/$dir"
     set ntuple_path = "$ntuple_path/`eosls $ntuple_path | grep $sample`"
