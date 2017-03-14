@@ -33,13 +33,21 @@ void MCFakeRateAnalysis::Loop()
 
   // input what sample is being run on
   TString sample = "";
-  cout << "Enter sample being run on (GGJets, GJets, or all): ";
+  cout << "Enter sample being run on (DiPhotonJets, GGJets, GJets, or all): ";
   cin >> sample;
-  if (sample != "GGJets" && sample != "GJets" && sample != "all") {
+  if (sample != "DiPhotonJets" && sample != "GGJets" && sample != "GJets" && sample != "all") {
     cout << "Invalid choice!" << endl;
     return;
   }
-  cout << "\nUsing sample: " << sample << endl << endl;
+  cout << "\nUsing sample: " << sample << endl;
+  
+  TString filename = "";
+  if (sample == "DiPhotonJets") filename = "diphoton_fake_rate_real_templates_DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "GGJets")       filename = "diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
+  if (sample == "GJets")        filename = "diphoton_fake_rate_real_templates_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "all")          filename = "diphoton_fake_rate_real_templates_all_GGJets_GJets_76X_MiniAOD_histograms.root";
+  
+  cout << "\nOutput filename: " << filename << endl << endl;
   
   // define number of bin edges
   const int nBins = 10;
@@ -49,7 +57,11 @@ void MCFakeRateAnalysis::Loop()
   
   // define vectors of desired histograms
   vector<TH1D*> sigmaIetaIetaEB;
+  vector<TH1D*> sigmaIetaIetaEB1;
+  vector<TH1D*> sigmaIetaIetaEB2;
   vector<TH1D*> sigmaIetaIetaEE;
+  vector<TH1D*> sigmaIetaIetaEE1;
+  vector<TH1D*> sigmaIetaIetaEE2;
   
   // loop over bins increments and create histograms
   for (int i = 0; i < nBins-1; i++) {
@@ -60,9 +72,25 @@ void MCFakeRateAnalysis::Loop()
     hEB->Sumw2();
     sigmaIetaIetaEB.push_back(hEB);
     
+    TH1D *hEB1 = new TH1D(Form("sieieEB1_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB1",200,0.,0.1);
+    hEB1->Sumw2();
+    sigmaIetaIetaEB1.push_back(hEB1);
+    
+    TH1D *hEB2 = new TH1D(Form("sieieEB2_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB2",200,0.,0.1);
+    hEB2->Sumw2();
+    sigmaIetaIetaEB2.push_back(hEB2);
+    
     TH1D *hEE = new TH1D(Form("sieieEE_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
     hEE->Sumw2();
     sigmaIetaIetaEE.push_back(hEE);
+    
+    TH1D *hEE1 = new TH1D(Form("sieieEE1_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE1",100,0.,0.1);
+    hEE1->Sumw2();
+    sigmaIetaIetaEE1.push_back(hEE1);
+    
+    TH1D *hEE2 = new TH1D(Form("sieieEE2_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE2",100,0.,0.1);
+    hEE2->Sumw2();
+    sigmaIetaIetaEE2.push_back(hEE2);
   }
   TH1D* jetPhoDrEB_realtemplate = new TH1D("jetPhoDrEB_realtemplate","jetPhoDrEB_realtemplate",200,0.,1.);
   TH1D* jetPhoDrEE_realtemplate = new TH1D("jetPhoDrEE_realtemplate","jetPhoDrEE_realtemplate",200,0.,1.);
@@ -137,38 +165,73 @@ void MCFakeRateAnalysis::Loop()
 	  // EB
 	  if (fabs(Photon_scEta) < 1.4442) {
 	    sigmaIetaIetaEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  } // end EB
+	  }
+	  // EB1
+	  if (fabs(Photon_scEta) < 0.7221) {
+	    sigmaIetaIetaEB1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  }
+	  // EB2
+	  if (0.7221 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.4442) {
+	    sigmaIetaIetaEB2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  }
 	  // EE
-	  else if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+	  if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
 	    sigmaIetaIetaEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  } // end EE
+	  }
+	  // EE1
+	  if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.033) {
+	    sigmaIetaIetaEE1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  }
+	  // EE2
+	  if (2.033 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+	    sigmaIetaIetaEE2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  }
 	} // end numerator object
       } // end pt cut
     } // end loop over pt bin increments
     
   } // end loop over entries
 
-  TString filename = "";
-  if (sample == "GGJets") filename = "diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
-  if (sample == "GJets") filename = "diphoton_fake_rate_real_templates_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "all") filename = "diphoton_fake_rate_real_templates_all_GGJets_GJets_76X_MiniAOD_histograms.root";
   TFile file_out(filename,"RECREATE");
   
   // write our histograms to file
+  // EB
   for (vector<TH1D*>::iterator it = sigmaIetaIetaEB.begin() ; it != sigmaIetaIetaEB.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
+  for (vector<TH1D*>::iterator it = sigmaIetaIetaEB1.begin() ; it != sigmaIetaIetaEB1.end(); ++it) {
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    (*it)->Scale(1.0/(*it)->Integral());
+    (*it)->Write();
+  }
+  for (vector<TH1D*>::iterator it = sigmaIetaIetaEB2.begin() ; it != sigmaIetaIetaEB2.end(); ++it) {
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    (*it)->Scale(1.0/(*it)->Integral());
+    (*it)->Write();
+  }
+  // EE
   for (vector<TH1D*>::iterator it = sigmaIetaIetaEE.begin() ; it != sigmaIetaIetaEE.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
+  for (vector<TH1D*>::iterator it = sigmaIetaIetaEE1.begin() ; it != sigmaIetaIetaEE1.end(); ++it) {
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    (*it)->Scale(1.0/(*it)->Integral());
+    (*it)->Write();
+  }
+  for (vector<TH1D*>::iterator it = sigmaIetaIetaEE2.begin() ; it != sigmaIetaIetaEE2.end(); ++it) {
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    (*it)->Scale(1.0/(*it)->Integral());
+    (*it)->Write();
+  }
+  
   jetPhoDrEB_realtemplate->Write();
   jetPhoDrEE_realtemplate->Write();
   
   file_out.ls();
   file_out.Close();
-   
+  
 } // end of Loop()

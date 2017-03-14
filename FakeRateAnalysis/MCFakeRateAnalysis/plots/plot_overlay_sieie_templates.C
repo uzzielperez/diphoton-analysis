@@ -10,7 +10,10 @@ void plot_overlay_sieie_templates() {
   gStyle->SetOptStat(0);
 
   // get real template file
-  TFile *f = TFile::Open("../analysis/diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
+  // from GGJets+GJets
+  TFile *f = TFile::Open("../analysis/diphoton_fake_rate_real_templates_all_GGJets_GJets_76X_MiniAOD_histograms.root");
+  // from GGJets
+  // TFile *f = TFile::Open("../analysis/diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
   
   // pt bins
   const int nBins = 10;
@@ -50,6 +53,7 @@ void plot_overlay_sieie_templates() {
     h_EB->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
     h_EB->GetXaxis()->SetRangeUser(0,0.03);
     h_EB->GetYaxis()->SetTitle("Events / ( 0.0005 )");
+    h_EB->GetYaxis()->SetRangeUser(10e-9,10e-1);
     h_EB->GetYaxis()->SetTitleOffset(1.6);
     legend->Draw();
     gPad->SetLogy();
@@ -67,6 +71,7 @@ void plot_overlay_sieie_templates() {
     h_EE->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
     h_EE->GetXaxis()->SetRangeUser(0,0.07);
     h_EE->GetYaxis()->SetTitle("Events / ( 0.001 )");
+    h_EE->GetYaxis()->SetRangeUser(10e-9,10e-1);
     h_EE->GetYaxis()->SetTitleOffset(1.6);
     legend->Draw();
     gPad->SetLogy();

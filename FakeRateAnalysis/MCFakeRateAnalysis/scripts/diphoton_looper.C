@@ -3,13 +3,14 @@
 void diphoton_looper() {
   // input what sample to run on
   TString sample = "";
-  cout << "Enter sample being run on (GGJets, GJets, or all): ";
+  cout << "Enter sample being run on (DiPhotonJets, GGJets, GJets, or all): ";
   cin >> sample;
-  if (sample != "GGJets" && sample != "GJets" && sample != "all") {
+  if (sample != "DiPhotonJets" && sample != "GGJets" && sample != "GJets" && sample != "all") {
     cout << "Invalid choice!" << endl;
     return;
   }
   cout << "\nUsing sample: " << sample << endl;
+  cout << endl;
   
   // use stopwatch to time
   TStopwatch sw;
@@ -40,6 +41,10 @@ void diphoton_looper() {
     chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_real_templates_GJets_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_merged.root",0);
     chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_real_templates_GJets_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_merged.root",0);
     chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_real_templates_GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_merged.root",0);
+  }
+
+  if (sample == "DiPhotonJets") {
+    chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_real_templates_DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8_76X_MiniAOD_merged.root",0);
   }
   
   // list chain and entries

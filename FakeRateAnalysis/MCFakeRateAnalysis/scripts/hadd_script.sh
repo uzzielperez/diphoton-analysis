@@ -3,9 +3,9 @@
 # delete all pervious ntuples, so only one CRAB3 date directory (e.g. 161025_234618) exists
 # change input_base (and possibly ntuple_path) and out_path accordingly
 
-if ( "$1" != "GGJets" && "$1" != "GJets" ) then
+if ( "$1" != "GGJets" && "$1" != "GJets" && "$1" != "DiPhotonJets" ) then
     echo " "
-    echo "Set argument 1 as: GGJets or GJets"
+    echo "Set argument 1 as: DiPhotonJets, GGJets, or GJets"
     echo " "
     exit 1
 endif
