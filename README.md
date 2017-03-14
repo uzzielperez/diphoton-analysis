@@ -5,13 +5,22 @@
 ```
 # set architecture
 ## bash
+### 2015
 export SCRAM_ARCH=slc6_amd64_gcc493  
+### 2016
+export SCRAM_ARCH=slc6_amd64_gcc530  
 ## tcsh
-setenv SCRAM_ARCH slc6_amd64_gcc493
+### 2015
+setenv SCRAM_ARCH slc6_amd64_gcc493  
+### 2016
+setenv SCRAM_ARCH slc6_amd64_gcc530  
 
 # setup cmssw release
+## 2015  
 cmsrel CMSSW_7_6_4  
-cd CMSSW_7_6_4/src  
+## 2016
+cmsrel CMSSW_8_0_25  
+cd $CMSSW_BASE/src
 cmsenv  
 
 # clone repository
@@ -21,32 +30,3 @@ git clone git@github.com:cms-exotica-diphotons/diphoton-analysis
 cd diphoton-analysis  
 scram b -j 16
 ```
-
-## Fake Rate Analysis
-
-Fake rate twiki  
-https://twiki.cern.ch/twiki/bin/viewauth/CMS/ExoPhotonFakeRate13TeV
-
-### EDAnalyzers  
-ExoDiPhotonFakeRateAnalyzer  
-ExoDiPhotonMCFakeRateRealTemplateAnalyzer  
-ExoDiPhotonMCFakeRateClosureTestAnalyzer
-
-### Analysis and plotting code  
-FakeRateAnalysis
-
-## Signal Analysis
-
-### RSG signal
-
-#### EDAnalyzer  
-ExoDiPhotonRSGSignalAnalyzer
-
-## Background Analysis
-ExoDiPhotonBackgroundAnalyzer
-
-## Misc.
-
-### Tools
-
-Scripts for general analysis
