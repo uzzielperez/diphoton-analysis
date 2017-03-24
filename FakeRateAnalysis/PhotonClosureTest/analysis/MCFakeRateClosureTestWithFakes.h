@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Thu Oct 27 07:26:36 2016 by ROOT version 6.02/13
+// Wed Mar  1 10:11:42 2017 by ROOT version 6.02/13
 // from TTree fTreeFake/FakePhotonTree
 // found on file: root://cmseos.fnal.gov//store/user/abuccill/diphoton-analysis/fake_rate_closure_test/QCD_merged_ntuples/diphoton_fake_rate_closure_test_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root
 //////////////////////////////////////////////////////////
@@ -13,6 +13,7 @@
 #include <TFile.h>
 
 // Header file for the classes stored in the TTree if any.
+#include "vector"
 
 class MCFakeRateClosureTestWithFakes {
 public :
@@ -963,6 +964,33 @@ public :
    Int_t           PhotonGenMatch_pdgId;
    Int_t           PhotonGenMatch_motherPdgId;
    Int_t           PhotonGenMatch_grandmotherPdgId;
+   Double_t        PhotonGenParent_pt;
+   Double_t        PhotonGenParent_eta;
+   Double_t        PhotonGenParent_phi;
+   Double_t        PhotonGenParent_deltaR_match;
+   Double_t        PhotonGenParent_deltaR_matchDau;
+   Double_t        PhotonGenParent_ptDiff_match;
+   Int_t           PhotonGenParent_matchCategory;
+   Int_t           PhotonGenParent_matchType;
+   Int_t           PhotonGenParent_nPhotonMotherDaughters;
+   Int_t           PhotonGenParent_status;
+   Int_t           PhotonGenParent_motherStatus;
+   Int_t           PhotonGenParent_grandmotherStatus;
+   Int_t           PhotonGenParent_pdgId;
+   Int_t           PhotonGenParent_motherPdgId;
+   Int_t           PhotonGenParent_grandmotherPdgId;
+   vector<double>  *GenMatchPt;
+   vector<double>  *GenMatchEta;
+   vector<double>  *GenMatchPhi;
+   vector<double>  *GenMatchPdgId;
+   vector<double>  *GenMatchDeltaR;
+   vector<double>  *GenMatchPtDiff;
+   vector<double>  *GenMatchNumMothers;
+   vector<double>  *GenMatchMotherPt;
+   vector<double>  *GenMatchMotherEta;
+   vector<double>  *GenMatchMotherPhi;
+   vector<double>  *GenMatchMotherStatus;
+   vector<double>  *GenMatchMotherPdgId;
 
    // List of branches
    TBranch        *b_Event;   //!
@@ -971,6 +999,19 @@ public :
    TBranch        *b_Jet;   //!
    TBranch        *b_Photon;   //!
    TBranch        *b_PhotonGenMatch;   //!
+   TBranch        *b_PhotonGenParent;   //!
+   TBranch        *b_GenMatchPt;   //!
+   TBranch        *b_GenMatchEta;   //!
+   TBranch        *b_GenMatchPhi;   //!
+   TBranch        *b_GenMatchPdgId;   //!
+   TBranch        *b_GenMatchDeltaR;   //!
+   TBranch        *b_GenMatchPtDiff;   //!
+   TBranch        *b_GenMatchNumMothers;   //!
+   TBranch        *b_GenMatchMotherPt;   //!
+   TBranch        *b_GenMatchMotherEta;   //!
+   TBranch        *b_GenMatchMotherPhi;   //!
+   TBranch        *b_GenMatchMotherStatus;   //!
+   TBranch        *b_GenMatchMotherPdgId;   //!
 
    MCFakeRateClosureTestWithFakes(TTree *tree=0);
    virtual ~MCFakeRateClosureTestWithFakes();
@@ -1037,6 +1078,19 @@ void MCFakeRateClosureTestWithFakes::Init(TTree *tree)
    // Init() will be called many times when running on PROOF
    // (once per file to be processed).
 
+   // Set object pointer
+   GenMatchPt = 0;
+   GenMatchEta = 0;
+   GenMatchPhi = 0;
+   GenMatchPdgId = 0;
+   GenMatchDeltaR = 0;
+   GenMatchPtDiff = 0;
+   GenMatchNumMothers = 0;
+   GenMatchMotherPt = 0;
+   GenMatchMotherEta = 0;
+   GenMatchMotherPhi = 0;
+   GenMatchMotherStatus = 0;
+   GenMatchMotherPdgId = 0;
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -1049,6 +1103,19 @@ void MCFakeRateClosureTestWithFakes::Init(TTree *tree)
    fChain->SetBranchAddress("Jet", &Jet_jetHT, &b_Jet);
    fChain->SetBranchAddress("Photon", &Photon_pt, &b_Photon);
    fChain->SetBranchAddress("PhotonGenMatch", &PhotonGenMatch_pt, &b_PhotonGenMatch);
+   fChain->SetBranchAddress("PhotonGenParent", &PhotonGenParent_pt, &b_PhotonGenParent);
+   fChain->SetBranchAddress("GenMatchPt", &GenMatchPt, &b_GenMatchPt);
+   fChain->SetBranchAddress("GenMatchEta", &GenMatchEta, &b_GenMatchEta);
+   fChain->SetBranchAddress("GenMatchPhi", &GenMatchPhi, &b_GenMatchPhi);
+   fChain->SetBranchAddress("GenMatchPdgId", &GenMatchPdgId, &b_GenMatchPdgId);
+   fChain->SetBranchAddress("GenMatchDeltaR", &GenMatchDeltaR, &b_GenMatchDeltaR);
+   fChain->SetBranchAddress("GenMatchPtDiff", &GenMatchPtDiff, &b_GenMatchPtDiff);
+   fChain->SetBranchAddress("GenMatchNumMothers", &GenMatchNumMothers, &b_GenMatchNumMothers);
+   fChain->SetBranchAddress("GenMatchMotherPt", &GenMatchMotherPt, &b_GenMatchMotherPt);
+   fChain->SetBranchAddress("GenMatchMotherEta", &GenMatchMotherEta, &b_GenMatchMotherEta);
+   fChain->SetBranchAddress("GenMatchMotherPhi", &GenMatchMotherPhi, &b_GenMatchMotherPhi);
+   fChain->SetBranchAddress("GenMatchMotherStatus", &GenMatchMotherStatus, &b_GenMatchMotherStatus);
+   fChain->SetBranchAddress("GenMatchMotherPdgId", &GenMatchMotherPdgId, &b_GenMatchMotherPdgId);
    Notify();
 }
 

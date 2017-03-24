@@ -53,11 +53,11 @@ void plot_fake_matching_templates() {
         
     cPhotonMatches->cd(1);
     hphotonHM_EB->Draw();
-    hOtherPhotonFrag_EB->Draw("same");
-    hGluonMotherPhotonFrag_EB->Draw("same");
-    hnonPhoton_EB->Draw("same");
-    hgenParticle_EB->Draw("same");
-    hnoMatch_EB->Draw("same");
+    // hOtherPhotonFrag_EB->Draw("same");
+    // hGluonMotherPhotonFrag_EB->Draw("same");
+    // hnonPhoton_EB->Draw("same");
+    // hgenParticle_EB->Draw("same");
+    // hnoMatch_EB->Draw("same");
     hphotonHM_EB->SetMarkerStyle(kPlus);
     hOtherPhotonFrag_EB->SetMarkerStyle(kPlus);
     hGluonMotherPhotonFrag_EB->SetMarkerStyle(kPlus);
@@ -80,17 +80,17 @@ void plot_fake_matching_templates() {
     hphotonHM_EB->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
     hphotonHM_EB->GetXaxis()->SetRangeUser(0.005,0.025);
     //hphotonHM_EB->GetYaxis()->SetRangeUser(0.005,0.75);
-    lPhotonMatches_EB->Draw();
+    //lPhotonMatches_EB->Draw();
 
     cPhotonMatches->cd(2);
     hphotonHM_EB->Draw();
-    hOtherPhotonFrag_EB->Draw("same");
-    hGluonMotherPhotonFrag_EB->Draw("same");
-    hgenParticle_EB->Draw("same");
-    hnonPhoton_EB->Draw("same");
-    hnoMatch_EB->Draw("same");
+    // hOtherPhotonFrag_EB->Draw("same");
+    // hGluonMotherPhotonFrag_EB->Draw("same");
+    // hgenParticle_EB->Draw("same");
+    // hnonPhoton_EB->Draw("same");
+    // hnoMatch_EB->Draw("same");
     gPad->SetLogy();
-    lPhotonMatches_EB->Draw();
+    //lPhotonMatches_EB->Draw();
 
     // EE
 
@@ -131,11 +131,11 @@ void plot_fake_matching_templates() {
         
     cPhotonMatches->cd(3);
     hphotonHM_EE->Draw();
-    hOtherPhotonFrag_EE->Draw("same");
-    hGluonMotherPhotonFrag_EE->Draw("same");
-    hnonPhoton_EE->Draw("same");
-    hgenParticle_EE->Draw("same");
-    hnoMatch_EE->Draw("same");
+    // hOtherPhotonFrag_EE->Draw("same");
+    // hGluonMotherPhotonFrag_EE->Draw("same");
+    // hnonPhoton_EE->Draw("same");
+    // hgenParticle_EE->Draw("same");
+    // hnoMatch_EE->Draw("same");
     hphotonHM_EE->SetMarkerStyle(kPlus);
     hOtherPhotonFrag_EE->SetMarkerStyle(kPlus);
     hGluonMotherPhotonFrag_EE->SetMarkerStyle(kPlus);
@@ -156,19 +156,19 @@ void plot_fake_matching_templates() {
     hnoMatch_EE->SetMarkerColor(kGreen+3);
     hphotonHM_EE->SetTitle("EE "+bin);
     hphotonHM_EE->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
-    hphotonHM_EE->GetXaxis()->SetRangeUser(0.015,0.045);
+    hphotonHM_EE->GetXaxis()->SetRangeUser(0.015,0.06);
     //hphotonHM_EE->GetYaxis()->SetRangeUser(0.005,0.75);
-    lPhotonMatches_EE->Draw();
+    // lPhotonMatches_EE->Draw();
 
     cPhotonMatches->cd(4);
     hphotonHM_EE->Draw();
-    hOtherPhotonFrag_EE->Draw("same");
-    hGluonMotherPhotonFrag_EE->Draw("same");
-    hgenParticle_EE->Draw("same");
-    hnonPhoton_EE->Draw("same");
-    hnoMatch_EE->Draw("same");
+    // hOtherPhotonFrag_EE->Draw("same");
+    // hGluonMotherPhotonFrag_EE->Draw("same");
+    // hgenParticle_EE->Draw("same");
+    // hnonPhoton_EE->Draw("same");
+    // hnoMatch_EE->Draw("same");
     gPad->SetLogy();
-    lPhotonMatches_EE->Draw();
+    //lPhotonMatches_EE->Draw();
 
     cPhotonMatches->SaveAs("sieie_templates_from_fake_matches_"+bin+".png");
 

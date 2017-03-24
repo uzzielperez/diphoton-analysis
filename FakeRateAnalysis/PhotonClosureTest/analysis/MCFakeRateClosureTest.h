@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Thu Oct 27 07:26:36 2016 by ROOT version 6.02/13
+// Wed Mar  1 10:11:41 2017 by ROOT version 6.02/13
 // from TTree fTree/PhotonTree
 // found on file: root://cmseos.fnal.gov//store/user/abuccill/diphoton-analysis/fake_rate_closure_test/QCD_merged_ntuples/diphoton_fake_rate_closure_test_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root
 //////////////////////////////////////////////////////////
@@ -13,6 +13,8 @@
 #include <TFile.h>
 
 // Header file for the classes stored in the TTree if any.
+#include "vector"
+#include "vector"
 
 class MCFakeRateClosureTest {
 public :
@@ -948,6 +950,17 @@ public :
    Bool_t          Photon_isNumeratorObjCand;
    Bool_t          Photon_isDenominatorObj;
    Bool_t          Photon_isSaturated;
+   Int_t           PhotonRealMatch;
+   vector<double>  *VertexCollInfo_vx;
+   vector<double>  *VertexCollInfo_vy;
+   vector<double>  *VertexCollInfo_vz;
+   vector<double>  *VertexCollInfo_vxError;
+   vector<double>  *VertexCollInfo_vyError;
+   vector<double>  *VertexCollInfo_vzError;
+   vector<double>  *VertexCollInfo_ndof;
+   vector<double>  *VertexCollInfo_d0;
+   vector<int>     *VertexCollInfo_nTracks;
+   vector<int>     *VertexCollInfo_isFake;
 
    // List of branches
    TBranch        *b_Event;   //!
@@ -955,6 +968,17 @@ public :
    TBranch        *b_TriggerPrescale;   //!
    TBranch        *b_Jet;   //!
    TBranch        *b_Photon;   //!
+   TBranch        *b_is_real_template_photon;   //!
+   TBranch        *b_VertexCollInfo_vx;   //!
+   TBranch        *b_VertexCollInfo_vy;   //!
+   TBranch        *b_VertexCollInfo_vz;   //!
+   TBranch        *b_VertexCollInfo_vxError;   //!
+   TBranch        *b_VertexCollInfo_vyError;   //!
+   TBranch        *b_VertexCollInfo_vzError;   //!
+   TBranch        *b_VertexCollInfo_ndof;   //!
+   TBranch        *b_VertexCollInfo_d0;   //!
+   TBranch        *b_VertexCollInfo_nTracks;   //!
+   TBranch        *b_VertexCollInfo_isFake;   //!
 
    MCFakeRateClosureTest(TTree *tree=0);
    virtual ~MCFakeRateClosureTest();
@@ -965,6 +989,8 @@ public :
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
+   virtual double   FakeRateEB(double pt);
+   virtual double   FakeRateEE(double pt);
 };
 
 #endif
@@ -1021,6 +1047,17 @@ void MCFakeRateClosureTest::Init(TTree *tree)
    // Init() will be called many times when running on PROOF
    // (once per file to be processed).
 
+   // Set object pointer
+   VertexCollInfo_vx = 0;
+   VertexCollInfo_vy = 0;
+   VertexCollInfo_vz = 0;
+   VertexCollInfo_vxError = 0;
+   VertexCollInfo_vyError = 0;
+   VertexCollInfo_vzError = 0;
+   VertexCollInfo_ndof = 0;
+   VertexCollInfo_d0 = 0;
+   VertexCollInfo_nTracks = 0;
+   VertexCollInfo_isFake = 0;
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -1032,6 +1069,17 @@ void MCFakeRateClosureTest::Init(TTree *tree)
    fChain->SetBranchAddress("TriggerPrescale", &TriggerPrescale_HLT_AK4PFDJet60_Eta2p1ForPPRef, &b_TriggerPrescale);
    fChain->SetBranchAddress("Jet", &Jet_jetHT, &b_Jet);
    fChain->SetBranchAddress("Photon", &Photon_pt, &b_Photon);
+   fChain->SetBranchAddress("PhotonRealMatch", &PhotonRealMatch, &b_is_real_template_photon);
+   fChain->SetBranchAddress("VertexCollInfo.vx", &VertexCollInfo_vx, &b_VertexCollInfo_vx);
+   fChain->SetBranchAddress("VertexCollInfo.vy", &VertexCollInfo_vy, &b_VertexCollInfo_vy);
+   fChain->SetBranchAddress("VertexCollInfo.vz", &VertexCollInfo_vz, &b_VertexCollInfo_vz);
+   fChain->SetBranchAddress("VertexCollInfo.vxError", &VertexCollInfo_vxError, &b_VertexCollInfo_vxError);
+   fChain->SetBranchAddress("VertexCollInfo.vyError", &VertexCollInfo_vyError, &b_VertexCollInfo_vyError);
+   fChain->SetBranchAddress("VertexCollInfo.vzError", &VertexCollInfo_vzError, &b_VertexCollInfo_vzError);
+   fChain->SetBranchAddress("VertexCollInfo.ndof", &VertexCollInfo_ndof, &b_VertexCollInfo_ndof);
+   fChain->SetBranchAddress("VertexCollInfo.d0", &VertexCollInfo_d0, &b_VertexCollInfo_d0);
+   fChain->SetBranchAddress("VertexCollInfo.nTracks", &VertexCollInfo_nTracks, &b_VertexCollInfo_nTracks);
+   fChain->SetBranchAddress("VertexCollInfo.isFake", &VertexCollInfo_isFake, &b_VertexCollInfo_isFake);
    Notify();
 }
 

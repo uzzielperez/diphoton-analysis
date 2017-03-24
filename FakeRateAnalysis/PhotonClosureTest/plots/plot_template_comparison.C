@@ -1,6 +1,6 @@
 // run in batch mode from "plots" directory
 // root -l -b -q plot_fake_template_comparison.C
-void plot_fake_rate_template_comparison() {
+void plot_template_comparison() {
   gROOT->SetStyle("Plain");
   //gStyle->SetMarkerStyle(kPlus);
   gStyle->SetPalette(1,0);
@@ -8,7 +8,7 @@ void plot_fake_rate_template_comparison() {
   gStyle->SetOptStat(0);
   
   TFile *fData = TFile::Open("../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root");
-  TFile *fMC = TFile::Open("../../MCFakeRateAnalysis/analysis/GGJets_M-200To500_vanilla.root");
+  TFile *fMC = TFile::Open("../../MCFakeRateAnalysis/analysis/diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
   
   TFile *fClosureTestMCasData = TFile::Open("../analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
   TFile *fClosureTestMCmatching = TFile::Open("../analysis/diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
@@ -19,20 +19,19 @@ void plot_fake_rate_template_comparison() {
   double sieieEECut = 0.0280;
   
   const int nBins = 10;
-  
   double ptBinArray[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
   
   // make vector of sidebands
   std::vector< std::pair<double,double> > chIsoSidebands;
   typedef std::vector< std::pair<double,double> >::const_iterator chIsoIt;
   chIsoSidebands.push_back( std::make_pair(5.,10.) );
-  chIsoSidebands.push_back( std::make_pair(6.,11.) );
-  //chIsoSidebands.push_back( std::make_pair(7.,12.) );
-  //chIsoSidebands.push_back( std::make_pair(8.,13.) );
-  //chIsoSidebands.push_back( std::make_pair(9.,14.) );
+  // chIsoSidebands.push_back( std::make_pair(6.,11.) );
+  // chIsoSidebands.push_back( std::make_pair(7.,12.) );
+  chIsoSidebands.push_back( std::make_pair(8.,13.) );
+  // chIsoSidebands.push_back( std::make_pair(9.,14.) );
   chIsoSidebands.push_back( std::make_pair(10.,15.) );
-  //chIsoSidebands.push_back( std::make_pair(15.,20.) );
-  //chIsoSidebands.push_back( std::make_pair(10.,20.) );
+  // chIsoSidebands.push_back( std::make_pair(15.,20.) );
+  // chIsoSidebands.push_back( std::make_pair(10.,20.) );
 
   bool rebin = true;
   
@@ -57,10 +56,10 @@ void plot_fake_rate_template_comparison() {
       TH1D *hClosureTestMCasDataEB = (TH1D*) fClosureTestMCasData->Get("sieieEB_faketemplate_"+bin+"_"+sideBand);
       TH1D *hDataEB = (TH1D*) fData->Get("sieieEB_faketemplate_"+bin+"_"+sideBand);
 
-      if (rebin) {
-	hClosureTestMCasDataEB->Rebin();
-	hDataEB->Rebin();
-      }
+      // if (rebin) {
+      // 	hClosureTestMCasDataEB->Rebin();
+      // 	hDataEB->Rebin();
+      // }
       
       TLegend *lsIeIeDataEB = new TLegend(0.65,0.65,0.90,0.85);
       lsIeIeDataEB->SetBorderSize(0);
@@ -82,7 +81,7 @@ void plot_fake_rate_template_comparison() {
       cSieieData->cd(2);
       hClosureTestMCasDataEB->Draw();
       hDataEB->Draw("same");
-      lsIeIeDataEB->Draw();
+      //lsIeIeDataEB->Draw();
       gPad->SetLogy();
       
       // EE
@@ -90,10 +89,10 @@ void plot_fake_rate_template_comparison() {
       TH1D *hClosureTestMCasDataEE = (TH1D*) fClosureTestMCasData->Get("sieieEE_faketemplate_"+bin+"_"+sideBand);
       TH1D *hDataEE = (TH1D*) fData->Get("sieieEE_faketemplate_"+bin+"_"+sideBand);
 
-      if (rebin) {
-	hClosureTestMCasDataEE->Rebin(4);
-	hDataEE->Rebin(4);
-      }
+      // if (rebin) {
+      // 	hClosureTestMCasDataEE->Rebin(4);
+      // 	hDataEE->Rebin(4);
+      // }
       
       TLegend *lsIeIeDataEE = new TLegend(0.65,0.65,0.90,0.85);
       lsIeIeDataEE->SetBorderSize(0);
@@ -116,9 +115,9 @@ void plot_fake_rate_template_comparison() {
       hClosureTestMCasDataEE->Draw();
       hDataEE->Draw("same");
       gPad->SetLogy();
-      lsIeIeDataEE->Draw();  
+      //lsIeIeDataEE->Draw();  
 
-      cSieieData->SaveAs("closure_test_mc_faketemplate_data_faketemplate_"+bin+"_"+sideBand+"_comparison.png");
+      cSieieData->SaveAs("sieie_template_mc_faketemplate_data_faketemplate_"+bin+"_"+sideBand+"_comparison.pdf");
       
     } // end chIso sideband loop
 
@@ -133,7 +132,7 @@ void plot_fake_rate_template_comparison() {
     cSieieFit->cd(1);
     TH1D *hClosureTestMCmatchingFakesEB = (TH1D*) fClosureTestMCmatching->Get("sieieEB_numerator_fakes_"+bin);
     hClosureTestMCmatchingFakesEB->Draw();
-    if (rebin) hClosureTestMCmatchingFakesEB->Rebin();
+    //if (rebin) hClosureTestMCmatchingFakesEB->Rebin();
     
     TLegend *lsIeIeFitEB = new TLegend(0.65,0.65,0.90,0.85);
     lsIeIeFitEB->SetBorderSize(0);
@@ -172,7 +171,7 @@ void plot_fake_rate_template_comparison() {
       j2_EB_fit++;
     }
     gPad->SetLogy();
-    lsIeIeFitEB->Draw();
+    //lsIeIeFitEB->Draw();
     
     
     // EE
@@ -182,7 +181,7 @@ void plot_fake_rate_template_comparison() {
     //cout << "nbins: " << hClosureTestMCmatchingFakesEE->GetNbinsX() << endl;
     hClosureTestMCmatchingFakesEE->Draw();
 
-    if (rebin) hClosureTestMCmatchingFakesEE->Rebin(4);
+    //if (rebin) hClosureTestMCmatchingFakesEE->Rebin(4);
     //cout << "nbins: " << hClosureTestMCmatchingFakesEE->GetNbinsX() << endl;
     TLegend *lsIeIeFitEE = new TLegend(0.65,0.65,0.90,0.85);
     lsIeIeFitEE->SetBorderSize(0);
@@ -221,9 +220,9 @@ void plot_fake_rate_template_comparison() {
       j2_EE_fit++;
     }
     gPad->SetLogy();
-    lsIeIeFitEE->Draw();
+    //lsIeIeFitEE->Draw();
     
-    cSieieFit->SaveAs("closure_test_fit_faketemplate_mc_numerator_fakes_"+bin+"_comparison.png");
+    cSieieFit->SaveAs("sieie_template_fit_faketemplate_mc_numerator_fakes_"+bin+"_comparison.pdf");
     
     // ===========================
     // MC FAKE TEMPLATE COMPARISON
@@ -283,7 +282,7 @@ void plot_fake_rate_template_comparison() {
       j1_2++;
     }
     gPad->SetLogy();
-    lsIeIeMCEB->Draw();
+    //lsIeIeMCEB->Draw();
     
     // EE
     
@@ -338,9 +337,9 @@ void plot_fake_rate_template_comparison() {
       j2_2++;
     }
     gPad->SetLogy();
-    lsIeIeMCEE->Draw();
+    //lsIeIeMCEE->Draw();
     
-    cSieieMC->SaveAs("closure_test_mc_faketemplate_mc_numerator_fake_"+bin+"_comparison.png");
+    cSieieMC->SaveAs("sieie_template_mc_faketemplate_mc_numerator_fake_"+bin+"_comparison.pdf");
     
     
     // ===========================
@@ -382,16 +381,16 @@ void plot_fake_rate_template_comparison() {
     hMCEB->Draw();
     hMatchedRealEB->Draw("same");
     gPad->SetLogy();
-    lsIeIeMCRealEB->Draw();
+    //lsIeIeMCRealEB->Draw();
 
     // EE
 
     TH1D *hMCEE          = (TH1D*) fMC->Get("sieieEE_realtemplate_"+bin);
     TH1D *hMatchedRealEE = (TH1D*) fClosureTestMCmatching->Get("sieieEE_numerator_real_"+bin);
-    if (rebin) {
-      hMCEE->Rebin();
-      hMatchedRealEE->Rebin();
-    }
+    // if (rebin) {
+    //   hMCEE->Rebin();
+    //   hMatchedRealEE->Rebin();
+    // }
     hMCEE->Scale(1.0/hMCEE->Integral());
     hMatchedRealEE->Scale(1.0/hMatchedRealEE->Integral());
     
@@ -416,9 +415,9 @@ void plot_fake_rate_template_comparison() {
     hMCEE->Draw();
     hMatchedRealEE->Draw("same");
     gPad->SetLogy();
-    lsIeIeMCRealEE->Draw();
+    //lsIeIeMCRealEE->Draw();
 
-    cSieieMC_real->SaveAs("closure_test_mc_realtemplate_mc_numerator_real_"+bin+"_comparison.png");
+    cSieieMC_real->SaveAs("sieie_template_mc_realtemplate_mc_numerator_real_"+bin+"_comparison.pdf");
     
   } // end pt bin loop
   

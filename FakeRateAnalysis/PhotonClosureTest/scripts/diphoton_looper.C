@@ -23,8 +23,8 @@ void diphoton_looper() {
   cout << "\nUsing sample: " << sample << endl;
   
   // choose what analysis class you want to use (run one at a time)
-  bool do_all = false;
-  bool do_fakes = true;
+  bool do_all = true;
+  bool do_fakes = false;
   
   if (!do_all && !do_fakes) {
     cout << "Choose an analysis class to run on." << endl;
