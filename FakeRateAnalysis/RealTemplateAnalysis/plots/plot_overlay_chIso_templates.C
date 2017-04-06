@@ -1,14 +1,13 @@
 // to run:
 // root -l -q -b plot_sieie_templates.C
-
-void plot_overlay_sieie_templates() {
+void plot_overlay_chIso_templates() {
   // set global root options
   gROOT->SetStyle("Plain");
   gStyle->SetMarkerStyle(8);
   gStyle->SetPalette(1,0);
   gStyle->SetNdivisions(505);
   gStyle->SetOptStat(0);
-
+  
   // input what sample to plot
   TString sample = "";
   cout << "Enter sample being plotted (DiPhotonJets, GGJets, GJets, or all): ";
@@ -27,7 +26,7 @@ void plot_overlay_sieie_templates() {
   cout << "\nfilename: " << filename << endl << endl;
 
   TFile *f = TFile::Open(filename);
-  
+    
   // pt bins
   const int nBins = 10;
   double ptBinArray[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
@@ -54,7 +53,7 @@ void plot_overlay_sieie_templates() {
     
     // EB - linear
     c->cd(1);
-    TH1D *h_EB = (TH1D*) f->Get("sieieEB_realtemplate_pt"+bin);
+    TH1D *h_EB = (TH1D*) f->Get("chIsoEB_realtemplate_pt"+bin);
     legend->AddEntry(h_EB,label,"ep");
     if (j == 0) h_EB->Draw("HIST");
     else {
@@ -63,17 +62,17 @@ void plot_overlay_sieie_templates() {
       h_EB->SetLineColor(1+j);
     }
     h_EB->SetTitle("EB");
-    h_EB->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
-    h_EB->GetXaxis()->SetRangeUser(0,0.03);
-    h_EB->GetYaxis()->SetTitle("Events / ( "+(TString) Form("%.4f",h_EB->GetBinWidth(2))+" )");
+    h_EB->GetXaxis()->SetTitle("Iso_{Ch} (GeV)");
+    h_EB->GetXaxis()->SetRangeUser(0,50.);
+    h_EB->GetYaxis()->SetTitle("Events / ( "+(TString) Form("%.1f",h_EB->GetBinWidth(2))+" GeV )");
     h_EB->GetYaxis()->SetRangeUser(10e-9,10e-1);
     h_EB->GetYaxis()->SetTitleOffset(1.6);
     legend->Draw();
     gPad->SetLogy();
- 
+
     // EE
     c->cd(2);
-    TH1D *h_EE = (TH1D*) f->Get("sieieEE_realtemplate_pt"+bin);
+    TH1D *h_EE = (TH1D*) f->Get("chIsoEE_realtemplate_pt"+bin);
     if (j == 0) h_EE->Draw("HIST");
     else {
       h_EE->Draw("HISTsame");
@@ -81,9 +80,9 @@ void plot_overlay_sieie_templates() {
       h_EE->SetLineColor(1+j);
     }
     h_EE->SetTitle("EE");
-    h_EE->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
-    h_EE->GetXaxis()->SetRangeUser(0,0.07);
-    h_EE->GetYaxis()->SetTitle("Events / ( "+(TString) Form("%.3f",h_EE->GetBinWidth(2))+" )");
+    h_EE->GetXaxis()->SetTitle("Iso_{Ch} (GeV)");
+    h_EE->GetXaxis()->SetRangeUser(0,50.);
+    h_EE->GetYaxis()->SetTitle("Events / ( "+(TString) Form("%.1f",h_EE->GetBinWidth(2))+" GeV )");
     h_EE->GetYaxis()->SetRangeUser(10e-9,10e-1);
     h_EE->GetYaxis()->SetTitleOffset(1.6);
     legend->Draw();
@@ -92,6 +91,6 @@ void plot_overlay_sieie_templates() {
     j++;
   } // end for loop over pt bins
 
-  c->SaveAs("real_templates_sieie_overlaid_sample_"+sample+".pdf");
+  c->SaveAs("real_templates_chIso_overlaid_sample_"+sample+".pdf");
   
 }

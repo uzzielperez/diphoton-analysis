@@ -1,7 +1,7 @@
 // to run:
 // root -l -q -b plot_sieie_templates.C
 
-void plot_sieie_templates() {
+void plot_chIso_templates() {
 
   // set global root options
   gROOT->SetStyle("Plain");
@@ -43,28 +43,28 @@ void plot_sieie_templates() {
     
     // EB - linear
     c->cd(1);
-    TH1D *h_EB = (TH1D*) f->Get("sieieEB_realtemplate_"+bin);
+    TH1D *h_EB = (TH1D*) f->Get("chIsoEB_realtemplate_"+bin);
     h_EB->Draw();
     h_EB->SetTitle("EB "+bin);
-    h_EB->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
-    h_EB->GetXaxis()->SetRangeUser(0,0.03);
+    h_EB->GetXaxis()->SetTitle("Iso_{Ch}");
+    //h_EB->GetXaxis()->SetRangeUser(0,0.03);
     // EB - log
     c->cd(2);
     h_EB->Draw();
     gPad->SetLogy();
     // EE - linear
     c->cd(3);
-    TH1D *h_EE = (TH1D*) f->Get("sieieEE_realtemplate_"+bin);
+    TH1D *h_EE = (TH1D*) f->Get("chIsoEE_realtemplate_"+bin);
     h_EE->Draw();
     h_EE->SetTitle("EE "+bin);
-    h_EE->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
-    h_EE->GetXaxis()->SetRangeUser(0,0.07);
+    h_EE->GetXaxis()->SetTitle("Iso_{Ch}");
+    //h_EE->GetXaxis()->SetRangeUser(0,0.07);
     // EE - log
     c->cd(4);
     h_EE->Draw();
     gPad->SetLogy();
 
-    c->SaveAs("real_templates_sieie_"+bin+"_sample_"+sample+".pdf");
+    c->SaveAs("real_templates_chIso_"+bin+"_sample_"+sample+".pdf");
     
   } // end for loop over pt bins
   

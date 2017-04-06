@@ -62,6 +62,8 @@ void MCFakeRateAnalysis::Loop()
   vector<TH1D*> sigmaIetaIetaEE;
   vector<TH1D*> sigmaIetaIetaEE1;
   vector<TH1D*> sigmaIetaIetaEE2;
+  vector<TH1D*> chIsoEB;
+  vector<TH1D*> chIsoEE;
   
   // loop over bins increments and create histograms
   for (int i = 0; i < nBins-1; i++) {
@@ -91,7 +93,16 @@ void MCFakeRateAnalysis::Loop()
     TH1D *hEE2 = new TH1D(Form("sieieEE2_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE2",100,0.,0.1);
     hEE2->Sumw2();
     sigmaIetaIetaEE2.push_back(hEE2);
+
+    TH1D *hEB_chIso = new TH1D(Form("chIsoEB_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEB",100,0.,50.);
+    hEB_chIso->Sumw2();
+    chIsoEB.push_back(hEB_chIso);
+    
+    TH1D *hEE_chIso = new TH1D(Form("chIsoEE_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEE",100,0.,50.);
+    hEE_chIso->Sumw2();
+    chIsoEE.push_back(hEE_chIso);
   }
+  
   TH1D* jetPhoDrEB_realtemplate = new TH1D("jetPhoDrEB_realtemplate","jetPhoDrEB_realtemplate",200,0.,1.);
   TH1D* jetPhoDrEE_realtemplate = new TH1D("jetPhoDrEE_realtemplate","jetPhoDrEE_realtemplate",200,0.,1.);
 
@@ -106,9 +117,10 @@ void MCFakeRateAnalysis::Loop()
     if (jentry % 100000 == 0)
       std::cout << "Number of entries looped over: " << jentry << std::endl;
 
-    // define our numerator object
-    bool isNumeratorObject = Photon_isNumeratorObjCand && Photon_passChIso;
-
+    // fake rate object definitions
+    bool is_sieie_numerator_object = Photon_isNumeratorObjCand && Photon_passChIso;
+    bool is_chIso_numerator_object = Photon_isNumeratorObjCand && Photon_passSieie;
+    
     // reject beam halo
     //if (Event_beamHaloIDTight2015) continue;
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
@@ -120,9 +132,9 @@ void MCFakeRateAnalysis::Loop()
 
     // bool PFJet80Fired = TriggerBit_HLT_PFJet80_v4 == 1;
     // bool PFJet400Fired = TriggerBit_HLT_PFJet400_v4 == 1;
-
+    
     // if (!PFJet400Fired) continue;
-
+    
     TLorentzVector photon;
     TLorentzVector leadingJet;
     TLorentzVector secondleadingJet;
@@ -130,7 +142,7 @@ void MCFakeRateAnalysis::Loop()
 
     double photonLeadingJetDr = -1.;
     bool matched = false;
-
+    
     if (Jet_nJets >= 2){
 
       photon.SetPtEtaPhiM(Photon_pt,Photon_scEta,Photon_scPhi,0.);
@@ -160,69 +172,78 @@ void MCFakeRateAnalysis::Loop()
       double binUpperEdge = ptBinArray[i+1];
       // use pT bins to cut on photon pT
       if (binLowEdge < Photon_pt && Photon_pt < binUpperEdge) {
-	// only fill numerator objects
-	if (isNumeratorObject) {
-	  // EB
-	  if (fabs(Photon_scEta) < 1.4442) {
-	    sigmaIetaIetaEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  }
-	  // EB1
-	  if (fabs(Photon_scEta) < 0.7221) {
-	    sigmaIetaIetaEB1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  }
-	  // EB2
-	  if (0.7221 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.4442) {
-	    sigmaIetaIetaEB2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  }
-	  // EE
-	  if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
-	    sigmaIetaIetaEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  }
-	  // EE1
-	  if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.033) {
-	    sigmaIetaIetaEE1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  }
-	  // EE2
-	  if (2.033 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
-	    sigmaIetaIetaEE2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  }
-	} // end numerator object
+	// EB
+	if (fabs(Photon_scEta) < 1.4442) {
+	  if (is_sieie_numerator_object) sigmaIetaIetaEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  if (is_chIso_numerator_object) chIsoEB.at(i)->Fill(Photon_chargedHadIso03,Event_weightAll);
+	}
+	// EB1
+	if (fabs(Photon_scEta) < 0.7221) {
+	  if (is_sieie_numerator_object) sigmaIetaIetaEB1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	}
+	// EB2
+	if (0.7221 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.4442) {
+	  if (is_sieie_numerator_object) sigmaIetaIetaEB2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	}
+	// EE
+	if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+	  if (is_sieie_numerator_object) sigmaIetaIetaEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  if (is_chIso_numerator_object) chIsoEE.at(i)->Fill(Photon_chargedHadIso03,Event_weightAll);
+	}
+	// EE1
+	if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.033) {
+	  if (is_sieie_numerator_object) sigmaIetaIetaEE1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	}
+	// EE2
+	if (2.033 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+	  if (is_sieie_numerator_object) sigmaIetaIetaEE2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	}
       } // end pt cut
     } // end loop over pt bin increments
     
   } // end loop over entries
-
+  
   TFile file_out(filename,"RECREATE");
   
   // write our histograms to file
   // EB
-  for (vector<TH1D*>::iterator it = sigmaIetaIetaEB.begin() ; it != sigmaIetaIetaEB.end(); ++it) {
+  for (vector<TH1D*>::iterator it = chIsoEB.begin(); it != chIsoEB.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sigmaIetaIetaEB1.begin() ; it != sigmaIetaIetaEB1.end(); ++it) {
+  for (vector<TH1D*>::iterator it = sigmaIetaIetaEB.begin(); it != sigmaIetaIetaEB.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sigmaIetaIetaEB2.begin() ; it != sigmaIetaIetaEB2.end(); ++it) {
+  for (vector<TH1D*>::iterator it = sigmaIetaIetaEB1.begin(); it != sigmaIetaIetaEB1.end(); ++it) {
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    (*it)->Scale(1.0/(*it)->Integral());
+    (*it)->Write();
+  }
+  for (vector<TH1D*>::iterator it = sigmaIetaIetaEB2.begin(); it != sigmaIetaIetaEB2.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
   // EE
-  for (vector<TH1D*>::iterator it = sigmaIetaIetaEE.begin() ; it != sigmaIetaIetaEE.end(); ++it) {
+  for (vector<TH1D*>::iterator it = chIsoEE.begin(); it != chIsoEE.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sigmaIetaIetaEE1.begin() ; it != sigmaIetaIetaEE1.end(); ++it) {
+  for (vector<TH1D*>::iterator it = sigmaIetaIetaEE.begin(); it != sigmaIetaIetaEE.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sigmaIetaIetaEE2.begin() ; it != sigmaIetaIetaEE2.end(); ++it) {
+  for (vector<TH1D*>::iterator it = sigmaIetaIetaEE1.begin(); it != sigmaIetaIetaEE1.end(); ++it) {
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    (*it)->Scale(1.0/(*it)->Integral());
+    (*it)->Write();
+  }
+  for (vector<TH1D*>::iterator it = sigmaIetaIetaEE2.begin(); it != sigmaIetaIetaEE2.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
