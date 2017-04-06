@@ -16,7 +16,7 @@ echo " "
 echo "Merging samples:" $sample
 echo " "
 
-set input_base = "/store/user/abuccill/DiPhotonAnalysis/DiPhotonClosureTest"
+set input_base = "/store/user/abuccill/DiPhotonAnalysis/DiPhotonAnalyzer"
 
 if ( $sample == "GGJets" ) then
     set sample = "GGJets_M"
