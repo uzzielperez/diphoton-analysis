@@ -39,7 +39,14 @@ void MCFakeRateClosureTestWithFakes::Loop()
     cout << "Invalid choice!" << endl;
     return;
   }
-  cout << "\nUsing sample: " << sample << endl << endl;
+  cout << "\nUsing sample: " << sample << endl;
+
+  TString filename = "";
+  if (sample == "QCD")    filename = "diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "GJets")  filename = "diphoton_fake_rate_closure_test_matching_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "GGJets") filename = "diphoton_fake_rate_closure_test_matching_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
+  if (sample == "all")    filename = "diphoton_fake_rate_closure_test_matching_all_samples_76X_MiniAOD_histograms.root";
+  cout << "\nfilename: " << filename << endl << endl;
   
   // event counters
   int nEvents = 0;
@@ -238,7 +245,6 @@ void MCFakeRateClosureTestWithFakes::Loop()
   TH1D *n_single_other_mothers_EB_failSieie = new TH1D("n_single_other_mothers_EB_failSieie","",10,0.,10.);
   TH1D *n_two_mothers_EB_failSieie = new TH1D("n_two_mothers_EB_failSieie","",10,0.,10.);
   TH1D *n_three_or_more_mothers_EB_failSieie = new TH1D("n_three_or_more_mothers_EB_failSieie","",10,0.,10.);
-    
   // EE
   TH1D *pt_all_fakes_EE = new TH1D("pt_all_fakes_EE","",200,0,1500.);
   TH1D *sieie_all_fakes_EE = new TH1D("sieie_all_fakes_EE","",100,0,0.1);
@@ -288,9 +294,12 @@ void MCFakeRateClosureTestWithFakes::Loop()
   TH1D *n_two_mothers_EE_failSieie = new TH1D("n_two_mothers_EE_failSieie","",10,0.,10.);
   TH1D *n_three_or_more_mothers_EE_failSieie = new TH1D("n_three_or_more_mothers_EE_failSieie","",10,0.,10.);
   
-  // numerator histograms
+  // numerator histograms from mc truth fakes
   std::vector<TH1D*> sIeIeNumeratorEB_fromFakes;
   std::vector<TH1D*> sIeIeNumeratorEE_fromFakes;
+  std::vector<TH1D*> chIsoNumeratorEB_fromFakes;
+  std::vector<TH1D*> chIsoNumeratorEE_fromFakes;
+  // other sieie numerator histograms
   std::vector<TH1D*> sIeIeNumeratorEB_fromReal;
   std::vector<TH1D*> sIeIeNumeratorEE_fromReal;
   std::vector<TH1D*> sIeIeNumeratorEB_fromPhotonHadronMother;
@@ -315,12 +324,19 @@ void MCFakeRateClosureTestWithFakes::Loop()
     double binLowEdge = ptBinArray[i];
     double binUpperEdge = ptBinArray[i+1];  
     
-    TH1D *hEB_numerator_fakes = new TH1D(Form("sieieEB_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
-    hEB_numerator_fakes->Sumw2();
-    sIeIeNumeratorEB_fromFakes.push_back(hEB_numerator_fakes);
-    TH1D *hEE_numerator_fakes = new TH1D(Form("sieieEE_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
-    hEE_numerator_fakes->Sumw2();
-    sIeIeNumeratorEE_fromFakes.push_back(hEE_numerator_fakes);
+    TH1D *hEB_sieie_numerator_fakes = new TH1D(Form("sieieEB_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+    hEB_sieie_numerator_fakes->Sumw2();
+    sIeIeNumeratorEB_fromFakes.push_back(hEB_sieie_numerator_fakes);
+    TH1D *hEE_sieie_numerator_fakes = new TH1D(Form("sieieEE_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
+    hEE_sieie_numerator_fakes->Sumw2();
+    sIeIeNumeratorEE_fromFakes.push_back(hEE_sieie_numerator_fakes);
+    
+    TH1D *hEB_chIso_numerator_fakes = new TH1D(Form("chIsoEB_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEB",100,0.,50.);
+    hEB_chIso_numerator_fakes->Sumw2();
+    chIsoNumeratorEB_fromFakes.push_back(hEB_chIso_numerator_fakes);
+    TH1D *hEE_chIso_numerator_fakes = new TH1D(Form("chIsoEE_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEE",100,0.,50.);
+    hEE_chIso_numerator_fakes->Sumw2();
+    chIsoNumeratorEE_fromFakes.push_back(hEE_chIso_numerator_fakes);
     
     TH1D *hEB_numerator_real = new TH1D(Form("sieieEB_numerator_real_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
     hEB_numerator_real->Sumw2();
@@ -387,7 +403,7 @@ void MCFakeRateClosureTestWithFakes::Loop()
   }
   
   Long64_t nentries = fChain->GetEntriesFast();
-
+  
   bool printdRConInfo = false;
   
   Long64_t nbytes = 0, nb = 0;
@@ -398,35 +414,28 @@ void MCFakeRateClosureTestWithFakes::Loop()
     // if (Cut(ientry) < 0) continue;
     if (jentry % 100000 == 0)
       std::cout << "Number of entries looped over: " << jentry << std::endl;
-
-    // numerator photons (before passing sieie cut)
-    bool isNumeratorObj = Photon_isNumeratorObjCand && Photon_passChIso;
-    // sideband photons
-    //bool isNumeratorObj = Photon_isNumeratorObjCand && (5.0 < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < 10.);
-    if (!isNumeratorObj) continue;
+    
+    // fake rate object definitions
+    bool is_sieie_numerator_object = Photon_isNumeratorObjCand && Photon_passChIso;
+    bool is_chIso_numerator_object = Photon_isNumeratorObjCand && Photon_passSieie;
+    bool is_sieie_sideband_object = Photon_isNumeratorObjCand && (5.0 < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < 10.0);
     
     // reject beam halo
-    //if (Event_beamHaloIDTight2015) continue;
+    // if (Event_beamHaloIDTight2015) continue;
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
 
-    // reals -- photon radiation (ISRfromProton and OtherPhotonRadiation)
-    //bool reals = PhotonGenMatch_matchCategory == 1 && (PhotonGenMatch_matchType == 2 || PhotonGenMatch_matchType == 3);
-    // reals - from hard interaction photon matches
+    // photon pt cut (already applied in the analyzer)
+    if (Photon_pt < 50.) continue;
+    
+    // reals - photons passing real template selection
     bool reals = PhotonGenMatch_matchCategory == 1 && PhotonGenMatch_matchType == 8;
-    // fakes -- photon hadron mothers and all non-photon matches
-    // change to only hadron mothers for now
-    bool fakes = //PhotonGenMatch_matchCategory == 0 // no match
-      (PhotonGenMatch_matchCategory == 1 && PhotonGenMatch_matchType == 1) // final state photon with hadron mother match
-      || (PhotonGenMatch_matchCategory == 2 && PhotonGenMatch_matchType == 1); // non-final state photon hadron mother matches
-    //|| (PhotonGenMatch_matchCategory == 1 && PhotonGenMatch_matchType == 0) // final state photon with no match
-    //|| PhotonGenMatch_matchCategory == 2 // final state non-photon match
-    //|| PhotonGenMatch_matchCategory == 3 // non final state photon match
-    //|| PhotonGenMatch_matchCategory == 4; // non final state non-photon match
-    // fakes coming from a gluon or quark jet (hadron mother fakes only)
+    // fakes - final state hadron mother matches
+    bool fakes = ((PhotonGenMatch_matchCategory == 1 || PhotonGenMatch_matchCategory == 2) && PhotonGenMatch_matchType == 1);
+    // fakes coming from a gluon or quark jet (info saved for hadron mother fakes only)
     bool fromQuark = fabs(PhotonGenParent_pdgId < 9);
     bool fromGluon = PhotonGenParent_pdgId == 21;
-    bool quark_fakes = ((PhotonGenMatch_matchCategory == 1 || PhotonGenMatch_matchCategory == 2) && PhotonGenMatch_matchType == 1) && fromQuark;
-    bool gluon_fakes = ((PhotonGenMatch_matchCategory == 1 || PhotonGenMatch_matchCategory == 2) && PhotonGenMatch_matchType == 1) && fromGluon;
+    bool quark_fakes = fakes && fromQuark;
+    bool gluon_fakes = fakes && fromGluon;
     
     // photonHadronMother -- photon hadron mothers 
     bool photonHadronMother = PhotonGenMatch_matchCategory == 1 && PhotonGenMatch_matchType == 1;
@@ -444,20 +453,18 @@ void MCFakeRateClosureTestWithFakes::Loop()
     bool nonPhotonMatch = PhotonGenMatch_matchCategory == 2;
     // genParticleMatch -- gen particle matches
     bool genParticleMatch = PhotonGenMatch_matchCategory == 3 || PhotonGenMatch_matchCategory == 4;
-
-    //if (!Photon_passSieie) continue;
-
-    // apply event weights to counting of objects (currently set to 1, unweighted)
-    double event_counting_weight = 1.0; //Event_weightAll;
-
+    
+    // apply event weights to counting of objects
+    double event_counting_weight = Event_weightAll;
+    
     // count number of numberator objects
-    if (isNumeratorObj)
+    if (is_sieie_numerator_object)
       nEvents+=event_counting_weight;
     
     // EB
     if (fabs(Photon_scEta) < 1.4442) {
       // count numerator objects before passing sieie cut
-      if (isNumeratorObj) {
+      if (is_sieie_numerator_object) {
 	nEvents_EB+=event_counting_weight;
 	if (Photon_passHighPtID) {
 	  if (fakes) {
@@ -554,7 +561,7 @@ void MCFakeRateClosureTestWithFakes::Loop()
     // EE
     else if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
       // count numerator objects
-      if (isNumeratorObj) {
+      if (is_sieie_numerator_object) {
 	nEvents_EE+=event_counting_weight;
 	if (Photon_passHighPtID) {
 	  if (fakes) {
@@ -646,20 +653,24 @@ void MCFakeRateClosureTestWithFakes::Loop()
 	if (PhotonGenMatch_matchCategory == 4) {
 	  nGenParticleNonPhotonMatch_EE+=event_counting_weight;
 	} // end gen particle non-photon matches
-      } // end if numerator object
+      } // end if sieie numerator object
     } // end EE
     
     // loop over bin edges
     for (int i = 0; i < nBins-1; i++) {
       double binLowEdge = ptBinArray[i];
-      double binUpperEdge = ptBinArray[i+1];
-      
+      double binUpperEdge = ptBinArray[i+1];  
       // pt cut
       if (binLowEdge < Photon_pt && Photon_pt < binUpperEdge) {
-
-	// fill numerator histograms
-	if (isNumeratorObj) {
-
+	// fill chIso numerator histograms
+	if (is_chIso_numerator_object) {
+	  if (fakes) {
+	    if (fabs(Photon_scEta) < 1.4442) chIsoNumeratorEB_fromFakes.at(i)->Fill(Photon_chargedHadIso03,Event_weightAll);
+	    else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) chIsoNumeratorEE_fromFakes.at(i)->Fill(Photon_chargedHadIso03,Event_weightAll);
+	  }
+	}
+	// fill sieie numerator histograms
+	if (is_sieie_numerator_object) {
 	  // fake photons
 	  if (fakes) {
 	    if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
@@ -670,7 +681,6 @@ void MCFakeRateClosureTestWithFakes::Loop()
 	    if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB_fromReal.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	    else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeNumeratorEE_fromReal.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	  }
-	  
 	  // photonHadronMother photons
 	  if (photonHadronMother) {
 	    if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB_fromPhotonHadronMother.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
@@ -711,275 +721,274 @@ void MCFakeRateClosureTestWithFakes::Loop()
 	    if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB_fromGenParticleMatch.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	    else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeNumeratorEE_fromGenParticleMatch.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	  }
-     	  
-	} // end numerator obj
-
+	} // end if sieie numerator object
       } // end pt cut
-      
     } // end loop over pt bins for fake template
 
-    // TODO: only select numerator objects
+
     // analysis of what else is in dR cone cut (currently 0.1) giving rise to fake hardron mothers
-    //
-    // TODO: need event weights for these histograms?
-    //
-    if (fakes) eta_vs_phi_all_fakes->Fill(Photon_phi,Photon_eta,Event_weightAll);
-    // EB
-    if (fabs(Photon_scEta) < 1.4442) {
-      if (fakes) {
-	pt_all_fakes_EB->Fill(Photon_pt,Event_weightAll);
-	sieie_all_fakes_EB->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	if (Photon_pt <= 150) sieie_all_fakes_EB_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	if (150 < Photon_pt && Photon_pt <= 300) sieie_all_fakes_EB_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	if (300 < Photon_pt) sieie_all_fakes_EB_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	if (Photon_passSieie) gen_photon_reco_photon_pt_diff_EB_passSieie->Fill( PhotonGenMatch_pt/Photon_pt,Event_weightAll );
-	if (!Photon_passSieie) gen_photon_reco_photon_pt_diff_EB_failSieie->Fill( PhotonGenMatch_pt/Photon_pt,Event_weightAll );
-	if (printdRConInfo) {
-	  cout << endl;
-	  cout << "Run: " << Event_run << ", LS: " << Event_LS << ", event number: " << Event_evnum << ", weight = " << Event_weightAll <<  endl;
-	  cout << "EB; final state (status 1); dR <= 0.1; numerator (no sieie cut)" << endl;
-	  cout << "Reco photon: pt = " << Photon_pt << "; sc_eta = " << Photon_scEta << "; eta = " << Photon_eta << "; phi = " << Photon_phi << "; sieie = " << Photon_sigmaIetaIeta5x5
-	       << "; isSaturated = " << Photon_isSaturated << "; passSieie = " << Photon_passSieie << endl;
-	  cout << "Photon gen match: pt = " << PhotonGenMatch_pt << "; eta = " << PhotonGenMatch_eta << "; phi = " << PhotonGenMatch_phi << endl;
-	  cout << "gen_pt / reco_pt: " << PhotonGenMatch_pt/Photon_pt << endl;
-	}
-	int nParticlesEB = GenMatchPt->size();
-	double particlesSumPtEB = 0;
-	int nPhoEB = 0;
-	double phoPtSumEB = 0;
-	int nMatchSiblingsEB = 0;
-	double matchSiblingsSumPtEB = 0;
-	std::vector<std::pair<int, double> > distinct_moms_EB;
-	bool add_first_element_EB = true;
-	bool add_element_EB = true;
-	// loop through final state particles in dR cone
-	for (std::vector<double>::iterator i = GenMatchPt->begin(); i != GenMatchPt->end(); ++i) {
-	  auto pos = i - GenMatchPt->begin();
-	  particlesSumPtEB += GenMatchPt->at(pos);
-	  if (add_first_element_EB) distinct_moms_EB.push_back(std::make_pair(GenMatchMotherPdgId->at(pos),GenMatchMotherPt->at(pos)));
-	  add_first_element_EB = false;
+    if (is_sieie_numerator_object) {
+      //
+      // TODO: need event weights for these histograms?
+      //
+      if (fakes) eta_vs_phi_all_fakes->Fill(Photon_phi,Photon_eta,Event_weightAll);
+      // EB
+      if (fabs(Photon_scEta) < 1.4442) {
+	if (fakes) {
+	  pt_all_fakes_EB->Fill(Photon_pt,Event_weightAll);
+	  sieie_all_fakes_EB->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  if (Photon_pt <= 150) sieie_all_fakes_EB_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  if (150 < Photon_pt && Photon_pt <= 300) sieie_all_fakes_EB_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  if (300 < Photon_pt) sieie_all_fakes_EB_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  if (Photon_passSieie) gen_photon_reco_photon_pt_diff_EB_passSieie->Fill( PhotonGenMatch_pt/Photon_pt,Event_weightAll );
+	  if (!Photon_passSieie) gen_photon_reco_photon_pt_diff_EB_failSieie->Fill( PhotonGenMatch_pt/Photon_pt,Event_weightAll );
 	  if (printdRConInfo) {
-	    cout << "Particle " << pos << ": pdgId: " << GenMatchPdgId->at(pos) << "; pt: " << GenMatchPt->at(pos)
-		 << "; eta: " << GenMatchEta->at(pos) << "; phi: " << GenMatchPhi->at(pos) << "; dR: " << GenMatchDeltaR->at(pos)
-		 << "; nMothers: " << GenMatchNumMothers->at(pos) << "; mother pdgId: " << GenMatchMotherPdgId->at(pos)
-		 << "; mother pt: " << GenMatchMotherPt->at(pos) << "; mother status: " << GenMatchMotherStatus->at(pos) << endl;
+	    cout << endl;
+	    cout << "Run: " << Event_run << ", LS: " << Event_LS << ", event number: " << Event_evnum << ", weight = " << Event_weightAll <<  endl;
+	    cout << "EB; final state (status 1); dR <= 0.1; numerator (no sieie cut)" << endl;
+	    cout << "Reco photon: pt = " << Photon_pt << "; sc_eta = " << Photon_scEta << "; eta = " << Photon_eta << "; phi = " << Photon_phi << "; sieie = " << Photon_sigmaIetaIeta5x5
+		 << "; isSaturated = " << Photon_isSaturated << "; passSieie = " << Photon_passSieie << endl;
+	    cout << "Photon gen match: pt = " << PhotonGenMatch_pt << "; eta = " << PhotonGenMatch_eta << "; phi = " << PhotonGenMatch_phi << endl;
+	    cout << "gen_pt / reco_pt: " << PhotonGenMatch_pt/Photon_pt << endl;
 	  }
-	  for (std::vector<std::pair<int, double> >::iterator it = distinct_moms_EB.begin(); it != distinct_moms_EB.end(); ++it) {
-	    if (it->first == GenMatchMotherPdgId->at(pos) && it->second == GenMatchMotherPt->at(pos)) {
-	      add_element_EB = false;
+	  int nParticlesEB = GenMatchPt->size();
+	  double particlesSumPtEB = 0;
+	  int nPhoEB = 0;
+	  double phoPtSumEB = 0;
+	  int nMatchSiblingsEB = 0;
+	  double matchSiblingsSumPtEB = 0;
+	  std::vector<std::pair<int, double> > distinct_moms_EB;
+	  bool add_first_element_EB = true;
+	  bool add_element_EB = true;
+	  // loop through final state particles in dR cone
+	  for (std::vector<double>::iterator i = GenMatchPt->begin(); i != GenMatchPt->end(); ++i) {
+	    auto pos = i - GenMatchPt->begin();
+	    particlesSumPtEB += GenMatchPt->at(pos);
+	    if (add_first_element_EB) distinct_moms_EB.push_back(std::make_pair(GenMatchMotherPdgId->at(pos),GenMatchMotherPt->at(pos)));
+	    add_first_element_EB = false;
+	    if (printdRConInfo) {
+	      cout << "Particle " << pos << ": pdgId: " << GenMatchPdgId->at(pos) << "; pt: " << GenMatchPt->at(pos)
+		   << "; eta: " << GenMatchEta->at(pos) << "; phi: " << GenMatchPhi->at(pos) << "; dR: " << GenMatchDeltaR->at(pos)
+		   << "; nMothers: " << GenMatchNumMothers->at(pos) << "; mother pdgId: " << GenMatchMotherPdgId->at(pos)
+		   << "; mother pt: " << GenMatchMotherPt->at(pos) << "; mother status: " << GenMatchMotherStatus->at(pos) << endl;
 	    }
-	  }
-	  if (add_element_EB) distinct_moms_EB.push_back(std::make_pair(GenMatchMotherPdgId->at(pos),GenMatchMotherPt->at(pos)));
-	  add_element_EB = true;
-	  if (GenMatchPdgId->at(pos) == 22) {
-	    nPhoEB++;
-	    phoPtSumEB += GenMatchPt->at(pos);
-	  }
-	  if (GenMatchPt->at(pos) == PhotonGenMatch_pt) {
-	    double mom_pt = GenMatchMotherPt->at(pos);
-	    for (std::vector<double>::iterator j = GenMatchPt->begin(); j != GenMatchPt->end(); ++j) {
-	      auto mom_pos = j - GenMatchPt->begin();
-	      if (mom_pt == GenMatchMotherPt->at(mom_pos)) {
-		nMatchSiblingsEB++;
-		matchSiblingsSumPtEB += GenMatchPt->at(mom_pos);
+	    for (std::vector<std::pair<int, double> >::iterator it = distinct_moms_EB.begin(); it != distinct_moms_EB.end(); ++it) {
+	      if (it->first == GenMatchMotherPdgId->at(pos) && it->second == GenMatchMotherPt->at(pos)) {
+		add_element_EB = false;
 	      }
 	    }
-	  }
-	} // end loop through final state particles in dR cone
-	if (printdRConInfo) {
-	  cout << "nParticlesEB    : " << nParticlesEB     << "; particlesSumPtEB    : " << particlesSumPtEB     << "; particles_pt / reco_pt: " << particlesSumPtEB/Photon_pt     << endl;
-	  cout << "nPhoEB          : " << nPhoEB           << "; phoPtSumEB          : " << phoPtSumEB           << "; photons_pt / reco_pt  : " << phoPtSumEB/Photon_pt           << endl;
-	  cout << "nMatchSiblingsEB: " << nMatchSiblingsEB << "; matchSiblingsSumPtEB: " << matchSiblingsSumPtEB << "; siblings_pt / reco_pt : " << matchSiblingsSumPtEB/Photon_pt << endl;
-	  cout << "Number distinct mothers: " << distinct_moms_EB.size() << endl;
-	  cout << "Distinct mother list: ";
-	  for (std::vector<std::pair<int, double> >::iterator it = distinct_moms_EB.begin(); it != distinct_moms_EB.end(); ++it) {
-	    cout << "(" << it->first << "," << it->second << ")";
-	    if (std::next(it,1) != distinct_moms_EB.end()) cout << ", ";
-	  }
-	  cout << endl;
-	}
-	if (distinct_moms_EB.size() == 1) {
-	  sieie_one_mother_EB->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (Photon_pt <= 150) sieie_one_mother_EB_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (150 < Photon_pt && Photon_pt <= 300) sieie_one_mother_EB_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (300 < Photon_pt) sieie_one_mother_EB_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	}
-	if (distinct_moms_EB.size() == 2) {
-	  sieie_two_mothers_EB->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (Photon_pt <= 150) sieie_two_mothers_EB_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (150 < Photon_pt && Photon_pt <= 300) sieie_two_mothers_EB_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (300 < Photon_pt) sieie_two_mothers_EB_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	}
-	if (distinct_moms_EB.size() >= 3) {
-	  sieie_three_or_more_mothers_EB->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (Photon_pt <= 150) sieie_three_or_more_mothers_EB_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (150 < Photon_pt && Photon_pt <= 300) sieie_three_or_more_mothers_EB_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (300 < Photon_pt) sieie_three_or_more_mothers_EB_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	}
-	if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first == 111) {
-	  sieie_single_pion_mother_EB->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (Photon_pt <= 150) sieie_single_pion_mother_EB_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (150 < Photon_pt && Photon_pt <= 300) sieie_single_pion_mother_EB_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (300 < Photon_pt) sieie_single_pion_mother_EB_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	}
-	if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first == 221) {
-	  sieie_single_eta_mother_EB->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (Photon_pt <= 150) sieie_single_eta_mother_EB_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (150 < Photon_pt && Photon_pt <= 300) sieie_single_eta_mother_EB_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (300 < Photon_pt) sieie_single_eta_mother_EB_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	}
-	if (Photon_passSieie) {
-	  gen_particles_reco_photon_pt_diff_EB_passSieie->Fill( particlesSumPtEB/Photon_pt,Event_weightAll );
-	  gen_siblings_reco_photon_pt_diff_EB_passSieie->Fill( matchSiblingsSumPtEB/Photon_pt,Event_weightAll );
-	  n_particles_dR_cone_EB_passSieie->Fill(nParticlesEB,Event_weightAll);
-	  n_distinct_mothers_dR_cone_EB_passSieie->Fill(distinct_moms_EB.size(),Event_weightAll);
-	  if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first == 111) n_single_pion_mothers_EB_passSieie->Fill(1.0,Event_weightAll);
-	  if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first == 221) n_single_eta_mothers_EB_passSieie->Fill(1.0,Event_weightAll);
-	  if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first != 111 && distinct_moms_EB.at(0).first != 221) n_single_other_mothers_EB_passSieie->Fill(1.0,Event_weightAll);
-	  if (distinct_moms_EB.size() == 2) n_two_mothers_EB_passSieie->Fill(2.0,Event_weightAll);
-	  if (distinct_moms_EB.size() >= 3) n_three_or_more_mothers_EB_passSieie->Fill(3.0,Event_weightAll);
-	}
-	if (!Photon_passSieie) {
-	  gen_particles_reco_photon_pt_diff_EB_failSieie->Fill( particlesSumPtEB/Photon_pt,Event_weightAll );
-	  gen_siblings_reco_photon_pt_diff_EB_failSieie->Fill( matchSiblingsSumPtEB/Photon_pt,Event_weightAll );
-	  n_particles_dR_cone_EB_failSieie->Fill(nParticlesEB,Event_weightAll);
-	  n_distinct_mothers_dR_cone_EB_failSieie->Fill(distinct_moms_EB.size(),Event_weightAll);
-	  if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first == 111) n_single_pion_mothers_EB_failSieie->Fill(1.0,Event_weightAll);
-	  if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first == 221) n_single_eta_mothers_EB_failSieie->Fill(1.0,Event_weightAll);
-	  if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first != 111 && distinct_moms_EB.at(0).first != 221) n_single_other_mothers_EB_failSieie->Fill(1.0,Event_weightAll);
-	  if (distinct_moms_EB.size() == 2) n_two_mothers_EB_failSieie->Fill(2.0,Event_weightAll);
-	  if (distinct_moms_EB.size() >= 3) n_three_or_more_mothers_EB_failSieie->Fill(3.0,Event_weightAll);
-	}
-      }
-    } // end EB
-    // EE
-    else if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
-      if (fakes) {
-	pt_all_fakes_EE->Fill(Photon_pt,Event_weightAll);
-	sieie_all_fakes_EE->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	if (Photon_pt <= 150) sieie_all_fakes_EE_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	if (150 < Photon_pt && Photon_pt <= 300) sieie_all_fakes_EE_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	if (300 < Photon_pt) sieie_all_fakes_EE_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	if (Photon_passSieie) gen_photon_reco_photon_pt_diff_EE_passSieie->Fill( PhotonGenMatch_pt/Photon_pt,Event_weightAll );
-	if (!Photon_passSieie) gen_photon_reco_photon_pt_diff_EE_failSieie->Fill( PhotonGenMatch_pt/Photon_pt,Event_weightAll );
-	if (printdRConInfo) {
-	  cout << endl;
-	  cout << "Run: " << Event_run << ", LS: " << Event_LS << ", event number: " << Event_evnum << ", weight = " << Event_weightAll <<  endl;
-	  cout << "EE; final state (status 1); dR <= 0.1; numerator (no sieie cut)" << endl;
-	  cout << "Reco photon: pt = " << Photon_pt << "; sc_eta = " << Photon_scEta << "; eta = " << Photon_eta << "; phi = " << Photon_phi << "; sieie = " << Photon_sigmaIetaIeta5x5
-	       << "; isSaturated = " << Photon_isSaturated << "; passSieie = " << Photon_passSieie << endl;
-	  cout << "Photon gen match: pt = " << PhotonGenMatch_pt << "; eta = " << PhotonGenMatch_eta << "; phi = " << PhotonGenMatch_phi << endl;
-	  cout << "gen_pt / reco_pt: " << PhotonGenMatch_pt/Photon_pt << endl;
-	}
-	int nParticlesEE = GenMatchPt->size();
-	double particlesSumPtEE = 0;
-	int nPhoEE = 0;
-	double phoPtSumEE = 0;
-	int nMatchSiblingsEE = 0;
-	double matchSiblingsSumPtEE = 0;
-	std::vector<std::pair<int, double> > distinct_moms_EE;
-	bool add_first_element_EE = true;
-	bool add_element_EE = true;
-	// loop through final state particles in dR cone
-	for (std::vector<double>::iterator i = GenMatchPt->begin(); i != GenMatchPt->end(); ++i) {
-	  auto pos = i - GenMatchPt->begin();
-	  particlesSumPtEE += GenMatchPt->at(pos);
-	  if (add_first_element_EE) distinct_moms_EE.push_back(std::make_pair(GenMatchMotherPdgId->at(pos),GenMatchMotherPt->at(pos)));
-	  add_first_element_EE = false;
-	  if (printdRConInfo) {
-	    cout << "Particle " << pos << ": pdgId: " << GenMatchPdgId->at(pos) << "; pt: " << GenMatchPt->at(pos)
-		 << "; eta: " << GenMatchEta->at(pos) << "; phi: " << GenMatchPhi->at(pos) << "; dR: " << GenMatchDeltaR->at(pos)
-		 << "; nMothers: " << GenMatchNumMothers->at(pos) << "; mother pdgId: " << GenMatchMotherPdgId->at(pos)
-		 << "; mother pt: " << GenMatchMotherPt->at(pos) << "; mother status: " << GenMatchMotherStatus->at(pos) << endl;
-	  }
-	  for (std::vector<std::pair<int, double> >::iterator it = distinct_moms_EE.begin(); it != distinct_moms_EE.end(); ++it) {
-	    if (it->first == GenMatchMotherPdgId->at(pos) && it->second == GenMatchMotherPt->at(pos)) {
-	      add_element_EE = false;
+	    if (add_element_EB) distinct_moms_EB.push_back(std::make_pair(GenMatchMotherPdgId->at(pos),GenMatchMotherPt->at(pos)));
+	    add_element_EB = true;
+	    if (GenMatchPdgId->at(pos) == 22) {
+	      nPhoEB++;
+	      phoPtSumEB += GenMatchPt->at(pos);
 	    }
-	  }
-	  if (add_element_EE) distinct_moms_EE.push_back(std::make_pair(GenMatchMotherPdgId->at(pos),GenMatchMotherPt->at(pos)));
-	  add_element_EE = true;
-	  if (GenMatchPdgId->at(pos) == 22) {
-	    nPhoEE++;
-	    phoPtSumEE += GenMatchPt->at(pos);
-	  }
-	  if (GenMatchPt->at(pos) == PhotonGenMatch_pt) {
-	    double mom_pt = GenMatchMotherPt->at(pos);
-	    for (std::vector<double>::iterator j = GenMatchPt->begin(); j != GenMatchPt->end(); ++j) {
-	      auto mom_pos = j - GenMatchPt->begin();
-	      if (mom_pt == GenMatchMotherPt->at(mom_pos)) {
-		nMatchSiblingsEE++;
-		matchSiblingsSumPtEE += GenMatchPt->at(mom_pos);
+	    if (GenMatchPt->at(pos) == PhotonGenMatch_pt) {
+	      double mom_pt = GenMatchMotherPt->at(pos);
+	      for (std::vector<double>::iterator j = GenMatchPt->begin(); j != GenMatchPt->end(); ++j) {
+		auto mom_pos = j - GenMatchPt->begin();
+		if (mom_pt == GenMatchMotherPt->at(mom_pos)) {
+		  nMatchSiblingsEB++;
+		  matchSiblingsSumPtEB += GenMatchPt->at(mom_pos);
+		}
 	      }
 	    }
+	  } // end loop through final state particles in dR cone
+	  if (printdRConInfo) {
+	    cout << "nParticlesEB    : " << nParticlesEB     << "; particlesSumPtEB    : " << particlesSumPtEB     << "; particles_pt / reco_pt: " << particlesSumPtEB/Photon_pt     << endl;
+	    cout << "nPhoEB          : " << nPhoEB           << "; phoPtSumEB          : " << phoPtSumEB           << "; photons_pt / reco_pt  : " << phoPtSumEB/Photon_pt           << endl;
+	    cout << "nMatchSiblingsEB: " << nMatchSiblingsEB << "; matchSiblingsSumPtEB: " << matchSiblingsSumPtEB << "; siblings_pt / reco_pt : " << matchSiblingsSumPtEB/Photon_pt << endl;
+	    cout << "Number distinct mothers: " << distinct_moms_EB.size() << endl;
+	    cout << "Distinct mother list: ";
+	    for (std::vector<std::pair<int, double> >::iterator it = distinct_moms_EB.begin(); it != distinct_moms_EB.end(); ++it) {
+	      cout << "(" << it->first << "," << it->second << ")";
+	      if (std::next(it,1) != distinct_moms_EB.end()) cout << ", ";
+	    }
+	    cout << endl;
 	  }
-	} // end loop through final state particles in dR cone
-	if (printdRConInfo) {
-	  cout << "nParticlesEE    : " << nParticlesEE     << "; particlesSumPtEE    : " << particlesSumPtEE     << "; particles_pt / reco_pt: " << particlesSumPtEE/Photon_pt     << endl;
-	  cout << "nPhoEE          : " << nPhoEE           << "; phoPtSumEE          : " << phoPtSumEE           << "; photons_pt / reco_pt  : " << phoPtSumEE/Photon_pt           << endl;
-	  cout << "nMatchSiblingsEE: " << nMatchSiblingsEE << "; matchSiblingsSumPtEE: " << matchSiblingsSumPtEE << "; siblings_pt / reco_pt : " << matchSiblingsSumPtEE/Photon_pt << endl;
-	  cout << "Number distinct mothers: " << distinct_moms_EE.size() << endl;
-	  cout << "Distinct mother list: ";
-	  for (std::vector<std::pair<int, double> >::iterator it = distinct_moms_EE.begin(); it != distinct_moms_EE.end(); ++it) {
-	    cout << "(" << it->first << "," << it->second << ")";
-	    if (std::next(it,1) != distinct_moms_EE.end()) cout << ", ";
+	  if (distinct_moms_EB.size() == 1) {
+	    sieie_one_mother_EB->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (Photon_pt <= 150) sieie_one_mother_EB_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (150 < Photon_pt && Photon_pt <= 300) sieie_one_mother_EB_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (300 < Photon_pt) sieie_one_mother_EB_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	  }
-	  cout << endl;
+	  if (distinct_moms_EB.size() == 2) {
+	    sieie_two_mothers_EB->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (Photon_pt <= 150) sieie_two_mothers_EB_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (150 < Photon_pt && Photon_pt <= 300) sieie_two_mothers_EB_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (300 < Photon_pt) sieie_two_mothers_EB_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  }
+	  if (distinct_moms_EB.size() >= 3) {
+	    sieie_three_or_more_mothers_EB->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (Photon_pt <= 150) sieie_three_or_more_mothers_EB_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (150 < Photon_pt && Photon_pt <= 300) sieie_three_or_more_mothers_EB_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (300 < Photon_pt) sieie_three_or_more_mothers_EB_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  }
+	  if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first == 111) {
+	    sieie_single_pion_mother_EB->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (Photon_pt <= 150) sieie_single_pion_mother_EB_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (150 < Photon_pt && Photon_pt <= 300) sieie_single_pion_mother_EB_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (300 < Photon_pt) sieie_single_pion_mother_EB_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  }
+	  if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first == 221) {
+	    sieie_single_eta_mother_EB->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (Photon_pt <= 150) sieie_single_eta_mother_EB_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (150 < Photon_pt && Photon_pt <= 300) sieie_single_eta_mother_EB_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (300 < Photon_pt) sieie_single_eta_mother_EB_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  }
+	  if (Photon_passSieie) {
+	    gen_particles_reco_photon_pt_diff_EB_passSieie->Fill( particlesSumPtEB/Photon_pt,Event_weightAll );
+	    gen_siblings_reco_photon_pt_diff_EB_passSieie->Fill( matchSiblingsSumPtEB/Photon_pt,Event_weightAll );
+	    n_particles_dR_cone_EB_passSieie->Fill(nParticlesEB,Event_weightAll);
+	    n_distinct_mothers_dR_cone_EB_passSieie->Fill(distinct_moms_EB.size(),Event_weightAll);
+	    if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first == 111) n_single_pion_mothers_EB_passSieie->Fill(1.0,Event_weightAll);
+	    if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first == 221) n_single_eta_mothers_EB_passSieie->Fill(1.0,Event_weightAll);
+	    if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first != 111 && distinct_moms_EB.at(0).first != 221) n_single_other_mothers_EB_passSieie->Fill(1.0,Event_weightAll);
+	    if (distinct_moms_EB.size() == 2) n_two_mothers_EB_passSieie->Fill(2.0,Event_weightAll);
+	    if (distinct_moms_EB.size() >= 3) n_three_or_more_mothers_EB_passSieie->Fill(3.0,Event_weightAll);
+	  }
+	  if (!Photon_passSieie) {
+	    gen_particles_reco_photon_pt_diff_EB_failSieie->Fill( particlesSumPtEB/Photon_pt,Event_weightAll );
+	    gen_siblings_reco_photon_pt_diff_EB_failSieie->Fill( matchSiblingsSumPtEB/Photon_pt,Event_weightAll );
+	    n_particles_dR_cone_EB_failSieie->Fill(nParticlesEB,Event_weightAll);
+	    n_distinct_mothers_dR_cone_EB_failSieie->Fill(distinct_moms_EB.size(),Event_weightAll);
+	    if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first == 111) n_single_pion_mothers_EB_failSieie->Fill(1.0,Event_weightAll);
+	    if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first == 221) n_single_eta_mothers_EB_failSieie->Fill(1.0,Event_weightAll);
+	    if (distinct_moms_EB.size() == 1 && distinct_moms_EB.at(0).first != 111 && distinct_moms_EB.at(0).first != 221) n_single_other_mothers_EB_failSieie->Fill(1.0,Event_weightAll);
+	    if (distinct_moms_EB.size() == 2) n_two_mothers_EB_failSieie->Fill(2.0,Event_weightAll);
+	    if (distinct_moms_EB.size() >= 3) n_three_or_more_mothers_EB_failSieie->Fill(3.0,Event_weightAll);
+	  }
 	}
-	if (distinct_moms_EE.size() == 1) {
-	  sieie_one_mother_EE->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (Photon_pt <= 150) sieie_one_mother_EE_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (150 < Photon_pt && Photon_pt <= 300) sieie_one_mother_EE_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (300 < Photon_pt) sieie_one_mother_EE_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+      } // end EB
+      // EE
+      else if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+	if (fakes) {
+	  pt_all_fakes_EE->Fill(Photon_pt,Event_weightAll);
+	  sieie_all_fakes_EE->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  if (Photon_pt <= 150) sieie_all_fakes_EE_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  if (150 < Photon_pt && Photon_pt <= 300) sieie_all_fakes_EE_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  if (300 < Photon_pt) sieie_all_fakes_EE_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  if (Photon_passSieie) gen_photon_reco_photon_pt_diff_EE_passSieie->Fill( PhotonGenMatch_pt/Photon_pt,Event_weightAll );
+	  if (!Photon_passSieie) gen_photon_reco_photon_pt_diff_EE_failSieie->Fill( PhotonGenMatch_pt/Photon_pt,Event_weightAll );
+	  if (printdRConInfo) {
+	    cout << endl;
+	    cout << "Run: " << Event_run << ", LS: " << Event_LS << ", event number: " << Event_evnum << ", weight = " << Event_weightAll <<  endl;
+	    cout << "EE; final state (status 1); dR <= 0.1; numerator (no sieie cut)" << endl;
+	    cout << "Reco photon: pt = " << Photon_pt << "; sc_eta = " << Photon_scEta << "; eta = " << Photon_eta << "; phi = " << Photon_phi << "; sieie = " << Photon_sigmaIetaIeta5x5
+		 << "; isSaturated = " << Photon_isSaturated << "; passSieie = " << Photon_passSieie << endl;
+	    cout << "Photon gen match: pt = " << PhotonGenMatch_pt << "; eta = " << PhotonGenMatch_eta << "; phi = " << PhotonGenMatch_phi << endl;
+	    cout << "gen_pt / reco_pt: " << PhotonGenMatch_pt/Photon_pt << endl;
+	  }
+	  int nParticlesEE = GenMatchPt->size();
+	  double particlesSumPtEE = 0;
+	  int nPhoEE = 0;
+	  double phoPtSumEE = 0;
+	  int nMatchSiblingsEE = 0;
+	  double matchSiblingsSumPtEE = 0;
+	  std::vector<std::pair<int, double> > distinct_moms_EE;
+	  bool add_first_element_EE = true;
+	  bool add_element_EE = true;
+	  // loop through final state particles in dR cone
+	  for (std::vector<double>::iterator i = GenMatchPt->begin(); i != GenMatchPt->end(); ++i) {
+	    auto pos = i - GenMatchPt->begin();
+	    particlesSumPtEE += GenMatchPt->at(pos);
+	    if (add_first_element_EE) distinct_moms_EE.push_back(std::make_pair(GenMatchMotherPdgId->at(pos),GenMatchMotherPt->at(pos)));
+	    add_first_element_EE = false;
+	    if (printdRConInfo) {
+	      cout << "Particle " << pos << ": pdgId: " << GenMatchPdgId->at(pos) << "; pt: " << GenMatchPt->at(pos)
+		   << "; eta: " << GenMatchEta->at(pos) << "; phi: " << GenMatchPhi->at(pos) << "; dR: " << GenMatchDeltaR->at(pos)
+		   << "; nMothers: " << GenMatchNumMothers->at(pos) << "; mother pdgId: " << GenMatchMotherPdgId->at(pos)
+		   << "; mother pt: " << GenMatchMotherPt->at(pos) << "; mother status: " << GenMatchMotherStatus->at(pos) << endl;
+	    }
+	    for (std::vector<std::pair<int, double> >::iterator it = distinct_moms_EE.begin(); it != distinct_moms_EE.end(); ++it) {
+	      if (it->first == GenMatchMotherPdgId->at(pos) && it->second == GenMatchMotherPt->at(pos)) {
+		add_element_EE = false;
+	      }
+	    }
+	    if (add_element_EE) distinct_moms_EE.push_back(std::make_pair(GenMatchMotherPdgId->at(pos),GenMatchMotherPt->at(pos)));
+	    add_element_EE = true;
+	    if (GenMatchPdgId->at(pos) == 22) {
+	      nPhoEE++;
+	      phoPtSumEE += GenMatchPt->at(pos);
+	    }
+	    if (GenMatchPt->at(pos) == PhotonGenMatch_pt) {
+	      double mom_pt = GenMatchMotherPt->at(pos);
+	      for (std::vector<double>::iterator j = GenMatchPt->begin(); j != GenMatchPt->end(); ++j) {
+		auto mom_pos = j - GenMatchPt->begin();
+		if (mom_pt == GenMatchMotherPt->at(mom_pos)) {
+		  nMatchSiblingsEE++;
+		  matchSiblingsSumPtEE += GenMatchPt->at(mom_pos);
+		}
+	      }
+	    }
+	  } // end loop through final state particles in dR cone
+	  if (printdRConInfo) {
+	    cout << "nParticlesEE    : " << nParticlesEE     << "; particlesSumPtEE    : " << particlesSumPtEE     << "; particles_pt / reco_pt: " << particlesSumPtEE/Photon_pt     << endl;
+	    cout << "nPhoEE          : " << nPhoEE           << "; phoPtSumEE          : " << phoPtSumEE           << "; photons_pt / reco_pt  : " << phoPtSumEE/Photon_pt           << endl;
+	    cout << "nMatchSiblingsEE: " << nMatchSiblingsEE << "; matchSiblingsSumPtEE: " << matchSiblingsSumPtEE << "; siblings_pt / reco_pt : " << matchSiblingsSumPtEE/Photon_pt << endl;
+	    cout << "Number distinct mothers: " << distinct_moms_EE.size() << endl;
+	    cout << "Distinct mother list: ";
+	    for (std::vector<std::pair<int, double> >::iterator it = distinct_moms_EE.begin(); it != distinct_moms_EE.end(); ++it) {
+	      cout << "(" << it->first << "," << it->second << ")";
+	      if (std::next(it,1) != distinct_moms_EE.end()) cout << ", ";
+	    }
+	    cout << endl;
+	  }
+	  if (distinct_moms_EE.size() == 1) {
+	    sieie_one_mother_EE->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (Photon_pt <= 150) sieie_one_mother_EE_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (150 < Photon_pt && Photon_pt <= 300) sieie_one_mother_EE_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (300 < Photon_pt) sieie_one_mother_EE_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  }
+	  if (distinct_moms_EE.size() == 2) {
+	    sieie_two_mothers_EE->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (Photon_pt <= 150) sieie_two_mothers_EE_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (150 < Photon_pt && Photon_pt <= 300) sieie_two_mothers_EE_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (300 < Photon_pt) sieie_two_mothers_EE_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  }
+	  if (distinct_moms_EE.size() >= 3) {
+	    sieie_three_or_more_mothers_EE->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (Photon_pt <= 150) sieie_three_or_more_mothers_EE_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (150 < Photon_pt && Photon_pt <= 300) sieie_three_or_more_mothers_EE_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (300 < Photon_pt) sieie_three_or_more_mothers_EE_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  }
+	  if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first == 111) {
+	    sieie_single_pion_mother_EE->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (Photon_pt <= 150) sieie_single_pion_mother_EE_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (150 < Photon_pt && Photon_pt <= 300) sieie_single_pion_mother_EE_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (300 < Photon_pt) sieie_single_pion_mother_EE_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  }
+	  if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first == 221) {
+	    sieie_single_eta_mother_EE->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (Photon_pt <= 150) sieie_single_eta_mother_EE_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (150 < Photon_pt && Photon_pt <= 300) sieie_single_eta_mother_EE_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if (300 < Photon_pt) sieie_single_eta_mother_EE_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	  }
+	  if (Photon_passSieie) {
+	    gen_particles_reco_photon_pt_diff_EE_passSieie->Fill( particlesSumPtEE/Photon_pt,Event_weightAll );
+	    gen_siblings_reco_photon_pt_diff_EE_passSieie->Fill( matchSiblingsSumPtEE/Photon_pt,Event_weightAll );
+	    n_particles_dR_cone_EE_passSieie->Fill(nParticlesEE,Event_weightAll);
+	    n_distinct_mothers_dR_cone_EE_passSieie->Fill(distinct_moms_EE.size(),Event_weightAll);
+	    if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first == 111) n_single_pion_mothers_EE_passSieie->Fill(1.0,Event_weightAll);
+	    if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first == 221) n_single_eta_mothers_EE_passSieie->Fill(1.0,Event_weightAll);
+	    if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first != 111 && distinct_moms_EE.at(0).first != 221) n_single_other_mothers_EE_passSieie->Fill(1.0,Event_weightAll);
+	    if (distinct_moms_EE.size() == 2) n_two_mothers_EE_passSieie->Fill(2.0,Event_weightAll);
+	    if (distinct_moms_EE.size() >= 3) n_three_or_more_mothers_EE_passSieie->Fill(3.0,Event_weightAll);
+	  }
+	  if (!Photon_passSieie) {
+	    gen_particles_reco_photon_pt_diff_EE_failSieie->Fill( particlesSumPtEE/Photon_pt,Event_weightAll );
+	    gen_siblings_reco_photon_pt_diff_EE_failSieie->Fill( matchSiblingsSumPtEE/Photon_pt,Event_weightAll );
+	    n_particles_dR_cone_EE_failSieie->Fill(nParticlesEE,Event_weightAll);
+	    n_distinct_mothers_dR_cone_EE_failSieie->Fill(distinct_moms_EE.size(),Event_weightAll);
+	    if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first == 111) n_single_pion_mothers_EE_failSieie->Fill(1.0,Event_weightAll);
+	    if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first == 221) n_single_eta_mothers_EE_failSieie->Fill(1.0,Event_weightAll);
+	    if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first != 111 && distinct_moms_EE.at(0).first != 221) n_single_other_mothers_EE_failSieie->Fill(1.0,Event_weightAll);
+	    if (distinct_moms_EE.size() == 2) n_two_mothers_EE_failSieie->Fill(2.0,Event_weightAll);
+	    if (distinct_moms_EE.size() >= 3) n_three_or_more_mothers_EE_failSieie->Fill(3.0,Event_weightAll);
+	  }
 	}
-	if (distinct_moms_EE.size() == 2) {
-	  sieie_two_mothers_EE->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (Photon_pt <= 150) sieie_two_mothers_EE_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (150 < Photon_pt && Photon_pt <= 300) sieie_two_mothers_EE_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (300 < Photon_pt) sieie_two_mothers_EE_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	}
-	if (distinct_moms_EE.size() >= 3) {
-	  sieie_three_or_more_mothers_EE->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (Photon_pt <= 150) sieie_three_or_more_mothers_EE_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (150 < Photon_pt && Photon_pt <= 300) sieie_three_or_more_mothers_EE_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (300 < Photon_pt) sieie_three_or_more_mothers_EE_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	}
-	if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first == 111) {
-	  sieie_single_pion_mother_EE->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (Photon_pt <= 150) sieie_single_pion_mother_EE_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (150 < Photon_pt && Photon_pt <= 300) sieie_single_pion_mother_EE_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (300 < Photon_pt) sieie_single_pion_mother_EE_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	}
-	if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first == 221) {
-	  sieie_single_eta_mother_EE->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (Photon_pt <= 150) sieie_single_eta_mother_EE_pt_50To150->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (150 < Photon_pt && Photon_pt <= 300) sieie_single_eta_mother_EE_pt_150To300->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	  if (300 < Photon_pt) sieie_single_eta_mother_EE_pt_300ToInf->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	}
-	if (Photon_passSieie) {
-	  gen_particles_reco_photon_pt_diff_EE_passSieie->Fill( particlesSumPtEE/Photon_pt,Event_weightAll );
-	  gen_siblings_reco_photon_pt_diff_EE_passSieie->Fill( matchSiblingsSumPtEE/Photon_pt,Event_weightAll );
-	  n_particles_dR_cone_EE_passSieie->Fill(nParticlesEE,Event_weightAll);
-	  n_distinct_mothers_dR_cone_EE_passSieie->Fill(distinct_moms_EE.size(),Event_weightAll);
-	  if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first == 111) n_single_pion_mothers_EE_passSieie->Fill(1.0,Event_weightAll);
-	  if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first == 221) n_single_eta_mothers_EE_passSieie->Fill(1.0,Event_weightAll);
-	  if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first != 111 && distinct_moms_EE.at(0).first != 221) n_single_other_mothers_EE_passSieie->Fill(1.0,Event_weightAll);
-	  if (distinct_moms_EE.size() == 2) n_two_mothers_EE_passSieie->Fill(2.0,Event_weightAll);
-	  if (distinct_moms_EE.size() >= 3) n_three_or_more_mothers_EE_passSieie->Fill(3.0,Event_weightAll);
-	}
-	if (!Photon_passSieie) {
-	  gen_particles_reco_photon_pt_diff_EE_failSieie->Fill( particlesSumPtEE/Photon_pt,Event_weightAll );
-	  gen_siblings_reco_photon_pt_diff_EE_failSieie->Fill( matchSiblingsSumPtEE/Photon_pt,Event_weightAll );
-	  n_particles_dR_cone_EE_failSieie->Fill(nParticlesEE,Event_weightAll);
-	  n_distinct_mothers_dR_cone_EE_failSieie->Fill(distinct_moms_EE.size(),Event_weightAll);
-	  if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first == 111) n_single_pion_mothers_EE_failSieie->Fill(1.0,Event_weightAll);
-	  if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first == 221) n_single_eta_mothers_EE_failSieie->Fill(1.0,Event_weightAll);
-	  if (distinct_moms_EE.size() == 1 && distinct_moms_EE.at(0).first != 111 && distinct_moms_EE.at(0).first != 221) n_single_other_mothers_EE_failSieie->Fill(1.0,Event_weightAll);
-	  if (distinct_moms_EE.size() == 2) n_two_mothers_EE_failSieie->Fill(2.0,Event_weightAll);
-	  if (distinct_moms_EE.size() >= 3) n_three_or_more_mothers_EE_failSieie->Fill(3.0,Event_weightAll);
-	}
-      }
-    } // end EE
+      } // end EE
+    } // end is sieie numberator object
     
   } // end loop over entries
   
@@ -1071,11 +1080,6 @@ void MCFakeRateClosureTestWithFakes::Loop()
   cout << "Number of gluon fakes: " << nGluonFakesEE << endl;
   cout << endl;
   
-  TString filename = "";
-  if (sample == "QCD") filename = "diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "GJets") filename = "diphoton_fake_rate_closure_test_matching_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "GGJets")  filename = "diphoton_fake_rate_closure_test_matching_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
-  if (sample == "all") filename = "diphoton_fake_rate_closure_test_matching_all_QCD_GJets_GGJets_76X_MiniAOD_histograms.root";
   TFile file_out(filename,"RECREATE");
   
   // wirte histograms for analysis of particles in dR cone cut
@@ -1264,7 +1268,7 @@ void MCFakeRateClosureTestWithFakes::Loop()
   }
   cout << phoPtEB_passHighPtID_varbin.GetName() << " bin sum: " << bin_sum_EE << endl;
   
-  // write numerator histograms
+  // write numerator histograms from mc truth fakes
   for (vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromFakes.begin() ; it != sIeIeNumeratorEB_fromFakes.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Write();
@@ -1273,6 +1277,15 @@ void MCFakeRateClosureTestWithFakes::Loop()
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Write();
   }
+  for (vector<TH1D*>::iterator it = chIsoNumeratorEB_fromFakes.begin() ; it != chIsoNumeratorEB_fromFakes.end(); ++it) {
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    (*it)->Write();
+  }
+  for (vector<TH1D*>::iterator it = chIsoNumeratorEE_fromFakes.begin() ; it != chIsoNumeratorEE_fromFakes.end(); ++it) {
+    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+    (*it)->Write();
+  }
+  // write other sieie numerator histograms
   for (vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromReal.begin() ; it != sIeIeNumeratorEB_fromReal.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
     (*it)->Write();

@@ -23,8 +23,8 @@ void diphoton_looper() {
   cout << "\nUsing sample: " << sample << endl;
   
   // choose what analysis class you want to use (run one at a time)
-  bool do_all = true;
-  bool do_fakes = false;
+  bool do_all = false;
+  bool do_fakes = true;
   
   if (!do_all && !do_fakes) {
     cout << "Choose an analysis class to run on." << endl;
@@ -79,7 +79,7 @@ void diphoton_looper() {
     chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_merged.root",0);
   }
 
-  if (sample == "all" || sample == "GGJets") {
+  if (/*sample == "all" || */sample == "GGJets") {
     chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_GGJets_M-60To200_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root",0);
     chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_GGJets_M-200To500_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root",0);
     chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_GGJets_M-500To1000_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root",0);

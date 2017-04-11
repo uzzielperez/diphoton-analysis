@@ -46,7 +46,7 @@ void MCFakeRateClosureTest::Loop()
   if (sample == "QCD")    filename = "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
   if (sample == "GJets")  filename = "diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
   if (sample == "GGJets") filename = "diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
-  if (sample == "all")    filename = "diphoton_fake_rate_closure_test_all_QCD_GJets_GGJets_76X_MiniAOD_histograms.root";
+  if (sample == "all")    filename = "diphoton_fake_rate_closure_test_all_samples_76X_MiniAOD_histograms.root";
   cout << "Output filename: " << filename << endl << endl;
   
   // count number of numerator photons
@@ -295,6 +295,9 @@ void MCFakeRateClosureTest::Loop()
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
 
     if (is_sieie_numerator_object) nNumerator_passSipipCut++;
+
+    // photon pt cut (already applied in the analyzer)
+    if (Photon_pt < 50.) continue;
     
     // calculate nPV
     int nPV_after_cut = 0;
@@ -406,7 +409,7 @@ void MCFakeRateClosureTest::Loop()
           bool in_chIso_sideband = (sidebandLow < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < sidebandHigh);
           bool is_sieie_fake_template_object = Photon_isNumeratorObjCand && in_chIso_sideband;
 	  // remove real template photons from fake templates
-          if (is_sieie_fake_template_object && PhotonRealMatch == 0) {
+          if (is_sieie_fake_template_object /*&& PhotonRealMatch == 0*/) {
             if (fabs(Photon_scEta) < 1.4442)
 	      sIeIeFakeTemplatesEB.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
             else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )
@@ -420,7 +423,7 @@ void MCFakeRateClosureTest::Loop()
 	  double sidebandHigh = it->second;
 	  bool in_sieie_sideband = (sidebandLow < Photon_sigmaIetaIeta5x5) && (Photon_sigmaIetaIeta5x5 < sidebandHigh);
 	  bool is_chIso_fake_template_object = Photon_isNumeratorObjCand && in_sieie_sideband;
-	  if (is_chIso_fake_template_object && PhotonRealMatch == 0)
+	  if (is_chIso_fake_template_object /*&& PhotonRealMatch == 0*/)
 	    if (fabs(Photon_scEta) < 1.4442)
 	      chIsoFakeTemplatesEB.at(i).at(pos)->Fill(Photon_chargedHadIso03,Event_weightAll);
 	} // end for loop over sieie sidebands for fake templates EE
@@ -431,7 +434,7 @@ void MCFakeRateClosureTest::Loop()
 	  double sidebandHigh = it->second;
 	  bool in_sieie_sideband = (sidebandLow < Photon_sigmaIetaIeta5x5) && (Photon_sigmaIetaIeta5x5 < sidebandHigh);
 	  bool is_chIso_fake_template_object = Photon_isNumeratorObjCand && in_sieie_sideband;
-	  if (is_chIso_fake_template_object && PhotonRealMatch == 0)
+	  if (is_chIso_fake_template_object /*&& PhotonRealMatch == 0*/)
 	    if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )
 	      chIsoFakeTemplatesEE.at(i).at(pos)->Fill(Photon_chargedHadIso03,Event_weightAll);
 	} // end for loop over sieie sidebands for fake templates EE

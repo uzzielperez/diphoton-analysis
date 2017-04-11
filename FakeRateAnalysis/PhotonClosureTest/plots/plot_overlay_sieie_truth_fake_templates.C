@@ -1,17 +1,32 @@
 // to run:
 // root -l -q -b plot_overlay_sieie_templates.C
 
-void plot_overlay_fake_templates() {
+void plot_overlay_sieie_truth_fake_templates() {
   // set global root options
   gROOT->SetStyle("Plain");
   gStyle->SetMarkerStyle(8);
   gStyle->SetPalette(1,0);
   gStyle->SetNdivisions(505);
   gStyle->SetOptStat(0);
-
-  // get real template file
-  // from QCD+GJets+GGJets
-  TFile *f = TFile::Open("../analysis/diphoton_fake_rate_closure_test_all_QCD_GJets_GGJets_76X_MiniAOD_histograms.root");
+  
+  // input what sample to plot
+  TString sample = "";
+  cout << "Enter sample to plot (QCD, GJets, GGJets, or all): ";
+  cin >> sample;
+  if (sample != "QCD" && sample != "GJets" && sample != "GGJets" && sample != "all") {
+    cout << "Invalid choice!" << endl;
+    return;
+  }
+  cout << "Using sample: " << sample << endl;
+  
+  TString filename = "";
+  if (sample == "QCD")    filename = "../analysis/diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "GJets")  filename = "../analysis/diphoton_fake_rate_closure_test_matching_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "GGJets") filename = "../analysis/diphoton_fake_rate_closure_test_matching_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
+  if (sample == "all")    filename = "../analysis/diphoton_fake_rate_closure_test_matching_all_samples_76X_MiniAOD_histograms.root";
+  cout << "filename: " << filename << endl;
+  
+  TFile *f = TFile::Open(filename);
   
   // pt bins
   const int nBins = 10;
@@ -39,7 +54,8 @@ void plot_overlay_fake_templates() {
     
     // EB - linear
     c->cd(1);
-    TH1D *h_EB = (TH1D*) f->Get("sieieEB_faketemplate_pt"+bin+"_chIso5To10");
+    TH1D *h_EB = (TH1D*) f->Get("sieieEB_numerator_fakes_pt"+bin);
+    h_EB->Scale(1.0/h_EB->Integral());
     legend->AddEntry(h_EB,label,"ep");
     if (j == 0) h_EB->Draw("HIST");
     else {
@@ -47,7 +63,7 @@ void plot_overlay_fake_templates() {
       h_EB->SetMarkerColor(1+j);
       h_EB->SetLineColor(1+j);
     }
-    h_EB->SetTitle("EB; 5 < Iso_{Ch} < 10 GeV");
+    h_EB->SetTitle("EB - MC truth");
     h_EB->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
     h_EB->GetXaxis()->SetRangeUser(0,0.03);
     h_EB->GetYaxis()->SetTitle("Events / ( 0.0005 )");
@@ -58,14 +74,15 @@ void plot_overlay_fake_templates() {
 
     // EE
     c->cd(2);
-    TH1D *h_EE = (TH1D*) f->Get("sieieEE_faketemplate_pt"+bin+"_chIso5To10");
+    TH1D *h_EE = (TH1D*) f->Get("sieieEE_numerator_fakes_pt"+bin);
+    h_EE->Scale(1.0/h_EE->Integral());
     if (j == 0) h_EE->Draw("HIST");
     else {
       h_EE->Draw("HISTsame");
       h_EE->SetMarkerColor(1+j);
       h_EE->SetLineColor(1+j);
     }
-    h_EE->SetTitle("EE; 5 < Iso_{Ch} < 10 GeV");
+    h_EE->SetTitle("EE - MC truth");
     h_EE->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
     h_EE->GetXaxis()->SetRangeUser(0,0.07);
     h_EE->GetYaxis()->SetTitle("Events / ( 0.001 )");
@@ -77,6 +94,6 @@ void plot_overlay_fake_templates() {
     j++;
   } // end for loop over pt bins
 
-  c->SaveAs("fake_templates_sieie_overlaid.pdf");
+  c->SaveAs("fake_templates_sieie_mc_truth_overlaid_sample_"+sample+".pdf");
   
 }
