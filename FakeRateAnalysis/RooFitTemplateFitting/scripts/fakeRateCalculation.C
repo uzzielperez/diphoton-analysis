@@ -1,3 +1,11 @@
+/**
+ * Produces fake rate plot as a function of pT
+ *
+ * This function calls /analysis/rooFitFakeRateProducer.C
+ * From /analysis, run
+ * root -l -b -q ../scripts/fakeRateCalculation.C'("mc","sieie")'
+ */
+
 #include "rooFitFakeRateProducer.C"
 
 double fakeRateUncertainty(double denominator, double fakeerror, double fakerate) {
@@ -5,8 +13,12 @@ double fakeRateUncertainty(double denominator, double fakeerror, double fakerate
   return uncert;
 }
 
-void fakeRateCalculation(TString sample) {
-
+void fakeRateCalculation(TString sample, TString templateVariable)
+{
+  // use stopwatch to time
+  TStopwatch sw;
+  sw.Start();
+  
   cout << "\nStarting fakeRateCalculation()\n" << endl;
   
   if (sample != "data" && sample != "mc" && sample != "mc_QCD" && sample != "mc_GJets" && sample != "mc_GGJets") {
@@ -15,17 +27,20 @@ void fakeRateCalculation(TString sample) {
   }
 
   cout << "Using sample: " << sample << endl;
-    
-  // use stopwatch to time
-  TStopwatch sw;
-  sw.Start();
 
+  if (templateVariable != "sieie" && templateVariable != "chIso") {
+    cout << "Choose template variable: sieie or chIso\n" << endl;
+    return;
+  }
+
+  cout << "Using template variable: " << templateVariable << endl;
+  
   // array of pt bin edges
   const int nBins = 10;
   int ptBinArray[nBins] = { 50, 70, 90, 110, 130, 150, 200, 250, 300, 600 };
   double ptBinArray_double[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
   
-  // make vector of sidebands
+  // make vector of chIso sidebands
   std::vector< std::pair<double,double> > chIsoSidebands;
   typedef std::vector< std::pair<double,double> >::const_iterator chIsoIt;
   chIsoSidebands.push_back( std::make_pair(5.,10.) );
@@ -37,35 +52,70 @@ void fakeRateCalculation(TString sample) {
   chIsoSidebands.push_back( std::make_pair(15.,20.) );
   chIsoSidebands.push_back( std::make_pair(10.,20.) );
 
+  // vector of sieie sidebands
+  // EB
+  std::vector< std::pair<double,double> > sieie_EB_sidebands;
+  sieie_EB_sidebands.push_back( std::make_pair(0.0105,1.0000) );
+  sieie_EB_sidebands.push_back( std::make_pair(0.0105,0.0150) );
+  sieie_EB_sidebands.push_back( std::make_pair(0.0150,0.0200) );
+  // EE
+  std::vector< std::pair<double,double> > sieie_EE_sidebands;
+  sieie_EE_sidebands.push_back( std::make_pair(0.0280,1.000) );
+  sieie_EE_sidebands.push_back( std::make_pair(0.0280,0.040) );
+  sieie_EE_sidebands.push_back( std::make_pair(0.0400,0.060) );
+
+  std::vector< std::pair<double,double> > sidebandsEB, sidebandsEE;
+  if (templateVariable == "sieie") {
+    sidebandsEB = chIsoSidebands;
+    sidebandsEE = chIsoSidebands;
+  }
+  else if (templateVariable == "chIso") {
+    sidebandsEB = sieie_EB_sidebands;
+    sidebandsEE = sieie_EE_sidebands;
+  }
+  
   std::vector<TGraphAsymmErrors*> fakeRatesEB;
   std::vector<TGraphAsymmErrors*> fakeRatesEE;
   std::vector<TGraphAsymmErrors*> bkgVsPtEBVec;
   std::vector<TGraphAsymmErrors*> bkgVsPtEEVec;
-
-  for (unsigned int i = 0; i < chIsoSidebands.size(); i++) {
-    double sidebandLow = chIsoSidebands.at(i).first;
-    double sidebandHigh = chIsoSidebands.at(i).second;
-    TString postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
-
+  
+  for (unsigned int i = 0; i < sidebandsEB.size(); i++) {
+    double sidebandLow = sidebandsEB.at(i).first;
+    double sidebandHigh = sidebandsEB.at(i).second;
+    TString postFix = "";
+    if (templateVariable == "sieie")
+      postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
+    else if (templateVariable == "chIso")
+      postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
+    
     TGraphAsymmErrors* fakeRateEB = new TGraphAsymmErrors();
-    TGraphAsymmErrors* fakeRateEE = new TGraphAsymmErrors();
-    TGraphAsymmErrors* bkgvsptEB = new TGraphAsymmErrors();
-    TGraphAsymmErrors* bkgvsptEE = new TGraphAsymmErrors();
-
     fakeRateEB->SetName("fakeRateEB"+postFix);
-    fakeRateEE->SetName("fakeRateEE"+postFix);
-    bkgvsptEB->SetName("bkgvsptEB"+postFix);
-    bkgvsptEE->SetName("bkgvsptEE"+postFix);
-
     fakeRateEB->GetXaxis()->SetTitle("p_{T} (GeV)");
-    fakeRateEE->GetXaxis()->SetTitle("p_{T} (GeV)");
-    bkgvsptEB->GetXaxis()->SetTitle("p_{T} (GeV)");
-    bkgvsptEE->GetXaxis()->SetTitle("p_{T} (GeV)");
-
     fakeRatesEB.push_back(fakeRateEB);
-    fakeRatesEE.push_back(fakeRateEE);
-
+    
+    TGraphAsymmErrors* bkgvsptEB = new TGraphAsymmErrors();
+    bkgvsptEB->SetName("bkgvsptEB"+postFix);
+    bkgvsptEB->GetXaxis()->SetTitle("p_{T} (GeV)");
     bkgVsPtEBVec.push_back(bkgvsptEB);
+  }
+
+  for (unsigned int i = 0; i < sidebandsEE.size(); i++) {
+    double sidebandLow = sidebandsEE.at(i).first;
+    double sidebandHigh = sidebandsEE.at(i).second;
+    TString postFix = "";
+    if (templateVariable == "sieie")
+      postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
+    else if (templateVariable == "chIso")
+      postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
+    
+    TGraphAsymmErrors* fakeRateEE = new TGraphAsymmErrors();
+    fakeRateEE->SetName("fakeRateEE"+postFix);
+    fakeRateEE->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRatesEE.push_back(fakeRateEE);
+    
+    TGraphAsymmErrors* bkgvsptEE = new TGraphAsymmErrors();
+    bkgvsptEE->SetName("bkgvsptEE"+postFix);
+    bkgvsptEE->GetXaxis()->SetTitle("p_{T} (GeV)");
     bkgVsPtEEVec.push_back(bkgvsptEE);
   }
   
@@ -84,8 +134,8 @@ void fakeRateCalculation(TString sample) {
   std::vector<double> numVec;
   std::vector<double> denomVec;
   
-  for (unsigned int j = 0; j < chIsoSidebands.size(); j++) { // loop over sidebands
-    for (int i = 0; i < nBins-1; i++) {  // loop over pT bins
+  for (unsigned int j = 0; j < sidebandsEB.size(); j++) {
+    for (int i = 0; i < nBins-1; i++) {
       double ptLow = ptBinArray_double[i];
       double ptHigh = ptBinArray_double[i+1];
       double ptBinSize = ptHigh - ptLow;
@@ -93,47 +143,78 @@ void fakeRateCalculation(TString sample) {
 
       infile.cd();
 
-      double sidebandLow = chIsoSidebands.at(j).first;
-      double sidebandHigh = chIsoSidebands.at(j).second;
-      TString postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
+      double sidebandLow = sidebandsEB.at(j).first;
+      double sidebandHigh = sidebandsEB.at(j).second;
+      TString postFix = "";
+      if (templateVariable == "sieie")
+	postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
+      else if (templateVariable == "chIso")
+	postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
       
-      // run calculation twice, once for EB and once for EE
-      std::pair<double,double> resEB = rooFitFakeRateProducer(sample,binName,TString("EB"),chIsoSidebands.at(j),i+1); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
-      std::pair<double,double> resEE = rooFitFakeRateProducer(sample,binName,TString("EE"),chIsoSidebands.at(j),i+1);
-
+      std::pair<double,double> resEB = rooFitFakeRateProducer(sample,templateVariable,binName,TString("EB"),sidebandsEB.at(j),i+1); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
+      
       // record fake rate in TGraphs
       TString histNameEB = TString::Format("PtEB_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
-      TString histNameEE = TString::Format("PtEE_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
-      TH1D* histEB = (TH1D*)infile.Get(histNameEB);
-      TH1D* histEE = (TH1D*)infile.Get(histNameEE);
-
+      TH1D* histEB = (TH1D*) infile.Get(histNameEB);
+      
       double denomEB = histEB->Integral();
-      double denomEE = histEE->Integral();
-
       double graphX_EB = histEB->GetMean();
-      double graphX_EE = histEE->GetMean();
       double graphY_EB = resEB.first/denomEB; // i.e. the fake rate in the EB
-      double graphY_EE = resEE.first/denomEE; // i.e. the fake rate in the EE
       double eXLow_EB = graphX_EB - ptLow;
       double eXHigh_EB = ptHigh - graphX_EB;
-      double eXLow_EE = graphX_EE - ptLow;
-      double eXHigh_EE = ptHigh - graphX_EE;
       double ey_EB = fakeRateUncertainty(denomEB,resEB.second,graphY_EB);
-      double ey_EE = fakeRateUncertainty(denomEE,resEE.second,graphY_EE);
+      
       fakeRatesEB.at(j)->SetPoint(i,graphX_EB,graphY_EB);
       fakeRatesEB.at(j)->SetPointError(i,eXLow_EB,eXHigh_EB,ey_EB,ey_EB);
-      fakeRatesEE.at(j)->SetPoint(i,graphX_EE,graphY_EE);
-      fakeRatesEE.at(j)->SetPointError(i,eXLow_EE,eXHigh_EE,ey_EE,ey_EE);
-
-      // fill debug vectors
-      if (sidebandLow == 9.) {
-        numVec.push_back(resEE.first);
-        denomVec.push_back(denomEE);
-      }
       
       // record background fit result
       bkgVsPtEBVec.at(j)->SetPoint(i,graphX_EB,resEB.first/ptBinSize);
       bkgVsPtEBVec.at(j)->SetPointError(i,eXLow_EB,eXHigh_EB,resEB.second/ptBinSize,resEB.second/ptBinSize);
+    } // end loop over pT bins
+  } // end loop over sidebands
+  
+  for (unsigned int j = 0; j < sidebandsEE.size(); j++) {
+    for (int i = 0; i < nBins-1; i++) {
+      double ptLow = ptBinArray_double[i];
+      double ptHigh = ptBinArray_double[i+1];
+      double ptBinSize = ptHigh - ptLow;
+      TString binName = TString::Format("%iTo%i",ptBinArray[i],ptBinArray[i+1]);
+
+      infile.cd();
+
+      double sidebandLow = sidebandsEE.at(j).first;
+      double sidebandHigh = sidebandsEE.at(j).second;
+      TString postFix = "";
+      if (templateVariable == "sieie")
+	postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
+      else if (templateVariable == "chIso")
+	postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
+      
+      std::pair<double,double> resEE = rooFitFakeRateProducer(sample,templateVariable,binName,TString("EE"),sidebandsEE.at(j),i+1); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
+      
+      // record fake rate in TGraphs
+      TString histNameEE = TString::Format("PtEE_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
+      TH1D* histEE = (TH1D*) infile.Get(histNameEE);
+      
+      double denomEE = histEE->Integral();
+      double graphX_EE = histEE->GetMean();
+      double graphY_EE = resEE.first/denomEE; // i.e. the fake rate in the EE
+      double eXLow_EE = graphX_EE - ptLow;
+      double eXHigh_EE = ptHigh - graphX_EE;
+      double ey_EE = fakeRateUncertainty(denomEE,resEE.second,graphY_EE);
+      
+      fakeRatesEE.at(j)->SetPoint(i,graphX_EE,graphY_EE);
+      fakeRatesEE.at(j)->SetPointError(i,eXLow_EE,eXHigh_EE,ey_EE,ey_EE);
+      
+      // fill debug vectors
+      if (templateVariable == "sieie") {
+	if (sidebandLow == 9.) {
+	  numVec.push_back(resEE.first);
+	  denomVec.push_back(denomEE);
+	}
+      }
+      
+      // record background fit result
       bkgVsPtEEVec.at(j)->SetPoint(i,graphX_EE,resEE.first/ptBinSize);
       bkgVsPtEEVec.at(j)->SetPointError(i,eXLow_EE,eXHigh_EE,resEE.second/ptBinSize,resEE.second/ptBinSize);
     } // end loop over pT bins
@@ -156,49 +237,91 @@ void fakeRateCalculation(TString sample) {
   denomvsptEE->GetXaxis()->SetTitle("p_{T} (GeV)");
   
   // debug printout to see fake rate ratios
-  for (unsigned int i = 0; i < (numVec.size()-1); i++){
-    double numratio = numVec.at(i+1) / numVec.at(i);
-    double denomratio = denomVec.at(i) / denomVec.at(i+1);
-    cout << "EE Debug Info: ptBinLowEdge       n2/n1       d1/d2       FR" << endl;
-    cout << ptBinArray[i] << " " << numratio << " " << denomratio << " " << numratio*denomratio << endl;
-    cout << " " << endl;
+  if (templateVariable == "sieie") {
+    for (unsigned int i = 0; i < (numVec.size()-1); i++) {
+      double numratio = numVec.at(i+1) / numVec.at(i);
+      double denomratio = denomVec.at(i) / denomVec.at(i+1);
+      cout << "EE Debug Info: ptBinLowEdge       n2/n1       d1/d2       FR" << endl;
+      cout << ptBinArray[i] << " " << numratio << " " << denomratio << " " << numratio*denomratio << endl;
+      cout << " " << endl;
+    }
   }
-
+  
   TFile outfile2("fakeRatePlots.root","update");
   outfile2.cd();
   denomvsptEB->Write();
   denomvsptEE->Write();
   
-  for (unsigned int j = 0; j < chIsoSidebands.size(); j++) {
+  for (unsigned int j = 0; j < sidebandsEB.size(); j++) {
     outfile2.cd();
-    double sidebandLow = chIsoSidebands.at(j).first;
-    double sidebandHigh = chIsoSidebands.at(j).second;
-    TString postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
-    fakeRatesEB.at(j)->Write();
-    fakeRatesEE.at(j)->Write();
-    bkgVsPtEBVec.at(j)->Write();
-    bkgVsPtEEVec.at(j)->Write();
-  
-    TCanvas c("c","",1500,600);
-    c.Divide(2,1);
     
-    c.cd(1);
+    fakeRatesEB.at(j)->Write();
+    bkgVsPtEBVec.at(j)->Write();
+    
+    double sidebandLow = sidebandsEB.at(j).first;
+    double sidebandHigh = sidebandsEB.at(j).second;
+    TString postFix = "";
+    TString label = "";
+    if (templateVariable == "sieie") {
+      postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
+      label = TString::Format("%d < Iso_{Ch} < %d GeV",(int)sidebandLow,(int)sidebandHigh);
+    }
+    else if (templateVariable == "chIso") {
+      postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
+      label = TString::Format("%.4f < #sigma_{i#etai#eta} < %.4f",sidebandLow,sidebandHigh);
+    }
+    
+    TCanvas c("c","",800,600);
+    
     fakeRatesEB.at(j)->Draw();
-    fakeRatesEB.at(j)->SetTitle("EB");
+    // fakeRatesEB.at(j)->SetTitle("EB");
     fakeRatesEB.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
     fakeRatesEB.at(j)->GetYaxis()->SetTitle("fake rate");
     fakeRatesEB.at(j)->GetYaxis()->SetTitleOffset(1.6);
+
+    TLatex *t_label = new TLatex();
+    t_label->SetTextAlign(12);
+    t_label->DrawLatexNDC(0.50,0.75,"ECAL barrel");
+    t_label->DrawLatexNDC(0.50,0.70,label);
     
-    c.cd(2);
+    c.SaveAs("fake_rate_EB"+postFix+".pdf");
+  }
+  
+  for (unsigned int j = 0; j < sidebandsEE.size(); j++) {
+    outfile2.cd();
+    
+    fakeRatesEE.at(j)->Write();
+    bkgVsPtEEVec.at(j)->Write();
+    
+    double sidebandLow = sidebandsEE.at(j).first;
+    double sidebandHigh = sidebandsEE.at(j).second;
+    TString postFix = "";
+    TString label = "";
+    if (templateVariable == "sieie") {
+      postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
+      label = TString::Format("%d < Iso_{Ch} < %d GeV",(int)sidebandLow,(int)sidebandHigh);
+    }
+    else if (templateVariable == "chIso") {
+      postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
+      label = TString::Format("%.4f < #sigma_{i#etai#eta} < %.4f",sidebandLow,sidebandHigh);
+    }
+
+    TCanvas c("c","",800,600);
+    
     fakeRatesEE.at(j)->Draw();
-    fakeRatesEE.at(j)->SetTitle("EE");
+    // fakeRatesEE.at(j)->SetTitle("EE");
     fakeRatesEE.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
     fakeRatesEE.at(j)->GetYaxis()->SetTitle("fake rate");
     fakeRatesEE.at(j)->GetYaxis()->SetTitleOffset(1.6);
+
+    TLatex *t_label = new TLatex();
+    t_label->SetTextAlign(12);
+    t_label->DrawLatexNDC(0.50,0.75,"ECAL endcap");
+    t_label->DrawLatexNDC(0.50,0.70,label);
     
-    c.SaveAs("fake_rate"+postFix+".pdf");
+    c.SaveAs("fake_rate_EE"+postFix+".pdf");
   }
-  
+
   outfile2.Close();
 
   cout << "\nEnding fakeRateCalculation()\n" << endl;

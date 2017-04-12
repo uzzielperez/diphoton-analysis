@@ -18,35 +18,30 @@
 #include "TCanvas.h"
 #include "TStyle.h"
 #include "RooChi2Var.h"
-
 #include <vector>
 #include <algorithm>
 
-/////////////////////////////////////////////////////////
-//
-// return background and uncertainty instead of fakerate
-//
-////////////////////////////////////////////////////////
-
-std::pair<double,double> rooFitFakeRateProducer(TString sample, TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin) {
-  
-  cout << endl;
-  cout << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" << endl;
-    
-  cout << "Starting rooFitFakeRateProducer" << endl;
-  cout << "Using " << sample << ", " << etaBin << ", pt " << ptBin << ", " << sideband.first << " < CHIso < " << sideband.second << endl;
+/**
+ * Return background and uncertainty instead of fakerate
+ *
+ * This function is called from /scripts/fakeRateCalculation.C
+ * From /analysis, run
+ * root -l -b -q ../scripts/fakeRateCalculation.C'("mc","sieie")'
+ */
+std::pair<double,double> rooFitFakeRateProducer(TString sample, TString templateVariable, TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin)
+{
+  gROOT->SetBatch();
+  gSystem->Load("libRooFit");
+  gSystem->AddIncludePath("-I$ROOFITSYS/include");
   
   using namespace RooFit;
   using namespace std;
   
-  gROOT->SetBatch();
+  cout << endl;
+  cout << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" << endl;
+  cout << "Starting rooFitFakeRateProducer" << endl;
+  cout << "Using " << sample << ", " << templateVariable << ", " << etaBin << ", pt " << ptBin << ", " << sideband.first << " < sideband < " << sideband.second << endl;
   
-  TCanvas *canvas = new TCanvas("canvas","Fit Result",1600,600);
-  canvas->Divide(2,1);
-
-  gSystem->Load("libRooFit"); 
-  gSystem->AddIncludePath("-I$ROOFITSYS/include");
-
   // for real templates (same for data and mc)
   TFile *historealmcfile = TFile::Open("../../RealTemplateAnalysis/analysis/diphoton_fake_rate_real_templates_all_GGJets_GJets_76X_MiniAOD_histograms.root");
   
@@ -61,47 +56,75 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString ptBin, T
   
   double sidebandLow = sideband.first;
   double sidebandHigh = sideband.second;
-  TString postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
-
-  // get histos
-  TH1F *hfakeTemplate = (TH1F*) histojetfile->Get( TString("sieie") + etaBin + TString("_faketemplate_pt") + ptBin + postFix );
+  TString postFix = "";
+  if (templateVariable == "sieie")
+    postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
+  else if (templateVariable == "chIso")
+    postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
+  
+  // get histograms
+  TH1D *hfakeTemplate = (TH1D*) histojetfile->    Get( templateVariable + etaBin + TString("_faketemplate_pt") + ptBin + postFix );
   hfakeTemplate->Print();
-  TH1F *hrealTemplate = (TH1F*) historealmcfile->Get( TString("sieie") + etaBin + TString("_realtemplate_pt") + ptBin );
+  TH1D *hrealTemplate = (TH1D*) historealmcfile-> Get( templateVariable + etaBin + TString("_realtemplate_pt") + ptBin );
   hrealTemplate->Print();
-  TH1F *hData = (TH1F*) histojetfile->Get( TString("sieie") + etaBin + TString("_numerator_pt") + ptBin);
+  TH1D *hData         = (TH1D*) histojetfile->    Get( templateVariable + etaBin + TString("_numerator_pt") + ptBin);
   hData->Print();
-  TH1F *hdenom = (TH1F*) histojetfile->Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );
+  TH1D *hdenom        = (TH1D*) histojetfile->    Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );
   hdenom->Print();
 
   // avoiding 0 entries in the histograms
   // fake and real mc histos are the most critical
-  for (int bincount = 1; bincount <= hfakeTemplate->GetNbinsX();bincount++) {
-    if (hfakeTemplate->GetBinContent(bincount) == 0.) hfakeTemplate->SetBinContent(bincount,1.e-6);
+  for (int bincount = 1; bincount <= hfakeTemplate->GetNbinsX(); bincount++) {
+    if (hfakeTemplate->GetBinContent(bincount) == 0.)
+      hfakeTemplate->SetBinContent(bincount,1.e-6);
   }
-  for (int bincount = 1; bincount <= hrealTemplate->GetNbinsX();bincount++) {
-    if (hrealTemplate->GetBinContent(bincount) == 0.) hrealTemplate->SetBinContent(bincount,1.e-6);
+  for (int bincount = 1; bincount <= hrealTemplate->GetNbinsX(); bincount++) {
+    if (hrealTemplate->GetBinContent(bincount) == 0.)
+      hrealTemplate->SetBinContent(bincount,1.e-6);
   }
   
   int ndataentries = hData->Integral();
 
-  float sininmin = 0.;
-  float sininmax = 0.1;
+  float templateVariableMin, templateVariableMax;
+  if (templateVariable == "sieie") {
+    templateVariableMin = 0.;
+    templateVariableMax = 0.1;
+  }
+  else if (templateVariable == "chIso") {
+    templateVariableMin = 0.;
+    templateVariableMax = 50.;
+  }
+  
+  TString templateVariableTitle = "";
+  if (templateVariable == "sieie")
+    templateVariableTitle = "#sigma_{i#etai#eta}";
+  else if (templateVariable == "chIso")
+    templateVariableTitle = "Iso_{Ch}";
+  
+  RooRealVar template_fit_variable("template_fit_variable",templateVariableTitle.Data(),templateVariableMin,templateVariableMax);
+  
+  double template_fit_variable_cut;
+  if (templateVariable == "sieie") {
+    // using cuts for unsaturated photons
+    if (etaBin.Contains("EB")) template_fit_variable_cut = 0.0105;
+    if (etaBin.Contains("EE")) template_fit_variable_cut = 0.028;
+  }
+  else if (templateVariable == "chIso") {
+    if (etaBin.Contains("EB")) template_fit_variable_cut = 5.0;
+    if (etaBin.Contains("EE")) template_fit_variable_cut = 5.0;
+  }
+  
+  template_fit_variable.setRange("sigrange",0.0,template_fit_variable_cut);
 
-  TString roofitvartitle = "#sigma_{i#etai#eta}";
-  RooRealVar sinin("sinin",roofitvartitle.Data(),sininmin,sininmax);
-  float sininCut = 0.0105; // sigma_IetaIeta cut for EB
-  if (etaBin.Contains("EE")) sininCut = 0.028; // sigma_IetaIeta cut for EE
-  sinin.setRange("sigrange",0.0,sininCut);
-
-  RooDataHist faketemplate("faketemplate","fake template",sinin,hfakeTemplate);
-  RooHistPdf fakepdf("fakepdf","test hist fake pdf",sinin,faketemplate);
+  RooDataHist faketemplate("faketemplate","fake template",template_fit_variable,hfakeTemplate);
+  RooHistPdf fakepdf("fakepdf","test hist fake pdf",template_fit_variable,faketemplate);
   
-  RooDataHist realtemplate("realtemplate","real template",sinin,hrealTemplate);
-  RooHistPdf realpdf("realpdf","test hist real pdf",sinin,realtemplate);
+  RooDataHist realtemplate("realtemplate","real template",template_fit_variable,hrealTemplate);
+  RooHistPdf realpdf("realpdf","test hist real pdf",template_fit_variable,realtemplate);
   
-  RooDataHist data("data","data to be fitted to",sinin,hData);
+  RooDataHist data("data","data to be fitted to",template_fit_variable,hData);
   
-  RooRealVar fsig("fsig","signal fraction",0.1,0,1);
+  // RooRealVar fsig("fsig","signal fraction",0.1,0,1);
   
   RooRealVar signum("signum","signum",0,ndataentries);
   RooRealVar fakenum("fakenum","fakenum",0,ndataentries);
@@ -113,14 +136,17 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString ptBin, T
   
   model.fitTo(data,RooFit::Minos(),SumW2Error(kTRUE),PrintEvalErrors(-1));
 
-  TH1D* fitHist = (TH1D*) model.createHistogram("sinin",hData->GetNbinsX());
+  TH1D* fitHist = (TH1D*) model.createHistogram("template_fit_variable",hData->GetNbinsX());
   
   double fitres = hData->Chi2Test(fitHist,"CHI2/NDF");
   // cout << "CHI2 FIT RES = " << fitres << endl;
-      
-  RooPlot *xframe = sinin.frame();
-  xframe->SetTitle("");
 
+  TCanvas *canvas = new TCanvas("canvas","Fit Result",1600,600);
+  canvas->Divide(2,1);
+  
+  RooPlot *xframe = template_fit_variable.frame();
+  xframe->SetTitle("");
+  
   data.plotOn(xframe);
   model.plotOn(xframe);
   model.plotOn(xframe,Components(extpdfsig),LineColor(2),LineStyle(2));
@@ -128,9 +154,15 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString ptBin, T
   data.plotOn(xframe);
 
   canvas->cd(1);
-
-  xframe->GetXaxis()->SetRangeUser(0.,0.03);
-  if (etaBin.Contains("EE")) xframe->GetXaxis()->SetRangeUser(0.,0.08);
+  
+  if (templateVariable == "sieie") {
+    if (etaBin.Contains("EB")) xframe->GetXaxis()->SetRangeUser(0.,0.03);
+    if (etaBin.Contains("EE")) xframe->GetXaxis()->SetRangeUser(0.,0.08);
+  }
+  else if (templateVariable == "chIso") {
+    if (etaBin.Contains("EB")) xframe->GetXaxis()->SetRangeUser(0.,10.);
+    if (etaBin.Contains("EE")) xframe->GetXaxis()->SetRangeUser(0.,10.);
+  }
   float xframemax = xframe->GetMaximum();
   xframe->GetYaxis()->SetRangeUser(1.e-1,1.1*xframemax);
   xframe->GetYaxis()->SetTitleOffset(1.6);
@@ -139,14 +171,18 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString ptBin, T
   TString label_pt_bin = ptBin;
   label_pt_bin.ReplaceAll("To"," < p_{T} < ");
   
-  TString chIsoString = TString::Format("%d < I_{ch} < %d GeV",(int)sidebandLow,(int)sidebandHigh);
+  TString sideband_string;
+  if (templateVariable == "sieie")
+    sideband_string = TString::Format("%d < Iso_{Ch} < %d GeV",(int)sidebandLow,(int)sidebandHigh);
+  else if (templateVariable == "chIso")
+    sideband_string = TString::Format("%.4f < #sigma_{i#etai#eta} < %.3f",sidebandLow,sidebandHigh);
   
   TLatex *t_label = new TLatex();
   t_label->SetTextAlign(12);
   if (etaBin == "EB") t_label->DrawLatexNDC(0.55,0.60,"ECAL barrel");
   else t_label->DrawLatexNDC(0.55,0.60,"ECAL endcap");
   t_label->     DrawLatexNDC(0.55,0.55,label_pt_bin + " GeV");
-  t_label->     DrawLatexNDC(0.55,0.50,chIsoString);
+  t_label->     DrawLatexNDC(0.55,0.50,sideband_string);
   t_label->     DrawLatexNDC(0.55,0.45,TString::Format("#chi^{2}/ndf = %6.1f",fitres));
   
   TObject *objdata;
@@ -181,9 +217,15 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString ptBin, T
   
   xframeClone->Draw();
   xframe->Draw("same");
-
-  xframeClone->GetXaxis()->SetRangeUser(0.,0.03);
-  if (etaBin.Contains("EE")) xframeClone->GetXaxis()->SetRangeUser(0.,0.08);
+  
+  if (templateVariable == "sieie") {
+    if (etaBin.Contains("EB")) xframeClone->GetXaxis()->SetRangeUser(0.,0.03);
+    if (etaBin.Contains("EE")) xframeClone->GetXaxis()->SetRangeUser(0.,0.08);
+  }
+  else if (templateVariable == "chIso") {
+    if (etaBin.Contains("EB")) xframeClone->GetXaxis()->SetRangeUser(0.,50.);
+    if (etaBin.Contains("EE")) xframeClone->GetXaxis()->SetRangeUser(0.,50.);
+  }
   xframeClone->GetYaxis()->SetRangeUser(1.e-1,10.0*xframemax);
   xframeClone->GetYaxis()->SetTitle(xframe->GetYaxis()->GetTitle());
   xframeClone->GetYaxis()->SetTitleOffset(1.2);
@@ -200,16 +242,16 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString ptBin, T
   for (int i = 0; i < xframe->numItems(); i++) {
     cout << xframe->nameOf(i) << endl;
     TString objname = xframe->nameOf(i);
-    if (objname.Contains("data"))                                    hobjdata = (TH1D*) xframe->findObject(objname.Data());
-    if (objname.Contains("model") && !objname.Contains("Comp"))      hobjmodel = (TH1D*) xframe->findObject(objname.Data());
+    if (objname.Contains("data"))                                    hobjdata   = (TH1D*) xframe->findObject(objname.Data());
+    if (objname.Contains("model") && !objname.Contains("Comp"))      hobjmodel  = (TH1D*) xframe->findObject(objname.Data());
     if (objname.Contains("model") && objname.Contains("Signal"))     hobjsignal = (TH1D*) xframe->findObject(objname.Data());
-    if (objname.Contains("model") && objname.Contains("Background")) hobjfake = (TH1D*) xframe->findObject(objname.Data());
+    if (objname.Contains("model") && objname.Contains("Background")) hobjfake   = (TH1D*) xframe->findObject(objname.Data());
   }
 
-  hobjdata->SetName( TString("data") + etaBin + TString("_pt") + ptBin + postFix );
-  hobjmodel->SetName( TString("sigplusbkgfit") + etaBin + TString("_pt") + ptBin + postFix );
-  hobjsignal->SetName( TString("signalfit") + etaBin + TString("_pt") + ptBin + postFix );
-  hobjfake->SetName( TString("bkgfit") + etaBin + TString("_pt") + ptBin + postFix );
+  hobjdata->  SetName( TString("data")          + etaBin + TString("_pt") + ptBin + postFix );
+  hobjmodel-> SetName( TString("sigplusbkgfit") + etaBin + TString("_pt") + ptBin + postFix );
+  hobjsignal->SetName( TString("signalfit")     + etaBin + TString("_pt") + ptBin + postFix );
+  hobjfake->  SetName( TString("bkgfit")        + etaBin + TString("_pt") + ptBin + postFix );
   
   TFile outfile("fakeRatePlots.root","update");
   outfile.cd();
@@ -240,7 +282,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString ptBin, T
   float RatioError = Ratio*sqrt( ((fakeerrormax/fakevalue)*(fakeerrormax/fakevalue) + (sigerrormax/sigvalue)*(sigerrormax/sigvalue)) );
   cout << "Ratio " << Ratio << " +- " << RatioError << endl;
 
-  float numerator = hData->Integral(0,hData->FindBin(sininCut)-1); // integrate to bin with upper edge at sieie cute
+  float numerator = hData->Integral(0,hData->FindBin(template_fit_variable_cut)-1); // integrate to bin with upper edge at sieie cute
   float denominator = hdenom->GetBinContent( denomBin ); // pT bin in denominator pT distribution
   float contamination = sigvalue;
 
