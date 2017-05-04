@@ -1,4 +1,4 @@
-void plot_fake_rate_from_matching() {
+void plot_fake_rate_from_matching(TString sample) {
   // set global root options
   gROOT->SetStyle("Plain");
   gStyle->SetMarkerStyle(8);
@@ -6,10 +6,28 @@ void plot_fake_rate_from_matching() {
   gStyle->SetNdivisions(505);
   gStyle->SetOptStat(0);
 
-  // get files
-  TFile *f_all = TFile::Open("../analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
-  TFile *f_matching = TFile::Open("../analysis/diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
-
+  if (sample != "QCD" && sample != "GJets" && sample != "GGJets" && sample != "all") {
+    cout << "Invalid choice!" << endl;
+    return;
+  }
+  cout << "\nUsing sample: " << sample << endl;
+  
+  TString filename_matching = "";
+  if (sample == "QCD")    filename_matching = "../analysis/diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "GJets")  filename_matching = "../analysis/diphoton_fake_rate_closure_test_matching_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "GGJets") filename_matching = "../analysis/diphoton_fake_rate_closure_test_matching_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
+  if (sample == "all")    filename_matching = "../analysis/diphoton_fake_rate_closure_test_matching_all_samples_76X_MiniAOD_histograms.root";
+  cout << "filename_matching: " << filename_matching << endl;
+  TFile *f_matching = TFile::Open(filename_matching);
+  
+  TString filename = "";
+  if (sample == "QCD")    filename = "../analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "GJets")  filename = "../analysis/diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
+  if (sample == "GGJets") filename = "../analysis/diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
+  if (sample == "all")    filename = "../analysis/diphoton_fake_rate_closure_test_all_samples_76X_MiniAOD_histograms.root";
+  cout << "filename: " << filename << endl;
+  TFile *f_all = TFile::Open(filename);
+  
   // get denominator
   TH1D *h_denom_EB = (TH1D*) f_all->Get("phoPtEB_denominator_varbin");
   TH1D *h_denom_EE = (TH1D*) f_all->Get("phoPtEE_denominator_varbin");
@@ -53,25 +71,25 @@ void plot_fake_rate_from_matching() {
   c_all->Divide(2,1);
   c_all->cd(1);
   h_num_EB->Draw();
-  h_quark_num_EB->Draw("same");
-  h_gluon_num_EB->Draw("same");
+  // h_quark_num_EB->Draw("same");
+  // h_gluon_num_EB->Draw("same");
   h_quark_num_EB->SetMarkerColor(kRed);
   h_gluon_num_EB->SetMarkerColor(kBlue);
   h_num_EB->GetYaxis()->SetRangeUser(0.,0.2);
   h_num_EB->SetTitle("EB");
   h_num_EB->GetXaxis()->SetTitle("p_{T} (GeV)");
-  legend->Draw();
+  // legend->Draw();
   //gPad->SetLogy();
   c_all->cd(2);
   h_num_EE->Draw();
-  h_quark_num_EE->Draw("same");
-  h_gluon_num_EE->Draw("same");
+  // h_quark_num_EE->Draw("same");
+  // h_gluon_num_EE->Draw("same");
   h_quark_num_EE->SetMarkerColor(kRed);
   h_gluon_num_EE->SetMarkerColor(kBlue);
   h_num_EE->GetYaxis()->SetRangeUser(0.,0.2);
-  h_num_EE->SetTitle("EB");
+  h_num_EE->SetTitle("EE");
   h_num_EE->GetXaxis()->SetTitle("p_{T} (GeV)");
-  legend->Draw();
+  // legend->Draw();
   //gPad->SetLogy();
   c_all->SaveAs("fake_rate_using_matched_fakes.png");
   
