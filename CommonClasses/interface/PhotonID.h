@@ -247,36 +247,43 @@ namespace ExoDiPhotons{
   }
 
   bool passDenominatorCut(const pat::Photon* photon, double rho, bool isSat) {
-    // separate EB and EE
-    bool isEB, isEE = false;
-    double phoEta = fabs(photon->superCluster()->eta());
-    if (phoEta < 1.4442) isEB = true;
-    if (1.566 < phoEta && phoEta < 2.5) isEE = true;
+
+    double phoEta = fabs( photon->superCluster()->eta() );
+    bool isEB = phoEta < 1.4442;
+    bool isEE = 1.566 < phoEta && phoEta < 2.5;
     
-    // require the photon fails at least one of these high pT ID cuts
+    // first check if the photon fails at least one of the high pT ID cuts
     bool failID = (
       !passHadTowerOverEmCut(photon) ||
       !passChargedHadronCut(photon) ||
       !passSigmaIetaIetaCut(photon,isSat)
-      );
+
+    );
+
+    if (isEB)
+      failID = failID || !passCorPhoIsoHighPtID(photon,rho);
     
-    // require EB photons to fail any high pT ID cut
-    if (isEB) failID = failID || !passCorPhoIsoHighPtID(photon,rho);
-    
-    // check isolation variables
-    bool passLooseCHIso = passChargedHadronDenomCut(photon);
-    bool passLooseCorPhoIso = passCorPhoIsoDenom(photon,rho);
-    bool passCorPhoIso = passCorPhoIsoHighPtID(photon,rho);
+    // now check if it pass the looser ID
+    bool passLooseIso = passChargedHadronDenomCut(photon) && passCorPhoIsoDenom(photon,rho);
     
     // require object to pass CSEV
     bool passCSEV = photon->passElectronVeto();
-    
-    // apply hadronicOverEm cut
+
+    // require object to pass an additional reco::Photon::hadronicOverEm cut
     bool passHadOverEmCut = photon->hadronicOverEm() < 0.1;
+
+    bool passCorIso = passCorPhoIsoHighPtID(photon,rho);
     
-    if      (isEB && failID && passLooseCHIso && passLooseCorPhoIso && passCSEV && passHadOverEmCut) return true;
-    else if (isEE && failID && passLooseCHIso && passCorPhoIso && passCSEV && passHadOverEmCut) return true;
-    else return false;
+    bool retVal = false;
+    if (isEB && failID && passLooseIso && passCSEV && passHadOverEmCut){
+      retVal = true;
+      // return true;
+    }
+    else if (isEE && failID && passLooseIso && passCSEV && passHadOverEmCut && passCorIso){
+      retVal = true;
+    }
+
+    return retVal;
   }
   
 }
