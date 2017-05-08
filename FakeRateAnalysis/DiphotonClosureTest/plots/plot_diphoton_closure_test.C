@@ -52,7 +52,7 @@ void plot_diphoton_closure_test() {
       h1->GetYaxis()->SetTitle("Events / 50 GeV");
       h1->GetXaxis()->SetTitleOffset(1.4);
       gPad->SetLogy();
-      TLegend *legend = new TLegend(0.50,0.50,0.85,0.85);
+      TLegend *legend = new TLegend(0.50,0.65,0.85,0.85);
       legend->SetBorderSize(0);
       legend->SetFillColor(0);
       legend->AddEntry(h1,"No fake rate","ep");

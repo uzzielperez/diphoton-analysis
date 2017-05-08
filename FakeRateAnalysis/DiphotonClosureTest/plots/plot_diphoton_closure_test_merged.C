@@ -35,17 +35,19 @@ void plot_diphoton_closure_test_merged() {
   TH1D *hFF1 = (TH1D*) f->Get("FF_diphoton_minv_with_fake_rate_EBEB");
   TH1D *hFF2 = (TH1D*) f->Get("FF_diphoton_minv_with_fake_rate_EBEE");
   TH1D *hFF3 = (TH1D*) f->Get("FF_diphoton_minv_with_fake_rate_EEEB");
+  TH1D *ggjets_EBEB = (TH1D*) hFF1->Clone("ggjets_EBEB");
+  TH1D *ggjets_EBEE = (TH1D*) hFF2->Clone("ggjets_EBEE");
+  ggjets_EBEE->Add(hFF3);
   TH1D *gjets_EBEB = (TH1D*) hTF1->Clone("gjets_EBEB");
   gjets_EBEB->Add(hFT1);
+  gjets_EBEB->Add(ggjets_EBEB,-2);
   TH1D *gjets_EBEE = (TH1D*) hTF2->Clone("gjets_EBEE");
   gjets_EBEE->Add(hTF3);
   gjets_EBEE->Add(hFT2);
   gjets_EBEE->Add(hFT3);
-  TH1D *ggjets_EBEB = (TH1D*) hFF1->Clone("ggjets_EBEB");
-  TH1D *ggjets_EBEE = (TH1D*) hFF2->Clone("ggjets_EBEE");
-  ggjets_EBEE->Add(hFF3);
-
-  // merge histograms from mc trugh
+  gjets_EBEE->Add(ggjets_EBEE,-2);
+  
+  // merge histograms from mc truth
   TH1D *hTF1_truth = (TH1D*) f->Get("TT_TF_mc_truth_diphoton_minv_EBEB");
   TH1D *hTF2_truth = (TH1D*) f->Get("TT_TF_mc_truth_diphoton_minv_EBEE");
   TH1D *hTF3_truth = (TH1D*) f->Get("TT_TF_mc_truth_diphoton_minv_EEEB");

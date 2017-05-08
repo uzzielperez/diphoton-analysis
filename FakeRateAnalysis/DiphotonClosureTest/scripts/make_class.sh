@@ -13,3 +13,7 @@ mv DiphotonClosureTest.h ../analysis
 echo "Done"
 
 echo " "
+echo "Add this line to DiphotonClosureTest.h:"
+echo "virtual double   fakeRate(TString region, double pt);"
+
+echo " "

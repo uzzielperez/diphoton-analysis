@@ -180,11 +180,11 @@ void DiphotonClosureTest::Loop()
 	}
 	else if (FTDiphoton_isEBEE) {
 	  FT_diphoton_minv[EBEE]->Fill(FTDiphoton_Minv,Event_weightAll);
-	  FT_diphoton_minv_with_fake_rate[EBEE]->Fill(FTDiphoton_Minv,Event_weightAll*fakeRate("EE",FTPhoton1_pt));
+	  FT_diphoton_minv_with_fake_rate[EBEE]->Fill(FTDiphoton_Minv,Event_weightAll*fakeRate("EB",FTPhoton1_pt));
 	}
 	else if (FTDiphoton_isEEEB) {
 	  FT_diphoton_minv[EEEB]->Fill(FTDiphoton_Minv,Event_weightAll);
-	  FT_diphoton_minv_with_fake_rate[EEEB]->Fill(FTDiphoton_Minv,Event_weightAll*fakeRate("EB",FTPhoton1_pt));
+	  FT_diphoton_minv_with_fake_rate[EEEB]->Fill(FTDiphoton_Minv,Event_weightAll*fakeRate("EE",FTPhoton1_pt));
 	}
 	else if (FTDiphoton_isEEEE) {
 	  FT_diphoton_minv[EEEE]->Fill(FTDiphoton_Minv,Event_weightAll);
@@ -247,16 +247,16 @@ void DiphotonClosureTest::Loop()
 double DiphotonClosureTest::fakeRate(TString region, double pt) {
   
   if (region == "EB") {
-    double p0 = 0.00849217687309;
-    double p1 = 4626.30436377913156;
-    double p2 = 2.63645174829998;
+    double p0 = 0.00940635641577;
+    double p1 = 3996.18607386369558;
+    double p2 = 2.60232765149014;
     return p0+p1/std::pow(pt,p2);
   }
   
   else if (region == "EE") {
-    double p0 = -0.29630917846842;
-    double p1 = 0.72329540931979;
-    double p2 = 0.13882649927513;
+    double p0 = -0.20515293829008;
+    double p1 = 1.78530881946727;
+    double p2 = 0.28786073480443;
     return p0+p1/std::pow(pt,p2);
   }
   
