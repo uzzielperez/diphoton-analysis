@@ -164,6 +164,7 @@ process.diphoton = cms.EDAnalyzer(
     # number of events in the sample (for calculation of event weights)
     nEventsSample = cms.uint32(options.nEventsSample),
     isMC = cms.bool(isMC),
+    isClosureTest = cms.bool(False),
     isReMINIAOD = cms.bool(isReMINIAOD),
     isolationConeR = cms.double(0.3)
     )

@@ -198,6 +198,10 @@ class ExoDiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResource
 
   // flag to determine if sample is data or MC
   bool isMC_;
+
+  // flag to determine if MC sample is used for closure test
+  bool isClosureTest_;
+  
   // flag to determine if sample is reco or re-reco
   bool isReMINIAOD_;
 
@@ -274,6 +278,7 @@ ExoDiPhotonAnalyzer::ExoDiPhotonAnalyzer(const edm::ParameterSet& iConfig)
     nEventsSample_(iConfig.getParameter<uint32_t>("nEventsSample")),
     genInfoToken_(consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("genInfo"))),
     isMC_(iConfig.getParameter<bool>("isMC")),
+    isClosureTest_(iConfig.getParameter<bool>("isClosureTest")),
     isReMINIAOD_(iConfig.getParameter<bool>("isReMINIAOD")),
     isolationConeR_(iConfig.getParameter<double>("isolationConeR"))
 {
@@ -678,7 +683,7 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     else if(photon1TrueOrFake==FAKE && photon2TrueOrFake==TRUE) isFT_ = true;
     else if(photon1TrueOrFake==FAKE && photon2TrueOrFake==FAKE) isFF_ = true;
     else throw cms::Exception("If there are two photons, there should only be four true/fake combinations!");
-    if (isMC_) {
+    if (isMC_ && isClosureTest_) {
       mcTruthFiller(&(*selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].at(0)), fTrueOrFakePhoton1Info[photon1TrueOrFake][photon2TrueOrFake], genParticles);
       mcTruthFiller(&(*selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].at(1)), fTrueOrFakePhoton2Info[photon1TrueOrFake][photon2TrueOrFake], genParticles);
     }
@@ -689,10 +694,12 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     photonFiller(goodPhotons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fDiphotonInfo);
     if (isMC_) {
       fillGenInfo(genParticles, goodPhotons);
-      mcTruthFiller(&(*goodPhotons[0]), fPhoton1Info, genParticles);
-      // cout << "fPhoton1Info.isMCTruthFake: " << fPhoton1Info.isMCTruthFake << endl;
-      mcTruthFiller(&(*goodPhotons[1]), fPhoton2Info, genParticles);
-      // cout << "fPhoton2Info.isMCTruthFake: " << fPhoton2Info.isMCTruthFake << endl;
+      if (isClosureTest_) {
+	mcTruthFiller(&(*goodPhotons[0]), fPhoton1Info, genParticles);
+	cout << "fPhoton1Info.isMCTruthFake: " << fPhoton1Info.isMCTruthFake << endl;
+	mcTruthFiller(&(*goodPhotons[1]), fPhoton2Info, genParticles);
+	cout << "fPhoton2Info.isMCTruthFake: " << fPhoton2Info.isMCTruthFake << endl;
+      }
     }
   }
   
@@ -912,20 +919,24 @@ void ExoDiPhotonAnalyzer::sherpaDiphotonFiller(const edm::Handle<edm::View<reco:
 
 void ExoDiPhotonAnalyzer::mcTruthFiller(const pat::Photon *photon, ExoDiPhotons::photonInfo_t& photonInfo, const edm::Handle<edm::View<reco::GenParticle> > genParticles)
 {
-  std::cout << "Photon: pt = " << photon->pt() << "; eta = " << photon->eta() << "; phi = " << photon->phi() << std::endl;
+  bool printInfo = false;
+  
+  if (printInfo) std::cout << "Photon: pt = " << photon->pt() << "; eta = " << photon->eta() << "; phi = " << photon->phi() << std::endl;
   
   const double deltaR_cut = 0.1;
   double minDeltaR = deltaR_cut;
   
-  const reco::GenParticle *photon_gen_match   = NULL;
+  const reco::GenParticle *photon_gen_match = NULL;
   
   // find best match to reco photon among all final state gen particles in dR cone 
   for (size_t i = 0; i < genParticles->size(); ++i) {
     const auto gen = genParticles->ptrAt(i);
     double deltaR = reco::deltaR(photon->eta(),photon->phi(),gen->eta(),gen->phi());
     if (gen->status() == 1) {
-      // std::cout << "Gen. particle: status = " << gen->status() << "; pdgId = " << gen->pdgId()
-      // << "; pt = " << gen->pt() << "; eta = " << gen->eta() << "; phi = " << gen->phi() << "; dR = " << deltaR << std::endl;
+      if (printInfo) {
+	std::cout << "Gen. particle: status = " << gen->status() << "; pdgId = " << gen->pdgId()
+		  << "; pt = " << gen->pt() << "; eta = " << gen->eta() << "; phi = " << gen->phi() << "; dR = " << deltaR << std::endl;
+      }
       if (deltaR <= minDeltaR) {
 	minDeltaR = deltaR;
 	photon_gen_match = &(*gen);
@@ -937,8 +948,10 @@ void ExoDiPhotonAnalyzer::mcTruthFiller(const pat::Photon *photon, ExoDiPhotons:
   
   // if matched, look at gen. history to determine if reco photon is fake
   if (photon_gen_match) {
-    // std::cout << "Final state gen particle match: status = " << photon_gen_match->status() << "; pdgId = " << photon_gen_match->pdgId()
-    // << "; pt = " << photon_gen_match->pt() << "; eta = " << photon_gen_match->eta() << "; phi = " << photon_gen_match->phi() << std::endl;
+    if (printInfo) {
+      std::cout << "Final state gen particle match: status = " << photon_gen_match->status() << "; pdgId = " << photon_gen_match->pdgId()
+		<< "; pt = " << photon_gen_match->pt() << "; eta = " << photon_gen_match->eta() << "; phi = " << photon_gen_match->phi() << std::endl;
+    }
     // if matched to a photon, check mothers to determine if fake
     if (photon_gen_match->pdgId() == 22) {
       // if first non-photon mother is a hadron with pt > 0 (i.e., not a hard interaction hadron {proton}), then fake
@@ -958,8 +971,10 @@ void ExoDiPhotonAnalyzer::mcTruthFiller(const pat::Photon *photon, ExoDiPhotons:
 	  // calculate deltaR between particle and mother
 	  double deltaR = reco::deltaR(matchedMother->eta(),matchedMother->phi(),matchedMother->mother(j)->eta(),matchedMother->mother(j)->phi());
 	  // print each mother
-	  // std::cout << "\t           Mother " << j << ": Status = " << matchedMother->mother(j)->status()  << "; ID = " << matchedMother->mother(j)->pdgId() << "; pt = "
-	  // << matchedMother->mother(j)->pt() << "; eta = " << matchedMother->mother(j)->eta() << "; phi = " << matchedMother->mother(j)->phi()  << "; deltaR = " << deltaR << std::endl;
+	  if (printInfo) {
+	    std::cout << "\t           Mother " << j << ": Status = " << matchedMother->mother(j)->status()  << "; ID = " << matchedMother->mother(j)->pdgId() << "; pt = "
+		      << matchedMother->mother(j)->pt() << "; eta = " << matchedMother->mother(j)->eta() << "; phi = " << matchedMother->mother(j)->phi()  << "; deltaR = " << deltaR << std::endl;
+	  }
 	  // if current deltaR is smallest, save index
 	  if (deltaR < minMotherMatchDeltaR) {
 	    minMotherMatchDeltaR = deltaR;
@@ -969,8 +984,10 @@ void ExoDiPhotonAnalyzer::mcTruthFiller(const pat::Photon *photon, ExoDiPhotons:
 	// matched particle now becomes best mother
 	matchedMother = (reco::GenParticle *) matchedMother->mother(matchMotherIndex);
 	// print best mother's info
-	// std::cout << "FinalState Matched MOTHER " << matchMotherIndex << ": Status = " << matchedMother->status()  << "; ID = " << matchedMother->pdgId() << "; pt = "
-	// << matchedMother->pt() << "; eta = " << matchedMother->eta() << "; phi = " << matchedMother->phi()  << "; deltaR = " << minMotherMatchDeltaR << std::endl;
+	if (printInfo) {
+	  std::cout << "FinalState Matched MOTHER " << matchMotherIndex << ": Status = " << matchedMother->status()  << "; ID = " << matchedMother->pdgId() << "; pt = "
+		    << matchedMother->pt() << "; eta = " << matchedMother->eta() << "; phi = " << matchedMother->phi()  << "; deltaR = " << minMotherMatchDeltaR << std::endl;
+	}
 	// find when first non-mother occurs
 	if (matchedMother->pdgId() != 22) is_photon_mother = false;
 	// check if current matchedMother is a hadron (colliding proton not considered true)
