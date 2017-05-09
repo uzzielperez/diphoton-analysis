@@ -679,8 +679,8 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     else if(photon1TrueOrFake==FAKE && photon2TrueOrFake==FAKE) isFF_ = true;
     else throw cms::Exception("If there are two photons, there should only be four true/fake combinations!");
     if (isMC_) {
-      mcTruthFiller(&(*selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].at(0)), fTrueOrFakePhoton1Info[photon1TrueOrFake][photon2TrueOrFake], genParticles);
-      mcTruthFiller(&(*selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].at(1)), fTrueOrFakePhoton2Info[photon1TrueOrFake][photon2TrueOrFake], genParticles);
+      // mcTruthFiller(&(*selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].at(0)), fTrueOrFakePhoton1Info[photon1TrueOrFake][photon2TrueOrFake], genParticles);
+      // mcTruthFiller(&(*selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].at(1)), fTrueOrFakePhoton2Info[photon1TrueOrFake][photon2TrueOrFake], genParticles);
     }
   }
   
@@ -689,9 +689,9 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     photonFiller(goodPhotons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fDiphotonInfo);
     if (isMC_) {
       fillGenInfo(genParticles, goodPhotons);
-      mcTruthFiller(&(*goodPhotons[0]), fPhoton1Info, genParticles);
+      // mcTruthFiller(&(*goodPhotons[0]), fPhoton1Info, genParticles);
       // cout << "fPhoton1Info.isMCTruthFake: " << fPhoton1Info.isMCTruthFake << endl;
-      mcTruthFiller(&(*goodPhotons[1]), fPhoton2Info, genParticles);
+      // mcTruthFiller(&(*goodPhotons[1]), fPhoton2Info, genParticles);
       // cout << "fPhoton2Info.isMCTruthFake: " << fPhoton2Info.isMCTruthFake << endl;
     }
   }
@@ -933,7 +933,7 @@ void ExoDiPhotonAnalyzer::mcTruthFiller(const pat::Photon *photon, ExoDiPhotons:
     }
   } // end for loop over gen particles
 
-  bool is_fake = false;
+  // bool is_fake = false;
   
   // if matched, look at gen. history to determine if reco photon is fake
   if (photon_gen_match) {
@@ -975,7 +975,7 @@ void ExoDiPhotonAnalyzer::mcTruthFiller(const pat::Photon *photon, ExoDiPhotons:
 	if (matchedMother->pdgId() != 22) is_photon_mother = false;
 	// check if current matchedMother is a hadron (colliding proton not considered true)
 	if (!is_photon_mother && is_first_non_photon_mother && fabs(matchedMother->pdgId()) > 99 && matchedMother->pt() != 0.) {
-	  is_fake = true;
+	  // is_fake = true;
 	  // first non-photon mother checked
 	  is_first_non_photon_mother = false;
 	}
@@ -987,13 +987,13 @@ void ExoDiPhotonAnalyzer::mcTruthFiller(const pat::Photon *photon, ExoDiPhotons:
       } // end while loop through mothers
     } // end if photon match
     // if not matched to a photon, check match to determine if fake
-    if (photon_gen_match->pdgId() != 22) {
-      // if matched to a hadron with pt > 0 (i.e., not a hard interaction hadron {proton}), then fake
-      if (fabs(photon_gen_match->pdgId()) > 99 && photon_gen_match->pt() != 0.) is_fake = true;
-    } // end if not a photon match
+    // if (photon_gen_match->pdgId() != 22) {
+    //   // if matched to a hadron with pt > 0 (i.e., not a hard interaction hadron {proton}), then fake
+    //   if (fabs(photon_gen_match->pdgId()) > 99 && photon_gen_match->pt() != 0.) is_fake = true;
+    // } // end if not a photon match
   } // end if photon gen. match
 
-  if (is_fake) photonInfo.isMCTruthFake = true;
+  // if (is_fake) photonInfo.isMCTruthFake = true;
   
 } // end mcTruthFiller
 
