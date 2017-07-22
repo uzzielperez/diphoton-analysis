@@ -237,29 +237,36 @@ TriphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   //for (edm::View<pat::Photon>::const_iterator pho = photons->begin(); pho != photons->end(); ++pho) {
   for (size_t i = 0; i < photons->size(); ++i) {
     const auto pho = photons->ptrAt(i);  
+    
+    cout << "Photon: " << "pt = " << pho->pt() << ";hadToweroverEM = "  << pho->hadTowOverEm() <<endl; 
     //fill photons No ID
     photon_obj.push_back(pho);
-
+     
     bool passHoverE = ExoDiPhotons::passHadTowerOverEmCut(&(*pho));
-    if (passHoverE) goodPhotons.push_back(pho); 
+    if(passHoverE) {goodPhotons.push_back(pho);}
+    
+    //double hOverE = pho->hadTowOverEm();
+    //if(hOverE < 0.05) goodPhotons.push_back(pho);
   } // end of photon loop
-
 
   // sort vector of photons by pt
   sort(photon_obj.rbegin(), photon_obj.rend(), comparePhotonsByPt);
   sort(goodPhotons.rbegin(), goodPhotons.rend(), comparePhotonsByPt);
-
 
   if(photons->size()>2){ 
   //Fill Photon Info - FillBasicPhotonInfo(photonInfo_t &photonInfo, const pat::Photon *photon)
   ExoDiPhotons::FillBasicPhotonInfo(fTriPhotonInfo[0],  &(*photon_obj[0]));
   ExoDiPhotons::FillBasicPhotonInfo(fTriPhotonInfo[1], &(*photon_obj[1]));
   ExoDiPhotons::FillBasicPhotonInfo(fTriPhotonInfo[2],  &(*photon_obj[2]));
+       //Check Infos
+       cout << "Photon 1: " << goodPhotons[0]->hadTowOverEm() << endl;
+       cout << "Photon 2: " << goodPhotons[1]->hadTowOverEm() << endl;
+       cout << "Photon 3: " << goodPhotons[2]->hadTowOverEm() << endl;
  
-  ExoDiPhotons::FillBasicPhotonInfo(fgoodTriPhotonInfo[0],  &(*goodPhotons[0]));
-  ExoDiPhotons::FillBasicPhotonInfo(fgoodTriPhotonInfo[1], &(*goodPhotons[1]));
-  ExoDiPhotons::FillBasicPhotonInfo(fgoodTriPhotonInfo[2],  &(*goodPhotons[2]));
- 
+  //ExoDiPhotons::FillBasicPhotonInfo(fgoodTriPhotonInfo[0],  &(*goodPhotons[0]));
+  //ExoDiPhotons::FillBasicPhotonInfo(fgoodTriPhotonInfo[1], &(*goodPhotons[1]));
+  //ExoDiPhotons::FillBasicPhotonInfo(fgoodTriPhotonInfo[2],  &(*goodPhotons[2]));
+  
   fTree->Fill(); 
   }
 

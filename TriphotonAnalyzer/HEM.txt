@@ -15,9 +15,6 @@ Photon: pt = 163.378;hadToweroverEM = 0.0116513
 Photon: pt = 82.8633;hadToweroverEM = 0.00430301
 Photon: pt = 15.8896;hadToweroverEM = 0.0431241
 Photon: pt = 15.4789;hadToweroverEM = 0
-Photon 1: 0.0116513
-Photon 2: 0.00430301
-Photon 3: 0.0431241
 ======================================RUN ENDS==================================
 Run: 276501, LS: 1745, Event: 2896439211
 Photon: pt = 22.4489;hadToweroverEM = 0
@@ -26,9 +23,6 @@ Run: 276501, LS: 1745, Event: 2897462376
 Photon: pt = 70.368;hadToweroverEM = 0
 Photon: pt = 65.2122;hadToweroverEM = 0
 Photon: pt = 19.5825;hadToweroverEM = 0
-Photon 1: 0
-Photon 2: 0
-Photon 3: 0
 ======================================RUN ENDS==================================
 Run: 276501, LS: 1745, Event: 2896628420
 Photon: pt = 58.4018;hadToweroverEM = 0
@@ -68,9 +62,6 @@ Run: 276501, LS: 1745, Event: 2896488496
 Photon: pt = 34.0724;hadToweroverEM = 0
 Photon: pt = 27.9845;hadToweroverEM = 0
 Photon: pt = 12.4839;hadToweroverEM = 0
-Photon 1: 0
-Photon 2: 0
-Photon 3: 0
 ======================================RUN ENDS==================================
 Run: 276501, LS: 1745, Event: 2897156604
 Photon: pt = 29.5469;hadToweroverEM = 0
@@ -80,9 +71,6 @@ Run: 276501, LS: 1745, Event: 2896871617
 Photon: pt = 40.0335;hadToweroverEM = 0
 Photon: pt = 24.1187;hadToweroverEM = 0
 Photon: pt = 12.8146;hadToweroverEM = 0
-Photon 1: 0
-Photon 2: 0
-Photon 3: 0
 ======================================RUN ENDS==================================
 Run: 276501, LS: 1745, Event: 2896173160
 Photon: pt = 56.5622;hadToweroverEM = 0
@@ -114,25 +102,16 @@ Run: 276501, LS: 1745, Event: 2896110065
 Photon: pt = 81.5815;hadToweroverEM = 0.0418236
 Photon: pt = 36.1134;hadToweroverEM = 0
 Photon: pt = 19.1994;hadToweroverEM = 0
-Photon 1: 0.0418236
-Photon 2: 0
-Photon 3: 0
 ======================================RUN ENDS==================================
 Run: 276501, LS: 1745, Event: 2896147444
 Photon: pt = 63.8248;hadToweroverEM = 0.0289922
 Photon: pt = 55.1041;hadToweroverEM = 0
 Photon: pt = 23.9102;hadToweroverEM = 0
-Photon 1: 0.0289922
-Photon 2: 0
-Photon 3: 0
 ======================================RUN ENDS==================================
 Run: 276501, LS: 1745, Event: 2896831888
 Photon: pt = 43.6435;hadToweroverEM = 0
 Photon: pt = 33.3052;hadToweroverEM = 0
 Photon: pt = 27.0674;hadToweroverEM = 0
-Photon 1: 0
-Photon 2: 0
-Photon 3: 0
 ======================================RUN ENDS==================================
 Run: 276501, LS: 1745, Event: 2896075028
 Photon: pt = 51.4379;hadToweroverEM = 0
@@ -154,9 +133,6 @@ Run: 276501, LS: 1745, Event: 2896775826
 Photon: pt = 34.8863;hadToweroverEM = 0.011098
 Photon: pt = 30.9444;hadToweroverEM = 0
 Photon: pt = 25.7352;hadToweroverEM = 0.0152337
-Photon 1: 0.011098
-Photon 2: 0
-Photon 3: 0.0152337
 ======================================RUN ENDS==================================
 Run: 276501, LS: 1745, Event: 2896399732
 Photon: pt = 19.5654;hadToweroverEM = 0.0366648
@@ -166,5 +142,64 @@ Run: 276501, LS: 1745, Event: 2897539707
 Photon: pt = 42.7175;hadToweroverEM = 0
 Photon: pt = 40.9404;hadToweroverEM = 0.0923819
 Photon: pt = 14.2228;hadToweroverEM = 0
-Photon 1: 0
-Photon 2: 0
+======================================RUN ENDS==================================
+Run: 276501, LS: 1745, Event: 2896358424
+Photon: pt = 35.2661;hadToweroverEM = 0
+Photon: pt = 28.9909;hadToweroverEM = 0
+======================================RUN ENDS==================================
+Run: 276501, LS: 1745, Event: 2897084191
+Photon: pt = 31.3556;hadToweroverEM = 0
+Photon: pt = 27.9965;hadToweroverEM = 0.0315155
+Photon: pt = 26.8621;hadToweroverEM = 0
+Photon: pt = 24.9365;hadToweroverEM = 0
+Photon: pt = 13.2457;hadToweroverEM = 0
+======================================RUN ENDS==================================
+Run: 276501, LS: 1745, Event: 2897463371
+Photon: pt = 20.5192;hadToweroverEM = 0
+======================================RUN ENDS==================================
+Run: 276501, LS: 1745, Event: 2896785926
+Photon: pt = 22.8356;hadToweroverEM = 0
+======================================RUN ENDS==================================
+Run: 276501, LS: 1745, Event: 2897372262
+Photon: pt = 48.9315;hadToweroverEM = 0
+Photon: pt = 37.3776;hadToweroverEM = 0.00695277
+Photon: pt = 12.3391;hadToweroverEM = 0.0683016
+======================================RUN ENDS==================================
+Run: 276501, LS: 1745, Event: 2896173881
+Photon: pt = 74.2317;hadToweroverEM = 0
+Photon: pt = 32.4865;hadToweroverEM = 0
+======================================RUN ENDS==================================
+Run: 276501, LS: 1745, Event: 2896302361
+Photon: pt = 53.1851;hadToweroverEM = 0
+Photon: pt = 27.3195;hadToweroverEM = 0.0412287
+======================================RUN ENDS==================================
+Run: 276501, LS: 1745, Event: 2896286030
+Photon: pt = 40.3936;hadToweroverEM = 0
+Photon: pt = 24.5276;hadToweroverEM = 0
+Photon: pt = 11.9825;hadToweroverEM = 0
+======================================RUN ENDS==================================
+Run: 276501, LS: 1745, Event: 2897447001
+Photon: pt = 57.2255;hadToweroverEM = 0
+Photon: pt = 37.3409;hadToweroverEM = 0
+======================================RUN ENDS==================================
+Run: 276501, LS: 1745, Event: 2897084921
+Photon: pt = 57.9828;hadToweroverEM = 0.00344414
+Photon: pt = 20.9231;hadToweroverEM = 0
+======================================RUN ENDS==================================
+Run: 276501, LS: 1745, Event: 2897547450
+Photon: pt = 35.0608;hadToweroverEM = 0
+Photon: pt = 19.8376;hadToweroverEM = 0
+======================================RUN ENDS==================================
+Run: 276501, LS: 1745, Event: 2897381591
+Photon: pt = 124.871;hadToweroverEM = 0.0401488
+Photon: pt = 98.6523;hadToweroverEM = 0
+Photon: pt = 32.6671;hadToweroverEM = 0
+Photon: pt = 22.7598;hadToweroverEM = 0.143744
+======================================RUN ENDS==================================
+Run: 276501, LS: 1745, Event: 2896402802
+Photon: pt = 29.6508;hadToweroverEM = 0
+======================================RUN ENDS==================================
+Run: 276501, LS: 1745, Event: 2896753207
+Photon: pt = 60.6689;hadToweroverEM = 0
+Photon: pt = 37.1142;hadToweroverEM = 0
+======================================RUN ENDS==================================
