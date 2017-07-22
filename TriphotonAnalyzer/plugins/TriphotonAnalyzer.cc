@@ -114,7 +114,7 @@ class TriphotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
     
     // photons (all good)
     ExoDiPhotons::photonInfo_t fTriPhotonInfo[3]; // AllThree
- 
+    ExoDiPhotons::photonInfo_t fgoodTriPhotonInfo[3]; //Good Photons 
    // genParticles
    ExoDiPhotons::genParticleInfo_t fGenTriphotonInfo[3]; //All Three
    
@@ -153,9 +153,13 @@ TriphotonAnalyzer::TriphotonAnalyzer(const edm::ParameterSet& iConfig)
    //Tree Information Branches
    fTree = fs->make<TTree>("fTree","TriphotonTree");
    fTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
-   fTree->Branch("Photon1", &fTriPhotonInfo[0], ExoDiPhotons::photonBranchDefString.c_str());
-   fTree->Branch("Photon2", &fTriPhotonInfo[1], ExoDiPhotons::photonBranchDefString.c_str());
-   fTree->Branch("Photon3", &fTriPhotonInfo[2], ExoDiPhotons::photonBranchDefString.c_str());
+   fTree->Branch("Photon1Cand", &fTriPhotonInfo[0], ExoDiPhotons::photonBranchDefString.c_str());
+   fTree->Branch("Photon2Cand", &fTriPhotonInfo[1], ExoDiPhotons::photonBranchDefString.c_str());
+   fTree->Branch("Photon3Cand", &fTriPhotonInfo[2], ExoDiPhotons::photonBranchDefString.c_str());
+   fTree->Branch("Photon1", &fgoodTriPhotonInfo[0], ExoDiPhotons::photonBranchDefString.c_str());
+   fTree->Branch("Photon2", &fgoodTriPhotonInfo[1], ExoDiPhotons::photonBranchDefString.c_str());
+   fTree->Branch("Photon3", &fgoodTriPhotonInfo[2], ExoDiPhotons::photonBranchDefString.c_str());
+
    fTree->Branch("GenPhoton1", &fTriPhotonInfo[0],ExoDiPhotons::genParticleBranchDefString.c_str());
    fTree->Branch("GenPhoton2", &fTriPhotonInfo[1],ExoDiPhotons::genParticleBranchDefString.c_str());
    fTree->Branch("GenPhoton3", &fTriPhotonInfo[2],ExoDiPhotons::genParticleBranchDefString.c_str());
@@ -221,6 +225,10 @@ TriphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   ExoDiPhotons::InitPhotonInfo(fTriPhotonInfo[0]);
   ExoDiPhotons::InitPhotonInfo(fTriPhotonInfo[1]);
   ExoDiPhotons::InitPhotonInfo(fTriPhotonInfo[2]);
+  ExoDiPhotons::InitPhotonInfo(fgoodTriPhotonInfo[0]);
+  ExoDiPhotons::InitPhotonInfo(fgoodTriPhotonInfo[1]);
+  ExoDiPhotons::InitPhotonInfo(fgoodTriPhotonInfo[2]);
+
 
   // pointer to photon in collection that passes high pt ID
   std::vector<edm::Ptr<pat::Photon>> goodPhotons; // We will implement this later 
@@ -231,19 +239,28 @@ TriphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     const auto pho = photons->ptrAt(i);  
     //fill photons No ID
     photon_obj.push_back(pho);
+
+    bool passHoverE = ExoDiPhotons::passHadTowerOverEmCut(&(*pho));
+    if (passHoverE) goodPhotons.push_back(pho); 
   } // end of photon loop
 
 
   // sort vector of photons by pt
   sort(photon_obj.rbegin(), photon_obj.rend(), comparePhotonsByPt);
+  sort(goodPhotons.rbegin(), goodPhotons.rend(), comparePhotonsByPt);
+
 
   if(photons->size()>2){ 
   //Fill Photon Info - FillBasicPhotonInfo(photonInfo_t &photonInfo, const pat::Photon *photon)
   ExoDiPhotons::FillBasicPhotonInfo(fTriPhotonInfo[0],  &(*photon_obj[0]));
   ExoDiPhotons::FillBasicPhotonInfo(fTriPhotonInfo[1], &(*photon_obj[1]));
   ExoDiPhotons::FillBasicPhotonInfo(fTriPhotonInfo[2],  &(*photon_obj[2]));
-  
-  fTree->Fill()
+ 
+  ExoDiPhotons::FillBasicPhotonInfo(fgoodTriPhotonInfo[0],  &(*goodPhotons[0]));
+  ExoDiPhotons::FillBasicPhotonInfo(fgoodTriPhotonInfo[1], &(*goodPhotons[1]));
+  ExoDiPhotons::FillBasicPhotonInfo(fgoodTriPhotonInfo[2],  &(*goodPhotons[2]));
+ 
+  fTree->Fill(); 
   }
 
 cout << "======================================RUN ENDS==================================" <<endl;
