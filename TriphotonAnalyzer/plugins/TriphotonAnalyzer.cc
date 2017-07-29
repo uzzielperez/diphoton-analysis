@@ -125,19 +125,19 @@ class TriphotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
    bool isMC_; 
   
   //ECAL recHits
-  edm::InputTag recHitsEBTag_;
+  /*edm::InputTag recHitsEBTag_;
   edm::InputTag recHitsEETag_;
   edm::EDGetTokenT<EcalRecHitCollection> recHitsEBToken;
   edm::EDGetTokenT<EcalRecHitCollection> recHitsEEToken; 
-  
+  */
    // rho token
-   edm::EDGetTokenT<double> rhoToken_;
+  edm::EDGetTokenT<double> rhoToken_;
    
    // rho variable
    double rho_;
 
-  const CaloSubdetectorTopology* subDetTopologyEB_;
-  const CaloSubdetectorTopology* subDetTopologyEE_;
+//  const CaloSubdetectorTopology* subDetTopologyEB_;
+ // const CaloSubdetectorTopology* subDetTopologyEE_;
 
    //Comparer (Request to be pushed into parent repo) 
    static bool comparePhotonsByPt(const edm::Ptr<pat::Photon> photon1, const edm::Ptr<pat::Photon> photon2) {
@@ -157,7 +157,9 @@ class TriphotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
 // constructors and destructor
 //
 TriphotonAnalyzer::TriphotonAnalyzer(const edm::ParameterSet& iConfig)
-: rhoToken_(consumes<double> (iConfig.getParameter<edm::InputTag>("rhoFixedGridCollection")))
+:rhoToken_(consumes<double> (iConfig.getParameter<edm::InputTag>("rho")))
+  
+  //rhoToken_(consumes<double> (iConfig.getParameter<edm::InputTag>("rhoFixedGridCollection")))
   //rhoToken_(consumes<double> (iConfig.getParameter<edm::InputTag>("rho")))
 {
    //now do what ever initialization is needed
@@ -185,11 +187,12 @@ TriphotonAnalyzer::TriphotonAnalyzer(const edm::ParameterSet& iConfig)
    photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon>>(edm::InputTag("slimmedPhotons"));
 
    // ECAL RecHits
-  recHitsEBTag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEBTag",edm::InputTag("reducedEgamma:reducedEBRecHits"));
+/*  recHitsEBTag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEBTag",edm::InputTag("reducedEgamma:reducedEBRecHits"));
   recHitsEETag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEETag",edm::InputTag("reducedEgamma:reducedEERecHits"));
   recHitsEBToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEBTag_);
   recHitsEEToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEETag_);
-}
+*/
+  }
 
 
 TriphotonAnalyzer::~TriphotonAnalyzer()
@@ -229,10 +232,10 @@ TriphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   // RHO
   // ===
   
-  // Get rho
-  edm::Handle< double > rhoH;
-  iEvent.getByToken(rhoToken_,rhoH);
-  rho_ = *rhoH;
+  //Get rho
+   edm::Handle< double > rhoH;
+   iEvent.getByToken(rhoToken_,rhoH);
+   rho_ = *rhoH;
   
   //cout << "rho: " << rho_ << endl;
 
@@ -241,7 +244,7 @@ TriphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   // =========
   
   // ECAL RecHits
-  edm::Handle<EcalRecHitCollection> recHitsEB;
+  /*edm::Handle<EcalRecHitCollection> recHitsEB;
   iEvent.getByToken(recHitsEBToken,recHitsEB);   
   edm::Handle<EcalRecHitCollection> recHitsEE;
   iEvent.getByToken(recHitsEEToken,recHitsEE);
@@ -251,7 +254,7 @@ TriphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   iSetup.get<CaloTopologyRecord>().get(caloTopology);
   subDetTopologyEB_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalBarrel);
   subDetTopologyEE_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalEndcap);
-
+*/
   // =======
   // PHOTONS
   // =======
@@ -292,22 +295,26 @@ TriphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   sort(photon_obj.rbegin(), photon_obj.rend(), comparePhotonsByPt);
   sort(goodPhotons.rbegin(), goodPhotons.rend(), comparePhotonsByPt);
 
-  if(photons->size()>2){ 
+ /* if(photons->size()>2){ 
   //Fill Photon Info - FillBasicPhotonInfo(photonInfo_t &photonInfo, const pat::Photon *photon)
   ExoDiPhotons::FillBasicPhotonInfo(fTriPhotonInfo[0],  &(*photon_obj[0]));
   ExoDiPhotons::FillBasicPhotonInfo(fTriPhotonInfo[1], &(*photon_obj[1]));
   ExoDiPhotons::FillBasicPhotonInfo(fTriPhotonInfo[2],  &(*photon_obj[2]));
   }
-
+*/
   if(goodPhotons.size()>2){
   //Check Infos
       // cout << "Photon 1: " <<"pt = " << goodPhotons[0]->pt() << "; H/E = " <<  goodPhotons[0]->hadTowOverEm() << endl;
        //cout << "Photon 2: " << "pt = " << goodPhotons[1]->pt() << "; H/E = "<<  goodPhotons[1]->hadTowOverEm() << endl;
        //cout << "Photon 3: " << "pt = " << goodPhotons[2]->pt() << "; H/E = "<<  goodPhotons[2]->hadTowOverEm() << endl;
   //Fill Saturation
-  fgoodTriPhotonInfo[0].isSaturated = ExoDiPhotons::isSaturated(&(*goodPhotons[0]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-  fgoodTriPhotonInfo[1].isSaturated = ExoDiPhotons::isSaturated(&(*goodPhotons[1]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-  fgoodTriPhotonInfo[2].isSaturated = ExoDiPhotons::isSaturated(&(*goodPhotons[2]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+  //fgoodTriPhotonInfo[0].isSaturated = ExoDiPhotons::isSaturated(&(*goodPhotons[0]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+  //fgoodTriPhotonInfo[1].isSaturated = ExoDiPhotons::isSaturated(&(*goodPhotons[1]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+  //fgoodTriPhotonInfo[2].isSaturated = ExoDiPhotons::isSaturated(&(*goodPhotons[2]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+ 
+  fgoodTriPhotonInfo[0].isSaturated = 0;
+  fgoodTriPhotonInfo[1].isSaturated = 0;
+  fgoodTriPhotonInfo[2].isSaturated = 0;
 
   //Fill Info
   ExoDiPhotons::FillBasicPhotonInfo(fgoodTriPhotonInfo[0],  &(*goodPhotons[0]));
@@ -320,10 +327,12 @@ TriphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
    cout << "Photon 1: " <<"pt = " << fgoodTriPhotonInfo[0].pt << "; H/E = " << fgoodTriPhotonInfo[0].hadTowerOverEm << endl;
    cout << "Photon 2: " << "pt = " <<  fgoodTriPhotonInfo[1].pt << "; H/E = "<<   fgoodTriPhotonInfo[1].hadTowerOverEm << endl;
    cout << "Photon 3: " << "pt = " << fgoodTriPhotonInfo[2].pt << "; H/E = "<<  fgoodTriPhotonInfo[2].hadTowerOverEm << endl;
+
+  fTree->Fill();
   }
 
   
-  if(photons->size()>2) fTree->Fill(); 
+ // if(photons->size()>2) fTree->Fill(); 
 cout << "======================================RUN ENDS==================================" <<endl;
 
 
