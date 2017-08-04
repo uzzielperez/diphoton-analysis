@@ -125,19 +125,19 @@ class TriphotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
    bool isMC_; 
   
   //ECAL recHits
-  /*edm::InputTag recHitsEBTag_;
+  edm::InputTag recHitsEBTag_;
   edm::InputTag recHitsEETag_;
   edm::EDGetTokenT<EcalRecHitCollection> recHitsEBToken;
   edm::EDGetTokenT<EcalRecHitCollection> recHitsEEToken; 
-  */
+  
    // rho token
   edm::EDGetTokenT<double> rhoToken_;
    
    // rho variable
    double rho_;
 
-//  const CaloSubdetectorTopology* subDetTopologyEB_;
- // const CaloSubdetectorTopology* subDetTopologyEE_;
+ const CaloSubdetectorTopology* subDetTopologyEB_;
+ const CaloSubdetectorTopology* subDetTopologyEE_;
 
    //Comparer (Request to be pushed into parent repo) 
    static bool comparePhotonsByPt(const edm::Ptr<pat::Photon> photon1, const edm::Ptr<pat::Photon> photon2) {
@@ -157,10 +157,7 @@ class TriphotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
 // constructors and destructor
 //
 TriphotonAnalyzer::TriphotonAnalyzer(const edm::ParameterSet& iConfig)
-:rhoToken_(consumes<double> (iConfig.getParameter<edm::InputTag>("rho")))
-  
-  //rhoToken_(consumes<double> (iConfig.getParameter<edm::InputTag>("rhoFixedGridCollection")))
-  //rhoToken_(consumes<double> (iConfig.getParameter<edm::InputTag>("rho")))
+:rhoToken_(consumes<double> (iConfig.getParameter<edm::InputTag>("rho")))  
 {
    //now do what ever initialization is needed
    usesResource("TFileService");
@@ -187,11 +184,11 @@ TriphotonAnalyzer::TriphotonAnalyzer(const edm::ParameterSet& iConfig)
    photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon>>(edm::InputTag("slimmedPhotons"));
 
    // ECAL RecHits
-/*  recHitsEBTag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEBTag",edm::InputTag("reducedEgamma:reducedEBRecHits"));
+  recHitsEBTag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEBTag",edm::InputTag("reducedEgamma:reducedEBRecHits"));
   recHitsEETag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEETag",edm::InputTag("reducedEgamma:reducedEERecHits"));
   recHitsEBToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEBTag_);
   recHitsEEToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEETag_);
-*/
+
   }
 
 
@@ -244,7 +241,7 @@ TriphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   // =========
   
   // ECAL RecHits
-  /*edm::Handle<EcalRecHitCollection> recHitsEB;
+  edm::Handle<EcalRecHitCollection> recHitsEB;
   iEvent.getByToken(recHitsEBToken,recHitsEB);   
   edm::Handle<EcalRecHitCollection> recHitsEE;
   iEvent.getByToken(recHitsEEToken,recHitsEE);
@@ -254,7 +251,7 @@ TriphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   iSetup.get<CaloTopologyRecord>().get(caloTopology);
   subDetTopologyEB_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalBarrel);
   subDetTopologyEE_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalEndcap);
-*/
+
   // =======
   // PHOTONS
   // =======
@@ -308,14 +305,14 @@ TriphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
        //cout << "Photon 2: " << "pt = " << goodPhotons[1]->pt() << "; H/E = "<<  goodPhotons[1]->hadTowOverEm() << endl;
        //cout << "Photon 3: " << "pt = " << goodPhotons[2]->pt() << "; H/E = "<<  goodPhotons[2]->hadTowOverEm() << endl;
   //Fill Saturation
-  //fgoodTriPhotonInfo[0].isSaturated = ExoDiPhotons::isSaturated(&(*goodPhotons[0]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-  //fgoodTriPhotonInfo[1].isSaturated = ExoDiPhotons::isSaturated(&(*goodPhotons[1]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-  //fgoodTriPhotonInfo[2].isSaturated = ExoDiPhotons::isSaturated(&(*goodPhotons[2]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
- 
+  fgoodTriPhotonInfo[0].isSaturated = ExoDiPhotons::isSaturated(&(*goodPhotons[0]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+  fgoodTriPhotonInfo[1].isSaturated = ExoDiPhotons::isSaturated(&(*goodPhotons[1]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+  fgoodTriPhotonInfo[2].isSaturated = ExoDiPhotons::isSaturated(&(*goodPhotons[2]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+/* 
   fgoodTriPhotonInfo[0].isSaturated = 0;
   fgoodTriPhotonInfo[1].isSaturated = 0;
   fgoodTriPhotonInfo[2].isSaturated = 0;
-
+*/
   //Fill Info
   ExoDiPhotons::FillBasicPhotonInfo(fgoodTriPhotonInfo[0],  &(*goodPhotons[0]));
   ExoDiPhotons::FillBasicPhotonInfo(fgoodTriPhotonInfo[1], &(*goodPhotons[1]));

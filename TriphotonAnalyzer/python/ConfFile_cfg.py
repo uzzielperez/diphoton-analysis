@@ -13,10 +13,17 @@ process.source = cms.Source("PoolSource",
     
     )
 )
+# to avoid processing with an incorrect global tag, don't set a valid default
+#globalTag = 'notset'
+globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
 
+# for global tag
+process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
+process.GlobalTag.globaltag = globalTag
+print "Using global tag: " + globalTag
 # geometry for saturation
-#process.load("Configuration.StandardSequences.GeometryDB_cff")
+process.load("Configuration.StandardSequences.GeometryDB_cff")
 #process.load("Geometry.CaloEventSetup.CaloTopology_cfi");
 #process.CaloTopologyBuilder = cms.ESProducer("CaloTopologyBuilder")
 #process.load("Geometry.CMSCommonData.cmsIdealGeometryXML_cfi");
