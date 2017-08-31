@@ -27,6 +27,7 @@ def get_number_of_events(dataset):
       sumevents += idata.get('result').get('value')
     return sumevents
 
+do2017data = False
 do2016data = False
 do2016mc = False
 do2015data = False
@@ -45,6 +46,19 @@ DATASETS = [[]]
 #                   "/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2_ext1-v1/MINIAODSIM"])
 
 
+# diphoton samples (2017 data)
+if do2017data:
+### no good lumisections are present in Run2017A
+##  DATASETS.append(["/DoubleEG/Run2017A-PromptReco-v2/MINIAOD"])
+##  DATASETS.append(["/DoubleEG/Run2017A-PromptReco-v3/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017B-PromptReco-v1/MINIAOD"])
+### re-recos overlap with prompt; do not use for now
+##  DATASETS.append(["/DoubleEG/Run2017B-23Jun2017-v1/MINIAOD"])
+##  DATASETS.append(["/DoubleEG/Run2017B-22Jun2017-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017B-PromptReco-v2/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017C-PromptReco-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017C-PromptReco-v2/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017C-PromptReco-v3/MINIAOD"])
 # diphoton samples (2016 data)
 if do2016data:
 # The /DoubleEG/Run2016B-03Feb2017_ver1-v1 dataset does not contain any lumisections

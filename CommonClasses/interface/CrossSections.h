@@ -192,7 +192,7 @@ namespace ExoDiPhotons {
     if(sample.Contains("GG_M-8000To13000_Pt-70_13TeV-sherpa")) xsec = 5.430e-11;
     
     // do not use weights for data
-    if(sample.Contains("Run2015") || sample.Contains("Run2016")) xsec = 1.0;
+    if(sample.Contains("Run2015") || sample.Contains("Run2016") || sample.Contains("Run2017")) xsec = 1.0;
 
     if(xsec < 0) throw cms::Exception("Could not determine cross section from output file name");
     
