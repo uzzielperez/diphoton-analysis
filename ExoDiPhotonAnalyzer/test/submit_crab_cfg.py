@@ -27,7 +27,7 @@ def get_number_of_events(dataset):
       sumevents += idata.get('result').get('value')
     return sumevents
 
-do2017data = False
+do2017data = True
 do2016data = False
 do2016mc = False
 do2015data = False
@@ -59,6 +59,8 @@ if do2017data:
   DATASETS.append(["/DoubleEG/Run2017C-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2017C-PromptReco-v2/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2017C-PromptReco-v3/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017D-PromptReco-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017E-PromptReco-v1/MINIAOD"])
 # diphoton samples (2016 data)
 if do2016data:
 # The /DoubleEG/Run2016B-03Feb2017_ver1-v1 dataset does not contain any lumisections

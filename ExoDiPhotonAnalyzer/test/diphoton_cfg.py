@@ -34,7 +34,7 @@ if "Run201" in outName:
 # to avoid processing with an incorrect global tag, don't set a valid default
 globalTag = 'notset'
 
-
+jetLabel = "selectedUpdatedPatJetsUpdatedJEC"
 # options for data
 JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
 # necessary because in re-MINIAOD the process labels are "PAT", not "RECO"
@@ -53,6 +53,7 @@ if "Run2016" in outName:
         globalTag = '80X_dataRun2_2016SeptRepro_v4'
 if "Run2017" in outName:
     globalTag = '92X_dataRun2_Prompt_v8'
+    jetLabel = "updatedPatJetsUpdatedJEC"
 # override options for MC
 if isMC:
     version = os.getenv("CMSSW_VERSION")
@@ -145,7 +146,7 @@ process.diphoton = cms.EDAnalyzer(
     # beam spot tag
     beamSpot = cms.InputTag("offlineBeamSpot", "", "RECO"),
     # ak4 jets
-    jetsMiniAOD = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
+    jetsMiniAOD = cms.InputTag(jetLabel),
     jetPtThreshold = cms.double(30.),
     jetEtaThreshold = cms.double(2.5),
     # rho tag
@@ -172,8 +173,10 @@ process.diphoton = cms.EDAnalyzer(
 
 # analyzer to print cross section
 process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
-
 if isMC:
     process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton * process.xsec)
 else:
-    process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton)
+    if "Run2017" in outName:
+        process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.diphoton)
+    else:
+        process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton)
