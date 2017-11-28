@@ -121,10 +121,13 @@ bool plot::is2017Data()
 
 void plot::output(const std::string& outputDirectory, const std::string& extraString)
 {
+  gStyle->SetErrorX(0.5);
+
   TCanvas *c = new TCanvas;
   std::vector<TH1D*> hists;
 
   THStack *hs = new THStack("hs", "hs");
+  TH1D *sum = new TH1D("sum", "sum", m_nbins, m_xmin, m_xmax);
   TString dataHistName;
   for(auto isample : m_samples) {
     TString newCut(m_cut.c_str());
@@ -136,7 +139,12 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
     hists.push_back(new TH1D(isample.name().c_str(), isample.name().c_str(), m_nbins, m_xmin, m_xmax));
     std::cout << "Creating histogram " << isample.name() << " for variable " << m_variable << std::endl;
     isample.chain()->Project(isample.name().c_str(), m_variable.c_str(), newCut.Data());
+    if(!isample.isData) {
+      sum->Add(hists.back());
+      std::cout << "Adding histogram: " << hists.back()->GetName() << std::endl;
+    }
     std::cout << "Integral (" << isample.name() << "): " << hists.back()->Integral() << std::endl;
+    std::cout << "Sum: " << sum->Integral() << std::endl;
     hists.back()->SetLineStyle(isample.lineStyle());
     hists.back()->SetLineColor(isample.lineColor());
     hists.back()->SetFillStyle(isample.fillStyle());
@@ -185,6 +193,11 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
   }
 
   hs->Draw("hist,same");
+  sum->SetMarkerSize(0);
+  sum->SetLineColor(kBlack);
+  sum->SetFillColor(kBlack);
+  sum->SetFillStyle(3344);
+  sum->Draw("E2,same");
 
   // draw data histogram on top
   for(auto ihist : hists) {
@@ -214,8 +227,12 @@ TString reformat(TString input)
   if(input.Contains("Minv") || input.Contains("pt") || input.Contains("qt")) output+=" (GeV)";
   output.ReplaceAll("Minv", "m_{#gamma#gamma}");
   output.ReplaceAll("Photon1.pt", "p_{T1}");
+  output.ReplaceAll("Photon1.phi", "#phi_{1}");
+  output.ReplaceAll("Photon1.eta", "#eta_{1}");
   output.ReplaceAll("nPV", "n_{PV}");
   output.ReplaceAll("Photon2.pt", "p_{T2}");
+  output.ReplaceAll("Photon2.phi", "#phi_{2}");
+  output.ReplaceAll("Photon2.eta", "#eta_{2}");
   output.ReplaceAll("Diphoton.qt", "q_{T,#gamma#gamma}");
   output.ReplaceAll("Diphoton.deltaPhi", "#Delta#phi_{#gamma#gamma}");
   output.ReplaceAll("Diphoton.deltaEta", "#Delta#eta_{#gamma#gamma}");

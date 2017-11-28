@@ -35,7 +35,7 @@ config.Data.inputDBS = 'global'
 if "Run2017" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100
-    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/PromptReco/Cert_294927-303825_13TeV_PromptReco_Collisions17_JSON.txt'
+    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/PromptReco/Cert_294927-306126_13TeV_PromptReco_Collisions17_JSON.txt'
 if "Run2016" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100
@@ -54,5 +54,6 @@ else:
     config.Data.unitsPerJob = 5
 
 config.section_("Site")
-config.Site.storageSite = 'T2_CH_CERN'
+#config.Site.storageSite = 'T2_CH_CERN'
+config.Site.storageSite = 'T3_US_FNALLPC'
 config.Site.blacklist = ['T1_RU_JINR', 'T2_US_Vanderbilt']

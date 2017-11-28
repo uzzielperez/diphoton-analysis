@@ -60,6 +60,7 @@ namespace ExoDiPhotons {
     if(sample.Contains("TTJets_")) xsec = 815.96 ;
     // from running GenXsecAnalyzer on full sample
     if(sample.Contains("GGGJets_13TeV-sherpa")) xsec = 1.814e-01;
+    if(sample.Contains("GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8")) xsec = 1.720e+00;
     // from running GenXsecAnalyzer on full sample
     if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 9.139e-02;
     if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-1_M-2000To3000_13TeV-sherpa")) xsec = 1.160e-02;

@@ -9,6 +9,7 @@
 #include "TCanvas.h"
 #include "TEfficiency.h"
 #include "TH1.h"
+#include "TLatex.h"
 
 #include <iostream>
 #include <algorithm>
@@ -102,5 +103,12 @@ void oneHist(const std::string& varname, TChain *ch, const std::string& year)
   TEfficiency *eff = new TEfficiency(*hists[0], *hists[1]);
   eff->Draw("AP");
   eff->SetTitle(";p_{T}(#gamma_{2}) (GeV);Efficiency");
+
+  TLatex *lat = new TLatex;
+  lat->SetTextSize(0.038);
+  lat->DrawLatexNDC(0.17, 0.96, "#font[62]{CMS} #scale[0.8]{#font[52]{Preliminary}}");
+  lat->SetTextFont(42);
+  lat->DrawLatexNDC(0.70, 0.96, Form("%1.1f fb^{-1} (13 TeV)", luminosity));
+
   c1->Print(Form("plots/eff_%s_%s.pdf", year.c_str(), varForFilename.c_str()));
 }

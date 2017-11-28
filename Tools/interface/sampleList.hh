@@ -27,7 +27,7 @@ const double luminosity2016 = 35.9; // fb^-1
 const double luminosityRatio = 35.9/2.62;
 const double luminosityError = 0.023;
 const double luminosity2016Error = 0.026;
-const double luminosity2017 = 18.9;
+const double luminosity2017 = 38.72;
 
 std::map<std::string, TChain*> chains;
 std::map<std::string, int> lineStyles;
@@ -102,13 +102,14 @@ void init()
   // // both -v2 and -v3 should be included
   // chData2016_preREMINIAOD->Add(filestring("DoubleEG__Run2016H-PromptReco-v2"));
   TChain *chData2017 = new TChain(treeType);
-  chData2017->Add(filestring("DoubleEG__Run2017B-v1"));
-  chData2017->Add(filestring("DoubleEG__Run2017B-v2"));
+  // chData2017->Add(filestring("DoubleEG__Run2017B-v1"));
+  // chData2017->Add(filestring("DoubleEG__Run2017B-v2"));
   chData2017->Add(filestring("DoubleEG__Run2017C-v1"));
-  chData2017->Add(filestring("DoubleEG__Run2017C-v2"));
-  chData2017->Add(filestring("DoubleEG__Run2017C-v3"));
-  chData2017->Add(filestring("DoubleEG__Run2017D-v1"));
-  chData2017->Add(filestring("DoubleEG__Run2017E-v1"));
+  //  chData2017->Add(filestring("DoubleEG__Run2017C-v2"));
+  // chData2017->Add(filestring("DoubleEG__Run2017C-v3"));
+  //  chData2017->Add(filestring("DoubleEG__Run2017D-v1"));
+  //  chData2017->Add(filestring("DoubleEG__Run2017E-v1"));
+  //  chData2017->Add(filestring("DoubleEG__Run2017F-v1"));
 
   TChain *chData2016 = new TChain(treeType);
   chData2016->Add(filestring("DoubleEG__Run2016B-03Feb2017"));
