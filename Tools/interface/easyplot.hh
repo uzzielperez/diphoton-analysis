@@ -75,6 +75,7 @@ public:
 
 private:
   bool is2016Data();
+  bool is2017Data();
 
   std::vector<sample> m_samples;
   std::string m_variable;
@@ -95,6 +96,7 @@ plot::plot(std::vector<sample> samples, std::string variable, std::string cut, i
 { 
 
   if(is2016Data()) luminosity = luminosity2016;
+  if(is2017Data()) luminosity = luminosity2017;
 }
 
 // set luminosity to 2016 luminosity if one of the samples in the plot contains 2016 data
@@ -107,13 +109,25 @@ bool plot::is2016Data()
   return false;
 }
 
+// set luminosity to 2017 luminosity if one of the samples in the plot contains 2017 data
+bool plot::is2017Data()
+{
+  for(auto isample : m_samples) {
+    if(isample.name().find("2017") != std::string::npos) return true;
+  }
+
+  return false;
+}
+
 void plot::output(const std::string& outputDirectory, const std::string& extraString)
 {
+  gStyle->SetErrorX(0.5);
+
   TCanvas *c = new TCanvas;
-  c->SetLogy();
   std::vector<TH1D*> hists;
 
   THStack *hs = new THStack("hs", "hs");
+  TH1D *sum = new TH1D("sum", "sum", m_nbins, m_xmin, m_xmax);
   TString dataHistName;
   for(auto isample : m_samples) {
     TString newCut(m_cut.c_str());
@@ -125,7 +139,12 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
     hists.push_back(new TH1D(isample.name().c_str(), isample.name().c_str(), m_nbins, m_xmin, m_xmax));
     std::cout << "Creating histogram " << isample.name() << " for variable " << m_variable << std::endl;
     isample.chain()->Project(isample.name().c_str(), m_variable.c_str(), newCut.Data());
+    if(!isample.isData) {
+      sum->Add(hists.back());
+      std::cout << "Adding histogram: " << hists.back()->GetName() << std::endl;
+    }
     std::cout << "Integral (" << isample.name() << "): " << hists.back()->Integral() << std::endl;
+    std::cout << "Sum: " << sum->Integral() << std::endl;
     hists.back()->SetLineStyle(isample.lineStyle());
     hists.back()->SetLineColor(isample.lineColor());
     hists.back()->SetFillStyle(isample.fillStyle());
@@ -174,6 +193,11 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
   }
 
   hs->Draw("hist,same");
+  sum->SetMarkerSize(0);
+  sum->SetLineColor(kBlack);
+  sum->SetFillColor(kBlack);
+  sum->SetFillStyle(3344);
+  sum->Draw("E2,same");
 
   // draw data histogram on top
   for(auto ihist : hists) {
@@ -191,8 +215,10 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
   lat->SetTextFont(42);
   lat->DrawLatexNDC(0.70, 0.96, Form("%1.1f fb^{-1} (13 TeV)", luminosity));
 
-  c->Print(Form("%s/%s_%s.pdf", outputDirectory.c_str(), variable().c_str(), extraString.c_str()));
+  c->Print(Form("%s/%s_%s_lin.pdf", outputDirectory.c_str(), variable().c_str(), extraString.c_str()));
   c->Print(Form("%s/%s_%s.root", outputDirectory.c_str(), variable().c_str(), extraString.c_str()));
+  c->SetLogy();
+  c->Print(Form("%s/%s_%s_log.pdf", outputDirectory.c_str(), variable().c_str(), extraString.c_str()));
 }
 
 TString reformat(TString input)
@@ -201,8 +227,12 @@ TString reformat(TString input)
   if(input.Contains("Minv") || input.Contains("pt") || input.Contains("qt")) output+=" (GeV)";
   output.ReplaceAll("Minv", "m_{#gamma#gamma}");
   output.ReplaceAll("Photon1.pt", "p_{T1}");
+  output.ReplaceAll("Photon1.phi", "#phi_{1}");
+  output.ReplaceAll("Photon1.eta", "#eta_{1}");
   output.ReplaceAll("nPV", "n_{PV}");
   output.ReplaceAll("Photon2.pt", "p_{T2}");
+  output.ReplaceAll("Photon2.phi", "#phi_{2}");
+  output.ReplaceAll("Photon2.eta", "#eta_{2}");
   output.ReplaceAll("Diphoton.qt", "q_{T,#gamma#gamma}");
   output.ReplaceAll("Diphoton.deltaPhi", "#Delta#phi_{#gamma#gamma}");
   output.ReplaceAll("Diphoton.deltaEta", "#Delta#eta_{#gamma#gamma}");

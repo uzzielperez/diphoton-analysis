@@ -9,6 +9,7 @@
 #include "TCanvas.h"
 #include "TEfficiency.h"
 #include "TH1.h"
+#include "TLatex.h"
 
 #include <iostream>
 #include <algorithm>
@@ -22,7 +23,8 @@ int main()
   // initialize chains
   init();
 
-  std::vector<std::string> years = {"2015", "2016"};
+  //  std::vector<std::string> years = {"2015", "2016", "2017"};
+  std::vector<std::string> years = {"2017"};
   std::vector<std::string> variables = {"Photon2.pt"};
 
   for(auto iyear : years) {
@@ -68,23 +70,45 @@ void oneHist(const std::string& varname, TChain *ch, const std::string& year)
   std::string denominator(varname);
   denominator += ">>denominator";
 
-  ch->Draw(numerator.c_str() , "isGood && HLT_DoublePhoton60");
-  ch->Draw(denominator.c_str(), "isGood && HLT_DoublePhoton40");
-
+  TString numeratorCut("isGood && HLT_DoublePhoton60");
+  if(year.find("2017") != std::string::npos) {
+    numeratorCut = "isGood && HLT_DoublePhoton85 && HLT_DoublePhoton33_CaloIdL";
+  }
+  ch->Draw(numerator.c_str() , numeratorCut);
+  if(year.find("2017") != std::string::npos) {
+    ch->Draw(denominator.c_str(), "isGood && HLT_DoublePhoton33_CaloIdL");
+  }
+  else {
+    ch->Draw(denominator.c_str(), "isGood && HLT_DoublePhoton40");
+  }
   // add overflow
   for(int i = 0; i < 2; i++) {
     int maxBin = hists[i]->GetNbinsX();
     hists[i]->SetBinContent(maxBin, hists[i]->GetBinContent(maxBin) + hists[i]->GetBinContent(maxBin+1));
   }
 
+  TCanvas *c0 = new TCanvas;
+  c0->SetLogy();
+  hists[0]->SetLineColor(kRed);
+  hists[1]->SetLineColor(kBlue);
+  hists[0]->Draw();
+  hists[1]->Draw("same");
+  // latex can't figure out what to do with files
+  // with more than one period in them
+  std::string varForFilename(varname);
+  std::replace(varForFilename.begin(), varForFilename.end(), '.', '_');
+  c0->Print(Form("plots/eff_input_%s_%s.pdf", year.c_str(), varForFilename.c_str()));
 
   TCanvas *c1 = new TCanvas;
   TEfficiency *eff = new TEfficiency(*hists[0], *hists[1]);
   eff->Draw("AP");
   eff->SetTitle(";p_{T}(#gamma_{2}) (GeV);Efficiency");
-  // latex can't figure out what to do with files 
-  // with more than one period in them
-  std::string varForFilename(varname);
-  std::replace(varForFilename.begin(), varForFilename.end(), '.', '_');
+
+  TLatex *lat = new TLatex;
+  lat->SetTextSize(0.038);
+  lat->DrawLatexNDC(0.17, 0.96, "#font[62]{CMS} #scale[0.8]{#font[52]{Preliminary}}");
+  lat->SetTextFont(42);
+  lat->DrawLatexNDC(0.70, 0.96, Form("%1.1f fb^{-1} (13 TeV)", luminosity));
+
   c1->Print(Form("plots/eff_%s_%s.pdf", year.c_str(), varForFilename.c_str()));
 }
