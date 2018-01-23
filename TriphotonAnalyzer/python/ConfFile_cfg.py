@@ -35,7 +35,7 @@ process.demo = cms.EDAnalyzer('TriphotonAnalyzer',
     rho = cms.InputTag("fixedGridRhoAll")
 )
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string('0TriphotonOut2017.root')
+process.TFileService = cms.Service("TFileService", fileName = cms.string('TriphotonOut2018.root')
                                                         )
 
 process.p = cms.Path(process.demo)
