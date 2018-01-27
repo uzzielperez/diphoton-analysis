@@ -14,4 +14,5 @@ config.Data.splitting = 'FileBased'
 config.section_('User')
 config.section_('Site')
 #config.Site.blacklist = ['T0', 'T1']
-config.Site.storageSite = 'T2_US_Nebraska'
+#config.Site.storageSite = 'T2_US_Nebraska'
+config.Site.storageSite = 'T3_US_FNALLPC'

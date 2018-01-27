@@ -53,5 +53,6 @@ else:
 
 config.section_("Site")
 #config.Site.storageSite = 'T2_CH_CERN'
-config.Site.storageSite = 'T2_US_Nebraska'
+#config.Site.storageSite = 'T2_US_Nebraska'
+config.Site.storageSite = 'T3_US_FNALLPC'
 config.Site.blacklist = ['T1_RU_JINR', 'T2_US_Vanderbilt']
