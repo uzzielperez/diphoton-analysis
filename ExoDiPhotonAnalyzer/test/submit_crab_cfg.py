@@ -27,8 +27,11 @@ def get_number_of_events(dataset):
       sumevents += idata.get('result').get('value')
     return sumevents
 
+do2017data = False
 do2016data = False
 do2016mc = False
+dospring2016ggmc = False
+do2016ggmc = False
 do2015data = False
 do2015mc = False
 do2015signal = False
@@ -45,6 +48,22 @@ DATASETS = [[]]
 #                   "/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2_ext1-v1/MINIAODSIM"])
 
 
+# diphoton samples (2017 data)
+if do2017data:
+### no good lumisections are present in Run2017A
+##  DATASETS.append(["/DoubleEG/Run2017A-PromptReco-v2/MINIAOD"])
+##  DATASETS.append(["/DoubleEG/Run2017A-PromptReco-v3/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017B-PromptReco-v1/MINIAOD"])
+### re-recos overlap with prompt; do not use for now
+##  DATASETS.append(["/DoubleEG/Run2017B-23Jun2017-v1/MINIAOD"])
+##  DATASETS.append(["/DoubleEG/Run2017B-22Jun2017-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017B-PromptReco-v2/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017C-PromptReco-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017C-PromptReco-v2/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017C-PromptReco-v3/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017D-PromptReco-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017E-PromptReco-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017F-PromptReco-v1/MINIAOD"])
 # diphoton samples (2016 data)
 if do2016data:
 # The /DoubleEG/Run2016B-03Feb2017_ver1-v1 dataset does not contain any lumisections
@@ -69,6 +88,26 @@ if do2016data:
 #  DATASETS.append(["/DoubleEG/Run2016H-PromptReco-v3/MINIAOD"])
 
 # 8_0_X MC
+if dospring2016ggmc:
+  DATASETS.append(["/GGJets_M-60To200_Pt-50_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-200To500_Pt-50_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-500To1000_Pt-50_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"])
+
+if do2016ggmc:
+  DATASETS.append(["/GGJets_M-60To200_Pt-50_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-200To500_Pt-50_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-500To1000_Pt-50_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM"])
+
 if do2016mc:
 #  DATASETS.append(["/GGGJets_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"])
   DATASETS.append(["/DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"])

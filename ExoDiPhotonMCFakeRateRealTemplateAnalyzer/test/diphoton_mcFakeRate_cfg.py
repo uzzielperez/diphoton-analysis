@@ -5,13 +5,15 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing ('python')
 
 options.register('globalTag',
-                 '76X_mcRun2_asymptotic_v12',
+                 #'76X_mcRun2_asymptotic_v12',
+                 '80X_mcRun2_asymptotic_2016_TrancheIV_v8',
                  VarParsing.multiplicity.singleton,
                  VarParsing.varType.string,
                  "Global tag to use when running"
                  )
 options.register('nEventsSample',
-                 999011, # number of events in GGJets_M-500To1000_Pt-50_13TeV-sherpa sample
+                 # 999011, # number of events in GGJets_M-500To1000_Pt-50_13TeV-sherpa 2015 sample
+                 999921,
                  VarParsing.multiplicity.singleton,
                  VarParsing.varType.int,
                  "Total number of events in dataset for event weight calculation."
@@ -48,8 +50,9 @@ process.source = cms.Source(
     fileNames = cms.untracked.vstring(
         #'file:myfile.root'
         #DiPhotonJets
-        'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/0070A877-49D0-E511-877D-B083FED03632.root'
+        #'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/0070A877-49D0-E511-877D-B083FED03632.root'
         #GGJets
+        'root://cmsxrootd.fnal.gov//store/mc/RunIISummer16MiniAODv2/GGJets_M-500To1000_Pt-50_13TeV-sherpa/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/20000/18641080-BCCA-E711-B52C-0025907277FE.root'
         #'root://eoscms.cern.ch//store/mc/RunIIFall15MiniAODv2/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/04B53B17-24D9-E511-B1ED-00259075D72E.root'
         #'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/GGJets_M-500To1000_Pt-50_13TeV-sherpa/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/129F0188-B9D8-E511-9897-00259073E4F6.root'
         #GJets
