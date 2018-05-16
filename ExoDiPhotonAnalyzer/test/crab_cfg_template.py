@@ -21,7 +21,7 @@ config = Configuration()
 
 config.section_("General")
 config.General.requestName = taskname
-config.General.workArea = 'out_crab'
+config.General.workArea = 'out_crab_data'
 config.General.transferLogs = False
 
 config.section_("JobType")
@@ -29,9 +29,13 @@ config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'diphoton-analysis/ExoDiPhotonAnalyzer/test/diphoton_cfg.py'
 config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_' + datasetID + '.root']
 
+
+
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
+config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/Run2016Data'
+
 if "Run2017" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100

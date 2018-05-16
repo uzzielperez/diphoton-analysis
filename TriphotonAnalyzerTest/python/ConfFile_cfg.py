@@ -14,10 +14,12 @@ process.source = cms.Source("PoolSource",
     )
 )
 
-process.demo = cms.EDAnalyzer('TriphotonAnalyzerTest'
-)
+process.demo = cms.EDAnalyzer('TriphotonAnalyzerTest',
+    #rho tag
+    rho = cms.InputTag("fixedGridRhoAll")
+    )
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string('TriphotonAnalyzertest.root')
+process.TFileService = cms.Service("TFileService", fileName = cms.string('TriphotonAnalyzertest_0.root')
                                                             )
 
 process.p = cms.Path(process.demo)

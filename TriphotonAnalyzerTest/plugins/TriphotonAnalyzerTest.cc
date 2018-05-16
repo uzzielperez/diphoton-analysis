@@ -117,7 +117,13 @@ class TriphotonAnalyzerTest : public edm::one::EDAnalyzer<edm::one::SharedResour
 
     // flag to determine if sample is data or MC
     bool isMC_; 
-
+  
+   // rho token
+   edm::EDGetTokenT<double> rhoToken_; 
+   
+   // rho variable
+   double rho_;
+  
    //Comparer (Request to be pushed into parent repo) 
    static bool comparePhotonsByPt(const edm::Ptr<pat::Photon> photon1, const edm::Ptr<pat::Photon> photon2) {
           return(photon1->pt()<=photon2->pt());
@@ -137,7 +143,7 @@ class TriphotonAnalyzerTest : public edm::one::EDAnalyzer<edm::one::SharedResour
 // constructors and destructor
 //
 TriphotonAnalyzerTest::TriphotonAnalyzerTest(const edm::ParameterSet& iConfig)
-
+:rhoToken_(consumes<double> (iConfig.getParameter<edm::InputTag>("rho")))
 {
    //now do what ever initialization is needed
    usesResource("TFileService");
@@ -192,6 +198,15 @@ TriphotonAnalyzerTest::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   ExoDiPhotons::InitEventInfo(fEventInfo);
   ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
   cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
+
+  // ===
+  // RHO
+  // ===
+  
+  //Get rho
+   edm::Handle< double > rhoH;
+   iEvent.getByToken(rhoToken_,rhoH);
+   rho_ = *rhoH;
   
   // =======
   // PHOTONS
@@ -223,10 +238,7 @@ TriphotonAnalyzerTest::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     photon_obj.push_back(pho);
      
     bool passHoverE = ExoDiPhotons::passHadTowerOverEmCut(&(*pho));
-    if(passHoverE) goodPhotons.push_back(pho);
-    
-    //double hOverE = pho->hadTowOverEm();
-    //if(hOverE < 0.05) goodPhotons.push_back(pho);
+    if(passHoverE) goodPhotons.push_back(pho);  
   } // end of photon loop
 
   // sort vector of photons by pt
@@ -234,16 +246,18 @@ TriphotonAnalyzerTest::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   sort(goodPhotons.rbegin(), goodPhotons.rend(), comparePhotonsByPt);
 
   if(goodPhotons.size()>2){
-  //Check Infos
-       cout << "Photon 1: " <<"pt = " << goodPhotons[0]->pt() << "; H/E = " <<  goodPhotons[0]->hadTowOverEm() << endl;
-       cout << "Photon 2: " << "pt = " << goodPhotons[1]->pt() << "; H/E = "<<  goodPhotons[1]->hadTowOverEm() << endl;
-       cout << "Photon 3: " << "pt = " << goodPhotons[2]->pt() << "; H/E = "<<  goodPhotons[2]->hadTowOverEm() << endl;
+  
+  fgoodTriPhotonInfo[0].isSaturated = 0;
+  fgoodTriPhotonInfo[1].isSaturated = 0;
+  fgoodTriPhotonInfo[2].isSaturated = 0;
 
   //Fill Info
   ExoDiPhotons::FillBasicPhotonInfo(fgoodTriPhotonInfo[0],  &(*goodPhotons[0]));
   ExoDiPhotons::FillBasicPhotonInfo(fgoodTriPhotonInfo[1], &(*goodPhotons[1]));
   ExoDiPhotons::FillBasicPhotonInfo(fgoodTriPhotonInfo[2],  &(*goodPhotons[2]));
-   
+  ExoDiPhotons::FillPhotonIDInfo(fgoodTriPhotonInfo[0],  &(*goodPhotons[0]), rho_, fgoodTriPhotonInfo[0].isSaturated);   
+  ExoDiPhotons::FillPhotonIDInfo(fgoodTriPhotonInfo[1],  &(*goodPhotons[1]), rho_, fgoodTriPhotonInfo[1].isSaturated);  
+  ExoDiPhotons::FillPhotonIDInfo(fgoodTriPhotonInfo[2],  &(*goodPhotons[2]), rho_, fgoodTriPhotonInfo[2].isSaturated);     
   // cout << "Photon 1: " <<"pt = " << fgoodTriPhotonInfo[0].pt << "; H/E = " << fgoodTriPhotonInfo[0].hadTowerOverEm << endl;
   // cout << "Photon 2: " << "pt = " <<  fgoodTriPhotonInfo[1].pt << "; H/E = "<<   fgoodTriPhotonInfo[1].hadTowerOverEm << endl;
   // cout << "Photon 3: " << "pt = " << fgoodTriPhotonInfo[2].pt << "; H/E = "<<  fgoodTriPhotonInfo[2].hadTowerOverEm << endl;
