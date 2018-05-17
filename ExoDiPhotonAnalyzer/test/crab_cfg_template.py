@@ -29,12 +29,11 @@ config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'diphoton-analysis/ExoDiPhotonAnalyzer/test/diphoton_cfg.py'
 config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_' + datasetID + '.root']
 
-
-
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
-config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/Run2016Data'
+#config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/Run2016Data'
+config.Data.outLFNDirBase = '/store/user/ciperez/ADDGravToGGSherpa'
 
 if "Run2017" in taskname:
     config.Data.splitting = 'LumiBased'
