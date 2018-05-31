@@ -76,6 +76,7 @@ public:
 private:
   bool is2016Data();
   bool is2017Data();
+  bool is2018Data();
 
   std::vector<sample> m_samples;
   std::string m_variable;
@@ -97,6 +98,7 @@ plot::plot(std::vector<sample> samples, std::string variable, std::string cut, i
 
   if(is2016Data()) luminosity = luminosity2016;
   if(is2017Data()) luminosity = luminosity2017;
+  if(is2018Data()) luminosity = luminosity2018;
 }
 
 // set luminosity to 2016 luminosity if one of the samples in the plot contains 2016 data
@@ -114,6 +116,16 @@ bool plot::is2017Data()
 {
   for(auto isample : m_samples) {
     if(isample.name().find("2017") != std::string::npos) return true;
+  }
+
+  return false;
+}
+
+// set luminosity to 2018 luminosity if one of the samples in the plot contains 2018 data
+bool plot::is2018Data()
+{
+  for(auto isample : m_samples) {
+    if(isample.name().find("2018") != std::string::npos) return true;
   }
 
   return false;

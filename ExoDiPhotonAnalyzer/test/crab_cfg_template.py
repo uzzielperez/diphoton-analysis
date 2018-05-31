@@ -32,11 +32,15 @@ config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_'
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
-if "Run2017" in taskname:
+if "Run2018" in taskname:
+    config.Data.splitting = 'LumiBased'
+    config.Data.unitsPerJob = 10
+    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions18/13TeV/PromptReco/Cert_314472-316271_13TeV_PromptReco_Collisions18_JSON.txt'
+elif "Run2017" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100
     config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/PromptReco/Cert_294927-306126_13TeV_PromptReco_Collisions17_JSON.txt'
-if "Run2016" in taskname:
+elif "Run2016" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100
     if "Prompt" in taskname:

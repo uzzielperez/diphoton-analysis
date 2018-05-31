@@ -11,7 +11,7 @@ def get_number_of_events(dataset):
   """Get number of events for dataset from DAS"""
   query = "file dataset=" + dataset + " | sum(file.nevents)"
 
-  cmd = "das_client --format=json --query='" + query + "'"
+  cmd = "dasgoclient --format=json --query='" + query + "'"
   print "Executing: " + cmd
   data = subprocess.check_output(cmd, shell=True)
 
@@ -20,13 +20,14 @@ def get_number_of_events(dataset):
   else:
     dasjson = data
   status  = dasjson.get('status')
+  sumevents = 0
   if  status == 'ok':
     data = dasjson.get('data')
-    sumevents = 0
     for idata in data:
-      sumevents += idata.get('result').get('value')
-    return sumevents
+      sumevents += idata.get('file')[0]['nevents']
+  return sumevents
 
+do2018data = False
 do2017data = False
 do2016data = False
 do2016mc = False
@@ -48,6 +49,10 @@ DATASETS = [[]]
 #                   "/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2_ext1-v1/MINIAODSIM"])
 
 
+if do2018data:
+  DATASETS.append(["/EGamma/Run2018A-PromptReco-v1/MINIAOD"])
+  DATASETS.append(["/EGamma/Run2018A-PromptReco-v2/MINIAOD"])
+  DATASETS.append(["/EGamma/Run2018B-PromptReco-v1/MINIAOD"])
 # diphoton samples (2017 data)
 if do2017data:
 ### no good lumisections are present in Run2017A

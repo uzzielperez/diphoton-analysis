@@ -24,7 +24,7 @@ int main()
   init();
 
   //  std::vector<std::string> years = {"2015", "2016", "2017"};
-  std::vector<std::string> years = {"2017"};
+  std::vector<std::string> years = {"2018"};
   std::vector<std::string> variables = {"Photon2.pt"};
 
   for(auto iyear : years) {
@@ -71,11 +71,12 @@ void oneHist(const std::string& varname, TChain *ch, const std::string& year)
   denominator += ">>denominator";
 
   TString numeratorCut("isGood && HLT_DoublePhoton60");
-  if(year.find("2017") != std::string::npos) {
-    numeratorCut = "isGood && HLT_DoublePhoton85 && HLT_DoublePhoton33_CaloIdL";
+  if(year.find("2017") != std::string::npos || year.find("2018") != std::string::npos) {
+    //    numeratorCut = "isGood && HLT_DoublePhoton85 && HLT_DoublePhoton33_CaloIdL";
+    numeratorCut = "isGood && HLT_DoublePhoton70 && HLT_DoublePhoton33_CaloIdL";
   }
   ch->Draw(numerator.c_str() , numeratorCut);
-  if(year.find("2017") != std::string::npos) {
+  if(year.find("2017") != std::string::npos || year.find("2018") != std::string::npos) {
     ch->Draw(denominator.c_str(), "isGood && HLT_DoublePhoton33_CaloIdL");
   }
   else {
@@ -108,7 +109,7 @@ void oneHist(const std::string& varname, TChain *ch, const std::string& year)
   lat->SetTextSize(0.038);
   lat->DrawLatexNDC(0.17, 0.96, "#font[62]{CMS} #scale[0.8]{#font[52]{Preliminary}}");
   lat->SetTextFont(42);
-  lat->DrawLatexNDC(0.70, 0.96, Form("%1.1f fb^{-1} (13 TeV)", luminosity));
+  lat->DrawLatexNDC(0.70, 0.96, Form("%1.1f fb^{-1} (13 TeV)", luminosity2018));
 
   c1->Print(Form("plots/eff_%s_%s.pdf", year.c_str(), varForFilename.c_str()));
 }

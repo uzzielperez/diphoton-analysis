@@ -28,6 +28,7 @@ const double luminosityRatio = 35.9/2.62;
 const double luminosityError = 0.023;
 const double luminosity2016Error = 0.026;
 const double luminosity2017 = 38.72;
+const double luminosity2018 = 7.93;
 
 std::map<std::string, TChain*> chains;
 std::map<std::string, int> lineStyles;
@@ -44,7 +45,7 @@ void listSamples(); // list the available samples
 TString filestring(TString sample)
 {
   // paths are defined as symbolic links here
-  TString directory(Form("/afs/cern.ch/user/c/cawest/links/%s", sample.Data()));
+  TString directory(Form("/uscms/homes/c/cawest/links/%s", sample.Data()));
   char resolved_path[PATH_MAX];
 
   // resolve the symbolic link
@@ -60,7 +61,8 @@ TString filestring(TString sample)
 
     // convert AFS path to xrootd path
     TString mypath(resolved_path);
-    mypath.ReplaceAll("/afs/cern.ch/user/c/cawest/eos/cms", "root://eoscms.cern.ch/");
+    //    mypath.ReplaceAll("/afs/cern.ch/user/c/cawest/eos/cms", "root://eoscms.cern.ch/");
+    mypath.ReplaceAll("/uscms/homes/c/cawest", "root://cmseos.fnal.gov/");
     mypath += "/*.root";
     return mypath;
   }
@@ -88,6 +90,15 @@ void init()
 {
   TString treeType("diphoton/fTree");
 
+  TChain *chData2018 = new TChain(treeType);
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180526_200444/0000/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180526_200444/0001/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180526_200444/0002/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180526_200444/0003/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180526_200444/0004/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180526_200444/0005/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180526_200444/0006/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v2__MINIAOD/180526_200502/0000/*.root");
   TChain *chData = new TChain(treeType);
   chData->Add(filestring("DoubleEG__Run2015D"));
   chData->Add(filestring("DoubleEG__Run2015C_25ns"));
@@ -102,14 +113,14 @@ void init()
   // // both -v2 and -v3 should be included
   // chData2016_preREMINIAOD->Add(filestring("DoubleEG__Run2016H-PromptReco-v2"));
   TChain *chData2017 = new TChain(treeType);
-  // chData2017->Add(filestring("DoubleEG__Run2017B-v1"));
-  // chData2017->Add(filestring("DoubleEG__Run2017B-v2"));
+  chData2017->Add(filestring("DoubleEG__Run2017B-v1"));
+  chData2017->Add(filestring("DoubleEG__Run2017B-v2"));
   chData2017->Add(filestring("DoubleEG__Run2017C-v1"));
-  //  chData2017->Add(filestring("DoubleEG__Run2017C-v2"));
-  // chData2017->Add(filestring("DoubleEG__Run2017C-v3"));
-  //  chData2017->Add(filestring("DoubleEG__Run2017D-v1"));
-  //  chData2017->Add(filestring("DoubleEG__Run2017E-v1"));
-  //  chData2017->Add(filestring("DoubleEG__Run2017F-v1"));
+  chData2017->Add(filestring("DoubleEG__Run2017C-v2"));
+  chData2017->Add(filestring("DoubleEG__Run2017C-v3"));
+  chData2017->Add(filestring("DoubleEG__Run2017D-v1"));
+  chData2017->Add(filestring("DoubleEG__Run2017E-v1"));
+  chData2017->Add(filestring("DoubleEG__Run2017F-v1"));
 
   TChain *chData2016 = new TChain(treeType);
   chData2016->Add(filestring("DoubleEG__Run2016B-03Feb2017"));
@@ -140,6 +151,11 @@ void init()
   chGJ->Add(filestring("GJets_HT-200To400"));
   chGJ->Add(filestring("GJets_HT-400To600"));
   chGJ->Add(filestring("GJets_HT-600ToInf"));
+  chGJ->Add(filestring("GJets_HT-40To100_ext1"));
+  chGJ->Add(filestring("GJets_HT-100To200_ext1"));
+  chGJ->Add(filestring("GJets_HT-200To400_ext1"));
+  chGJ->Add(filestring("GJets_HT-400To600_ext1"));
+  chGJ->Add(filestring("GJets_HT-600ToInf_ext1"));
   TChain *chJJ = new TChain(treeType);
   chJJ->Add(filestring("QCD_Pt-20to30_EMEnriched"));
   chJJ->Add(filestring("QCD_Pt-30to50_EMEnriched"));
@@ -191,6 +207,7 @@ void init()
   chains["data_2016"] = chData2016;
   chains["data_2016_preREMINIAOD"] = chData2016_preREMINIAOD;
   chains["data_2017"] = chData2017;
+  chains["data_2018"] = chData2018;
   chains["gg"] = chGG;
   chains["gg_aMC_2015"] = chGG_aMC_2015;
   chains["gg_2016"] = chGG_2016;
@@ -231,6 +248,7 @@ void init()
   prettyName["data_2015"]="Data (2015)";
   prettyName["data_2016"]="Data (2016)";
   prettyName["data_2017"]="Data (2017)";
+  prettyName["data_2018"]="Data (2018)";
   prettyName["data_2016_preREMINIAOD"]="Data (2016, pre-reMINIAOD)";
   prettyName["gg"]="#gamma#gamma";
   prettyName["gg_2016"]="#gamma#gamma (2016)";

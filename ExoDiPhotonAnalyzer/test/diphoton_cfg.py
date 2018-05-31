@@ -54,6 +54,9 @@ if "Run2016" in outName:
 if "Run2017" in outName:
     globalTag = '92X_dataRun2_Prompt_v8'
     jetLabel = "updatedPatJetsUpdatedJEC"
+if "Run2018" in outName:
+    globalTag = '101X_dataRun2_Prompt_v9'
+    jetLabel = "updatedPatJetsUpdatedJEC"
 # override options for MC
 if isMC:
     version = os.getenv("CMSSW_VERSION")
@@ -176,7 +179,7 @@ process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
 if isMC:
     process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton * process.xsec)
 else:
-    if "Run2017" in outName:
+    if "Run2017" in outName or "Run2018" in outName:
         process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.diphoton)
     else:
         process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton)

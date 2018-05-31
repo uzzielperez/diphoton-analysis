@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
   std::string region;
 
   if(argc!=3) {
-    std::cout << "Syntax: basicplots.exe [barrel/endcap] [2015/2016/2017]" << std::endl;
+    std::cout << "Syntax: basicplots.exe [barrel/endcap] [2015/2016/2017/2018]" << std::endl;
     return -1;
   }
   else {
@@ -20,8 +20,8 @@ int main(int argc, char *argv[])
       return -1;
     }
     data_year = argv[2];
-    if(data_year.compare("2015") !=0 && data_year.compare("2016") != 0 && data_year.compare("2017") != 0 ) {
-      std::cout << "Only '2015', '2016', and '2017' are allowed years." << std::endl;
+    if(data_year.compare("2015") !=0 && data_year.compare("2016") != 0 && data_year.compare("2017") != 0 && data_year.compare("2018") != 0 ) {
+      std::cout << "Only '2015', '2016', '2017', and '2018' are allowed years." << std::endl;
       return -1;
     }
   }
@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
 
   std::string kfactor = kfactorString("BB", "R1F1");
   if(endcap) kfactor = kfactorString("BE", "R1F1");
+  //  std::string kfactor = "1.0";
 
   std::string cut("Photon1.pt>125&&Photon2.pt>125 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442 && Diphoton.Minv > 500 && Diphoton.Minv < 1000 && isGood");
   if(endcap) cut = "Photon1.pt>125&&Photon2.pt>125 && Diphoton.Minv > 500 && Diphoton.Minv < 1000 && isGood && ( !(abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442) && ((abs(Photon1.eta)<1.4442 && (abs(Photon2.eta)>1.56&&abs(Photon2.eta)<2.5)) || (abs(Photon2.eta)<1.4442 && (abs(Photon1.eta)>1.56&&abs(Photon1.eta)<2.5))))";
@@ -57,7 +58,7 @@ int main(int argc, char *argv[])
   samples.push_back(gj);
   samples.push_back(gg);
 
-  plot p0(samples, "Minv", cut, nbins/2, xmin, xmax);
+  plot p0(samples, "Minv", cut, 40, 0, 2000);
   plot p1(samples, "Photon1.pt", cut, nbins/2, xmin, xmax/2);
   plot p2(samples, "Photon2.pt", cut, nbins/2, xmin, xmax/2);
   plot p3(samples, "Diphoton.qt", cut, nbins/2, xmin, xmax/2);
@@ -70,6 +71,7 @@ int main(int argc, char *argv[])
   plot p10(samples, "Photon2.eta", cut, nbins/2, -5, 5);
   plot p11(samples, "Photon1.phi", cut, nbins/2, -TMath::Pi(), TMath::Pi());
   plot p12(samples, "Photon2.phi", cut, nbins/2, -TMath::Pi(), TMath::Pi());
+  plot p13(samples, "abs(Diphoton.deltaPhi)", cut, nbins/4, 0, TMath::Pi());
 
   std::string extraFilenameInfo(region);
   extraFilenameInfo += "_";
@@ -88,5 +90,6 @@ int main(int argc, char *argv[])
   p10.output("plots", extraFilenameInfo);
   p11.output("plots", extraFilenameInfo);
   p12.output("plots", extraFilenameInfo);
+  p13.output("plots", extraFilenameInfo);
 
 }
