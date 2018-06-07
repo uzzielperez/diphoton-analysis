@@ -22,6 +22,7 @@ namespace ExoDiPhotons {
     if(sample.Contains("GJets_HT-200To400")) xsec = 2.298e+03;
     if(sample.Contains("GJets_HT-400To600")) xsec = 2.816e+02;
     if(sample.Contains("GJets_HT-600ToInf")) xsec = 9.465e+01;
+    if(sample.Contains("GJets_DR-0p4_HT-400To600")) xsec = 1.560e+04;
     // cross sections and filter efficiencies from MCM
     if(sample.Contains("QCD_Pt-20to30_EMEnriched")) xsec = 557600000*0.0096; // filter efficiency error (MCM): 0.0003
     if(sample.Contains("QCD_Pt-30to50_EMEnriched")) xsec = 136000000*0.073; // filter efficiency error (MCM): 0.015

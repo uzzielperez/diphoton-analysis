@@ -60,7 +60,10 @@ if "Run2018" in outName:
 # override options for MC
 if isMC:
     version = os.getenv("CMSSW_VERSION")
-    if "CMSSW_8" in version:
+    if "CMSSW_9" in version:
+        globalTag = '94X_mc2017_realistic_v14'
+        jetLabel = "slimmedJets"
+    elif "CMSSW_8" in version:
         if "Spring16" in outName:
             globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
         if "Summer16" in outName:
@@ -182,4 +185,4 @@ else:
     if "Run2017" in outName or "Run2018" in outName:
         process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.diphoton)
     else:
-        process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton)
+        process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.diphoton)
