@@ -28,7 +28,8 @@ const double luminosityRatio = 35.9/2.62;
 const double luminosityError = 0.023;
 const double luminosity2016Error = 0.026;
 const double luminosity2017 = 38.72;
-const double luminosity2018 = 7.93;
+//const double luminosity2018 = 7.93;
+const double luminosity2018 = 12.29;
 
 std::map<std::string, TChain*> chains;
 std::map<std::string, int> lineStyles;
@@ -99,6 +100,12 @@ void init()
   chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180526_200444/0005/*.root");
   chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180526_200444/0006/*.root");
   chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v2__MINIAOD/180526_200502/0000/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD_third_json/180604_210901/0000/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v2__MINIAOD_third_json/180604_210920/0000/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAODjson4/180607_215546/0000/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v2__MINIAODjson4/180607_214718/0000/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v3__MINIAODjson4/180607_220932/0000/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018B-PromptReco-v1__MINIAODjson4/180607_214734/0000/*.root");
   TChain *chData = new TChain(treeType);
   chData->Add(filestring("DoubleEG__Run2015D"));
   chData->Add(filestring("DoubleEG__Run2015C_25ns"));
@@ -141,26 +148,41 @@ void init()
   // chGG->Add(filestring("GGJets_M-2000To4000_Pt-50_13TeV-sherpa"));
   // chGG->Add(filestring("GGJets_M-4000To6000_Pt-50_13TeV-sherpa"));
   // chGG->Add(filestring("GGJets_M-6000To8000_Pt-50_13TeV-sherpa"));
-  chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14/180531_184256/0000/*.root");
-  chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v1/180531_184217/0000/*.root");
-  chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v/180531_184235/0000/*.root");
-  chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_/180531_184157/0000/*.root");
-  chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_/180531_182940/0000/*.root");
+  // MINIAODv2
+  // chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14/180531_184256/0000/*.root");
+  // chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v1/180531_184217/0000/*.root");
+  // chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v/180531_184235/0000/*.root");
+  // chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_/180531_184157/0000/*.root");
+  // chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_/180531_182940/0000/*.root");
+
+  // MINIAODv1
+  chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__RunIIFall17MiniAOD-PU2017_94X_mc2017_realistic_v11-v1__MINI/180608_201708/0000/*.root");
+  chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__RunIIFall17MiniAOD-PU2017_94X_mc2017_realistic_v11-v1__MINIAO/180608_201724/0000/*.root");
+  chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__RunIIFall17MiniAOD-PU2017_94X_mc2017_realistic_v11-v1__MINIA/180608_195438/0000/*.root");
+  chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__RunIIFall17MiniAOD-PU2017_94X_mc2017_realistic_v11-v1__MINI/180608_201740/0000/*.root");
+  chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__RunIIFall17MiniAOD-PU2017_94X_mc2017_realistic_v11-v1__MINIAOD/180608_201756/0000/*.root");
+  chGG->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__RunIIFall17MiniAOD-PU2017_94X_mc2017_realistic_v11-v1__MIN/180608_201812/0000/*.root");
   TChain *chGG_aMC_2015 = new TChain(treeType);
   chGG_aMC_2015->Add(filestring("DiPhotonJets_MGG-80toInf_2015"));
   TChain *chGG_2016 = new TChain(treeType);
   chGG_2016->Add(filestring("DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa"));
   TChain *chGJ = new TChain(treeType);
-  chGJ->Add(filestring("GJets_HT-40To100"));
-  chGJ->Add(filestring("GJets_HT-100To200"));
-  chGJ->Add(filestring("GJets_HT-200To400"));
-  chGJ->Add(filestring("GJets_HT-400To600"));
-  chGJ->Add(filestring("GJets_HT-600ToInf"));
-  chGJ->Add(filestring("GJets_HT-40To100_ext1"));
-  chGJ->Add(filestring("GJets_HT-100To200_ext1"));
-  chGJ->Add(filestring("GJets_HT-200To400_ext1"));
-  chGJ->Add(filestring("GJets_HT-400To600_ext1"));
-  chGJ->Add(filestring("GJets_HT-600ToInf_ext1"));
+  chGJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GJets_DR-0p4_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_DR-0p4_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_9/180604_221231/0000/*.root");
+  chGJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc20/180601_192514/0000/*.root");
+  chGJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc20/180601_192534/0000/*.root");
+  chGJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_1core_94X/180601_192552/0000/*.root");
+
+  // chGJ->Add(filestring("GJets_HT-40To100"));
+  // chGJ->Add(filestring("GJets_HT-100To200"));
+  // chGJ->Add(filestring("GJets_HT-200To400"));
+  // chGJ->Add(filestring("GJets_HT-400To600"));
+  // chGJ->Add(filestring("GJets_HT-600ToInf"));
+  // chGJ->Add(filestring("GJets_HT-40To100_ext1"));
+  // chGJ->Add(filestring("GJets_HT-100To200_ext1"));
+  // chGJ->Add(filestring("GJets_HT-200To400_ext1"));
+  // chGJ->Add(filestring("GJets_HT-400To600_ext1"));
+  // chGJ->Add(filestring("GJets_HT-600ToInf_ext1"));
+
   TChain *chJJ = new TChain(treeType);
   chJJ->Add(filestring("QCD_Pt-20to30_EMEnriched"));
   chJJ->Add(filestring("QCD_Pt-30to50_EMEnriched"));

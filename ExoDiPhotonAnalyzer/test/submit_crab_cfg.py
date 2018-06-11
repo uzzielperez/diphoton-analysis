@@ -53,6 +53,7 @@ DATASETS = [[]]
 if do2018data:
   DATASETS.append(["/EGamma/Run2018A-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/EGamma/Run2018A-PromptReco-v2/MINIAOD"])
+  DATASETS.append(["/EGamma/Run2018A-PromptReco-v3/MINIAOD"])
   DATASETS.append(["/EGamma/Run2018B-PromptReco-v1/MINIAOD"])
 # diphoton samples (2017 data)
 if do2017data:
