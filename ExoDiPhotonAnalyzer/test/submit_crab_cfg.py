@@ -29,8 +29,10 @@ def get_number_of_events(dataset):
 
 do2018data = False
 do2017data = False
+do2017datarereco = False
 do2016data = False
 do2017mc = False
+do2017mcv1 = False
 do2016mc = False
 dospring2016ggmc = False
 do2016ggmc = False
@@ -71,6 +73,12 @@ if do2017data:
   DATASETS.append(["/DoubleEG/Run2017D-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2017E-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2017F-PromptReco-v1/MINIAOD"])
+if do2017datarereco:
+  DATASETS.append(["/DoubleEG/Run2017B-31Mar2018-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017C-31Mar2018-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017D-31Mar2018-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017E-31Mar2018-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017F-31Mar2018-v1/MINIAOD"])
 # diphoton samples (2016 data)
 if do2016data:
 # The /DoubleEG/Run2016B-03Feb2017_ver1-v1 dataset does not contain any lumisections
@@ -104,6 +112,20 @@ if do2017mc:
   DATASETS.append(["/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
   DATASETS.append(["/GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
   DATASETS.append(["/GJets_DR-0p4_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+
+if do2017mcv1:
+  DATASETS.append([/"GGJets_M-1000To2000_Pt-50_13TeV-sherpa/RunIIFall17MiniAOD-PU2017_94X_mc2017_realistic_v11-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-200To500_Pt-50_13TeV-sherpa/RunIIFall17MiniAOD-PU2017_94X_mc2017_realistic_v11-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-500To1000_Pt-50_13TeV-sherpa/RunIIFall17MiniAOD-PU2017_94X_mc2017_realistic_v11-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/RunIIFall17MiniAOD-PU2017_94X_mc2017_realistic_v11-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-60To200_Pt-50_13TeV-sherpa/RunIIFall17MiniAOD-PU2017_94X_mc2017_realistic_v11-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/RunIIFall17MiniAOD-PU2017_94X_mc2017_realistic_v11-v1/MINIAODSIM"])
+  DATASETS.append(["/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v2/MINIAODSIM"])
+  DATASETS.append(["/GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v2/MINIAODSIM"])
+  DATASETS.append(["/GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v2/MINIAODSIM"])
+  DATASETS.append(["/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM","/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-1core_94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM"])
+  DATASETS.append(["/GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM"])
+
 
 # 8_0_X MC
 if dospring2016ggmc:

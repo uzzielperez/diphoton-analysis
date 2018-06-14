@@ -39,7 +39,10 @@ if "Run2018" in taskname:
 elif "Run2017" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100
-    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/PromptReco/Cert_294927-306126_13TeV_PromptReco_Collisions17_JSON.txt'
+    if "31Mar2018" in taskname:
+        config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt'
+    else:
+        config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/PromptReco/Cert_294927-306126_13TeV_PromptReco_Collisions17_JSON.txt'
 elif "Run2016" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100
