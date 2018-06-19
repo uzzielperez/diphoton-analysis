@@ -28,7 +28,15 @@ namespace ExoDiPhotons {
     if(sample.Contains("GJets_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 2.298e+03;
     if(sample.Contains("GJets_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 2.816e+02;
     if(sample.Contains("GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 9.465e+01;
-    if(sample.Contains("GJets_DR-0p4_HT-400To600")) xsec = 1.560e+04; *\/ */
+    if(sample.Contains("GJets_DR-0p4_HT-400To600")) xsec = 1.560e+04;
+    // from running GenXsecAnalyzer on full sample
+    if(sample.Contains("QCD_HT200to300_TuneCP5_13TeV-madgraph-pythia8")) xsec = 1.554e+06;
+    if(sample.Contains("QCD_HT300to500_TuneCP5_13TeV-madgraph-pythia8")) xsec = 3.234e+05;
+    if(sample.Contains("QCD_HT500to700_TuneCP5_13TeV-madgraph-pythia8")) xsec = 3.004e+04;
+    if(sample.Contains("QCD_HT700to1000_TuneCP5_13TeV-madgraph-pythia8")) xsec = 6.353e+03;
+    if(sample.Contains("QCD_HT1000to1500_TuneCP5_13TeV-madgraph-pythia8")) xsec = 1.095e+03;
+    if(sample.Contains("QCD_HT1500to2000_TuneCP5_13TeV-madgraph-pythia8")) xsec = 9.913e+01;
+    if(sample.Contains("QCD_HT2000toInf_TuneCP5_13TeV-madgraph-pythia8")) xsec = 2.019e+01;
     // cross sections and filter efficiencies from MCM
     if(sample.Contains("QCD_Pt-20to30_EMEnriched")) xsec = 557600000*0.0096; // filter efficiency error (MCM): 0.0003
     if(sample.Contains("QCD_Pt-30to50_EMEnriched")) xsec = 136000000*0.073; // filter efficiency error (MCM): 0.015
