@@ -52,8 +52,13 @@ if "Run2016" in outName:
     else:
         globalTag = '80X_dataRun2_2016SeptRepro_v4'
 if "Run2017" in outName:
-    globalTag = '92X_dataRun2_Prompt_v8'
-    jetLabel = "updatedPatJetsUpdatedJEC"
+    if "31Mar2018" in outName:
+        isReMINIAOD = True
+        globalTag = '94X_dataRun2_v6'
+        jetLabel = "updatedPatJetsUpdatedJEC"
+    else:
+        globalTag = '92X_dataRun2_Prompt_v8'
+        jetLabel = "updatedPatJetsUpdatedJEC"
 if "Run2018" in outName:
     globalTag = '101X_dataRun2_Prompt_v9'
     jetLabel = "updatedPatJetsUpdatedJEC"
