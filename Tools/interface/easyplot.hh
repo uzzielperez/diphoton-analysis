@@ -102,7 +102,7 @@ plot::plot(std::vector<sample> samples, std::string variable, std::string cut, i
 
   if(is2016Data()) luminosity = luminosity2016;
   if(is2017Data()) luminosity = luminosity2017;
-  if(is2018Data()) luminosity = luminosity2018_newjson;
+  if(is2018Data()) luminosity = luminosity2018;
   if(is2018Data_newjson()) luminosity = luminosity2018_newjson;
 }
 
