@@ -127,11 +127,11 @@ void init()
   chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018B-PromptReco-v2__MINIAOD/180717_210308/0000/*.root");
 
   TChain *chData2018_newjson = new TChain(treeType);
-  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180717_210042/0000/*.root");
-  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v2__MINIAOD/180717_210117/0000/*.root");
-  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v3__MINIAOD/180717_210149/0000/*.root");
-  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018B-PromptReco-v1__MINIAOD/180717_210242/0000/*.root");
-  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018B-PromptReco-v2__MINIAOD/180717_210308/0000/*.root");
+  chData2018_newjson->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180717_210042/0000/*.root");
+  chData2018_newjson->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v2__MINIAOD/180717_210117/0000/*.root");
+  chData2018_newjson->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v3__MINIAOD/180717_210149/0000/*.root");
+  chData2018_newjson->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018B-PromptReco-v1__MINIAOD/180717_210242/0000/*.root");
+  chData2018_newjson->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018B-PromptReco-v2__MINIAOD/180717_210308/0000/*.root");
 
   TChain *chData = new TChain(treeType);
   chData->Add(filestring("DoubleEG__Run2015D"));
