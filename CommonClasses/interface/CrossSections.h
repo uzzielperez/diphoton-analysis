@@ -37,6 +37,9 @@ namespace ExoDiPhotons {
     if(sample.Contains("QCD_HT1000to1500_TuneCP5_13TeV-madgraph-pythia8")) xsec = 1.095e+03;
     if(sample.Contains("QCD_HT1500to2000_TuneCP5_13TeV-madgraph-pythia8")) xsec = 9.913e+01;
     if(sample.Contains("QCD_HT2000toInf_TuneCP5_13TeV-madgraph-pythia8")) xsec = 2.019e+01;
+    if(sample.Contains("WGJets_MonoPhoton_PtG-40to130_TuneCP5_13TeV-madgraph")) xsec = 7.163e-01; // +/ 2.925e-04
+    if(sample.Contains("TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8")) xsec = 4.108e+00; // +/ 8.777e-03
+    if(sample.Contains("DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8")) xsec = 6.491e+03; // +/ 1.045e+01
     // cross sections and filter efficiencies from MCM
     if(sample.Contains("QCD_Pt-20to30_EMEnriched")) xsec = 557600000*0.0096; // filter efficiency error (MCM): 0.0003
     if(sample.Contains("QCD_Pt-30to50_EMEnriched")) xsec = 136000000*0.073; // filter efficiency error (MCM): 0.015
@@ -243,6 +246,10 @@ namespace ExoDiPhotons {
     if(sample.Contains("WToLNu_1J_13TeV-amcatnloFXFX-pythia8")) average = 9.293282e+04*5.323924e-01;
     if(sample.Contains("WToLNu_2J_13TeV-amcatnloFXFX-pythia8")) average = 7.667901e+04*3.120579e-01;
     if(sample.Contains("TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8")) average = 2.115439e+01*3.198633e-01;
+
+    // 2017 samples
+    if(sample.Contains("TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8")) average = (3.29523e+07/4.62334e+06)*3.88374434527382240e-01;
+    if(sample.Contains("DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8")) average = (4.89145e+11/2.74131e+07)*6.77654580082289737e-01;
 
     // from running GenXsecAnalyzer on full sample
     if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) average = 77795.8/98040;
