@@ -6,26 +6,7 @@ the event weight can be computed."""
 import subprocess
 import json
 import os
-
-def get_number_of_events(dataset):
-  """Get number of events for dataset from DAS"""
-  query = "file dataset=" + dataset + " | sum(file.nevents)"
-
-  cmd = "dasgoclient --format=json --query='" + query + "'"
-  print "Executing: " + cmd
-  data = subprocess.check_output(cmd, shell=True)
-
-  if isinstance(data, basestring):
-    dasjson = json.loads(data)
-  else:
-    dasjson = data
-  status  = dasjson.get('status')
-  sumevents = 0
-  if  status == 'ok':
-    data = dasjson.get('data')
-    for idata in data:
-      sumevents += idata.get('file')[0]['nevents']
-  return sumevents
+diphoton_analysis = __import__("diphoton-analysis.CommonClasses.das_utils")
 
 do2018data = False
 do2017data = False
@@ -56,10 +37,15 @@ if do2018data:
   DATASETS.append(["/EGamma/Run2018A-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/EGamma/Run2018A-PromptReco-v2/MINIAOD"])
   DATASETS.append(["/EGamma/Run2018A-PromptReco-v3/MINIAOD"])
+  # note that the 06JUL2018 re-reco should not be used; it is a special purpose re-reco:
+  # https://hypernews.cern.ch/HyperNews/CMS/get/dataopsrequests/24681.html
   DATASETS.append(["/EGamma/Run2018B-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/EGamma/Run2018B-PromptReco-v2/MINIAOD"])
   DATASETS.append(["/EGamma/Run2018C-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/EGamma/Run2018C-PromptReco-v2/MINIAOD"])
+  DATASETS.append(["/EGamma/Run2018C-PromptReco-v3/MINIAOD"])
+  DATASETS.append(["/EGamma/Run2018D-PromptReco-v1/MINIAOD"])
+  DATASETS.append(["/EGamma/Run2018D-PromptReco-v2/MINIAOD"])
 # diphoton samples (2017 data)
 if do2017data:
 ### no good lumisections are present in Run2017A
@@ -105,10 +91,6 @@ if do2016data:
 #  DATASETS.append(["/DoubleEG/Run2016H-PromptReco-v2/MINIAOD"])
 #  DATASETS.append(["/DoubleEG/Run2016H-PromptReco-v3/MINIAOD"])
 
-DATASETS.append(["/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
-DATASETS.append(['/WGJets_MonoPhoton_PtG-40to130_TuneCP5_13TeV-madgraph/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'])
-DATASETS.append(['/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM', '/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'])
-DATASETS.append(['/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM', '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'])
 if do2017mc:
   DATASETS.append(["/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
   DATASETS.append(["/GGJets_M-200To500_Pt-50_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
@@ -128,6 +110,10 @@ if do2017mc:
   DATASETS.append(['/QCD_HT300to500_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
   DATASETS.append(['/QCD_HT500to700_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_old_pmx_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
   DATASETS.append(['/QCD_HT700to1000_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/WGJets_MonoPhoton_PtG-40to130_TuneCP5_13TeV-madgraph/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'])
+  DATASETS.append(['/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM', '/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'])
+  DATASETS.append(['/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM', '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'])
+  DATASETS.append(["/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
   DATASETS.append(['/WGJets_MonoPhoton_PtG-40to130_TuneCP5_13TeV-madgraph/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'])
   DATASETS.append(['/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM', '/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'])
   DATASETS.append(['/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM', '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'])
@@ -501,7 +487,7 @@ for ilist in DATASETS:
   nevents = 0
   print ""
   for ids in ilist:
-    nevents += get_number_of_events(ids)
+    nevents += diphoton_analysis.CommonClasses.das_utils.get_number_of_events(ids)
     print "running nevents is " + str(nevents)
 
   for ids in ilist:
