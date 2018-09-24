@@ -60,7 +60,7 @@ if "Run2017" in outName:
         globalTag = '92X_dataRun2_Prompt_v8'
         jetLabel = "updatedPatJetsUpdatedJEC"
 if "Run2018" in outName:
-    globalTag = '101X_dataRun2_Prompt_v9'
+    globalTag = '101X_dataRun2_Prompt_v11'
     jetLabel = "updatedPatJetsUpdatedJEC"
 # override options for MC
 if isMC:

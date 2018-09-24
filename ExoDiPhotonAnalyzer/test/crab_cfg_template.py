@@ -36,7 +36,7 @@ config.Data.inputDBS = 'global'
 if "Run2018" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 10
-    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions18/13TeV/PromptReco/Cert_314472-319851_13TeV_PromptReco_Collisions18_JSON.txt'
+    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions18/13TeV/PromptReco/Cert_314472-322381_13TeV_PromptReco_Collisions18_JSON.txt'
 elif "Run2017" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100
