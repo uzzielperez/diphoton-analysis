@@ -27,13 +27,14 @@ const double luminosity2016 = 35.9; // fb^-1
 const double luminosityRatio = 35.9/2.62;
 const double luminosityError = 0.023;
 const double luminosity2016Error = 0.026;
-//const double luminosity2017 = 38.72;
 const double luminosity2017 = 41.527;
 //const double luminosity2018 = 7.93;
 //const double luminosity2018 = 10.33;
 //const double luminosity2018 = 14.383;
 //const double luminosity2018 = 16.594;
-const double luminosity2018 = 43.70;
+const double luminosity2018 = 43.70; // full sample
+//const double luminosity2018 = 20.3; // before loss of HEM15/HEM16
+//const double luminosity2018 = 23.4; // after loss of HEM15/HEM16
 const double luminosity2018_newjson = 19.6;
 
 std::map<std::string, TChain*> chains;
@@ -231,9 +232,10 @@ void init()
   chJJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/QCD_HT2000toInf_TuneCP5_13TeV-madgraph-pythia8/crab_QCD_HT2000toInf_TuneCP5_13TeV-madgraph-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_re/180618_121752/0000/*.root");
   chJJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/QCD_HT500to700_TuneCP5_13TeV-madgraph-pythia8/crab_QCD_HT500to700_TuneCP5_13TeV-madgraph-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_old_pmx_94X_mc/180618_121859/0000/*.root");
   chJJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/QCD_HT1000to1500_TuneCP5_13TeV-madgraph-pythia8/crab_QCD_HT1000to1500_TuneCP5_13TeV-madgraph-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_r/180618_121713/0000/*.root");
-  chJJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/QCD_HT200to300_TuneCP5_13TeV-madgraph-pythia8/crab_QCD_HT200to300_TuneCP5_13TeV-madgraph-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_rea/180618_121815/0000/*.root");
   chJJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/QCD_HT700to1000_TuneCP5_13TeV-madgraph-pythia8/crab_QCD_HT700to1000_TuneCP5_13TeV-madgraph-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_re/180618_121925/0000/*.root");
-  chJJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/QCD_HT300to500_TuneCP5_13TeV-madgraph-pythia8/crab_QCD_HT300to500_TuneCP5_13TeV-madgraph-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_rea/180618_121837/0000/*.root");
+  // no 200-300 events pass the selection; 300-500 has only a single high-weight event
+  // chJJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/QCD_HT200to300_TuneCP5_13TeV-madgraph-pythia8/crab_QCD_HT200to300_TuneCP5_13TeV-madgraph-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_rea/180618_121815/0000/*.root");
+  // chJJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/QCD_HT300to500_TuneCP5_13TeV-madgraph-pythia8/crab_QCD_HT300to500_TuneCP5_13TeV-madgraph-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_rea/180618_121837/0000/*.root");
   TChain *chVG = new TChain(treeType);
   chVG->Add(filestring("WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX"));
   chVG->Add(filestring("ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX"));
