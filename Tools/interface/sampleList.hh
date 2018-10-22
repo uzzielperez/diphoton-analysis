@@ -32,10 +32,10 @@ const double luminosity2017 = 41.527;
 //const double luminosity2018 = 10.33;
 //const double luminosity2018 = 14.383;
 //const double luminosity2018 = 16.594;
-const double luminosity2018 = 45.996; // full sample through run 322633
+const double luminosity2018 = 50.98; // full sample through run 324209
 //const double luminosity2018 = 20.3; // before loss of HEM15/HEM16
-//const double luminosity2018 = 45.996-20.3; // after loss of HEM15/HEM16
-const double luminosity2018_newjson = 19.6;
+//const double luminosity2018 = 4.57-20.3; // after loss of HEM15/HEM16
+const double luminosity2018_newjson = 50.98-46.57;
 
 std::map<std::string, TChain*> chains;
 std::map<std::string, int> lineStyles;
@@ -99,7 +99,7 @@ void init()
   TString treeType("diphoton/fTree");
 
   TChain *chData2018_newjson = new TChain(treeType);
-  // last increment removed data; not a pure increment
+  chData2018_newjson->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD324209_sub_323523/181018_194050/*.root");
 
   // skimmed version of chData2018_unskimmed
   TChain *chData2018 = new TChain(treeType);
@@ -113,6 +113,8 @@ void init()
   chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018C-PromptReco-v3__MINIAOD/180919_202355/*.root");
   chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018C-PromptReco-v3__MINIAOD_to322381/180920_173238/*.root");
   chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD_resubmit/180928_191057/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD_323523_minus_322633/181008_184249/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD324209_sub_323523/181018_194050/*.root");
 
   TChain *chData2018_unskimmed = new TChain(treeType);
   chData2018_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180919_202214/0000/*.root");
@@ -143,6 +145,11 @@ void init()
   chData2018_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD_resubmit/180928_191057/0005/*.root");
   chData2018_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD_resubmit/180928_191057/0006/*.root");
   chData2018_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD_resubmit/180928_191057/0007/*.root");
+
+  chData2018_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD_323523_minus_322633/181008_184249/0000/*.root");
+
+  chData2018_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD324209_sub_323523/181018_194050/0000/*.root");
+  chData2018_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD324209_sub_323523/181018_194050/0001/*.root");
 
 
   TChain *chData = new TChain(treeType);
@@ -213,11 +220,6 @@ void init()
   TChain *chGG_2016 = new TChain(treeType);
   chGG_2016->Add(filestring("DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa"));
   TChain *chGJ = new TChain(treeType);
-  // chGJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GJets_DR-0p4_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_DR-0p4_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_9/180604_221231/0000/*.root");
-  // chGJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc20/180601_192514/0000/*.root");
-  // chGJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc20/180601_192534/0000/*.root");
-  // chGJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_1core_94X/180601_192552/0000/*.root");
-
   chGJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIFall17MiniAOD-1core_94X_mc2017_realistic_v/180614_043058/0000/*.root");
   chGJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1_/180614_043037/0000/*.root");
   chGJ->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v2/180614_042933/0000/*.root");
@@ -264,9 +266,12 @@ void init()
   //  chW->Add(filestring("WToLNu_1J_13TeV-amcatnloFXFX"));
   chW->Add(filestring("WToLNu_2J_13TeV-amcatnloFXFX"));
   TChain *chDY = new TChain(treeType);
-  chDY->Add(filestring("DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX"));
+  //  chDY->Add(filestring("DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX"));
+  chDY->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8__Fall17_PU2017_ext1-v1__MINIAODSIM/180719_182748/0000/*.root");
+  chDY->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc201/180719_180041/0000/*.root");
   TChain *chTTG = new TChain(treeType);
-  chTTG->Add(filestring("TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX"));
+  // chTTG->Add(filestring("TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX"));
+
   // sum of minor backgrounds for use in limit setting
   TChain *chOther = new TChain(treeType);
   chOther->Add(chVG);

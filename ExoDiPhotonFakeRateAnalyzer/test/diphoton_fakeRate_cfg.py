@@ -1,12 +1,14 @@
 # runtime options
 
+import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 
 options = VarParsing ('python')
 
 options.register('globalTag',
                  #'76X_dataRun2_v15',
-                 '76X_dataRun2_16Dec2015_v0',
+#                 '76X_dataRun2_16Dec2015_v0',
+                 '101X_dataRun2_Prompt_v11', # for processing 2018 prompt reco
                  VarParsing.multiplicity.singleton,
                  VarParsing.varType.string,
                  "global tag to use when running"
@@ -17,7 +19,6 @@ options.setDefault('maxEvents', 100)
 
 options.parseArguments()
 
-import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("ExoDiPhoton")
 
@@ -34,7 +35,8 @@ process.source = cms.Source(
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
         #'file:myfile.root'
-        'root://cmsxrootd.fnal.gov//store/data/Run2015D/JetHT/MINIAOD/16Dec2015-v1/50000/1E73A933-51A9-E511-B71D-A0369F7F9170.root'
+        'file:/uscms/home/cawest/nobackup/EGamma_Run2018D_0EE575DC-07AF-E811-A83B-02163E017F61.root'
+#        'root://cmsxrootd.fnal.gov//store/data/Run2015D/JetHT/MINIAOD/16Dec2015-v1/50000/1E73A933-51A9-E511-B71D-A0369F7F9170.root'
         )
     )
 
@@ -78,7 +80,8 @@ process.diphoton = cms.EDAnalyzer(
     # photon tag
     photonsMiniAOD = cms.InputTag("slimmedPhotons"),
     # ak4 jets
-    jetsMiniAOD = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
+#    jetsMiniAOD = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
+    jetsMiniAOD = cms.InputTag("slimmedJets"),
     jetPtThreshold = cms.double(30.),
     jetEtaThreshold = cms.double(2.5),
     # rho tag

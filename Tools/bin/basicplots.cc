@@ -33,10 +33,10 @@ int main(int argc, char *argv[])
   if(endcap) kfactor = kfactorString("BE", "R1F1");
   //  std::string kfactor = "1.0";
 
-  // std::string cut("Photon1.pt>125&&Photon2.pt>125 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442 && Diphoton.Minv > 500 && Diphoton.Minv < 1000 && isGood");
-  // if(endcap) cut = "Photon1.pt>125&&Photon2.pt>125 && Diphoton.Minv > 500 && Diphoton.Minv < 1000 && isGood && ( !(abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442) && ((abs(Photon1.eta)<1.4442 && (abs(Photon2.eta)>1.56&&abs(Photon2.eta)<2.5)) || (abs(Photon2.eta)<1.4442 && (abs(Photon1.eta)>1.56&&abs(Photon1.eta)<2.5))))";
-  std::string cut("Photon1.pt>125&&Photon2.pt>125 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442 && Diphoton.Minv > 350 && Diphoton.Minv < 1000 && isGood");
-  if(endcap) cut = "Photon1.pt>125&&Photon2.pt>125 && Diphoton.Minv > 350 && Diphoton.Minv < 1000 && isGood && ( !(abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442) && ((abs(Photon1.eta)<1.4442 && (abs(Photon2.eta)>1.56&&abs(Photon2.eta)<2.5)) || (abs(Photon2.eta)<1.4442 && (abs(Photon1.eta)>1.56&&abs(Photon1.eta)<2.5))))";
+  std::string cut_no_Minv("Photon1.pt>125&&Photon2.pt>125 && abs(Photon1.scEta)<1.4442 && abs(Photon2.scEta)<1.4442 && Diphoton.Minv > 350 && isGood");
+  if(endcap) cut_no_Minv = "Photon1.pt>125&&Photon2.pt>125 && Diphoton.Minv > 350 && isGood && ( !(abs(Photon1.scEta)<1.4442 && abs(Photon2.scEta)<1.4442) && ((abs(Photon1.scEta)<1.4442 && (abs(Photon2.scEta)>1.56&&abs(Photon2.scEta)<2.5)) || (abs(Photon2.scEta)<1.4442 && (abs(Photon1.scEta)>1.56&&abs(Photon1.scEta)<2.5))))";
+  std::string cut(cut_no_Minv);
+  cut += "&& Diphoton.Minv < 1000";
   int nbins=100;
   double xmin=0.0; // GeV
   double xmax=2000; // GeV
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
   samples.push_back(gj);
   samples.push_back(gg);
 
-  plot p0(samples, "Minv", cut, 40, 0, 2000);
+  plot p0(samples, "Minv", cut_no_Minv, 40, 0, 2000);
   plot p1(samples, "Photon1.pt", cut, 40, xmin, xmax/2);
   plot p2(samples, "Photon2.pt", cut, 40, xmin, xmax/2);
   plot p3(samples, "Diphoton.qt", cut, nbins/2, xmin, xmax/2);
@@ -73,11 +73,25 @@ int main(int argc, char *argv[])
   plot p6(samples, "abs(Diphoton.cosThetaStar)", cut, 20, 0, 1);
   plot p7(samples, "nPV", cut, 80, 0, 80);
   plot p8(samples, "Diphoton.deltaR", cut, 60, 0, 6);
-  plot p9(samples, "Photon1.eta", cut, nbins/2, -5, 5);
-  plot p10(samples, "Photon2.eta", cut, nbins/2, -5, 5);
+  plot p9(samples, "Photon1.scEta", cut, nbins/2, -5, 5);
+  plot p10(samples, "Photon2.scEta", cut, nbins/2, -5, 5);
   plot p11(samples, "Photon1.phi", cut, nbins/2, -TMath::Pi(), TMath::Pi());
   plot p12(samples, "Photon2.phi", cut, nbins/2, -TMath::Pi(), TMath::Pi());
   plot p13(samples, "abs(Diphoton.deltaPhi)", cut, nbins/4, 0, TMath::Pi());
+  plot p14(samples, "Photon1.sigmaIphiIphi5x5", cut, nbins/2, 0, 0.04);
+  plot p15(samples, "Photon2.sigmaIphiIphi5x5", cut, nbins/2, 0, 0.04);
+  plot p16(samples, "Photon1.r9_5x5", cut, nbins/2, 0., 1.0);
+  plot p17(samples, "Photon2.r9_5x5", cut, nbins/2, 0., 1.0);
+  plot p18(samples, "Photon1.chargedHadIso03", cut, nbins/2, 0., 10);
+  plot p19(samples, "Photon2.chargedHadIso03", cut, nbins/2, 0., 10);
+  plot p20(samples, "Photon1.hadTowerOverEm", cut, nbins/2, 0., 1.);
+  plot p21(samples, "Photon2.hadTowerOverEm", cut, nbins/2, 0., 1.);
+  plot p22(samples, "Photon1.hadronicOverEm", cut, nbins/2, 0., 1.);
+  plot p23(samples, "Photon2.hadronicOverEm", cut, nbins/2, 0., 1.);
+  plot p24(samples, "Photon1.corPhotonIso03", cut, nbins/2, -5., 5.);
+  plot p25(samples, "Photon2.corPhotonIso03", cut, nbins/2, -5., 5.);
+  plot p26(samples, "Photon1.rhoCorPhotonIso03", cut, nbins/2, -5., 5.);
+  plot p27(samples, "Photon2.rhoCorPhotonIso03", cut, nbins/2, -5., 5.);
 
   std::string extraFilenameInfo(region);
   extraFilenameInfo += "_";
@@ -97,5 +111,19 @@ int main(int argc, char *argv[])
   p11.output("plots", extraFilenameInfo);
   p12.output("plots", extraFilenameInfo);
   p13.output("plots", extraFilenameInfo);
+  p14.output("plots", extraFilenameInfo);
+  p15.output("plots", extraFilenameInfo);
+  p16.output("plots", extraFilenameInfo);
+  p17.output("plots", extraFilenameInfo);
+  p18.output("plots", extraFilenameInfo);
+  p19.output("plots", extraFilenameInfo);
+  p20.output("plots", extraFilenameInfo);
+  p21.output("plots", extraFilenameInfo);
+  p22.output("plots", extraFilenameInfo);
+  p23.output("plots", extraFilenameInfo);
+  p24.output("plots", extraFilenameInfo);
+  p25.output("plots", extraFilenameInfo);
+  p26.output("plots", extraFilenameInfo);
+  p27.output("plots", extraFilenameInfo);
 
 }

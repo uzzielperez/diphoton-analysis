@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[])
 {
-  const TString selection("HLT_DoublePhoton70");
+  const TString selection("HLT_DoublePhoton70 && Minv<1000");
   TString input, output;
 
   if(argc!=3) {

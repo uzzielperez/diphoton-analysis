@@ -9,6 +9,7 @@
 #include "THStack.h"
 #include "TLatex.h"
 #include "TLegend.h"
+#include "TLine.h"
 #include "TString.h"
 
 #include <string>
@@ -150,7 +151,17 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
 {
   gStyle->SetErrorX(0.5);
 
-  TCanvas *c = new TCanvas;
+  TCanvas *c = new TCanvas(m_variable.c_str(), m_variable.c_str(), 600, (int)((1./0.7)*600));
+  TPad *pad1 = new TPad("pad1", "pad1", 0, 0.3, 1,1);
+  pad1->SetBottomMargin(0);
+  pad1->Draw();
+
+  TPad *pad2 = new TPad("pad2", "pad2", 0, 0, 1,0.3);
+  pad2->SetBottomMargin(0.25);
+  pad2->SetTopMargin(0);
+  pad2->Draw();
+
+  pad1->cd();
   std::vector<TH1D*> hists;
 
   THStack *hs = new THStack("hs", "hs");
@@ -230,10 +241,26 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
   sum->SetFillStyle(3344);
   sum->Draw("E2,same");
 
+  TH1D *ratio = 0;
   // draw data histogram on top
   for(auto ihist : hists) {
     TString name(ihist->GetName());
-    if(name.Contains("data")) ihist->Draw("e,same");
+    if(name.Contains("data")) {
+      ihist->Draw("e,same");
+      ratio = dynamic_cast<TH1D*>(ihist->Clone("ratio"));
+      ratio->GetYaxis()->SetTitle("Ratio");
+      for(int i=0; i<=ratio->GetNbinsX(); i++) {
+	double content = sum->GetBinContent(i);
+	if(content != 0) {
+	  ratio->SetBinContent(i, ratio->GetBinContent(i)/content);
+	  ratio->SetBinError(i, ratio->GetBinError(i)/content);
+	}
+	else {
+	  ratio->SetBinContent(i, 0.0);
+	  ratio->SetBinError(i, 0.0);
+	}
+      }
+    }
   }
   
   leg->Draw();
@@ -246,9 +273,19 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
   lat->SetTextFont(42);
   lat->DrawLatexNDC(0.70, 0.96, Form("%1.1f fb^{-1} (13 TeV)", luminosity));
 
+  // draw ratio
+  pad2->cd();
+  ratio->GetXaxis()->SetTitle(reformat(m_variable.c_str()));
+  ratio->GetYaxis()->SetRangeUser(0., 2.1);
+  ratio->Draw();
+  TLine *line = new TLine(ratio->GetXaxis()->GetXmin(), 1.0, ratio->GetXaxis()->GetXmax(), 1.0);
+  line->SetLineColor(kRed);
+  line->SetLineStyle(kDashed);
+  line->Draw();
+
   c->Print(Form("%s/%s_%s_lin.pdf", outputDirectory.c_str(), variable().c_str(), extraString.c_str()));
   c->Print(Form("%s/%s_%s.root", outputDirectory.c_str(), variable().c_str(), extraString.c_str()));
-  c->SetLogy();
+  pad1->SetLogy();
   c->Print(Form("%s/%s_%s_log.pdf", outputDirectory.c_str(), variable().c_str(), extraString.c_str()));
 }
 
