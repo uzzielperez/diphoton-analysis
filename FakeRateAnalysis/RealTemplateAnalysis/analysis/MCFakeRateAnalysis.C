@@ -3,9 +3,14 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include <map>
 
-void MCFakeRateAnalysis::Loop()
+void MCFakeRateAnalysis::Loop(int year)
 {
+  std::map<int, TString> cmssw_version;
+  cmssw_version[2016] = "76X";
+  cmssw_version[2017] = "94X";
+
 //   In a ROOT session, you can do:
 //      root> .L MCFakeRateAnalysis.C
 //      root> MCFakeRateAnalysis t
@@ -42,10 +47,10 @@ void MCFakeRateAnalysis::Loop()
   cout << "\nUsing sample: " << sample << endl;
   
   TString filename = "";
-  if (sample == "DiPhotonJets") filename = "diphoton_fake_rate_real_templates_DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "GGJets")       filename = "diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
-  if (sample == "GJets")        filename = "diphoton_fake_rate_real_templates_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "all")          filename = "diphoton_fake_rate_real_templates_all_GGJets_GJets_76X_MiniAOD_histograms.root";
+  if (sample == "DiPhotonJets") filename = "diphoton_fake_rate_real_templates_DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8_" + cmssw_version[year] + "_MiniAOD_histograms.root";
+  if (sample == "GGJets")       filename = "diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version[year] + "_MiniAOD_histograms.root";
+  if (sample == "GJets")        filename = "diphoton_fake_rate_real_templates_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version[year] + "_MiniAOD_histograms.root";
+  if (sample == "all")          filename = "diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[year] + "_MiniAOD_histograms.root";
   
   cout << "\nOutput filename: " << filename << endl << endl;
   
@@ -124,6 +129,8 @@ void MCFakeRateAnalysis::Loop()
     // reject beam halo
     //if (Event_beamHaloIDTight2015) continue;
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
+    // uncomment me?
+    // if (Photon_r9_5x5 < 0.8) continue; // r9 cut for resonant sync
 
     // evaluate jet trigger groupings
     // bool singleJetFired = TriggerBit_HLT_AK8DiPFJet280_200_TrimMass30_BTagCSV0p45_v3==1 || TriggerBit_HLT_AK8PFJet360_TrimMass30_v3==1 || TriggerBit_HLT_CaloJet500_NoJetID_v2==1 || TriggerBit_HLT_DiCaloJetAve140_v1==1 || TriggerBit_HLT_DiCaloJetAve200_v1==1 || TriggerBit_HLT_DiCaloJetAve260_v1==1 || TriggerBit_HLT_DiCaloJetAve320_v1==1 || TriggerBit_HLT_DiCaloJetAve400_v1==1 || TriggerBit_HLT_DiCaloJetAve40_v1==1 || TriggerBit_HLT_DiCaloJetAve500_v1==1 || TriggerBit_HLT_DiCaloJetAve60_v1==1 || TriggerBit_HLT_DiCaloJetAve80_v1==1 || TriggerBit_HLT_DiPFJetAve100_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve140_v2==1 || TriggerBit_HLT_DiPFJetAve160_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve200_v2==1 || TriggerBit_HLT_DiPFJetAve220_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve260_v2==1 || TriggerBit_HLT_DiPFJetAve300_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve30_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve320_v2==1 || TriggerBit_HLT_DiPFJetAve400_v2==1 || TriggerBit_HLT_DiPFJetAve40_v2==1 || TriggerBit_HLT_DiPFJetAve500_v2==1 || TriggerBit_HLT_DiPFJetAve60_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve60_v2==1 || TriggerBit_HLT_DiPFJetAve80_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve80_v2==1 || TriggerBit_HLT_PFJet140_v4==1 || TriggerBit_HLT_PFJet200_v4==1 || TriggerBit_HLT_PFJet260_v4==1 || TriggerBit_HLT_PFJet320_v4==1 || TriggerBit_HLT_PFJet400_v4==1 || TriggerBit_HLT_PFJet40_v4==1 || TriggerBit_HLT_PFJet450_v4==1 || TriggerBit_HLT_PFJet500_v4==1 || TriggerBit_HLT_PFJet60_v4==1 || TriggerBit_HLT_PFJet80_v4==1;
