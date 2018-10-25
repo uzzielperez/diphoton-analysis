@@ -123,8 +123,13 @@ void diphoton_chain_looper(TString run, TString dataset) {
   FakeRateAnalysis ptl(chain);
 
   // loop over all entries of our tree
-  ptl.Loop(0, run, dataset);
-
+  if(dataset=="jetht") {
+    // use matching to leading jet
+    ptl.Loop(1, run, dataset);
+  }
+  else {
+    ptl.Loop(0, run, dataset);
+  }
   // stop stopwatch
   sw.Stop();
 

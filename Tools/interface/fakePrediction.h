@@ -4,7 +4,8 @@
 // needed to get default implementations from base class
 #define ntupleAnalyzerBase_cxx
 
-#include "ntupleAnalyzerBase.h"
+//#include "ntupleAnalyzerBase.h"
+#include "ntupleAnalyzerBase2018.h"
 
 // this is not defined in default MakeClass headers
 // and so it needs a definition to avoid compilation errors
@@ -17,7 +18,7 @@ class fakePrediction : public ntupleAnalyzerBase {
 
  public:
   using ntupleAnalyzerBase::ntupleAnalyzerBase;
-  void Loop();
+  void Loop(int year);
   void setIsMC(bool mc) { isMC = mc; };
   bool isMC;
 

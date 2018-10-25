@@ -34,11 +34,11 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   std::map<TString, TString> cmssw_version;
   cmssw_version["2016"] = "76X";
   cmssw_version["2017"] = "94X";
-  cmssw_version["2017B"] = "94X";
-  cmssw_version["2017C"] = "94X";
-  cmssw_version["2017D"] = "94X";
-  cmssw_version["2017E"] = "94X";
-  cmssw_version["2017F"] = "94X";
+  cmssw_version["Run2017B"] = "94X";
+  cmssw_version["Run2017C"] = "94X";
+  cmssw_version["Run2017D"] = "94X";
+  cmssw_version["Run2017E"] = "94X";
+  cmssw_version["Run2017F"] = "94X";
   cmssw_version["2018"] = "94X"; // 2018 analysis temporarily still uses 2017 MC
   cmssw_version["Run2018A"] = "94X"; // 2018 analysis temporarily still uses 2017 MC
   cmssw_version["Run2018B"] = "94X"; // 2018 analysis temporarily still uses 2017 MC
@@ -69,7 +69,10 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   //  if (sample == "data")      data_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
   //  if (sample == "data")      data_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_UNKNOWN_newDenomDef.root";
   if (sample == "jetht" or sample == "doublemuon") {
-    data_filename = "../../DataFakeRateAnalysis/analysis/" + sample + "_fakerate_" + era + "_newDenomDef.root";
+    TString matching;
+    bool useJetMatching = false;
+    if(sample == "jetht" and useJetMatching) matching = "_matchedtoLeadingJet";
+    data_filename = "../../DataFakeRateAnalysis/analysis/" + sample + "_fakerate_" + era + matching + "_newDenomDef.root";
   }
   if (sample == "mc")        data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_all_samples_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "mc_QCD")    data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";

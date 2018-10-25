@@ -45,7 +45,7 @@ void fakeRateCalculation(TString sample, TString templateVariable, TString era)
   std::vector<int> ptBinArray({ 50, 70, 90, 110, 130, 150});
   // With higher statistics in JetHT sample, additional bins can be used
   // but this is disabled temporarily
-  if(sample=="jetht" || sample == "doublemuon") {
+  if(sample=="jetht" || (sample == "doublemuon" && !era.Contains("2016"))) {
     ptBinArray.push_back(200);
     ptBinArray.push_back(250);
     ptBinArray.push_back(300);
@@ -298,6 +298,7 @@ void fakeRateCalculation(TString sample, TString templateVariable, TString era)
     // fakeRatesEB.at(j)->SetTitle("EB");
     fakeRatesEB.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
     fakeRatesEB.at(j)->GetYaxis()->SetTitle("fake rate");
+    fakeRatesEB.at(j)->GetYaxis()->SetRangeUser(0.0, 0.25);
     fakeRatesEB.at(j)->GetYaxis()->SetTitleOffset(1.6);
 
     TLatex *t_label = new TLatex();
@@ -333,6 +334,7 @@ void fakeRateCalculation(TString sample, TString templateVariable, TString era)
     // fakeRatesEE.at(j)->SetTitle("EE");
     fakeRatesEE.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
     fakeRatesEE.at(j)->GetYaxis()->SetTitle("fake rate");
+    fakeRatesEE.at(j)->GetYaxis()->SetRangeUser(0.0, 0.6);
     fakeRatesEE.at(j)->GetYaxis()->SetTitleOffset(1.6);
 
     TLatex *t_label = new TLatex();
