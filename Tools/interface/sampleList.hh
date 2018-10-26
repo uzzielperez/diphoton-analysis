@@ -28,14 +28,10 @@ const double luminosityRatio = 35.9/2.62;
 const double luminosityError = 0.023;
 const double luminosity2016Error = 0.026;
 const double luminosity2017 = 41.527;
-//const double luminosity2018 = 7.93;
-//const double luminosity2018 = 10.33;
-//const double luminosity2018 = 14.383;
-//const double luminosity2018 = 16.594;
-const double luminosity2018 = 50.98; // full sample through run 324209
+const double luminosity2018 = 52.73; // full sample through run 324420
 //const double luminosity2018 = 20.3; // before loss of HEM15/HEM16
-//const double luminosity2018 = 4.57-20.3; // after loss of HEM15/HEM16
-const double luminosity2018_newjson = 50.98-46.57;
+//const double luminosity2018 = 52.73-20.3; // after loss of HEM15/HEM16
+const double luminosity2018_newjson = 52.73-50.98;
 
 std::map<std::string, TChain*> chains;
 std::map<std::string, int> lineStyles;
@@ -99,7 +95,7 @@ void init()
   TString treeType("diphoton/fTree");
 
   TChain *chData2018_newjson = new TChain(treeType);
-  chData2018_newjson->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD324209_sub_323523/181018_194050/*.root");
+  chData2018_newjson->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD_324420_sub_324209/181025_162725/*.root");
 
   // skimmed version of chData2018_unskimmed
   TChain *chData2018 = new TChain(treeType);
@@ -115,6 +111,7 @@ void init()
   chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD_resubmit/180928_191057/*.root");
   chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD_323523_minus_322633/181008_184249/*.root");
   chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD324209_sub_323523/181018_194050/*.root");
+  chData2018->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD_324420_sub_324209/181025_162725/*.root");
 
   TChain *chData2018_unskimmed = new TChain(treeType);
   chData2018_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180919_202214/0000/*.root");
@@ -151,6 +148,7 @@ void init()
   chData2018_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD324209_sub_323523/181018_194050/0000/*.root");
   chData2018_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD324209_sub_323523/181018_194050/0001/*.root");
 
+  chData2018_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD_324420_sub_324209/181025_162725/0000/*.root");
 
   TChain *chData = new TChain(treeType);
   chData->Add(filestring("DoubleEG__Run2015D"));
@@ -175,12 +173,23 @@ void init()
   chData2017Prompt->Add(filestring("DoubleEG__Run2017E-v1"));
   chData2017Prompt->Add(filestring("DoubleEG__Run2017F-v1"));
 
+  TChain *chData2017_unskimmed = new TChain(treeType);
+  chData2017_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017B-31Mar2018-v1__MINIAOD/180614_045620/0000/*.root");
+  chData2017_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017C-31Mar2018-v1__MINIAOD/180614_042811/0000/*.root");
+  chData2017_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017D-31Mar2018-v1__MINIAOD/180614_042828/0000/*.root");
+  chData2017_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017E-31Mar2018-v1__MINIAOD/180614_042850/0000/*.root");
+  chData2017_unskimmed->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017F-31Mar2018-v1__MINIAOD/180615_235936/0000/*.root");
+
   TChain *chData2017 = new TChain(treeType);
-  chData2017->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017B-31Mar2018-v1__MINIAOD/180614_045620/0000/*.root");
-  chData2017->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017C-31Mar2018-v1__MINIAOD/180614_042811/0000/*.root");
-  chData2017->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017D-31Mar2018-v1__MINIAOD/180614_042828/0000/*.root");
-  chData2017->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017E-31Mar2018-v1__MINIAOD/180614_042850/0000/*.root");
-  chData2017->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017F-31Mar2018-v1__MINIAOD/180615_235936/0000/*.root");
+  chData2017->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017B-31Mar2018-v1__MINIAOD/180614_045620/*.root");
+  chData2017->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017C-31Mar2018-v1__MINIAOD/180614_042811/*.root");
+  chData2017->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017D-31Mar2018-v1__MINIAOD/180614_042828/*.root");
+  chData2017->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017E-31Mar2018-v1__MINIAOD/180614_042850/*.root");
+  chData2017->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017F-31Mar2018-v1__MINIAOD/180615_235936/*.root");
+
+  TChain *chData2017_2018 = new TChain(treeType);
+  chData2017_2018->Add(chData2017);
+  chData2017_2018->Add(chData2018);
 
   TChain *chData2016 = new TChain(treeType);
   chData2016->Add(filestring("DoubleEG__Run2016B-03Feb2017"));
@@ -296,14 +305,17 @@ void init()
   chGG70->Add(filestring("GG_M-4000To8000_Pt-70_13TeV-sherpa"));
   chGG70->Add(filestring("GG_M-8000To13000_Pt-70_13TeV-sherpa"));
 
-  std::vector<std::string> sampleNames = {"data", "data_2015", "data_2016", "data_2017", "data_2018", "data_2018_newjson", "gg", "gj", "jj", "vg", "w", "dy", "ttg", "gg70"};
+  std::vector<std::string> sampleNames = {"data", "data_2015", "data_2016", "data_2017", "data_2018", "data_2018_newjson", "data_2017_2018", "gg", "gj", "jj", "vg", "w", "dy", "ttg", "gg70"};
 
   chains["data_2015"] = chData;
   chains["data_2016"] = chData2016;
   chains["data_2016_preREMINIAOD"] = chData2016_preREMINIAOD;
   chains["data_2017"] = chData2017;
+  chains["data_2017_unskimed"] = chData2017_unskimmed;
   chains["data_2018"] = chData2018;
+  chains["data_2018_unskimed"] = chData2018_unskimmed;
   chains["data_2018_newjson"] = chData2018_newjson;
+  chains["data_2017_2018"] = chData2017_2018;
   chains["gg"] = chGG;
   chains["gg_aMC_2015"] = chGG_aMC_2015;
   chains["gg_2016"] = chGG_2016;
@@ -346,6 +358,9 @@ void init()
   prettyName["data_2016"]="Data (2016)";
   prettyName["data_2017"]="Data (2017)";
   prettyName["data_2018"]="Data (2018)";
+  prettyName["data_2017_2018"]="Data (2017+2018)";
+  prettyName["data_2017_unskimmed"]="Data (2017)";
+  prettyName["data_2018_unskimmed"]="Data (2018)";
   prettyName["data_2018_newjson"]="Data (2018, new JSON)";
   prettyName["data_2016_preREMINIAOD"]="Data (2016, pre-reMINIAOD)";
   prettyName["gg"]="#gamma#gamma";

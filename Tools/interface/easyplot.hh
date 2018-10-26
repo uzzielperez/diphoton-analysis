@@ -82,6 +82,7 @@ private:
   bool is2017Data();
   bool is2018Data();
   bool is2018Data_newjson();
+  bool is2017_2018Data();
 
   std::vector<sample> m_samples;
   std::string m_variable;
@@ -105,6 +106,7 @@ plot::plot(std::vector<sample> samples, std::string variable, std::string cut, i
   if(is2017Data()) luminosity = luminosity2017;
   if(is2018Data()) luminosity = luminosity2018;
   if(is2018Data_newjson()) luminosity = luminosity2018_newjson;
+  if(is2017_2018Data()) luminosity = luminosity2017+luminosity2018;
 }
 
 // set luminosity to 2016 luminosity if one of the samples in the plot contains 2016 data
@@ -146,6 +148,17 @@ bool plot::is2018Data_newjson()
 
   return false;
 }
+
+// set luminosity to 2018 luminosity if one of the samples in the plot contains 2018 data
+bool plot::is2017_2018Data()
+{
+  for(auto isample : m_samples) {
+    if(isample.name().find("2017_2018") != std::string::npos) return true;
+  }
+
+  return false;
+}
+
 
 void plot::output(const std::string& outputDirectory, const std::string& extraString)
 {

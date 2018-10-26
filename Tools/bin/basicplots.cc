@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
   std::string region;
 
   if(argc!=3) {
-    std::cout << "Syntax: basicplots.exe [barrel/endcap] [2015/2016/2017/2018/2018_newjson]" << std::endl;
+    std::cout << "Syntax: basicplots.exe [barrel/endcap] [2015/2016/2017/2018/2017_2018/2018_newjson]" << std::endl;
     return -1;
   }
   else {
@@ -21,8 +21,8 @@ int main(int argc, char *argv[])
     }
     data_year = argv[2];
     if(data_year.compare("2015") !=0 && data_year.compare("2016") != 0 && data_year.compare("2017") != 0
-       && data_year.compare("2018") != 0 && data_year.compare("2018_newjson") != 0  ) {
-      std::cout << "Only '2015', '2016', '2017', and '2018' are allowed years, plus '2018_newjson' for the data from the latest JSON." << std::endl;
+       && data_year.compare("2018") != 0 && data_year.compare("2017_2018") && data_year.compare("2018_newjson") != 0  ) {
+      std::cout << "Only '2015', '2016', '2017', '2018' and '2017_2018' are allowed years, plus '2018_newjson' for the data from the latest JSON." << std::endl;
       return -1;
     }
   }
@@ -90,8 +90,10 @@ int main(int argc, char *argv[])
   plot p23(samples, "Photon2.hadronicOverEm", cut, nbins/2, 0., 1.);
   plot p24(samples, "Photon1.corPhotonIso03", cut, nbins/2, -5., 5.);
   plot p25(samples, "Photon2.corPhotonIso03", cut, nbins/2, -5., 5.);
-  plot p26(samples, "Photon1.rhoCorPhotonIso03", cut, nbins/2, -5., 5.);
-  plot p27(samples, "Photon2.rhoCorPhotonIso03", cut, nbins/2, -5., 5.);
+  plot p26(samples, "Photon1.rhoCorPhotonIso03", cut, nbins/2, 0., 5.);
+  plot p27(samples, "Photon2.rhoCorPhotonIso03", cut, nbins/2, 0., 5.);
+  plot p28(samples, "Photon1.sigmaIetaIeta", cut, nbins, 0., region=="barrel" ? 0.02 : 0.04);
+  plot p29(samples, "Photon2.sigmaIetaIeta", cut, nbins, 0., region=="barrel" ? 0.02 : 0.04);
 
   std::string extraFilenameInfo(region);
   extraFilenameInfo += "_";
@@ -125,5 +127,7 @@ int main(int argc, char *argv[])
   p25.output("plots", extraFilenameInfo);
   p26.output("plots", extraFilenameInfo);
   p27.output("plots", extraFilenameInfo);
+  p28.output("plots", extraFilenameInfo);
+  p29.output("plots", extraFilenameInfo);
 
 }
