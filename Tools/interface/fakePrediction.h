@@ -18,7 +18,7 @@ class fakePrediction : public ntupleAnalyzerBase {
 
  public:
   using ntupleAnalyzerBase::ntupleAnalyzerBase;
-  void Loop(int year);
+  void Loop(int year, const std::string&);
   void setIsMC(bool mc) { isMC = mc; };
   bool isMC;
 

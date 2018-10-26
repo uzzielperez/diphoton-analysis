@@ -23,17 +23,21 @@ TF1* getFakeRateFunction(const std::string& isolation, const std::string& region
 
 int main(int argc, char *argv[])
 {
-  std::string source;
+  std::string source, dataset;
 
-  if(argc!=2) {
-    std::cout << "Syntax: getFakeRates.exe [2015/2016/2017/2018]" << std::endl;
+  if(argc!=3) {
+    std::cout << "Syntax: getFakeRates.exe [2015/2016/2017/2018] [jetht/doublemuon]" << std::endl;
     return -1;
   }
   else {
     source = argv[1];
     if(source!="2015" and source!="2016" and source!="2017" and source!="2018") {
-      std::cout << "Only '2015', '2016', '2017' and '2018' are allowed input parameters. " << std::endl;
+      std::cout << "Only '2015', '2016', '2017' and '2018' are allowed input parameters." << std::endl;
       return -1;
+    }
+    dataset = argv[2];
+    if(dataset!="jetht" && dataset!="doublemuon") {
+      std::cout << "Only 'jetht' and 'doublemuon' are allowed datasets." << std::endl;
     }
   }
 
@@ -47,8 +51,8 @@ int main(int argc, char *argv[])
   }
   const std::string cmssw_base_string(cmssw_base);
   const std::string directory("/src/diphoton-analysis/FakeRateAnalysis/RooFitTemplateFitting/analysis/");
-  std::string fakeRateFile(cmssw_base_string + directory + "fakeRatePlots_doublemuon_" + source + ".root");
-  std::string fakeRateOutputFile(cmssw_base_string + "/src/diphoton-analysis/Tools/data/fakeRateFunctions_" + source + ".root");
+  std::string fakeRateFile(cmssw_base_string + directory + "fakeRatePlots_" + dataset + "_" + source + ".root");
+  std::string fakeRateOutputFile(cmssw_base_string + "/src/diphoton-analysis/Tools/data/fakeRateFunctions_" + source + "_" + dataset +  ".root");
 
   std::vector<std::pair<int, int> > isolationRanges;
   isolationRanges.push_back(std::pair<int, int>(5, 10));

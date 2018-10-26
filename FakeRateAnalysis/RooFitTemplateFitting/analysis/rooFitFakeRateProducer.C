@@ -62,7 +62,12 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   cout << "Using " << sample << ", " << templateVariable << ", " << etaBin << ", pt " << ptBin << ", " << sideband.first << " < sideband < " << sideband.second << endl;
   
   // for real templates (same for data and mc)
-  TFile *historealmcfile = TFile::Open("../../RealTemplateAnalysis/analysis/diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + "_MiniAOD_histograms.root");
+  TString extra("");
+  if(era.Contains("2016")) {
+    if(sample == "jetht") extra = "_JetHT";
+    if(sample == "doublemuon") extra = "_DoubleMuon";
+  }
+  TFile *historealmcfile = TFile::Open("../../RealTemplateAnalysis/analysis/diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + "_MiniAOD_histograms" + extra + ".root");
   
   // for numerator, fake templates, and denominator (choose data or mc)
   TString data_filename = "";

@@ -7,11 +7,11 @@
 
 int main(int argc, char *argv[])
 {
-  std::string source;
+  std::string source, dataset;
 
   int year = 0;
-  if(argc!=2) {
-    std::cout << "Syntax: getFakeRatePrediction.exe [data_2017/data_2018/mc]" << std::endl;
+  if(argc!=3) {
+    std::cout << "Syntax: getFakeRatePrediction.exe [data_2017/data_2018/mc] [doublemuon/jetht]" << std::endl;
     return -1;
   }
   else {
@@ -20,6 +20,10 @@ int main(int argc, char *argv[])
     if(source!="mc" and source!="data_2017" and source!="data_2018") {
       std::cout << "Only 'data_2017', 'data_2018' and 'mc' are allowed input parameters. " << std::endl;
       return -1;
+    }
+    dataset = argv[2];
+    if(dataset!="jetht" && dataset!="doublemuon") {
+      std::cout << "Only 'jetht' and 'doublemuon' are allowed datasets." << std::endl;
     }
   }
   if(source=="data_2017") year = 2017;
@@ -32,7 +36,7 @@ int main(int argc, char *argv[])
   if(source=="mc") f.setIsMC(true);
   else f.setIsMC(false);
 
-  f.Loop(year);
+  f.Loop(year, dataset);
 
   return 0;
 }

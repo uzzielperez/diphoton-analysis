@@ -7,7 +7,6 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
-#include <TString.h>
 
 #include <iostream>
 
@@ -18,7 +17,7 @@ const double etaMinEndcap = 1.56;
 const double etaMaxEndcap = 2.5;
 const double minvMin = 350;
 
-void fakePrediction::Loop(int year)
+void fakePrediction::Loop(int year, const std::string &dataset)
 {
   std::map<int, double> ptCuts;
   ptCuts[2016] = 75.;
@@ -29,7 +28,7 @@ void fakePrediction::Loop(int year)
 
   enum diphotonEventTypes { BB = 0, BE = 1};
   enum ecalRegions { EB = 0, EE = 1};
-  const TString regions[2] = {"BB", "BE"};
+  const std::vector<std::string> regions = {"BB", "BE"};
 
   // define binning for input to datacard
   int nbins=40;
@@ -46,7 +45,7 @@ void fakePrediction::Loop(int year)
   }
   const std::string cmssw_base_string(cmssw_base);
 
-  std::string inputFile("fakeRateFunctions_" + std::to_string(year) + ".root");
+  std::string inputFile("fakeRateFunctions_" + std::to_string(year) + "_" + dataset +  ".root");
   if(isMC) inputFile = "fakeRateFunctions_mc.root";
 
   TFile *fakeRateFile = TFile::Open(Form("%s/src/diphoton-analysis/Tools/data/%s",
@@ -59,18 +58,19 @@ void fakePrediction::Loop(int year)
   fakeRate[EB]->Print("v");
   std::cout << "Using endcap fake rate: " << std::endl;
   fakeRate[EE]->Print("v");
-  TFile *output = new TFile(Form("data/fakes_%d.root", year), "recreate");
+  const std::string outputFile("data/fakes_" + std::to_string(year) + "_" + dataset + ".root");
+  TFile *output = new TFile(outputFile.c_str(), "recreate");
   output->mkdir("BB");
   output->mkdir("BE");
 
 
   TH1D *good[2], *TT[2], *FT[2], *TF[2], *FF[2];
-  for(int iregion=0; iregion<2; iregion++) {
-    good[iregion] = new TH1D(regions[iregion] + "good", regions[iregion] + "good", nbins, xmin, xmax);
-    TT[iregion] = new TH1D(regions[iregion] + "TT", regions[iregion] + "TT", nbins, xmin, xmax);
-    FT[iregion] = new TH1D(regions[iregion] + "FT", regions[iregion] + "FT", nbins, xmin, xmax);
-    TF[iregion] = new TH1D(regions[iregion] + "TF", regions[iregion] + "TF", nbins, xmin, xmax);
-    FF[iregion] = new TH1D(regions[iregion] + "FF", regions[iregion] + "FF", nbins, xmin, xmax);
+  for(unsigned int region=0; region<regions.size(); region++) {
+    good[region] = new TH1D((regions[region] + "good").c_str(), (regions[region] + "good").c_str(), nbins, xmin, xmax);
+    TT[region] = new TH1D((regions[region] + "TT").c_str(), (regions[region] + "TT").c_str(), nbins, xmin, xmax);
+    FT[region] = new TH1D((regions[region] + "FT").c_str(), (regions[region] + "FT").c_str(), nbins, xmin, xmax);
+    TF[region] = new TH1D((regions[region] + "TF").c_str(), (regions[region] + "TF").c_str(), nbins, xmin, xmax);
+    FF[region] = new TH1D((regions[region] + "FF").c_str(), (regions[region] + "FF").c_str(), nbins, xmin, xmax);
   }
 
   if (fChain == 0) return;
@@ -157,8 +157,8 @@ void fakePrediction::Loop(int year)
 
    std::cout << "Writing histograms." << std::endl;
    
-   for(unsigned int i = 0; i < 2; i++) {
-     output->cd(regions[i]);
+   for(unsigned int i = 0; i < regions.size(); i++) {
+     output->cd(regions[i].c_str());
      std::cout << "Changed directory to " << gDirectory->GetName() << std::endl;
      good[i]->Write();
      TT[i]->Write();
