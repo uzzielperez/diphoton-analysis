@@ -6,7 +6,6 @@
 
 int main(int argc, char *argv[])
 {
-  const TString selection("HLT_DoublePhoton70 && Minv<1000");
   TString input, output;
 
   if(argc!=3) {
@@ -16,6 +15,14 @@ int main(int argc, char *argv[])
   else {
     input = argv[1];
     output = argv[2];
+  }
+
+  TString selection;
+  if(input.Contains("Run2015") || input.Contains("Run2016")) selection = "HLT_DoublePhoton60 && Minv<1000";
+  else if(input.Contains("Run2017") || input.Contains("Run2018")) selection = "HLT_DoublePhoton70 && Minv<1000";
+  else {
+    std::cout << "Could not determine year from input filename." << std::endl;
+    return -1;
   }
 
   TChain * chain = new TChain("diphoton/fTree");

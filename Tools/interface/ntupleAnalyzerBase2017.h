@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Tue Oct 23 12:29:11 2018 by ROOT version 6.10/09
+// Thu Nov  1 12:52:31 2018 by ROOT version 6.12/07
 // from TTree fTree/DiPhotonTree
-// found on file: /eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180919_202214/0000/out_EGamma_Run2018A-PromptReco-v1_numEvent100_1.root
+// found on file: /eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017B-31Mar2018-v1__MINIAOD/180614_045620/Run2017B_v1_0.root
 //////////////////////////////////////////////////////////
 
-#ifndef ntupleAnalyzerBase2018_h
-#define ntupleAnalyzerBase2018_h
+#ifndef ntupleAnalyzerBase2017_h
+#define ntupleAnalyzerBase2017_h
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -1640,11 +1640,11 @@ ntupleAnalyzerBase::ntupleAnalyzerBase(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180919_202214/0000/out_EGamma_Run2018A-PromptReco-v1_numEvent100_1.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017B-31Mar2018-v1__MINIAOD/180614_045620/Run2017B_v1_0.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("/eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180919_202214/0000/out_EGamma_Run2018A-PromptReco-v1_numEvent100_1.root");
+         f = new TFile("/eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017B-31Mar2018-v1__MINIAOD/180614_045620/Run2017B_v1_0.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("/eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180919_202214/0000/out_EGamma_Run2018A-PromptReco-v1_numEvent100_1.root:/diphoton");
+      TDirectory * dir = (TDirectory*)f->Get("/eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017B-31Mar2018-v1__MINIAOD/180614_045620/Run2017B_v1_0.root:/diphoton");
       dir->GetObject("fTree",tree);
 
    }
@@ -1751,4 +1751,4 @@ Int_t ntupleAnalyzerBase::Cut(Long64_t entry)
 // returns -1 otherwise.
    return 1;
 }
-#endif // #ifdef ntupleAnalyzerBase_cxx
+#endif // #ifdef ntupleAnalyzerBase2017_cxx

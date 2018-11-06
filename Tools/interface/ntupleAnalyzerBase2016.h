@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Tue Oct 23 12:29:11 2018 by ROOT version 6.10/09
+// Wed Oct 31 13:36:25 2018 by ROOT version 6.12/07
 // from TTree fTree/DiPhotonTree
-// found on file: /eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180919_202214/0000/out_EGamma_Run2018A-PromptReco-v1_numEvent100_1.root
+// found on file: /eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016B-03Feb2017_ver2-v2__MINIAOD/180410_215122/Run2016B_v2_0.root
 //////////////////////////////////////////////////////////
 
-#ifndef ntupleAnalyzerBase2018_h
-#define ntupleAnalyzerBase2018_h
+#ifndef ntupleAnalyzerBase2016_h
+#define ntupleAnalyzerBase2016_h
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -79,6 +79,16 @@ public :
    Double_t        PrimaryVertex_d0;
    Int_t           PrimaryVertex_nTracks;
    Bool_t          PrimaryVertex_isFake;
+   Double_t        HiggsVertex_vx;
+   Double_t        HiggsVertex_vy;
+   Double_t        HiggsVertex_vz;
+   Double_t        HiggsVertex_vxError;
+   Double_t        HiggsVertex_vyError;
+   Double_t        HiggsVertex_vzError;
+   Double_t        HiggsVertex_ndof;
+   Double_t        HiggsVertex_d0;
+   Int_t           HiggsVertex_nTracks;
+   Bool_t          HiggsVertex_isFake;
    Float_t         Jet_jetHT;
    Float_t         Jet_leadingJetPt;
    Float_t         Jet_leadingJetEta;
@@ -202,7 +212,6 @@ public :
    Int_t           TriggerBit_HLT_DoublePhoton40;
    Int_t           TriggerBit_HLT_DoublePhoton50;
    Int_t           TriggerBit_HLT_DoublePhoton60;
-   Int_t           TriggerBit_HLT_DoublePhoton70;
    Int_t           TriggerBit_HLT_DoublePhoton85;
    Int_t           TriggerBit_HLT_ECALHT800;
    Int_t           TriggerBit_HLT_Ele105_CaloIdVT_GsfTrkIdT;
@@ -508,7 +517,6 @@ public :
    Int_t           TriggerBit_HLT_VBF_DisplacedJet40_VVTightID_DisplacedTrack;
    Int_t           TriggerBit_HLT_VBF_DisplacedJet40_VVTightID_Hadronic;
    Int_t           TriggerBit_HLT_ZeroBias;
-   Int_t           TriggerBit_HLT_DoublePhoton33_CaloIdL;
    Int_t           TriggerPrescale_HLT_AK4PFDJet60_Eta2p1ForPPRef;
    Int_t           TriggerPrescale_HLT_AK4PFDJet80_Eta2p1ForPPRef;
    Int_t           TriggerPrescale_HLT_AK8DiPFJet250_200_TrimMass30_BTagCSV0p45;
@@ -618,7 +626,6 @@ public :
    Int_t           TriggerPrescale_HLT_DoublePhoton40;
    Int_t           TriggerPrescale_HLT_DoublePhoton50;
    Int_t           TriggerPrescale_HLT_DoublePhoton60;
-   Int_t           TriggerPrescale_HLT_DoublePhoton70;
    Int_t           TriggerPrescale_HLT_DoublePhoton85;
    Int_t           TriggerPrescale_HLT_ECALHT800;
    Int_t           TriggerPrescale_HLT_Ele105_CaloIdVT_GsfTrkIdT;
@@ -924,13 +931,13 @@ public :
    Int_t           TriggerPrescale_HLT_VBF_DisplacedJet40_VVTightID_DisplacedTrack;
    Int_t           TriggerPrescale_HLT_VBF_DisplacedJet40_VVTightID_Hadronic;
    Int_t           TriggerPrescale_HLT_ZeroBias;
-   Int_t           TriggerPrescale_HLT_DoublePhoton33_CaloIdL;
    Double_t        Photon1_pt;
    Double_t        Photon1_eta;
    Double_t        Photon1_phi;
    Double_t        Photon1_scEta;
    Double_t        Photon1_scPhi;
    Double_t        Photon1_rho;
+   Double_t        Photon1_chargedHadIso;
    Double_t        Photon1_chargedHadIso03;
    Double_t        Photon1_neutralHadIso03;
    Double_t        Photon1_photonIso03;
@@ -955,6 +962,7 @@ public :
    Double_t        Photon1_alphaHighPtID;
    Double_t        Photon1_kappaHighPtID;
    Double_t        Photon1_phoEAHighPtID;
+   Double_t        Photon1_phoIsoExtraHighPtID;
    Double_t        Photon1_chEAegmID;
    Double_t        Photon1_nhEAegmID;
    Double_t        Photon1_phoEAegmID;
@@ -987,6 +995,7 @@ public :
    Double_t        Photon2_scEta;
    Double_t        Photon2_scPhi;
    Double_t        Photon2_rho;
+   Double_t        Photon2_chargedHadIso;
    Double_t        Photon2_chargedHadIso03;
    Double_t        Photon2_neutralHadIso03;
    Double_t        Photon2_photonIso03;
@@ -1011,6 +1020,7 @@ public :
    Double_t        Photon2_alphaHighPtID;
    Double_t        Photon2_kappaHighPtID;
    Double_t        Photon2_phoEAHighPtID;
+   Double_t        Photon2_phoIsoExtraHighPtID;
    Double_t        Photon2_chEAegmID;
    Double_t        Photon2_nhEAegmID;
    Double_t        Photon2_phoEAegmID;
@@ -1095,6 +1105,7 @@ public :
    Double_t        TTPhoton1_scEta;
    Double_t        TTPhoton1_scPhi;
    Double_t        TTPhoton1_rho;
+   Double_t        TTPhoton1_chargedHadIso;
    Double_t        TTPhoton1_chargedHadIso03;
    Double_t        TTPhoton1_neutralHadIso03;
    Double_t        TTPhoton1_photonIso03;
@@ -1119,6 +1130,7 @@ public :
    Double_t        TTPhoton1_alphaHighPtID;
    Double_t        TTPhoton1_kappaHighPtID;
    Double_t        TTPhoton1_phoEAHighPtID;
+   Double_t        TTPhoton1_phoIsoExtraHighPtID;
    Double_t        TTPhoton1_chEAegmID;
    Double_t        TTPhoton1_nhEAegmID;
    Double_t        TTPhoton1_phoEAegmID;
@@ -1151,6 +1163,7 @@ public :
    Double_t        TTPhoton2_scEta;
    Double_t        TTPhoton2_scPhi;
    Double_t        TTPhoton2_rho;
+   Double_t        TTPhoton2_chargedHadIso;
    Double_t        TTPhoton2_chargedHadIso03;
    Double_t        TTPhoton2_neutralHadIso03;
    Double_t        TTPhoton2_photonIso03;
@@ -1175,6 +1188,7 @@ public :
    Double_t        TTPhoton2_alphaHighPtID;
    Double_t        TTPhoton2_kappaHighPtID;
    Double_t        TTPhoton2_phoEAHighPtID;
+   Double_t        TTPhoton2_phoIsoExtraHighPtID;
    Double_t        TTPhoton2_chEAegmID;
    Double_t        TTPhoton2_nhEAegmID;
    Double_t        TTPhoton2_phoEAegmID;
@@ -1218,6 +1232,7 @@ public :
    Double_t        TFPhoton1_scEta;
    Double_t        TFPhoton1_scPhi;
    Double_t        TFPhoton1_rho;
+   Double_t        TFPhoton1_chargedHadIso;
    Double_t        TFPhoton1_chargedHadIso03;
    Double_t        TFPhoton1_neutralHadIso03;
    Double_t        TFPhoton1_photonIso03;
@@ -1242,6 +1257,7 @@ public :
    Double_t        TFPhoton1_alphaHighPtID;
    Double_t        TFPhoton1_kappaHighPtID;
    Double_t        TFPhoton1_phoEAHighPtID;
+   Double_t        TFPhoton1_phoIsoExtraHighPtID;
    Double_t        TFPhoton1_chEAegmID;
    Double_t        TFPhoton1_nhEAegmID;
    Double_t        TFPhoton1_phoEAegmID;
@@ -1274,6 +1290,7 @@ public :
    Double_t        TFPhoton2_scEta;
    Double_t        TFPhoton2_scPhi;
    Double_t        TFPhoton2_rho;
+   Double_t        TFPhoton2_chargedHadIso;
    Double_t        TFPhoton2_chargedHadIso03;
    Double_t        TFPhoton2_neutralHadIso03;
    Double_t        TFPhoton2_photonIso03;
@@ -1298,6 +1315,7 @@ public :
    Double_t        TFPhoton2_alphaHighPtID;
    Double_t        TFPhoton2_kappaHighPtID;
    Double_t        TFPhoton2_phoEAHighPtID;
+   Double_t        TFPhoton2_phoIsoExtraHighPtID;
    Double_t        TFPhoton2_chEAegmID;
    Double_t        TFPhoton2_nhEAegmID;
    Double_t        TFPhoton2_phoEAegmID;
@@ -1341,6 +1359,7 @@ public :
    Double_t        FTPhoton1_scEta;
    Double_t        FTPhoton1_scPhi;
    Double_t        FTPhoton1_rho;
+   Double_t        FTPhoton1_chargedHadIso;
    Double_t        FTPhoton1_chargedHadIso03;
    Double_t        FTPhoton1_neutralHadIso03;
    Double_t        FTPhoton1_photonIso03;
@@ -1365,6 +1384,7 @@ public :
    Double_t        FTPhoton1_alphaHighPtID;
    Double_t        FTPhoton1_kappaHighPtID;
    Double_t        FTPhoton1_phoEAHighPtID;
+   Double_t        FTPhoton1_phoIsoExtraHighPtID;
    Double_t        FTPhoton1_chEAegmID;
    Double_t        FTPhoton1_nhEAegmID;
    Double_t        FTPhoton1_phoEAegmID;
@@ -1397,6 +1417,7 @@ public :
    Double_t        FTPhoton2_scEta;
    Double_t        FTPhoton2_scPhi;
    Double_t        FTPhoton2_rho;
+   Double_t        FTPhoton2_chargedHadIso;
    Double_t        FTPhoton2_chargedHadIso03;
    Double_t        FTPhoton2_neutralHadIso03;
    Double_t        FTPhoton2_photonIso03;
@@ -1421,6 +1442,7 @@ public :
    Double_t        FTPhoton2_alphaHighPtID;
    Double_t        FTPhoton2_kappaHighPtID;
    Double_t        FTPhoton2_phoEAHighPtID;
+   Double_t        FTPhoton2_phoIsoExtraHighPtID;
    Double_t        FTPhoton2_chEAegmID;
    Double_t        FTPhoton2_nhEAegmID;
    Double_t        FTPhoton2_phoEAegmID;
@@ -1464,6 +1486,7 @@ public :
    Double_t        FFPhoton1_scEta;
    Double_t        FFPhoton1_scPhi;
    Double_t        FFPhoton1_rho;
+   Double_t        FFPhoton1_chargedHadIso;
    Double_t        FFPhoton1_chargedHadIso03;
    Double_t        FFPhoton1_neutralHadIso03;
    Double_t        FFPhoton1_photonIso03;
@@ -1488,6 +1511,7 @@ public :
    Double_t        FFPhoton1_alphaHighPtID;
    Double_t        FFPhoton1_kappaHighPtID;
    Double_t        FFPhoton1_phoEAHighPtID;
+   Double_t        FFPhoton1_phoIsoExtraHighPtID;
    Double_t        FFPhoton1_chEAegmID;
    Double_t        FFPhoton1_nhEAegmID;
    Double_t        FFPhoton1_phoEAegmID;
@@ -1520,6 +1544,7 @@ public :
    Double_t        FFPhoton2_scEta;
    Double_t        FFPhoton2_scPhi;
    Double_t        FFPhoton2_rho;
+   Double_t        FFPhoton2_chargedHadIso;
    Double_t        FFPhoton2_chargedHadIso03;
    Double_t        FFPhoton2_neutralHadIso03;
    Double_t        FFPhoton2_photonIso03;
@@ -1544,6 +1569,7 @@ public :
    Double_t        FFPhoton2_alphaHighPtID;
    Double_t        FFPhoton2_kappaHighPtID;
    Double_t        FFPhoton2_phoEAHighPtID;
+   Double_t        FFPhoton2_phoIsoExtraHighPtID;
    Double_t        FFPhoton2_chEAegmID;
    Double_t        FFPhoton2_nhEAegmID;
    Double_t        FFPhoton2_phoEAegmID;
@@ -1593,6 +1619,7 @@ public :
    TBranch        *b_BeamSpot;   //!
    TBranch        *b_Vertex0;   //!
    TBranch        *b_PrimaryVertex;   //!
+   TBranch        *b_HiggsVertex;   //!
    TBranch        *b_Jet;   //!
    TBranch        *b_TriggerBit;   //!
    TBranch        *b_TriggerPrescale;   //!
@@ -1640,11 +1667,11 @@ ntupleAnalyzerBase::ntupleAnalyzerBase(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180919_202214/0000/out_EGamma_Run2018A-PromptReco-v1_numEvent100_1.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016B-03Feb2017_ver2-v2__MINIAOD/180410_215122/Run2016B_v2_0.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("/eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180919_202214/0000/out_EGamma_Run2018A-PromptReco-v1_numEvent100_1.root");
+         f = new TFile("/eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016B-03Feb2017_ver2-v2__MINIAOD/180410_215122/Run2016B_v2_0.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("/eos/uscms/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/180919_202214/0000/out_EGamma_Run2018A-PromptReco-v1_numEvent100_1.root:/diphoton");
+      TDirectory * dir = (TDirectory*)f->Get("/eos/uscms/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016B-03Feb2017_ver2-v2__MINIAOD/180410_215122/Run2016B_v2_0.root:/diphoton");
       dir->GetObject("fTree",tree);
 
    }
@@ -1696,6 +1723,7 @@ void ntupleAnalyzerBase::Init(TTree *tree)
    fChain->SetBranchAddress("BeamSpot", &BeamSpot_x0, &b_BeamSpot);
    fChain->SetBranchAddress("Vertex0", &Vertex0_vx, &b_Vertex0);
    fChain->SetBranchAddress("PrimaryVertex", &PrimaryVertex_vx, &b_PrimaryVertex);
+   fChain->SetBranchAddress("HiggsVertex", &HiggsVertex_vx, &b_HiggsVertex);
    fChain->SetBranchAddress("Jet", &Jet_jetHT, &b_Jet);
    fChain->SetBranchAddress("TriggerBit", &TriggerBit_HLT_AK4PFDJet60_Eta2p1ForPPRef, &b_TriggerBit);
    fChain->SetBranchAddress("TriggerPrescale", &TriggerPrescale_HLT_AK4PFDJet60_Eta2p1ForPPRef, &b_TriggerPrescale);

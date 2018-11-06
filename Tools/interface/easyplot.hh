@@ -149,7 +149,7 @@ bool plot::is2018Data_newjson()
   return false;
 }
 
-// set luminosity to 2018 luminosity if one of the samples in the plot contains 2018 data
+// set luminosity to 2017+2018 luminosity if one of the samples in the plot contains 2017+2018 data
 bool plot::is2017_2018Data()
 {
   for(auto isample : m_samples) {

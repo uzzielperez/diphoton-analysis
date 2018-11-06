@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
   std::string region;
 
   if(argc!=3) {
-    std::cout << "Syntax: basicplots.exe [barrel/endcap] [2015/2016/2017/2018/2017_2018/2018_newjson]" << std::endl;
+    std::cout << "Syntax: basicplots.exe [barrel/endcap] [2015/2016/2017/2018/2017_2018/2016_2017_2018/2018_newjson]" << std::endl;
     return -1;
   }
   else {
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     data_year = argv[2];
     if(data_year.compare("2015") !=0 && data_year.compare("2016") != 0 && data_year.compare("2017") != 0
        && data_year.compare("2018") != 0 && data_year.compare("2017_2018") && data_year.compare("2018_newjson") != 0  ) {
-      std::cout << "Only '2015', '2016', '2017', '2018' and '2017_2018' are allowed years, plus '2018_newjson' for the data from the latest JSON." << std::endl;
+      std::cout << "Only '2015', '2016', '2017', '2018', and '2017_2018' are allowed years, plus '2018_newjson' for the data from the latest JSON." << std::endl;
       return -1;
     }
   }
@@ -31,10 +31,16 @@ int main(int argc, char *argv[])
 
   std::string kfactor = kfactorString("BB", "R1F1");
   if(endcap) kfactor = kfactorString("BE", "R1F1");
-  //  std::string kfactor = "1.0";
 
-  std::string cut_no_Minv("Photon1.pt>125&&Photon2.pt>125 && abs(Photon1.scEta)<1.4442 && abs(Photon2.scEta)<1.4442 && Diphoton.Minv > 350 && isGood");
-  if(endcap) cut_no_Minv = "Photon1.pt>125&&Photon2.pt>125 && Diphoton.Minv > 350 && isGood && ( !(abs(Photon1.scEta)<1.4442 && abs(Photon2.scEta)<1.4442) && ((abs(Photon1.scEta)<1.4442 && (abs(Photon2.scEta)>1.56&&abs(Photon2.scEta)<2.5)) || (abs(Photon2.scEta)<1.4442 && (abs(Photon1.scEta)>1.56&&abs(Photon1.scEta)<2.5))))";
+  std::string pt_cut("125");
+  if(data_year.compare("2016") == 0) pt_cut = "125";
+  std::string minv_cut("Diphoton.Minv > 350");
+  std::string kinematic_cuts("Photon1.pt>" + pt_cut + " && Photon2.pt>" + pt_cut + "&&" + minv_cut);
+  std::string id_cuts("Photon1.r9_5x5 > 0.8 && Photon2.r9_5x5 > 0.8");
+  std::string eta_cuts_BB("abs(Photon1.scEta)<1.4442 && abs(Photon2.scEta)<1.4442");
+  std::string eta_cuts_BE("( !(abs(Photon1.scEta)<1.4442 && abs(Photon2.scEta)<1.4442) && ((abs(Photon1.scEta)<1.4442 && (abs(Photon2.scEta)>1.56&&abs(Photon2.scEta)<2.5)) || (abs(Photon2.scEta)<1.4442 && (abs(Photon1.scEta)>1.56&&abs(Photon1.scEta)<2.5))))");
+  std::string cut_no_Minv(kinematic_cuts + "&&" + eta_cuts_BB + "&&" + id_cuts + "&& isGood");
+  if(endcap) cut_no_Minv = kinematic_cuts + "&&" + eta_cuts_BE + "&&" + id_cuts + "&& isGood";
   std::string cut(cut_no_Minv);
   cut += "&& Diphoton.Minv < 1000";
   int nbins=100;
@@ -44,11 +50,17 @@ int main(int argc, char *argv[])
   // initialize chains and default styles
   init();
 
+  std::string trigger("HLT_DoublePhoton70");
+  if(data_year.compare("2016") == 0) trigger = "HLT_DoublePhoton60";
   // define samples to be used in histograms
-  sample data("data_" + data_year, "Data", "HLT_DoublePhoton70");
+  sample data("data_" + data_year, "Data", trigger);
   data.isData = true;
-  sample gg("gg", "#gamma#gamma", kfactor);
-  sample gj("gj", "#gamma + jets");
+  std::string gg_sample("gg");
+  if(data_year.compare("2016") == 0) gg_sample = "gg_2016";
+  sample gg(gg_sample, "#gamma#gamma", kfactor);
+  std::string gj_sample("gj");
+  if(data_year.compare("2016") == 0) gj_sample = "gj_2016";
+  sample gj(gj_sample, "#gamma + jets");
   sample jj("jj", "QCD");
   sample vg("vg", "V#gamma");
   sample w("w", "W");
