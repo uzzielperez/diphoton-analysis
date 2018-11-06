@@ -9,8 +9,10 @@ import os
 diphoton_analysis = __import__("diphoton-analysis.CommonClasses.das_utils")
 
 do2018data = False
+do2018dataJetHT = False
+do2017dataprompt = False
 do2017data = False
-do2017datarereco = False
+do2017dataJetHT = False
 do2016data = False
 do2017mc = False
 do2017mcv1 = False
@@ -32,7 +34,6 @@ DATASETS = [[]]
 #   datasets.append(["/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM",
 #                   "/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2_ext1-v1/MINIAODSIM"])
 
-
 if do2018data:
   DATASETS.append(["/EGamma/Run2018A-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/EGamma/Run2018A-PromptReco-v2/MINIAOD"])
@@ -46,8 +47,21 @@ if do2018data:
   DATASETS.append(["/EGamma/Run2018C-PromptReco-v3/MINIAOD"])
   DATASETS.append(["/EGamma/Run2018D-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/EGamma/Run2018D-PromptReco-v2/MINIAOD"])
+  DATASETS.append(["/EGamma/Run2018E-PromptReco-v1/MINIAOD"])
+if do2018dataJetHT:
+  DATASETS.append(["/JetHT/Run2018A-PromptReco-v1/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2018A-PromptReco-v2/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2018A-PromptReco-v3/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2018B-PromptReco-v1/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2018B-PromptReco-v2/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2018C-PromptReco-v1/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2018C-PromptReco-v2/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2018C-PromptReco-v3/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2018D-PromptReco-v1/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2018D-PromptReco-v2/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2018E-PromptReco-v1/MINIAOD"])
 # diphoton samples (2017 data)
-if do2017data:
+if do2017dataprompt:
 ### no good lumisections are present in Run2017A
 ##  DATASETS.append(["/DoubleEG/Run2017A-PromptReco-v2/MINIAOD"])
 ##  DATASETS.append(["/DoubleEG/Run2017A-PromptReco-v3/MINIAOD"])
@@ -62,12 +76,18 @@ if do2017data:
   DATASETS.append(["/DoubleEG/Run2017D-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2017E-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2017F-PromptReco-v1/MINIAOD"])
-if do2017datarereco:
+if do2017data:
   DATASETS.append(["/DoubleEG/Run2017B-31Mar2018-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2017C-31Mar2018-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2017D-31Mar2018-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2017E-31Mar2018-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2017F-31Mar2018-v1/MINIAOD"])
+if do2017dataJetHT:
+  DATASETS.append(["/JetHT/Run2017B-31Mar2018-v1/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2017C-31Mar2018-v1/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2017D-31Mar2018-v1/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2017E-31Mar2018-v1/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2017F-31Mar2018-v1/MINIAOD"])
 # diphoton samples (2016 data)
 if do2016data:
 # The /DoubleEG/Run2016B-03Feb2017_ver1-v1 dataset does not contain any lumisections
