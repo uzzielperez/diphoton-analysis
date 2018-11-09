@@ -31,10 +31,18 @@ void FakeRateAnalysis::Loop(int iCut = 0, TString era="UNKNOWN", TString dataset
 //by  b_branchname->GetEntry(ientry); //read only this branch
   if (fChain == 0) return;
   // cout << "Now looping over data using the following chIso sideband definition: " << sidebandLow << "-" << sidebandHigh << " GeV." << endl;
-  // define number of bin edges
-  const int nBins = 10;
   
-  double ptBinArray[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
+  // array of pt bin edges
+  std::vector<double> ptBinArray({ 50., 70., 90., 110., 130., 150.});
+  // With higher statistics in JetHT sample, additional bins can be used
+  if(dataset=="jetht") {
+    ptBinArray.push_back(200.);
+    ptBinArray.push_back(250.);
+    ptBinArray.push_back(300.);
+  }
+  ptBinArray.push_back(600.);
+  const int nBins = ptBinArray.size();
+
 
   // make vector of sidebands
   std::vector< std::pair<double,double> > chIsoSidebands;
@@ -55,14 +63,14 @@ void FakeRateAnalysis::Loop(int iCut = 0, TString era="UNKNOWN", TString dataset
   // pt spectrum of all numerator objects
   TH1D phoPtEB_numerator("phoPtEB_numerator","",1000,0.,2500.);
   TH1D phoPtEE_numerator("phoPtEE_numerator","",1000,0.,2500.);
-  TH1D phoPtEB_numerator_varbin("phoPtEB_numerator_varbin","",nBins-1,ptBinArray);
-  TH1D phoPtEE_numerator_varbin("phoPtEE_numerator_varbin","",nBins-1,ptBinArray);
+  TH1D phoPtEB_numerator_varbin("phoPtEB_numerator_varbin", "", nBins-1, ptBinArray.data());
+  TH1D phoPtEE_numerator_varbin("phoPtEE_numerator_varbin", "", nBins-1, ptBinArray.data());
 
   // pt spectrum of denominator objects
   TH1D phoPtEB_denominator("phoPtEB_denominator","",1000,0.,2500.);
   TH1D phoPtEE_denominator("phoPtEE_denominator","",1000,0.,2500.);
-  TH1D phoPtEB_denominator_varbin("phoPtEB_denominator_varbin","",nBins-1,ptBinArray);
-  TH1D phoPtEE_denominator_varbin("phoPtEE_denominator_varbin","",nBins-1,ptBinArray);
+  TH1D phoPtEB_denominator_varbin("phoPtEB_denominator_varbin", "", nBins-1, ptBinArray.data());
+  TH1D phoPtEE_denominator_varbin("phoPtEE_denominator_varbin", "", nBins-1, ptBinArray.data());
 
   // pt spectrum of all objects passing fake template criteria
   // TH1D phoPtEB_faketemplate("phoPtEB_faketemplate","",1000,0.,2500.);

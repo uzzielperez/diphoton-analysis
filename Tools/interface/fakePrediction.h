@@ -5,6 +5,8 @@
 #define ntupleAnalyzerBase_cxx
 
 //#include "ntupleAnalyzerBase.h"
+//#include "ntupleAnalyzerBase2016.h"
+//#include "ntupleAnalyzerBase2017.h"
 #include "ntupleAnalyzerBase2018.h"
 
 // this is not defined in default MakeClass headers

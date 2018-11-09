@@ -1,6 +1,3 @@
-// the following line is a trick to allow the use of the default MakeClass template
-#define ntupleAnalyzerBase_cxx
-
 #define fakePrediction_cxx
 #include "fakePrediction.h"
 #include "TF1.h"
@@ -10,7 +7,7 @@
 
 #include <iostream>
 
-#include "easyplot.hh"
+#include "diphoton-analysis/Tools/interface/tdrstyle.hh"
 
 const double etaMaxBarrel = 1.4442;
 const double etaMinEndcap = 1.56;
@@ -20,7 +17,8 @@ const double minvMin = 350;
 void fakePrediction::Loop(int year, const std::string &dataset)
 {
   std::map<int, double> ptCuts;
-  ptCuts[2016] = 75.;
+  //  ptCuts[2016] = 75.;
+  ptCuts[2016] = 125.;
   ptCuts[2017] = 125.;
   ptCuts[2018] = 125.;
   const double ptMin = ptCuts[year];
@@ -45,7 +43,11 @@ void fakePrediction::Loop(int year, const std::string &dataset)
   }
   const std::string cmssw_base_string(cmssw_base);
 
-  std::string inputFile("fakeRateFunctions_" + std::to_string(year) + "_" + dataset +  ".root");
+  std::string yearString(std::to_string(year));
+  // until 2018 fake rate is sensible
+  if(year==2018 && dataset=="jetht") yearString="2017";
+  //  std::string inputFile("fakeRateFunctions_" + std::to_string(year) + "_" + dataset +  ".root");
+  std::string inputFile("fakeRateFunctions_" + yearString + "_" + dataset +  ".root");
   if(isMC) inputFile = "fakeRateFunctions_mc.root";
 
   TFile *fakeRateFile = TFile::Open(Form("%s/src/diphoton-analysis/Tools/data/%s",
@@ -86,10 +88,17 @@ void fakePrediction::Loop(int year, const std::string &dataset)
       nb = fChain->GetEntry(jentry);   nbytes += nb;
 
       double weight = 1.0;
+      bool triggered = false;
       if(isMC) weight = Event_weightAll;
+      else {
+#ifdef ntupleAnalyzerBase2016_h
+	triggered = TriggerBit_HLT_DoublePhoton60;
+#else
+	triggered = TriggerBit_HLT_DoublePhoton70;
+#endif
+      }
+      if(!triggered) continue;
 
-      double chIsoCutLow = 5.;
-      double chIsoCutHigh = 10.;
       // highest pT photons
       if(isGood) {
 	if(Photon1_pt > ptMin && Photon2_pt > ptMin && Diphoton_Minv > minvMin) {
@@ -106,9 +115,9 @@ void fakePrediction::Loop(int year, const std::string &dataset)
       }
       // true, fake
       if(isTF) {
-	bool passIsoTF = TFPhoton2_chargedHadIso03 > chIsoCutLow && TFPhoton2_chargedHadIso03 < chIsoCutHigh;
-	bool passOther = (TFPhoton2_isEB || TFPhoton2_passCorPhoIso) && TFPhoton2_hadronicOverEm < hadronicOverEmCut;
-	if(passIsoTF && passOther && TFPhoton1_pt > ptMin && TFPhoton2_pt > ptMin && TFDiphoton_Minv > minvMin) {
+	bool pass = (TFPhoton2_isEB || (TFPhoton2_isEE && TFPhoton2_passCorPhoIso)) && TFPhoton2_hadronicOverEm < hadronicOverEmCut
+	  && TFPhoton1_r9_5x5 > 0.8 && TFPhoton2_r9_5x5 > 0.8;
+	if(pass && TFPhoton1_pt > ptMin && TFPhoton2_pt > ptMin && TFDiphoton_Minv > minvMin) {
 	  if(isBarrelBarrel(TFPhoton1_eta, TFPhoton2_eta)) TF[BB]->Fill(TFDiphoton_Minv, weight*fakeRate[EB]->Eval(TFPhoton2_pt));
 	  else if (isBarrelEndcap(TFPhoton1_eta, TFPhoton2_eta)) {
 	    int region = TFPhoton2_isEB ? EB : EE;
@@ -118,9 +127,9 @@ void fakePrediction::Loop(int year, const std::string &dataset)
       }
       // fake, true
       if(isFT) {
-	bool passIsoFT = FTPhoton1_chargedHadIso03 > chIsoCutLow && FTPhoton1_chargedHadIso03 < chIsoCutHigh;
-	bool passOther = (FTPhoton1_isEB || FTPhoton1_passCorPhoIso) && FTPhoton1_hadronicOverEm < hadronicOverEmCut;
-	if(passIsoFT && passOther && FTPhoton1_pt > ptMin && FTPhoton2_pt > ptMin && FTDiphoton_Minv > minvMin) {
+	bool pass = (FTPhoton1_isEB || (FTPhoton1_isEE && FTPhoton1_passCorPhoIso)) && FTPhoton1_hadronicOverEm < hadronicOverEmCut
+	  && FTPhoton1_r9_5x5 > 0.8 && FTPhoton2_r9_5x5 > 0.8;
+	if(pass && FTPhoton1_pt > ptMin && FTPhoton2_pt > ptMin && FTDiphoton_Minv > minvMin) {
 	  if(isBarrelBarrel(FTPhoton1_eta, FTPhoton2_eta)) FT[BB]->Fill(FTDiphoton_Minv, weight*fakeRate[EB]->Eval(FTPhoton1_pt));
 	  else if (isBarrelEndcap(FTPhoton1_eta, FTPhoton2_eta)) {
 	    int region = FTPhoton1_isEB ? EB : EE;
@@ -130,11 +139,10 @@ void fakePrediction::Loop(int year, const std::string &dataset)
       }
       // fake, fake
       if(isFF) {
-	bool passIsoFF = (FFPhoton1_chargedHadIso03 > chIsoCutLow && FFPhoton1_chargedHadIso03 < chIsoCutHigh
-			  && FFPhoton2_chargedHadIso03 > chIsoCutLow && FFPhoton2_chargedHadIso03 < chIsoCutHigh);
-	bool passOther = (FFPhoton1_isEB || FFPhoton1_passCorPhoIso) && (FFPhoton2_isEB || FFPhoton2_passCorPhoIso)
-	  && FFPhoton1_hadronicOverEm < hadronicOverEmCut && FFPhoton2_hadronicOverEm < hadronicOverEmCut;
-	if(passIsoFF && passOther && FFPhoton1_pt > ptMin && FFPhoton2_pt > ptMin && FFDiphoton_Minv > minvMin) {
+	bool pass = (FFPhoton1_isEB || (FFPhoton1_isEE && FFPhoton1_passCorPhoIso)) && (FFPhoton2_isEB || (FFPhoton2_isEE && FFPhoton2_passCorPhoIso))
+	  && FFPhoton1_hadronicOverEm < hadronicOverEmCut && FFPhoton2_hadronicOverEm < hadronicOverEmCut
+	  && FFPhoton1_r9_5x5 > 0.8 && FFPhoton2_r9_5x5 > 0.8;
+	if(pass && FFPhoton1_pt > ptMin && FFPhoton2_pt > ptMin && FFDiphoton_Minv > minvMin) {
 	  if(isBarrelBarrel(FFPhoton1_eta, FFPhoton2_eta)) FF[BB]->Fill(FFDiphoton_Minv, weight*fakeRate[EB]->Eval(FFPhoton1_pt)*fakeRate[EB]->Eval(FFPhoton2_pt));
 	  else if (isBarrelEndcap(FFPhoton1_eta, FFPhoton2_eta)) {
 	    int region1 = FFPhoton1_isEB ? EB : EE;

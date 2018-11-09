@@ -23,15 +23,15 @@ TF1* getFakeRateFunction(const std::string& isolation, const std::string& region
 
 int main(int argc, char *argv[])
 {
-  std::string source, dataset;
+  std::string year, dataset;
 
   if(argc!=3) {
     std::cout << "Syntax: getFakeRates.exe [2015/2016/2017/2018] [jetht/doublemuon]" << std::endl;
     return -1;
   }
   else {
-    source = argv[1];
-    if(source!="2015" and source!="2016" and source!="2017" and source!="2018") {
+    year = argv[1];
+    if(year!="2015" and year!="2016" and year!="2017" and year!="2018") {
       std::cout << "Only '2015', '2016', '2017' and '2018' are allowed input parameters." << std::endl;
       return -1;
     }
@@ -51,8 +51,8 @@ int main(int argc, char *argv[])
   }
   const std::string cmssw_base_string(cmssw_base);
   const std::string directory("/src/diphoton-analysis/FakeRateAnalysis/RooFitTemplateFitting/analysis/");
-  std::string fakeRateFile(cmssw_base_string + directory + "fakeRatePlots_" + dataset + "_" + source + ".root");
-  std::string fakeRateOutputFile(cmssw_base_string + "/src/diphoton-analysis/Tools/data/fakeRateFunctions_" + source + "_" + dataset +  ".root");
+  std::string fakeRateFile(cmssw_base_string + directory + "fakeRatePlots_" + dataset + "_" + year + ".root");
+  std::string fakeRateOutputFile(cmssw_base_string + "/src/diphoton-analysis/Tools/data/fakeRateFunctions_" + year + "_" + dataset +  ".root");
 
   std::vector<std::pair<int, int> > isolationRanges;
   isolationRanges.push_back(std::pair<int, int>(5, 10));
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
       c->SetLeftMargin(0.18);
       std::cout << "Getting fake rate function for isolation sideband " << isolationSidebands[iIso]
 		<< " and region " << regions[iRegion] << std::endl;
-      TF1 * func = getFakeRateFunction(isolationSidebands[iIso], regions[iRegion], source);
+      TF1 * func = getFakeRateFunction(isolationSidebands[iIso], regions[iRegion], year);
       TFitResultPtr fitResult = graph->Fit(func, "vse");
       graph->SetMarkerStyle(kFullCircle);
       graph->SetMarkerSize(0.5);
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
 
       TLatex *latex = new TLatex;
       latex->SetNDC(true);
-      latex->DrawLatex(0.5, 0.7, Form("%s, %s", displayDictionary[regions[iRegion]].c_str(), source.c_str()));
+      latex->DrawLatex(0.5, 0.7, Form("%s, %s", displayDictionary[regions[iRegion]].c_str(), year.c_str()));
       TString isoString(Form("%d < Iso_{ch} < %d GeV", isolationRanges[iIso].first, isolationRanges[iIso].second));
       latex->DrawLatex(0.5, 0.65, isoString);
 
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
       fitResult->Write();
       graph->Write();
       func->Write();
-      c->Print(Form("plots/%s_%s.pdf", histName.Data(), source.c_str()));
+      c->Print(Form("plots/%s_%s_%s.pdf", histName.Data(), year.c_str(), dataset.c_str()));
     }
   }
 
@@ -151,7 +151,8 @@ TF1* getFakeRateFunction(const std::string& isolation, const std::string& region
   // decent initial guesses are needed for the fit to converge
   if(region=="EB") fakeRate->SetParameters(0.02695594369285, 337.46692070018906, 2.10557989223267);
   if(region=="EE" && year=="2015") fakeRate->SetParameters(0.07583295145724, 0.00003927399330, 0.00000255676015);
-  if(region=="EE" && year=="2016") fakeRate->SetParameters(0.07418438826983, 10599.81194434755525, 3.12901762171298);
+  if(region=="EB" && year=="2016") fakeRate->SetParameters(0.0297647, 205.612, 1.76173);
+  if(region=="EE" && year=="2016") fakeRate->SetParameters(0.282890, 6.37370, 0.863015);
   if(region=="EE" && year=="2018") fakeRate->SetParameters(0.431, 0.0009, 1.227e-5);
   if(region=="EE" && year=="2017") {
     fakeRate->SetParameters(0., 2.3, 0.1);

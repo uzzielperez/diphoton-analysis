@@ -54,12 +54,20 @@ void MCFakeRateAnalysis::Loop(int year)
   
   cout << "\nOutput filename: " << filename << endl << endl;
   
-  // define number of bin edges
-  const int nBins = 10;
   
   // define our pT bin increments
-  double ptBinArray[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
-  
+  std::vector<int> ptBinArray({ 50, 70, 90, 110, 130, 150, 200, 250, 300, 600});
+
+  std::vector<int> binLowEdges, binUpperEdges;
+  for(unsigned int i = 0; i < ptBinArray.size()-1; i++) {
+    binLowEdges.push_back(ptBinArray[i]);
+    binUpperEdges.push_back(ptBinArray[i+1]);
+  }
+  // so that the highest bin can also range from 150 < pT < 600 GeV
+  binLowEdges.push_back(150);
+  binUpperEdges.push_back(600);
+  const int nBins = ptBinArray.size() + 1;
+
   // define vectors of desired histograms
   vector<TH1D*> sigmaIetaIetaEB;
   vector<TH1D*> sigmaIetaIetaEB1;
@@ -71,39 +79,39 @@ void MCFakeRateAnalysis::Loop(int year)
   vector<TH1D*> chIsoEE;
   
   // loop over bins increments and create histograms
-  for (int i = 0; i < nBins-1; i++) {
-    double binLowEdge = ptBinArray[i];
-    double binUpperEdge = ptBinArray[i+1];  
+  for (int i = 0; i < nBins; i++) {
+    int binLowEdge = binLowEdges[i];
+    int binUpperEdge = binUpperEdges[i];
     
-    TH1D *hEB = new TH1D(Form("sieieEB_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+    TH1D *hEB = new TH1D(Form("sieieEB_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
     hEB->Sumw2();
     sigmaIetaIetaEB.push_back(hEB);
     
-    TH1D *hEB1 = new TH1D(Form("sieieEB1_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB1",200,0.,0.1);
+    TH1D *hEB1 = new TH1D(Form("sieieEB1_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEB1",200,0.,0.1);
     hEB1->Sumw2();
     sigmaIetaIetaEB1.push_back(hEB1);
     
-    TH1D *hEB2 = new TH1D(Form("sieieEB2_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB2",200,0.,0.1);
+    TH1D *hEB2 = new TH1D(Form("sieieEB2_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEB2",200,0.,0.1);
     hEB2->Sumw2();
     sigmaIetaIetaEB2.push_back(hEB2);
     
-    TH1D *hEE = new TH1D(Form("sieieEE_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
+    TH1D *hEE = new TH1D(Form("sieieEE_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
     hEE->Sumw2();
     sigmaIetaIetaEE.push_back(hEE);
     
-    TH1D *hEE1 = new TH1D(Form("sieieEE1_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE1",100,0.,0.1);
+    TH1D *hEE1 = new TH1D(Form("sieieEE1_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEE1",100,0.,0.1);
     hEE1->Sumw2();
     sigmaIetaIetaEE1.push_back(hEE1);
     
-    TH1D *hEE2 = new TH1D(Form("sieieEE2_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE2",100,0.,0.1);
+    TH1D *hEE2 = new TH1D(Form("sieieEE2_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEE2",100,0.,0.1);
     hEE2->Sumw2();
     sigmaIetaIetaEE2.push_back(hEE2);
 
-    TH1D *hEB_chIso = new TH1D(Form("chIsoEB_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEB",100,0.,50.);
+    TH1D *hEB_chIso = new TH1D(Form("chIsoEB_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"chIsoEB",100,0.,50.);
     hEB_chIso->Sumw2();
     chIsoEB.push_back(hEB_chIso);
     
-    TH1D *hEE_chIso = new TH1D(Form("chIsoEE_realtemplate_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEE",100,0.,50.);
+    TH1D *hEE_chIso = new TH1D(Form("chIsoEE_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"chIsoEE",100,0.,50.);
     hEE_chIso->Sumw2();
     chIsoEE.push_back(hEE_chIso);
   }
@@ -130,7 +138,7 @@ void MCFakeRateAnalysis::Loop(int year)
     //if (Event_beamHaloIDTight2015) continue;
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
     // uncomment me?
-    // if (Photon_r9_5x5 < 0.8) continue; // r9 cut for resonant sync
+    if (Photon_r9_5x5 < 0.8) continue; // r9 cut for resonant sync
 
     // evaluate jet trigger groupings
     // bool singleJetFired = TriggerBit_HLT_AK8DiPFJet280_200_TrimMass30_BTagCSV0p45_v3==1 || TriggerBit_HLT_AK8PFJet360_TrimMass30_v3==1 || TriggerBit_HLT_CaloJet500_NoJetID_v2==1 || TriggerBit_HLT_DiCaloJetAve140_v1==1 || TriggerBit_HLT_DiCaloJetAve200_v1==1 || TriggerBit_HLT_DiCaloJetAve260_v1==1 || TriggerBit_HLT_DiCaloJetAve320_v1==1 || TriggerBit_HLT_DiCaloJetAve400_v1==1 || TriggerBit_HLT_DiCaloJetAve40_v1==1 || TriggerBit_HLT_DiCaloJetAve500_v1==1 || TriggerBit_HLT_DiCaloJetAve60_v1==1 || TriggerBit_HLT_DiCaloJetAve80_v1==1 || TriggerBit_HLT_DiPFJetAve100_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve140_v2==1 || TriggerBit_HLT_DiPFJetAve160_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve200_v2==1 || TriggerBit_HLT_DiPFJetAve220_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve260_v2==1 || TriggerBit_HLT_DiPFJetAve300_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve30_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve320_v2==1 || TriggerBit_HLT_DiPFJetAve400_v2==1 || TriggerBit_HLT_DiPFJetAve40_v2==1 || TriggerBit_HLT_DiPFJetAve500_v2==1 || TriggerBit_HLT_DiPFJetAve60_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve60_v2==1 || TriggerBit_HLT_DiPFJetAve80_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve80_v2==1 || TriggerBit_HLT_PFJet140_v4==1 || TriggerBit_HLT_PFJet200_v4==1 || TriggerBit_HLT_PFJet260_v4==1 || TriggerBit_HLT_PFJet320_v4==1 || TriggerBit_HLT_PFJet400_v4==1 || TriggerBit_HLT_PFJet40_v4==1 || TriggerBit_HLT_PFJet450_v4==1 || TriggerBit_HLT_PFJet500_v4==1 || TriggerBit_HLT_PFJet60_v4==1 || TriggerBit_HLT_PFJet80_v4==1;
@@ -174,9 +182,9 @@ void MCFakeRateAnalysis::Loop(int year)
     // if (matched) continue;
     
     // loop over pT bin increments
-    for (int i = 0; i < nBins-1; i++) {
-      double binLowEdge = ptBinArray[i];
-      double binUpperEdge = ptBinArray[i+1];
+    for (int i = 0; i < nBins; i++) {
+      double binLowEdge = binLowEdges[i];
+      double binUpperEdge = binUpperEdges[i];
       // use pT bins to cut on photon pT
       if (binLowEdge < Photon_pt && Photon_pt < binUpperEdge) {
 	// EB

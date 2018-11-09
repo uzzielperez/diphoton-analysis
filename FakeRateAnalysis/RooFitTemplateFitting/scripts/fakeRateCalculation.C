@@ -44,8 +44,7 @@ void fakeRateCalculation(TString sample, TString templateVariable, TString era)
   // array of pt bin edges
   std::vector<int> ptBinArray({ 50, 70, 90, 110, 130, 150});
   // With higher statistics in JetHT sample, additional bins can be used
-  // but this is disabled temporarily
-  if(sample=="jetht" || (sample == "doublemuon" && !era.Contains("2016"))) {
+  if(sample=="jetht") {
     ptBinArray.push_back(200);
     ptBinArray.push_back(250);
     ptBinArray.push_back(300);
