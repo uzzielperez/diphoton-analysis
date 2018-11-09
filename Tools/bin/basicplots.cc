@@ -53,19 +53,15 @@ int main(int argc, char *argv[])
   std::string trigger("HLT_DoublePhoton70");
   if(data_year.compare("2016") == 0) trigger = "HLT_DoublePhoton60";
   // define samples to be used in histograms
-  sample data("data_" + data_year, "Data", trigger);
+  sample data("data", "Data", data_year, trigger);
   data.isData = true;
-  std::string gg_sample("gg");
-  if(data_year.compare("2016") == 0) gg_sample = "gg_2016";
-  sample gg(gg_sample, "#gamma#gamma", kfactor);
-  std::string gj_sample("gj");
-  if(data_year.compare("2016") == 0) gj_sample = "gj_2016";
-  sample gj(gj_sample, "#gamma + jets");
-  sample jj("jj", "QCD");
-  sample vg("vg", "V#gamma");
-  sample w("w", "W");
-  sample dy("dy", "DY");
-  sample ttg("ttg", "t#bar{t}#gamma");
+  sample gg("gg", "#gamma#gamma", data_year, kfactor);
+  sample gj("gj", "#gamma + jets", data_year);
+  sample jj("jj", "QCD", data_year);
+  sample vg("vg", "V#gamma", data_year);
+  sample w("w", "W", data_year);
+  sample dy("dy", "DY", data_year);
+  sample ttg("ttg", "t#bar{t}#gamma", data_year);
   std::vector<sample> samples;
   samples.push_back(data);
   samples.push_back(ttg);

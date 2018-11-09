@@ -63,13 +63,18 @@ void allSamples(const std::string &region, TFile * output)
     std::string sampleCut = cuts[region];
     // skip the Sherpa GEN trees
     if( isample.compare("ggGen") == 0) continue;
+    if( isample.find("unskimmed") != std::string::npos ) continue;
     // apply weights for all samples except data
     if( isample.find("data") == std::string::npos ) sampleCut+="*weightAll";
-    else sampleCut += "*(HLT_DoublePhoton60>0)";
+    else if (isample.find("data_2015") != std::string::npos || isample.find("data_2016") != std::string::npos) sampleCut += "*(HLT_DoublePhoton60>0)";
+    else sampleCut += "*(HLT_DoublePhoton70>0)";
     // apply k-factor to Sherpa GG sample
     if( isample.compare("gg") == 0) sampleCut += "*" + kfactorString(region, "R1F1");
-    if( isample.compare("gg_R2F2") == 0) sampleCut += "*" + kfactorString(region, "R2F2");
-    if( isample.compare("gg_R0p5F0p5") == 0) sampleCut += "*" + kfactorString(region, "R0p5F0p5");
+    if( isample.compare("gg_R2F2") == 0) sampleCut += "*" + kfactorString(region, "R1F1");
+    if( isample.compare("gg_R0p5F0p5") == 0) sampleCut += "*" + kfactorString(region, "R1F1");
+    // if( isample.compare("gg") == 0) sampleCut += "*" + kfactorString(region, "R1F1");
+    // if( isample.compare("gg_R2F2") == 0) sampleCut += "*" + kfactorString(region, "R2F2");
+    // if( isample.compare("gg_R0p5F0p5") == 0) sampleCut += "*" + kfactorString(region, "R0p5F0p5");
     std::cout << "Making histograms for sample " << isample << " with cut\n" << sampleCut << std::endl;
     TH1F *hist = new TH1F(isample.c_str(), isample.c_str(), nBins, xMin, xMax);
     std::cout << "Making histograms for sample " << hist->GetName() << " with cut\n" << sampleCut << std::endl;

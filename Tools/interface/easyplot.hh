@@ -22,11 +22,12 @@ TString reformat(TString input);
 class sample {
   
 public:
-  sample(std::string name, std::string label, std::string extraWeight, std::string extraCut);
+  sample(std::string name, std::string label, std::string year, std::string extraWeight, std::string extraCut);
   sample();
 
-  TChain* chain() { return chains[m_name]; }
+  TChain* chain() { return chains[m_name + "_" + m_year]; }
   std::string name() { return m_name; }
+  std::string year() { return m_year; }
   std::string extraWeight() { return m_extraWeight; }
   std::string extraCut() { return m_extraCut; }
   int lineStyle() { return m_lineStyle; }
@@ -43,6 +44,7 @@ public:
 private:
   std::string m_name;
   std::string m_label;
+  std::string m_year;
   std::string m_extraWeight;
   std::string m_extraCut;
   int m_lineStyle;
@@ -51,9 +53,10 @@ private:
   int m_fillColor;
 };
 
-sample::sample(std::string name, std::string label, std::string extraWeight="1.0", std::string extraCut="1"):
+sample::sample(std::string name, std::string label, std::string year, std::string extraWeight="1.0", std::string extraCut="1"):
   m_name(name),
   m_label(label),
+  m_year(year),
   m_extraWeight(extraWeight),
   m_extraCut(extraCut),
   m_lineStyle(lineStyles[m_name]),
@@ -90,7 +93,7 @@ private:
   int m_nbins;
   double m_xmin;
   double m_xmax;
-
+  double m_lumi;
 };
 
 plot::plot(std::vector<sample> samples, std::string variable, std::string cut, int nbins, double xmin, double xmax):
@@ -99,21 +102,22 @@ plot::plot(std::vector<sample> samples, std::string variable, std::string cut, i
   m_cut(cut),
   m_nbins(nbins),
   m_xmin(xmin),
-  m_xmax(xmax)
+  m_xmax(xmax),
+  m_lumi(1.0)
 { 
 
-  if(is2016Data()) luminosity = luminosity2016;
-  if(is2017Data()) luminosity = luminosity2017;
-  if(is2018Data()) luminosity = luminosity2018;
-  if(is2018Data_newjson()) luminosity = luminosity2018_newjson;
-  if(is2017_2018Data()) luminosity = luminosity2017+luminosity2018;
+  if(is2016Data()) m_lumi = luminosity["2016"];
+  if(is2017Data()) m_lumi = luminosity["2017"];
+  if(is2018Data()) m_lumi = luminosity["2018"];
+  if(is2018Data_newjson()) m_lumi = luminosity["2018_newjson"];
+  if(is2017_2018Data()) m_lumi = luminosity["2017"] + luminosity["2018"];
 }
 
 // set luminosity to 2016 luminosity if one of the samples in the plot contains 2016 data
 bool plot::is2016Data()
 {
   for(auto isample : m_samples) {
-    if(isample.name().find("2016") != std::string::npos) return true;
+    if(isample.year().find("2016") != std::string::npos) return true;
   }
 
   return false;
@@ -123,7 +127,7 @@ bool plot::is2016Data()
 bool plot::is2017Data()
 {
   for(auto isample : m_samples) {
-    if(isample.name().find("2017") != std::string::npos) return true;
+    if(isample.year().find("2017") != std::string::npos) return true;
   }
 
   return false;
@@ -133,7 +137,7 @@ bool plot::is2017Data()
 bool plot::is2018Data()
 {
   for(auto isample : m_samples) {
-    if(isample.name().find("2018") != std::string::npos) return true;
+    if(isample.year().find("2018") != std::string::npos) return true;
   }
 
   return false;
@@ -143,7 +147,7 @@ bool plot::is2018Data()
 bool plot::is2018Data_newjson()
 {
   for(auto isample : m_samples) {
-    if(isample.name().find("2018_newjson") != std::string::npos) return true;
+    if(isample.year().find("2018_newjson") != std::string::npos) return true;
   }
 
   return false;
@@ -153,7 +157,7 @@ bool plot::is2018Data_newjson()
 bool plot::is2017_2018Data()
 {
   for(auto isample : m_samples) {
-    if(isample.name().find("2017_2018") != std::string::npos) return true;
+    if(isample.year().find("2017_2018") != std::string::npos) return true;
   }
 
   return false;
@@ -185,7 +189,7 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
     if(isample.isData) newCut = Form("(%s)*((%s)*(%s))",
 				     isample.extraWeight().c_str(), m_cut.c_str(), isample.extraCut().c_str());
     else newCut = Form("weightAll*%6.6e*(%s)*((%s)*(%s))",
-				     luminosity, isample.extraWeight().c_str(), m_cut.c_str(), isample.extraCut().c_str());
+		       luminosity[isample.year()], isample.extraWeight().c_str(), m_cut.c_str(), isample.extraCut().c_str());
     if(isample.isData || isample.drawAsData) dataHistName = isample.name();
     hists.push_back(new TH1D(isample.name().c_str(), isample.name().c_str(), m_nbins, m_xmin, m_xmax));
     std::cout << "Creating histogram " << isample.name() << " for variable " << m_variable << std::endl;
@@ -228,7 +232,10 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
     // if the bin width was rounded to zero, use a double instead
     if(binWidth==0) {
       double binWidthD = static_cast<double>((m_xmax-m_xmin)/m_nbins);
-      yTitle = Form("Events / %1.1f", binWidthD);
+      if(binWidthD < 0.01) yTitle = Form("Events / %1.3f", binWidthD);
+      else if(binWidthD < 0.1) yTitle = Form("Events / %1.2f", binWidthD);
+      else yTitle = Form("Events / %1.1f", binWidthD);
+
     }
     if(m_variable.find("Minv")!=std::string::npos ||
        m_variable.find("qt")!=std::string::npos ||
@@ -248,6 +255,7 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
   }
 
   hs->Draw("hist,same");
+
   sum->SetMarkerSize(0);
   sum->SetLineColor(kBlack);
   sum->SetFillColor(kBlack);
@@ -284,7 +292,7 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
   lat->SetTextSize(0.038);
   lat->DrawLatexNDC(0.17, 0.96, "#font[62]{CMS} #scale[0.8]{#font[52]{Preliminary}}");
   lat->SetTextFont(42);
-  lat->DrawLatexNDC(0.70, 0.96, Form("%1.1f fb^{-1} (13 TeV)", luminosity));
+  lat->DrawLatexNDC(0.70, 0.96, Form("%1.1f fb^{-1} (13 TeV)", luminosity[m_samples.front().year()]));
 
   // draw ratio
   pad2->cd();
@@ -295,6 +303,7 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
   line->SetLineColor(kRed);
   line->SetLineStyle(kDashed);
   line->Draw();
+  ratio->Draw("same");
 
   c->Print(Form("%s/%s_%s_lin.pdf", outputDirectory.c_str(), variable().c_str(), extraString.c_str()));
   c->Print(Form("%s/%s_%s.root", outputDirectory.c_str(), variable().c_str(), extraString.c_str()));

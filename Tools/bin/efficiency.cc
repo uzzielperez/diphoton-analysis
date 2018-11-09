@@ -116,7 +116,7 @@ void oneHist(const std::string& varname, TChain *ch, const std::string& year)
   lat->SetTextSize(0.038);
   lat->DrawLatexNDC(0.17, 0.96, "#font[62]{CMS} #scale[0.8]{#font[52]{Preliminary}}");
   lat->SetTextFont(42);
-  lat->DrawLatexNDC(0.70, 0.96, Form("%1.1f fb^{-1} (13 TeV)", luminosity2018));
+  lat->DrawLatexNDC(0.70, 0.96, Form("%1.1f fb^{-1} (13 TeV)", luminosity["2018"]));
 
   c1->Print(Form("plots/eff_%s_%s.pdf", year.c_str(), varForFilename.c_str()));
 }
