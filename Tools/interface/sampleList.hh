@@ -191,6 +191,9 @@ void init()
   chData2017->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017E-31Mar2018-v1__MINIAOD/180614_042850/*.root");
   chData2017->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2017F-31Mar2018-v1__MINIAOD/180615_235936/*.root");
 
+  TChain *chDataJetHT2017_unskimmed = new TChain(treeType);
+  chDataJetHT2017_unskimmed->Add(baseDirectory + "/store/user/cawest/JetHT/crab_JetHT__Run2017B-PromptReco-v1__MINIAOD/181106_054515/0000/*.root");
+
   TChain *chData2016_unskimmed = new TChain(treeType);
   chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016H-03Feb2017_ver3-v1__MINIAOD/180412_014155/0000/*.root");
   chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016F-03Feb2017-v1__MINIAOD/180412_013649/0000/*.root");
@@ -293,28 +296,48 @@ void init()
   // no 200-300 events pass the selection; 300-500 has only a single high-weight event
   // chJJ->Add(baseDirectory + "/store/user/cawest/QCD_HT200to300_TuneCP5_13TeV-madgraph-pythia8/crab_QCD_HT200to300_TuneCP5_13TeV-madgraph-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_rea/180618_121815/0000/*.root");
   // chJJ->Add(baseDirectory + "/store/user/cawest/QCD_HT300to500_TuneCP5_13TeV-madgraph-pythia8/crab_QCD_HT300to500_TuneCP5_13TeV-madgraph-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_rea/180618_121837/0000/*.root");
+
+  TChain *chVG_2016 = new TChain(treeType);
+  chVG_2016->Add(baseDirectory + "/store/user/cawest/WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8__Summer16_ext1-v1__MINIAODSIM/171204_064156/0000/*.root");
+  chVG_2016->Add(baseDirectory + "/store/user/cawest/WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8__Summer16_ext2-v1__MINIAODSIM/171204_064218/0000/*.root");
+  chVG_2016->Add(baseDirectory + "/store/user/cawest/ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8__Summer16_ext1-v1__MINIAODSIM/171204_064244/0000/*.root");
   TChain *chVG = new TChain(treeType);
-  chVG->Add(filestring("WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX"));
-  chVG->Add(filestring("ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX"));
-  TChain *chW = new TChain(treeType);
+  chVG->Add(chVG_2016);
+
+  TChain *chW_2016 = new TChain(treeType);
   // The following samples have a bug and should be excluded.
   // Should switch to a different W sample.
   //  chW->Add(filestring("WToLNu_0J_13TeV-amcatnloFXFX"));
   //  chW->Add(filestring("WToLNu_1J_13TeV-amcatnloFXFX"));
-  chW->Add(filestring("WToLNu_2J_13TeV-amcatnloFXFX"));
+  chW_2016->Add(baseDirectory + "/store/user/cawest/WToLNu_2J_13TeV-amcatnloFXFX-pythia8/crab_WToLNu_2J_13TeV-amcatnloFXFX-pythia8__Summer16_ext1-v1__MINIAODSIM/171204_064542/0000/*.root");
+  TChain *chW= new TChain(treeType);
+  chW->Add(chW_2016);
+
+  TChain *chDY_2016 = new TChain(treeType);
+  chDY_2016->Add(baseDirectory + "/store/user/cawest/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8__RunIISummer16MiniAODv2-BS2016_BSandPUSumme/171204_064610/0000/*.root");
   TChain *chDY = new TChain(treeType);
-  //  chDY->Add(filestring("DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX"));
   chDY->Add(baseDirectory + "/store/user/cawest/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8__Fall17_PU2017_ext1-v1__MINIAODSIM/180719_182748/0000/*.root");
   chDY->Add(baseDirectory + "/store/user/cawest/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc201/180719_180041/0000/*.root");
+
+  TChain *chTTG_2016 = new TChain(treeType);
+  chTTG_2016->Add(baseDirectory + "/store/user/cawest/TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/crab_TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8__Summer16-v1__MINIAODSIM/171204_064321/0000/*.root");
+  chTTG_2016->Add(baseDirectory + "/store/user/cawest/TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/crab_TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8__Summer16_ext1-v1__MINIAODSIM/171204_064336/0000/*.root");
   TChain *chTTG = new TChain(treeType);
-  // chTTG->Add(filestring("TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX"));
+  chTTG->Add(baseDirectory + "/store/user/cawest/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/crab_TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8__Fall17_PU2017_ext1-v1__MINIAODSIM/180719_183108/0000/*.root");
+  chTTG->Add(baseDirectory + "/store/user/cawest/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/crab_TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc201/180719_180016/0000/*.root");
 
   // sum of minor backgrounds for use in limit setting
+  TChain *chOther_2016 = new TChain(treeType);
+  chOther_2016->Add(chVG_2016);
+  chOther_2016->Add(chW_2016);
+  chOther_2016->Add(chDY_2016);
+  chOther_2016->Add(chTTG_2016);
   TChain *chOther = new TChain(treeType);
   chOther->Add(chVG);
   chOther->Add(chW);
   chOther->Add(chDY);
   chOther->Add(chTTG);
+
   TChain *chGGGen = new TChain("diphoton/fSherpaGenTree");
   chGGGen->Add(filestring("GGJets_M-60To200_Pt-50_13TeV-sherpa"));
   chGGGen->Add(filestring("GGJets_M-200To500_Pt-50_13TeV-sherpa"));
@@ -351,6 +374,7 @@ void init()
   chains["data_2017"] = chData2017;
   chains["data_2017_unskimmed"] = chData2017_unskimmed;
   chains["data_2018"] = chData2018;
+  chains["data_jetht_2017_unskimmed"] = chDataJetHT2017_unskimmed;
   chains["data_jetht_2018_unskimmed"] = chDataJetHT2018_unskimmed;
   chains["data_2018_unskimmed"] = chData2018_unskimmed;
   chains["data_2018_newjson"] = chData2018_newjson;
@@ -375,16 +399,16 @@ void init()
   chains["w_2016"] = chW;
   chains["dy_2018"] = chDY;
   chains["dy_2017"] = chDY;
-  chains["dy_2016"] = chDY;
+  chains["dy_2016"] = chDY_2016;
   chains["ttg_2018"] = chTTG;
   chains["ttg_2017"] = chTTG;
-  chains["ttg_2016"] = chTTG;
+  chains["ttg_2016"] = chTTG_2016;
   chains["gg70_2018"] = chGG70;
   chains["gg70_2017"] = chGG70;
   chains["gg70_2016"] = chGG70;
   chains["other_2018"] = chOther;
   chains["other_2017"] = chOther;
-  chains["other_2016"] = chOther;
+  chains["other_2016"] = chOther_2016;
 
   // ADD initialization done separately to avoid clutter
   initADD();
