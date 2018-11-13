@@ -5,6 +5,7 @@
 
 #include "TCanvas.h"
 #include "TChain.h"
+#include "TFile.h"
 #include "TH1.h"
 #include "THStack.h"
 #include "TLatex.h"
@@ -25,7 +26,7 @@ public:
   sample(std::string name, std::string label, std::string year, std::string extraWeight, std::string extraCut);
   sample();
 
-  TChain* chain() { return chains[m_name + "_" + m_year]; }
+  TChain* chain();
   std::string name() { return m_name; }
   std::string year() { return m_year; }
   std::string extraWeight() { return m_extraWeight; }
@@ -37,6 +38,8 @@ public:
   int markerColor() { return m_markerColor; }
 
   bool isData;
+  bool isDataDrivenBarrel;
+  bool isDataDrivenEndcap;
   bool drawAsData;
 
   int m_markerColor;
@@ -64,13 +67,20 @@ sample::sample(std::string name, std::string label, std::string year, std::strin
   m_fillStyle(fillStyles[m_name]),
   m_fillColor(fillColors[m_name])
 {
-  isData = false;
-  drawAsData = false;
+  isData = isDataDrivenBarrel = isDataDrivenEndcap = drawAsData = false;
   if(name.find("data")!=std::string::npos) isData = true;
 }
 
 // make compiler happy
 sample::sample() {}
+
+TChain* sample::chain()
+{
+  // use 2018 MC samples for "2018_newjson"
+  if (m_year.compare("2018_newjson") == 0 && !isData) return chains[m_name + "_2018"];
+  else return chains[m_name + "_" + m_year];
+}
+
 
 class plot {
 
@@ -193,7 +203,14 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
     if(isample.isData || isample.drawAsData) dataHistName = isample.name();
     hists.push_back(new TH1D(isample.name().c_str(), isample.name().c_str(), m_nbins, m_xmin, m_xmax));
     std::cout << "Creating histogram " << isample.name() << " for variable " << m_variable << std::endl;
-    isample.chain()->Project(isample.name().c_str(), m_variable.c_str(), newCut.Data());
+    if(isample.isDataDrivenBarrel || isample.isDataDrivenEndcap) {
+      TFile *g = TFile::Open(Form("data/fakes_%s_jetht.root", isample.year().c_str()));
+      if(isample.isDataDrivenBarrel) g->GetObject("BB/gjDataDrivenBB", hists.back());
+      else g->GetObject("BE/gjDataDrivenBE", hists.back());
+    }
+    else {
+      isample.chain()->Project(isample.name().c_str(), m_variable.c_str(), newCut.Data());
+    }
     if(!isample.isData) {
       sum->Add(hists.back());
       std::cout << "Adding histogram: " << hists.back()->GetName() << std::endl;
@@ -263,22 +280,28 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
   sum->Draw("E2,same");
 
   TH1D *ratio = 0;
+  TH1D *ratioError = 0;
   // draw data histogram on top
   for(auto ihist : hists) {
     TString name(ihist->GetName());
     if(name.Contains("data")) {
       ihist->Draw("e,same");
       ratio = dynamic_cast<TH1D*>(ihist->Clone("ratio"));
+      ratioError = dynamic_cast<TH1D*>(ihist->Clone("ratioError"));
       ratio->GetYaxis()->SetTitle("Ratio");
       for(int i=0; i<=ratio->GetNbinsX(); i++) {
 	double content = sum->GetBinContent(i);
 	if(content != 0) {
 	  ratio->SetBinContent(i, ratio->GetBinContent(i)/content);
 	  ratio->SetBinError(i, ratio->GetBinError(i)/content);
+	  ratioError->SetBinContent(i, 1.0);
+	  ratioError->SetBinError(i, sum->GetBinError(i)/content);
 	}
 	else {
 	  ratio->SetBinContent(i, 0.0);
 	  ratio->SetBinError(i, 0.0);
+	  ratioError->SetBinContent(i, 1.0);
+	  ratioError->SetBinError(i, 0.0);
 	}
       }
     }
@@ -299,6 +322,17 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
   ratio->GetXaxis()->SetTitle(reformat(m_variable.c_str()));
   ratio->GetYaxis()->SetRangeUser(0., 2.1);
   ratio->Draw();
+  ratioError->SetMarkerSize(0);
+  ratioError->SetLineColor(kBlack);
+  ratioError->SetFillColor(kBlack);
+  ratioError->SetFillStyle(3344);
+  gStyle->SetErrorX(0.5);
+  ratioError->Draw("E2,same");
+  ratio->GetXaxis()->SetTitleSize(ratio->GetXaxis()->GetTitleSize()/0.7);
+  ratio->GetXaxis()->SetTitleOffset(ratio->GetXaxis()->GetTitleOffset()/0.7);
+  ratio->GetYaxis()->SetLabelSize(ratio->GetYaxis()->GetLabelSize()/0.7);
+  ratio->GetYaxis()->SetTitleSize(ratio->GetYaxis()->GetTitleSize()/0.7);
+  ratio->GetYaxis()->SetTitleOffset(ratio->GetYaxis()->GetTitleOffset()/0.7);
   TLine *line = new TLine(ratio->GetXaxis()->GetXmin(), 1.0, ratio->GetXaxis()->GetXmax(), 1.0);
   line->SetLineColor(kRed);
   line->SetLineStyle(kDashed);
