@@ -50,8 +50,8 @@ int main(int argc, char *argv[])
   // initialize chains and default styles
   init();
 
-  std::string trigger("HLT_DoublePhoton70");
-  if(data_year.compare("2016") == 0) trigger = "HLT_DoublePhoton60";
+  std::string trigger("(HLT_DoublePhoton70 || HLT_ECALHT800)");
+  if(data_year.compare("2016") == 0) trigger = "(HLT_DoublePhoton60 || HLT_ECALHT800)";
   // define samples to be used in histograms
   sample data("data", "Data", data_year, trigger);
   data.isData = true;
@@ -86,8 +86,8 @@ int main(int argc, char *argv[])
   plot p11(samples, "Photon1.phi", cut, nbins/2, -TMath::Pi(), TMath::Pi());
   plot p12(samples, "Photon2.phi", cut, nbins/2, -TMath::Pi(), TMath::Pi());
   plot p13(samples, "abs(Diphoton.deltaPhi)", cut, nbins/4, 0, TMath::Pi());
-  plot p14(samples, "Photon1.sigmaIphiIphi5x5", cut, nbins/2, 0, 0.04);
-  plot p15(samples, "Photon2.sigmaIphiIphi5x5", cut, nbins/2, 0, 0.04);
+  plot p14(samples, "Photon1.sigmaIphiIphi5x5", cut, 40, 0, 0.04);
+  plot p15(samples, "Photon2.sigmaIphiIphi5x5", cut, 40, 0, 0.04);
   plot p16(samples, "Photon1.r9_5x5", cut, nbins/2, 0., 1.0);
   plot p17(samples, "Photon2.r9_5x5", cut, nbins/2, 0., 1.0);
   plot p18(samples, "Photon1.chargedHadIso03", cut, nbins/2, 0., 10);
