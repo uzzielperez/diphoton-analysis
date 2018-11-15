@@ -12,7 +12,7 @@
 const double etaMaxBarrel = 1.4442;
 const double etaMinEndcap = 1.56;
 const double etaMaxEndcap = 2.5;
-const double minvMin = 350;
+const double minvMin = 500;
 
 void fakePrediction::Loop(int year, const std::string &dataset)
 {
