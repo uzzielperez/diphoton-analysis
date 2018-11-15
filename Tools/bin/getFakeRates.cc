@@ -109,7 +109,10 @@ int main(int argc, char *argv[])
       latex->DrawLatex(0.5, 0.7, Form("%s, %s", displayDictionary[regions[iRegion]].c_str(), year.c_str()));
       TString isoString(Form("%d < Iso_{ch} < %d GeV", isolationRanges[iIso].first, isolationRanges[iIso].second));
       latex->DrawLatex(0.5, 0.65, isoString);
-
+      std::map<std::string, TString> prettyDatasetString;
+      prettyDatasetString["jetht"] = "JetHT";
+      prettyDatasetString["doublemuon"] = "DoubleMuon";
+      latex->DrawLatex(0.5, 0.6, prettyDatasetString[dataset]);
       output->cd();
       fitResult->Write();
       graph->Write();
@@ -142,7 +145,7 @@ TF1* getFakeRateFunction(const std::string& isolation, const std::string& region
   fitFunc["EE_2015"] = "(x<175)*([0]+[1]*(x-175)+[2]*(x-175)^2)+(x>175)*([0]+(x-175)*[1])";
   fitFunc["EE_2016"] = "[0]+[1]/(x^[2])";
   fitFunc["EE_2017"] = "[0]+[1]/(x^[2])";
-  fitFunc["EE_2018"] = "(x<175)*([0]+[1]*(x-175)+[2]*(x-175)^2)+(x>175)*([0]+(x-175)*[1])";
+  fitFunc["EE_2018"] = "[0]+[1]/(x^[2])";
 
   TString fitName(Form("fakeRate%s_%s_fit", region.c_str(), isolation.c_str()));
 
@@ -153,8 +156,7 @@ TF1* getFakeRateFunction(const std::string& isolation, const std::string& region
   if(region=="EE" && year=="2015") fakeRate->SetParameters(0.07583295145724, 0.00003927399330, 0.00000255676015);
   if(region=="EB" && year=="2016") fakeRate->SetParameters(0.0297647, 205.612, 1.76173);
   if(region=="EE" && year=="2016") fakeRate->SetParameters(0.282890, 6.37370, 0.863015);
-  if(region=="EE" && year=="2018") fakeRate->SetParameters(0.431, 0.0009, 1.227e-5);
-  if(region=="EE" && year=="2017") {
+  if(region=="EE" && (year=="2017" || year=="2018")) {
     fakeRate->SetParameters(0., 2.3, 0.1);
     fakeRate->SetParLimits(2, 0.1, 3.5);
   }
