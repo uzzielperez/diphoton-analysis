@@ -18,9 +18,10 @@
 #include "TCanvas.h"
 #include "TStyle.h"
 #include "RooChi2Var.h"
-#include "setTDRStyle.C"
 #include <vector>
 #include <algorithm>
+
+#include "../../../Tools/interface/sampleList.hh"
 
 /**
  * Return background and uncertainty instead of fakerate
@@ -218,8 +219,9 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   else t_label->DrawLatexNDC(0.55,0.60,"ECAL endcap");
   t_label->     DrawLatexNDC(0.55,0.55,label_pt_bin + " GeV");
   t_label->     DrawLatexNDC(0.55,0.50,sideband_string);
-  TString txt = "CMS Preliminary   L = 35.9 fb^{-1}   #sqrt{s}=13 TeV";
-  t_label->DrawLatexNDC(0.17,0.975,txt);
+  t_label->DrawLatexNDC(0.17, 0.975, "#font[62]{CMS} #scale[0.8]{#font[52]{Preliminary}}");
+  t_label->SetTextFont(42);
+  t_label->DrawLatexNDC(0.70, 0.975, Form("%1.1f fb^{-1} (13 TeV)", luminosity[era.Data()]));
   //  t_label->     DrawLatexNDC(0.55,0.45,TString::Format("#chi^{2}/ndf = %6.1f",fitres));
   
   TObject *objdata;
@@ -255,7 +257,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   xframeClone->Draw();
   xframe->Draw("same");
 
-  t_label->DrawLatexNDC(0.17,0.975,txt);
+  //  t_label->DrawLatexNDC(0.17,0.975,txt);
 
   if (templateVariable == "sieie") {
     if (etaBin.Contains("EB")) xframeClone->GetXaxis()->SetRangeUser(0.,0.03);
