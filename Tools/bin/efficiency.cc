@@ -98,10 +98,10 @@ void oneHist(const std::string& varname, TChain *ch, const std::string& year, bo
   if(year.find("2017") != std::string::npos || year.find("2018") != std::string::npos) {
     //    numeratorCut = "isGood && HLT_DoublePhoton85 && HLT_DoublePhoton33_CaloIdL";
     if(isTF) {
-      numeratorCut = "isTF && (HLT_DoublePhoton70 || HLT_ECALHT800) &&" + jetCut + "&& abs(TFPhoton1.eta)<2.5 && abs(TFPhoton2.eta)<2.5 && TFPhoton1.r9_5x5 > 0.8 && TFPhoton2.r9_5x5 > 0.8 && TFPhoton1.hadronicOverEm < 0.1 && TFPhoton2.hadronicOverEm < 0.1";
+      numeratorCut = "isTF && (HLT_DoublePhoton70 || HLT_ECALHT800) && HLT_DoublePhoton33_CaloIdL &&" + jetCut + "&& abs(TFPhoton1.eta)<2.5 && abs(TFPhoton2.eta)<2.5 && TFPhoton1.r9_5x5 > 0.8 && TFPhoton2.r9_5x5 > 0.8 && TFPhoton1.hadronicOverEm < 0.1 && TFPhoton2.hadronicOverEm < 0.1";
     }
     else {
-      numeratorCut = "isGood && (HLT_DoublePhoton70 || HLT_ECALHT800) && HLT_DoublePhoton33_CaloIdL && abs(Photon1.eta)<2.5 && abs(Photon2.eta)<2.5";
+      numeratorCut = "isGood && (HLT_DoublePhoton70 || HLT_ECALHT800) && HLT_DoublePhoton33_CaloIdL && abs(Photon1.eta)<2.5 && abs(Photon2.eta)<2.5 && Photon1.r9_5x5 > 0.8 && Photon2.r9_5x5 > 0.8";
     }
     if(varname.find("eta") != std::string::npos) numeratorCut += "&& Photon2.pt>80";
   }
@@ -112,7 +112,7 @@ void oneHist(const std::string& varname, TChain *ch, const std::string& year, bo
       denominatorCut = "isTF &&" + jetCut + "&& abs(TFPhoton1.eta)<2.5 && abs(TFPhoton2.eta)<2.5 && TFPhoton1.r9_5x5 > 0.8 && TFPhoton2.r9_5x5 > 0.8 && TFPhoton1.hadronicOverEm < 0.1";
     }
     else {
-      denominatorCut = "isGood && HLT_DoublePhoton33_CaloIdL && abs(TFPhoton1.eta)<2.5 && abs(TFPhoton2.eta)<2.5";
+      denominatorCut = "isGood && HLT_DoublePhoton33_CaloIdL && abs(Photon1.eta)<2.5 && abs(Photon2.eta)<2.5 && Photon1.r9_5x5 > 0.8 && Photon2.r9_5x5 > 0.8";
     }
     if(varname.find("eta") != std::string::npos) denominatorCut += isTF ? "&& TFPhoton2.pt>80" : "&& Photon2.pt>80";
     ch->Draw(denominator.c_str(), denominatorCut);
