@@ -9,7 +9,7 @@ import os
 diphoton_analysis = __import__("diphoton-analysis.CommonClasses.das_utils")
 
 do2018data = False
-do2018dataDoubleMuon = True
+do2018dataDoubleMuon = False
 do2017data = False
 do2017datarereco = False
 do2016data = False
@@ -38,26 +38,22 @@ if do2018data:
   DATASETS.append(["/JetHT/Run2018A-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018A-PromptReco-v2/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018A-PromptReco-v3/MINIAOD"])
-  # note that the 06JUL2018 re-reco should not be used; it is a special purpose re-reco:
-  # https://hypernews.cern.ch/HyperNews/CMS/get/dataopsrequests/24681.html
   DATASETS.append(["/JetHT/Run2018B-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018B-PromptReco-v2/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018C-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018C-PromptReco-v2/MINIAOD"])
-#  DATASETS.append(["/JetHT/Run2018C-PromptReco-v3/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2018C-PromptReco-v3/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018D-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018D-PromptReco-v2/MINIAOD"])
 if do2018dataDoubleMuon:
   DATASETS.append(["/DoubleMuon/Run2018A-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2018A-PromptReco-v2/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2018A-PromptReco-v3/MINIAOD"])
-  # note that the 06JUL2018 re-reco should not be used; it is a special purpose re-reco:
-  # https://hypernews.cern.ch/HyperNews/CMS/get/dataopsrequests/24681.html
   DATASETS.append(["/DoubleMuon/Run2018B-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2018B-PromptReco-v2/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2018C-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2018C-PromptReco-v2/MINIAOD"])
-#  DATASETS.append(["/DoubleMuon/Run2018C-PromptReco-v3/MINIAOD"])
+  DATASETS.append(["/DoubleMuon/Run2018C-PromptReco-v3/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2018D-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2018D-PromptReco-v2/MINIAOD"])
 # diphoton samples (2017 data)
