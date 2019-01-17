@@ -3,6 +3,7 @@
 <environment>
   <bin file="basicplots.cc" name="basicplots.exe"/>
   <bin file="datadriven.cc" name="datadriven.exe"/>
+  <bin file="compare.cc" name="compare.exe"/>
   <bin file="compareGenerators.cc" name="compareGenerators.exe"/>
   <bin file="kfactorStatError.cc" name="kfactorStatError.exe"/>
   <bin file="kfactorScaleVariations.cc" name="kfactorScaleVariations.exe"/>
