@@ -60,8 +60,11 @@ if "Run2017" in outName:
         globalTag = '92X_dataRun2_Prompt_v8'
         jetLabel = "updatedPatJetsUpdatedJEC"
 if "Run2018" in outName:
-    globalTag = '101X_dataRun2_Prompt_v11'
     jetLabel = "updatedPatJetsUpdatedJEC"
+    if "17Sep2018" in outName:
+        globalTag = '102X_dataRun2_Sep2018Rereco_v1'
+    else:
+        globalTag = '101X_dataRun2_Prompt_v11'
 # override options for MC
 if isMC:
     version = os.getenv("CMSSW_VERSION")
