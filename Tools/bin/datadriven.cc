@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
   std::string kinematic_cuts("Photon1.pt>" + pt_cut + " && Photon2.pt>" + pt_cut + "&&" + minv_cut);
   std::string id_cuts("Photon1.r9_5x5 > 0.8 && Photon2.r9_5x5 > 0.8");
   std::string eta_cuts_BB("abs(Photon1.scEta)<1.4442 && abs(Photon2.scEta)<1.4442");
-  std::string eta_cuts_BE("( !(abs(Photon1.scEta)<1.4442 && abs(Photon2.scEta)<1.4442) && ((abs(Photon1.scEta)<1.4442 && (abs(Photon2.scEta)>1.56&&abs(Photon2.scEta)<2.5)) || (abs(Photon2.scEta)<1.4442 && (abs(Photon1.scEta)>1.56&&abs(Photon1.scEta)<2.5))))");
+  std::string eta_cuts_BE("( !(abs(Photon1.scEta)<1.4442 && abs(Photon2.scEta)<1.4442) && ((abs(Photon1.scEta)<1.4442 && (abs(Photon2.scEta)>1.566&&abs(Photon2.scEta)<2.5)) || (abs(Photon2.scEta)<1.4442 && (abs(Photon1.scEta)>1.566&&abs(Photon1.scEta)<2.5))))");
   std::string cut_no_Minv(kinematic_cuts + "&&" + eta_cuts_BB + "&&" + id_cuts + "&& isGood");
   if(endcap) cut_no_Minv = kinematic_cuts + "&&" + eta_cuts_BE + "&&" + id_cuts + "&& isGood";
   std::string cut(cut_no_Minv);
@@ -69,12 +69,30 @@ int main(int argc, char *argv[])
   samples.push_back(gj);
   samples.push_back(gg);
 
-  plot p0(samples, "Minv", cut_no_Minv, 40, 0, 2000);
+  plot p0(samples, "Diphoton.Minv", cut_no_Minv, 40, 0, 2000);
+  plot p1(samples, "Photon1.pt", cut, 40, 0, 1000);
+  plot p2(samples, "Photon2.pt", cut, 40, 0, 1000);
+  plot p3(samples, "abs(Diphoton.deltaPhi)", cut, 25, 0, TMath::Pi());
+  plot p4(samples, "Diphoton.deltaEta", cut, 50, -5, 5);
+  plot p5(samples, "Diphoton.deltaR", cut, 60, 0, 6);
+  plot p6(samples, "Photon1.scEta", cut, 25, -2.5, 2.5);
+  plot p7(samples, "Photon1.phi", cut, 50, -TMath::Pi(), TMath::Pi());
+  plot p8(samples, "Photon1.scEta", cut, 25, -2.5, 2.5);
+  plot p9(samples, "Photon1.phi", cut, 50, -TMath::Pi(), TMath::Pi());
 
   std::string extraFilenameInfo(region);
   extraFilenameInfo += "_datadriven_";
   extraFilenameInfo += data_year;
 
   p0.output("plots", extraFilenameInfo);
+  p1.output("plots", extraFilenameInfo);
+  p2.output("plots", extraFilenameInfo);
+  p3.output("plots", extraFilenameInfo);
+  p4.output("plots", extraFilenameInfo);
+  p5.output("plots", extraFilenameInfo);
+  p6.output("plots", extraFilenameInfo);
+  p7.output("plots", extraFilenameInfo);
+  p8.output("plots", extraFilenameInfo);
+  p9.output("plots", extraFilenameInfo);
 
 }
