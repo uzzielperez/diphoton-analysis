@@ -28,6 +28,7 @@ public:
 
   TChain* chain();
   std::string name() { return m_name; }
+  std::string label() { return m_label; }
   std::string year() { return m_year; }
   std::string extraWeight() { return m_extraWeight; }
   std::string extraCut() { return m_extraCut; }
@@ -36,11 +37,13 @@ public:
   int fillStyle() { return m_fillStyle; }
   int fillColor() { return m_fillColor; }
   int markerColor() { return m_markerColor; }
+  void setLabel(std::string label) { m_label = label; }
 
   bool isData;
   bool isDataDrivenBarrel;
   bool isDataDrivenEndcap;
   bool drawAsData;
+  bool drawAsMC;
 
   int m_markerColor;
 
@@ -67,7 +70,7 @@ sample::sample(std::string name, std::string label, std::string year, std::strin
   m_fillStyle(fillStyles[m_name]),
   m_fillColor(fillColors[m_name])
 {
-  isData = isDataDrivenBarrel = isDataDrivenEndcap = drawAsData = false;
+  isData = isDataDrivenBarrel = isDataDrivenEndcap = drawAsData = drawAsMC = false;
   if(name.find("data")!=std::string::npos) isData = true;
 }
 
@@ -201,17 +204,32 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
     else newCut = Form("weightAll*%6.6e*(%s)*((%s)*(%s))",
 		       luminosity[isample.year()], isample.extraWeight().c_str(), m_cut.c_str(), isample.extraCut().c_str());
     if(isample.isData || isample.drawAsData) dataHistName = isample.name();
-    hists.push_back(new TH1D(isample.name().c_str(), isample.name().c_str(), m_nbins, m_xmin, m_xmax));
+    hists.push_back(new TH1D(isample.name().c_str(), isample.label().c_str(), m_nbins, m_xmin, m_xmax));
     std::cout << "Creating histogram " << isample.name() << " for variable " << m_variable << std::endl;
     if(isample.isDataDrivenBarrel || isample.isDataDrivenEndcap) {
-      TFile *g = TFile::Open(Form("data/fakes_%s_jetht.root", isample.year().c_str()));
-      if(isample.isDataDrivenBarrel) g->GetObject("BB/gjDataDrivenBB", hists.back());
-      else g->GetObject("BE/gjDataDrivenBE", hists.back());
+      std::map<std::string, std::string> histNameDD;
+      histNameDD["Diphoton.Minv"] = "Minv";
+      histNameDD["Minv"] = "Minv";
+      histNameDD["Diphoton.qt"] = "qt";
+      histNameDD["abs(Diphoton.deltaPhi)"] = "absDeltaPhi";
+      histNameDD["Diphoton.deltaEta"] = "deltaEta";
+      histNameDD["Diphoton.deltaR"] = "deltaR";
+      histNameDD["Photon1.pt"] = "pt1";
+      histNameDD["Photon1.scEta"] = "scEta1";
+      histNameDD["Photon1.phi"] = "phi1";
+      histNameDD["Photon2.pt"] = "pt2";
+      histNameDD["Photon2.scEta"] = "scEta2";
+      histNameDD["Photon2.phi"] = "pt2";
+      TString filename(Form("data/fakes_%s_average.root", isample.year().c_str()));
+      TFile *g = TFile::Open(Form(filename));
+      if(isample.isDataDrivenBarrel) g->GetObject(Form("BB/BB_%s", histNameDD[m_variable].c_str()), hists.back());
+      else g->GetObject(Form("BE/BE_%s", histNameDD[m_variable].c_str()), hists.back());
+      hists.back()->SetTitle("Data-driven #gammaj+jj");
     }
     else {
       isample.chain()->Project(isample.name().c_str(), m_variable.c_str(), newCut.Data());
     }
-    if(!isample.isData) {
+    if(!(isample.isData) || (isample.isData && isample.drawAsMC)) {
       sum->Add(hists.back());
       std::cout << "Adding histogram: " << hists.back()->GetName() << std::endl;
     }
@@ -235,9 +253,11 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
   leg->SetFillStyle(0);
   leg->SetBorderSize(0);
 
+  bool foundData = false;
   // draw data histogram on top
   for(auto ihist : hists) {
     TString name(ihist->GetName());
+    TString label(ihist->GetTitle());
     ihist->SetLineColor(kBlack);
     ihist->GetXaxis()->SetNdivisions(505);
     ihist->GetXaxis()->SetTitle(reformat(m_variable.c_str()));
@@ -260,15 +280,22 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
     ihist->GetYaxis()->SetTitle(reformat(yTitle));
     ihist->GetYaxis()->SetTitleOffset(1.35);
 
-    if(name.EqualTo(dataHistName)) {
+    if(!foundData && name.EqualTo(dataHistName)) {
       ihist->SetMarkerColor(kBlack);
       ihist->Draw("e");
       //      ihist->GetYaxis()->SetRangeUser(ihist->GetMinimum(), std::max(sum->GetMaximum(), ihist->GetMaximum())*1.1);
-      leg->AddEntry(ihist, prettyName[ihist->GetName()].c_str(), "ELP");
+      leg->AddEntry(ihist, label, "ELP");
+      foundData = true;
     }
     else {
-      leg->AddEntry(ihist, prettyName[ihist->GetName()].c_str(), "F");
+      // temporary hack! remove me!
+      // ihist->SetFillStyle(3344);
+      // ihist->SetFillColor(kBlack);
+      leg->AddEntry(ihist, label, "F");
+      // temporary hack! remove me!
+      //      leg->AddEntry(sum, "Data (2018C re-reco)", "F");
     }
+    //    if(label.EqualTo("Data (2017)")) ihist->SetFillStyle(3344);
   }
 
   hs->Draw("hist,same");
@@ -282,9 +309,11 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
   TH1D *ratio = 0;
   TH1D *ratioError = 0;
   // draw data histogram on top
+  foundData = false;
   for(auto ihist : hists) {
     TString name(ihist->GetName());
-    if(name.Contains("data")) {
+    if(name.Contains("data") && !foundData) {
+      foundData = true;
       ihist->Draw("e,same");
       ratio = dynamic_cast<TH1D*>(ihist->Clone("ratio"));
       ratioError = dynamic_cast<TH1D*>(ihist->Clone("ratioError"));
