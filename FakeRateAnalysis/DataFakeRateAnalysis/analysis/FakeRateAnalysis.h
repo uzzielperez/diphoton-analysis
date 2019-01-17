@@ -989,7 +989,7 @@ public :
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual void     Loop(int iCut = 0, TString era="UNKNOWN", TString dataset="UNKNOWN");
+   virtual void     Loop(int iCut = 0, TString era="UNKNOWN", TString dataset="UNKNOWN", int pvCutLow = 0, int pvCutHigh = 500);
 
    //virtual void     Loop();
    virtual Bool_t   Notify();

@@ -4,7 +4,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void FakeRateAnalysis::Loop(int iCut = 0, TString era="UNKNOWN", TString dataset="UNKNOWN")
+void FakeRateAnalysis::Loop(int iCut = 0, TString era = "UNKNOWN", TString dataset = "UNKNOWN", int pvCutLow = 0, int pvCutHigh = 500)
 {
 //   In a ROOT session, you can do:
 //      root> .L FakeRateAnalysis.C
@@ -213,6 +213,7 @@ void FakeRateAnalysis::Loop(int iCut = 0, TString era="UNKNOWN", TString dataset
   TH1D* phoIsoEE_pT50To70_num = new TH1D("phoIsoEE_pT50To70_num","",650,-50.,2.);
   TH1D* hOverEEE_pT50To70_num = new TH1D("hOverEEE_pT50To70_num","",100,0.,0.05);
   TH1D* sieieEE_pT50To70_num = new TH1D("sieieEE_pT50To70_num","",100,0.,0.03);
+  TH1D* npv = new TH1D("npv", "", 200, 0, 200);
 
   // loop over all entries
   Long64_t nentries = fChain->GetEntriesFast();
@@ -229,6 +230,19 @@ void FakeRateAnalysis::Loop(int iCut = 0, TString era="UNKNOWN", TString dataset
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
     if (Photon_r9_5x5 < 0.8) continue; // r9 cut to sync with resonant analysis
 
+    // calculate nPV
+    int numVtxAfterCut = 0;
+    for(unsigned int i=0; i < VertexCollInfo_vx->size(); i++){
+      int ndof = VertexCollInfo_ndof->at(i);
+      double absZ = fabs(VertexCollInfo_vz->at(i));
+      double d0 = VertexCollInfo_d0->at(i);
+
+      if ( (ndof>=4) && (absZ<=24.) && (d0 <= 2.) ) {
+        numVtxAfterCut++;
+      }
+    }
+    npv->Fill(numVtxAfterCut);
+    if(numVtxAfterCut< pvCutLow || numVtxAfterCut > pvCutHigh) continue;
     // if (!TriggerBit_HLT_PFHT900) continue;
 
     // evaluate jet trigger groupings
@@ -463,7 +477,8 @@ void FakeRateAnalysis::Loop(int iCut = 0, TString era="UNKNOWN", TString dataset
   TString jetMatch = "";
   if (iCut == 1) jetMatch = "_matchedtoLeadingJet";
   else if (iCut == 2) jetMatch = "_matchedtoSubleadingJet";
-  TString outName = TString::Format("%s_fakerate_%s%s_newDenomDef.root", dataset.Data(), era.Data(), jetMatch.Data());
+  TString pv = Form("_nPV%i-%i", pvCutLow, pvCutHigh);
+  TString outName = TString::Format("%s_fakerate_%s%s%s_newDenomDef_test.root", dataset.Data(), era.Data(), jetMatch.Data(), pv.Data());
   TFile file_out(outName,"RECREATE");
   
   // sigmaIetaIetaEB->Write();
@@ -567,7 +582,8 @@ void FakeRateAnalysis::Loop(int iCut = 0, TString era="UNKNOWN", TString dataset
   thirdleadingjetPhoDrEE_denominator->Write();
   thirdleadingjetPhoDrEB_faketemplate->Write();
   thirdleadingjetPhoDrEE_faketemplate->Write();
-  
+  npv->Write();
+
   file_out.ls();
   file_out.Close();
    

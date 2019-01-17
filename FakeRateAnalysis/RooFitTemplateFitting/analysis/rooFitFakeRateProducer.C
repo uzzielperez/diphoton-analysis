@@ -30,7 +30,7 @@
  * From /analysis, run
  * root -l -b -q ../scripts/fakeRateCalculation.C'("mc","sieie")'
  */
-std::pair<double,double> rooFitFakeRateProducer(TString sample, TString templateVariable, TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin, TString era)
+std::pair<double,double> rooFitFakeRateProducer(TString sample, TString templateVariable, TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin, TString era, int pvCutLow, int pvCutHigh)
 {
   std::map<TString, TString> cmssw_version;
   cmssw_version["2016"] = "76X";
@@ -74,11 +74,14 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   TString data_filename = "";
   //  if (sample == "data")      data_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
   //  if (sample == "data")      data_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_UNKNOWN_newDenomDef.root";
+  TString pvCut = "";
   if (sample == "jetht" or sample == "doublemuon") {
     TString matching;
     bool useJetMatching = false;
     if(sample == "jetht" and useJetMatching) matching = "_matchedtoLeadingJet";
-    data_filename = "../../DataFakeRateAnalysis/analysis/" + sample + "_fakerate_" + era + matching + "_newDenomDef.root";
+    if(pvCutLow!=0 || pvCutHigh!=2000) pvCut = Form("_nPV%i-%i", pvCutLow, pvCutHigh);
+    TFile outfile("fakeRatePlots_" + sample + "_" + era + pvCut + ".root","recreate");
+    data_filename = "../../DataFakeRateAnalysis/analysis/" + sample + "_fakerate_" + era + matching + pvCut + "_newDenomDef.root";
   }
   if (sample == "mc")        data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_all_samples_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "mc_QCD")    data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";
@@ -295,7 +298,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   hobjsignal->SetName( TString("signalfit")     + etaBin + TString("_pt") + ptBin + postFix );
   hobjfake->  SetName( TString("bkgfit")        + etaBin + TString("_pt") + ptBin + postFix );
   
-  TFile outfile("fakeRatePlots_" + sample + "_" + era + ".root","update");
+  TFile outfile("fakeRatePlots_" + sample + "_" + era + pvCut + ".root","update");
   outfile.cd();
   hobjdata->Write();
   hobjmodel->Write();

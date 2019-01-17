@@ -1,6 +1,6 @@
 #include "FakeRateAnalysis.C"
 
-void diphoton_chain_looper(TString run, TString dataset) {
+void diphoton_chain_looper(TString run, TString dataset, int npvLow = 0, int npvHigh = 2000) {
 
   // use stopwatch to time
   TStopwatch sw;
@@ -39,6 +39,14 @@ void diphoton_chain_looper(TString run, TString dataset) {
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2017F-31Mar2018-v1__MINIAOD/181021_053606/0000/*.root");
     }
     if(run=="Run2018A" or run=="2018") {
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/181115_215140/0000/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/181115_215140/0001/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/181115_215140/0002/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/181115_215140/0003/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/181115_215140/0004/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/181115_215140/0005/*.root",0);
+    }
+    if(run=="Run2018Aprompt" or run=="2018prompt") {
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018A-PromptReco-v1__MINIAOD/181130_211700/0000/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018A-PromptReco-v1__MINIAOD/181130_211700/0001/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018A-PromptReco-v1__MINIAOD/181130_211700/0002/*.root",0);
@@ -48,19 +56,29 @@ void diphoton_chain_looper(TString run, TString dataset) {
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018A-PromptReco-v3__MINIAOD/181130_211731/0001/*.root",0);
     }
     if(run=="Run2018B" or run=="2018") {
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018B-17Sep2018-v1__MINIAOD/181115_215156/0000/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018B-17Sep2018-v1__MINIAOD/181115_215156/0001/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018B-17Sep2018-v1__MINIAOD/181115_215156/0002/*.root",0);
+    }
+    if(run=="Run2018Bprompt" or run=="2018prompt") {
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018B-PromptReco-v1__MINIAOD/181130_211747/0000/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018B-PromptReco-v1__MINIAOD/181130_211747/0001/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018B-PromptReco-v1__MINIAOD/181130_211747/0002/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018B-PromptReco-v2__MINIAOD/181130_211801/0000/*.root",0);
     }
     if(run=="Run2018C" or run=="2018") {
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018C-17Sep2018-v1__MINIAOD/190103_172712/0000/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018C-17Sep2018-v1__MINIAOD/190103_172712/0001/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018C-17Sep2018-v1__MINIAOD/190103_172712/0002/*.root",0);
+    }
+    if(run=="Run2018Cprompt" or run=="2018prompt") {
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018C-PromptReco-v1__MINIAOD/181130_211816/0000/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018C-PromptReco-v2__MINIAOD/181130_211830/0000/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018C-PromptReco-v2__MINIAOD/181130_211830/0001/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018C-PromptReco-v3__MINIAOD/181130_211845/0000/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018C-PromptReco-v3__MINIAOD/181130_211845/0001/*.root",0);
     }
-    if(run=="Run2018D" or run=="2018") {
+    if(run=="Run2018D" or run=="2018" or run=="2018prompt") {
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/181130_212625/0000/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/181130_212625/0001/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/181130_212625/0002/*.root",0);
@@ -90,6 +108,14 @@ void diphoton_chain_looper(TString run, TString dataset) {
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2017F-31Mar2018-v1__MINIAOD/181021_053759/0000/*.root");
     }
     if(run=="Run2018A" or run=="2018") {
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/190115_215157/0000/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/190115_215157/0001/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/190115_215157/0002/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/190115_215157/0003/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/190115_215157/0004/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/190115_215157/0005/*.root",0);
+    }
+    if(run=="Run2018Aprompt" or run=="2018prompt") {
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018A-PromptReco-v1__MINIAOD/181128_204823/0000/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018A-PromptReco-v1__MINIAOD/181128_204823/0001/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018A-PromptReco-v1__MINIAOD/181128_204823/0002/*.root",0);
@@ -99,19 +125,29 @@ void diphoton_chain_looper(TString run, TString dataset) {
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018A-PromptReco-v3__MINIAOD/181128_214013/0001/*.root",0);
     }
     if(run=="Run2018B" or run=="2018") {
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/190115_215215/0000/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/190115_215215/0001/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/190115_215215/0002/*.root",0);
+    }
+    if(run=="Run2018Bprompt" or run=="2018prompt") {
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018B-PromptReco-v1__MINIAOD/181128_214030/0000/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018B-PromptReco-v1__MINIAOD/181128_214030/0001/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018B-PromptReco-v1__MINIAOD/181128_214030/0002/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018B-PromptReco-v2__MINIAOD/181128_214045/0000/*.root",0);
     }
-    if(run=="Run2018C" or run=="2018") {
+    if(run=="Run2018C" or run=="Run2018Ctest" or run=="2018") {
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018C-17Sep2018-v1__MINIAOD/190115_215229/0000/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018C-17Sep2018-v1__MINIAOD/190115_215229/0001/*.root",0);
+      chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018C-17Sep2018-v1__MINIAOD/190115_215229/0002/*.root",0);
+    }
+    if(run=="Run2018Cprompt" or run=="2018prompt") {
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018C-PromptReco-v1__MINIAOD/181128_214100/0000/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018C-PromptReco-v2__MINIAOD/181206_015946/0000/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018C-PromptReco-v2__MINIAOD/181206_015946/0001/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018C-PromptReco-v3__MINIAOD/181128_214629/0000/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018C-PromptReco-v3__MINIAOD/181128_214629/0001/*.root",0);
     }
-    if(run=="Run2018D" or run=="2018") {
+    if(run=="Run2018D" or run=="2018" or run=="2018prompt") {
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/181129_230306/0000/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/181129_230306/0001/*.root",0);
       chain->Add("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/181129_230306/0002/*.root",0);
@@ -133,10 +169,11 @@ void diphoton_chain_looper(TString run, TString dataset) {
   // loop over all entries of our tree
   if(dataset=="jetht") {
     // use matching to leading jet
-    ptl.Loop(1, run, dataset);
+    //    ptl.Loop(1, run, dataset, npvLow, npvHigh);
+    ptl.Loop(0, run, dataset, npvLow, npvHigh);
   }
   else {
-    ptl.Loop(0, run, dataset);
+    ptl.Loop(0, run, dataset, npvLow, npvHigh);
   }
   // stop stopwatch
   sw.Stop();
