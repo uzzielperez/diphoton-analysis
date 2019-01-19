@@ -5,7 +5,7 @@
 #include <TCanvas.h>
 #include <map>
 
-void MCFakeRateAnalysis::Loop(int year)
+void MCFakeRateAnalysis::Loop(int year, int pvCutLow = 0, int pvCutHigh = 500)
 {
   std::map<int, TString> cmssw_version;
   cmssw_version[2016] = "76X";
@@ -46,11 +46,12 @@ void MCFakeRateAnalysis::Loop(int year)
   }
   cout << "\nUsing sample: " << sample << endl;
   
+  TString pv = Form("_nPV%i-%i", pvCutLow, pvCutHigh);
   TString filename = "";
-  if (sample == "DiPhotonJets") filename = "diphoton_fake_rate_real_templates_DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8_" + cmssw_version[year] + "_MiniAOD_histograms.root";
-  if (sample == "GGJets")       filename = "diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version[year] + "_MiniAOD_histograms.root";
-  if (sample == "GJets")        filename = "diphoton_fake_rate_real_templates_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version[year] + "_MiniAOD_histograms.root";
-  if (sample == "all")          filename = "diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[year] + "_MiniAOD_histograms.root";
+  if (sample == "DiPhotonJets") filename = "diphoton_fake_rate_real_templates_DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8_" + cmssw_version[year] + pv + "_MiniAOD_histograms.root";
+  if (sample == "GGJets")       filename = "diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version[year] + pv + "_MiniAOD_histograms.root";
+  if (sample == "GJets")        filename = "diphoton_fake_rate_real_templates_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version[year] + pv + "_MiniAOD_histograms.root";
+  if (sample == "all")          filename = "diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[year] + pv + "_MiniAOD_histograms.root";
   
   cout << "\nOutput filename: " << filename << endl << endl;
   
@@ -119,6 +120,8 @@ void MCFakeRateAnalysis::Loop(int year)
   TH1D* jetPhoDrEB_realtemplate = new TH1D("jetPhoDrEB_realtemplate","jetPhoDrEB_realtemplate",200,0.,1.);
   TH1D* jetPhoDrEE_realtemplate = new TH1D("jetPhoDrEE_realtemplate","jetPhoDrEE_realtemplate",200,0.,1.);
 
+  TH1D* npv = new TH1D("npv", "", 200, 0, 200);
+
   // loop over entries
   Long64_t nentries = fChain->GetEntriesFast();
   Long64_t nbytes = 0, nb = 0;
@@ -139,6 +142,20 @@ void MCFakeRateAnalysis::Loop(int year)
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
     // uncomment me?
     if (Photon_r9_5x5 < 0.8) continue; // r9 cut for resonant sync
+
+    // calculate nPV
+    int numVtxAfterCut = 0;
+    for(unsigned int i=0; i < VertexCollInfo_vx->size(); i++){
+      int ndof = VertexCollInfo_ndof->at(i);
+      double absZ = fabs(VertexCollInfo_vz->at(i));
+      double d0 = VertexCollInfo_d0->at(i);
+
+      if ( (ndof>=4) && (absZ<=24.) && (d0 <= 2.) ) {
+        numVtxAfterCut++;
+      }
+    }
+    npv->Fill(numVtxAfterCut);
+    if(numVtxAfterCut< pvCutLow || numVtxAfterCut > pvCutHigh) continue;
 
     // evaluate jet trigger groupings
     // bool singleJetFired = TriggerBit_HLT_AK8DiPFJet280_200_TrimMass30_BTagCSV0p45_v3==1 || TriggerBit_HLT_AK8PFJet360_TrimMass30_v3==1 || TriggerBit_HLT_CaloJet500_NoJetID_v2==1 || TriggerBit_HLT_DiCaloJetAve140_v1==1 || TriggerBit_HLT_DiCaloJetAve200_v1==1 || TriggerBit_HLT_DiCaloJetAve260_v1==1 || TriggerBit_HLT_DiCaloJetAve320_v1==1 || TriggerBit_HLT_DiCaloJetAve400_v1==1 || TriggerBit_HLT_DiCaloJetAve40_v1==1 || TriggerBit_HLT_DiCaloJetAve500_v1==1 || TriggerBit_HLT_DiCaloJetAve60_v1==1 || TriggerBit_HLT_DiCaloJetAve80_v1==1 || TriggerBit_HLT_DiPFJetAve100_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve140_v2==1 || TriggerBit_HLT_DiPFJetAve160_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve200_v2==1 || TriggerBit_HLT_DiPFJetAve220_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve260_v2==1 || TriggerBit_HLT_DiPFJetAve300_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve30_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve320_v2==1 || TriggerBit_HLT_DiPFJetAve400_v2==1 || TriggerBit_HLT_DiPFJetAve40_v2==1 || TriggerBit_HLT_DiPFJetAve500_v2==1 || TriggerBit_HLT_DiPFJetAve60_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve60_v2==1 || TriggerBit_HLT_DiPFJetAve80_HFJEC_v3==1 || TriggerBit_HLT_DiPFJetAve80_v2==1 || TriggerBit_HLT_PFJet140_v4==1 || TriggerBit_HLT_PFJet200_v4==1 || TriggerBit_HLT_PFJet260_v4==1 || TriggerBit_HLT_PFJet320_v4==1 || TriggerBit_HLT_PFJet400_v4==1 || TriggerBit_HLT_PFJet40_v4==1 || TriggerBit_HLT_PFJet450_v4==1 || TriggerBit_HLT_PFJet500_v4==1 || TriggerBit_HLT_PFJet60_v4==1 || TriggerBit_HLT_PFJet80_v4==1;
@@ -267,6 +284,8 @@ void MCFakeRateAnalysis::Loop(int year)
   jetPhoDrEB_realtemplate->Write();
   jetPhoDrEE_realtemplate->Write();
   
+  npv->Write();
+
   file_out.ls();
   file_out.Close();
   

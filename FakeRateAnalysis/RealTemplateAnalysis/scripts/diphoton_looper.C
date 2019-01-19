@@ -1,6 +1,6 @@
 #include "../analysis/MCFakeRateAnalysis.C"
 
-void diphoton_looper() {
+void diphoton_looper(int nPVLow, int nPVHigh) {
   // ntuple path (change as needed)
   std::map<int, TString> ntuple_paths;
   ntuple_paths[2016] = "root://cmseos.fnal.gov//eos/uscms/store/user/abuccill/diphoton-analysis/fake_rate_real_templates";
@@ -87,7 +87,7 @@ void diphoton_looper() {
   MCFakeRateAnalysis loop(chain);
 
   // loop over all entries of our tree
-  loop.Loop(year);
+  loop.Loop(year, nPVLow, nPVHigh);
 
   // stop stopwatch
   sw.Stop();

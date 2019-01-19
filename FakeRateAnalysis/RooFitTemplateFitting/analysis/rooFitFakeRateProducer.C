@@ -68,13 +68,12 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
     if(sample == "jetht") extra = "_JetHT";
     if(sample == "doublemuon") extra = "_DoubleMuon";
   }
-  TFile *historealmcfile = TFile::Open("../../RealTemplateAnalysis/analysis/diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + "_MiniAOD_histograms" + extra + ".root");
   
   // for numerator, fake templates, and denominator (choose data or mc)
   TString data_filename = "";
+  TString pvCut = "";
   //  if (sample == "data")      data_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
   //  if (sample == "data")      data_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_UNKNOWN_newDenomDef.root";
-  TString pvCut = "";
   if (sample == "jetht" or sample == "doublemuon") {
     TString matching;
     bool useJetMatching = false;
@@ -88,6 +87,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   if (sample == "mc_GJets")  data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "mc_GGJets") data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   TFile *histojetfile = TFile::Open(data_filename);
+  TFile *historealmcfile = TFile::Open("../../RealTemplateAnalysis/analysis/diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + pvCut + "_MiniAOD_histograms" + extra + ".root");
   
   double sidebandLow = sideband.first;
   double sidebandHigh = sideband.second;
