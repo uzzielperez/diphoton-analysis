@@ -219,7 +219,7 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
       histNameDD["Photon1.phi"] = "phi1";
       histNameDD["Photon2.pt"] = "pt2";
       histNameDD["Photon2.scEta"] = "scEta2";
-      histNameDD["Photon2.phi"] = "pt2";
+      histNameDD["Photon2.phi"] = "phi2";
       TString filename(Form("data/fakes_%s_average.root", isample.year().c_str()));
       TFile *g = TFile::Open(Form(filename));
       if(isample.isDataDrivenBarrel) g->GetObject(Form("BB/BB_%s", histNameDD[m_variable].c_str()), hists.back());
@@ -378,6 +378,7 @@ TString reformat(TString input)
 {
   TString output=input;
   if(input.Contains("Minv") || input.Contains("pt") || input.Contains("qt")) output+=" (GeV)";
+  output.ReplaceAll("Diphoton.Minv", "m_{#gamma#gamma}");
   output.ReplaceAll("Minv", "m_{#gamma#gamma}");
   output.ReplaceAll("Photon1.pt", "p_{T1}");
   output.ReplaceAll("Photon1.phi", "#phi_{1}");

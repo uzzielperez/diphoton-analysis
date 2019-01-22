@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
   samples.push_back(gj);
   samples.push_back(gg);
 
-  plot p0(samples, "Diphoton.Minv", cut_no_Minv, 40, 0, 2000);
+  plot p0(samples, "Minv", cut_no_Minv, 40, 0, 2000);
   plot p1(samples, "Photon1.pt", cut, 40, 0, 1000);
   plot p2(samples, "Photon2.pt", cut, 40, 0, 1000);
   plot p3(samples, "abs(Diphoton.deltaPhi)", cut, 25, 0, TMath::Pi());
@@ -77,8 +77,9 @@ int main(int argc, char *argv[])
   plot p5(samples, "Diphoton.deltaR", cut, 60, 0, 6);
   plot p6(samples, "Photon1.scEta", cut, 25, -2.5, 2.5);
   plot p7(samples, "Photon1.phi", cut, 50, -TMath::Pi(), TMath::Pi());
-  plot p8(samples, "Photon1.scEta", cut, 25, -2.5, 2.5);
-  plot p9(samples, "Photon1.phi", cut, 50, -TMath::Pi(), TMath::Pi());
+  plot p8(samples, "Photon2.scEta", cut, 25, -2.5, 2.5);
+  plot p9(samples, "Photon2.phi", cut, 50, -TMath::Pi(), TMath::Pi());
+  plot p10(samples, "Diphoton.qt", cut, 50, 0, 1000);
 
   std::string extraFilenameInfo(region);
   extraFilenameInfo += "_datadriven_";
@@ -94,5 +95,6 @@ int main(int argc, char *argv[])
   p7.output("plots", extraFilenameInfo);
   p8.output("plots", extraFilenameInfo);
   p9.output("plots", extraFilenameInfo);
+  p10.output("plots", extraFilenameInfo);
 
 }
