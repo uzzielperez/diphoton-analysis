@@ -205,8 +205,6 @@ void fakePrediction::Loop(int year, const std::string &dataset)
 	  if(isBarrelBarrel(FTPhoton1_eta, FTPhoton2_eta)) {
 	    double rate = getFakeRate(FTPhoton1_pt, EB);
 	    FT[BB]->Fill(FTDiphoton_Minv, weight*rate);
-	    pt1[BB]->Fill(FTPhoton1_pt, weight*rate);
-	    pt2[BB]->Fill(FTPhoton2_pt, weight*rate);
 	    qt[BB]->Fill(FTDiphoton_qt, weight*rate);
 	    absDeltaPhi[BB]->Fill(abs(FTDiphoton_deltaPhi), weight*rate);
 	    deltaEta[BB]->Fill(FTDiphoton_deltaEta, weight*rate);
@@ -222,8 +220,6 @@ void fakePrediction::Loop(int year, const std::string &dataset)
 	    int region = FTPhoton1_isEB ? EB : EE;
 	    double rate = getFakeRate(FTPhoton1_pt, region);
 	    FT[BE]->Fill(FTDiphoton_Minv, weight*rate);
-	    pt1[BE]->Fill(FTPhoton1_pt, weight*rate);
-	    pt2[BE]->Fill(FTPhoton2_pt, weight*rate);
 	    qt[BE]->Fill(FTDiphoton_qt, weight*rate);
 	    absDeltaPhi[BE]->Fill(abs(FTDiphoton_deltaPhi), weight*rate);
 	    deltaEta[BE]->Fill(FTDiphoton_deltaEta, weight*rate);
@@ -246,8 +242,6 @@ void fakePrediction::Loop(int year, const std::string &dataset)
 	  if(isBarrelBarrel(FFPhoton1_eta, FFPhoton2_eta)) {
 	    double rate = getFakeRate(FFPhoton1_pt, EB)*getFakeRate(FFPhoton2_pt, EB);
 	    FF[BB]->Fill(FFDiphoton_Minv, weight*rate);
-	    pt1[BB]->Fill(FFPhoton1_pt, weight*rate);
-	    pt2[BB]->Fill(FFPhoton2_pt, weight*rate);
 	    qt[BB]->Fill(FFDiphoton_qt, weight*rate);
 	    absDeltaPhi[BB]->Fill(abs(FFDiphoton_deltaPhi), weight*rate);
 	    deltaEta[BB]->Fill(FFDiphoton_deltaEta, weight*rate);
@@ -264,8 +258,6 @@ void fakePrediction::Loop(int year, const std::string &dataset)
 	    int region2 = FFPhoton2_isEB ? EB : EE;
 	    double rate = getFakeRate(FFPhoton1_pt, region1)*getFakeRate(FFPhoton2_pt, region2);
 	    FF[BE]->Fill(FFDiphoton_Minv, weight*rate);
-	    pt1[BE]->Fill(FFPhoton1_pt, weight*rate);
-	    pt2[BE]->Fill(FFPhoton2_pt, weight*rate);
 	    qt[BE]->Fill(FFDiphoton_qt, weight*rate);
 	    absDeltaPhi[BE]->Fill(abs(FFDiphoton_deltaPhi), weight*rate);
 	    deltaEta[BE]->Fill(FFDiphoton_deltaEta, weight*rate);
@@ -291,7 +283,7 @@ void fakePrediction::Loop(int year, const std::string &dataset)
    sum[BE]->Add(FT[BE]);
    sum[BE]->Add(FF[BE]);
    sum_copy[BB] = static_cast<TH1D*>(sum[BB]->Clone("BB_Minv"));
-   sum_copy[BE] = static_cast<TH1D*>(sum[BB]->Clone("BE_Minv"));
+   sum_copy[BE] = static_cast<TH1D*>(sum[BE]->Clone("BE_Minv"));
 
    std::cout << "Writing histograms." << std::endl;
    
