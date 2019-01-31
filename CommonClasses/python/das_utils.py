@@ -18,5 +18,5 @@ def get_number_of_events(dataset):
   if  status == 'ok':
     data = dasjson.get('data')
     for idata in data:
-      sumevents += idata.get('file')[0]['nevents']
+      sumevents += idata.get('result')['value']
   return sumevents
