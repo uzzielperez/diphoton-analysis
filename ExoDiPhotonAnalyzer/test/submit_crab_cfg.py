@@ -24,7 +24,8 @@ def get_number_of_events(dataset):
   if  status == 'ok':
     data = dasjson.get('data')
     for idata in data:
-      sumevents += idata.get('file')[0]['nevents']
+        #sumevents += idata.get('file')[0]['nevents']
+        sumevents += idata.get('result').get('value')
   return sumevents
 
 do2017data = False
@@ -36,8 +37,9 @@ do2015data = False
 do2015mc = False
 do2015signal = False
 do2015signalint = False
-do2016signal = True
+do2016signal = False
 do2016signalint = False
+do2017signal = True
 
 
 DATASETS = [[]]
@@ -333,9 +335,9 @@ if do2016signal:
  #  DATASETS.append(['/ADDGravToGG_MS-4000_NED-2_KK-4_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #  DATASETS.append(['/ADDGravToGG_MS-4000_NED-2_KK-4_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
   DATASETS.append(['/ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-  DATASETS.append(['/ADDGravToGG_MS-4000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-  DATASETS.append(['/ADDGravToGG_MS-4000_NED-4_KK-1_M-200To500_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-  DATASETS.append(['/ADDGravToGG_MS-4000_NED-4_KK-1_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+  #DATASETS.append(['/ADDGravToGG_MS-4000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+  #DATASETS.append(['/ADDGravToGG_MS-4000_NED-4_KK-1_M-200To500_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+  #DATASETS.append(['/ADDGravToGG_MS-4000_NED-4_KK-1_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-4500_NED-2_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-4500_NED-2_KK-1_M-2000To3000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-4500_NED-2_KK-1_M-3000To4500_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
@@ -428,7 +430,7 @@ if do2016signal:
  #   DATASETS.append(['/ADDGravToGG_MS-11000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-11000_NED-4_KK-1_M-4000To11000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-11000_NED-4_KK-1_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
- # 
+ #
 if do2016signalint:
   DATASETS.append(['/GG_M-1000To2000_Pt-70_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
   DATASETS.append(['/GG_M-2000To4000_Pt-70_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
@@ -437,6 +439,90 @@ if do2016signalint:
   DATASETS.append(['/GG_M-500To1000_Pt-70_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
   DATASETS.append(['/GG_M-8000To13000_Pt-70_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
 
+if do2017signal:
+#  DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-10000_M-2000To4000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-11000_M-1000To2000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-13000_M-1000To2000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-4500_M-2000To3000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-5500_M-1000To2000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-6500_M-2000To4000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-9000_M-2000To4000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-9000_M-500To1000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-1_LambdaT-13000_M-2000To4000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-1_LambdaT-13000_M-4000To13000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-1_LambdaT-13000_M-500To1000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-1_LambdaT-4500_M-1000To2000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-1_LambdaT-4500_M-500To1000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-1_LambdaT-5000_M-1000To2000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-1_LambdaT-5500_M-1000To2000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-1_LambdaT-7000_M-500To1000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_NegInt-1_LambdaT-7500_M-1000To2000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl001_M_1250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl001_M_1500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl001_M_1750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl001_M_2000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl001_M_2250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl001_M_2500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl001_M_2750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl001_M_3000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl001_M_3250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl001_M_3500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl001_M_5000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/RSGravitonToGammaGamma_kMpl001_M_750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_1250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_1500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_2500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_3000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_4250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_4500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_4750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_5000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_5750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_6000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_6500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_7000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_1000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_1250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_1750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_2000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_2250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_2500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_3500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_5000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_5500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_5750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_6500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_7000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_8000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_0p014_M_1250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_0p014_M_1500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_0p014_M_2250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_0p014_M_2500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_0p014_M_3000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_0p014_M_3500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_0p014_M_5000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_0p014_M_750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_1p4_M_1000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_1p4_M_1500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_1p4_M_1750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_1p4_M_2000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_1p4_M_2250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_1p4_M_2500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_1p4_M_3000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_1p4_M_4000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_5p6_M_1000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_5p6_M_1250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_5p6_M_1500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_5p6_M_1750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_5p6_M_2000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_5p6_M_2500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_5p6_M_3000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_5p6_M_3500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_5p6_M_4500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#  DATASETS.append(['/GluGluSpin0ToGammaGamma_W_5p6_M_4750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+#
 
 for ilist in DATASETS:
   nevents = 0
@@ -463,4 +549,3 @@ for ilist in DATASETS:
     cmd = "crab submit -c " + outputfile
     os.system(cmd)
     print "DA: Submitted ", ids
-

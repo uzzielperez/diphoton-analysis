@@ -9,6 +9,7 @@ taskname = taskname.replace('RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asympt
 taskname = taskname.replace('RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016','80XMiniAODv1')
 taskname = taskname.replace('RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1','80XMiniAODv2')
 taskname = taskname.replace('RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2','80XMiniAODv2')
+taskname = taskname.replace('RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1', '94XMiniAODv2').replace('TuneCP2_13TeV_pythia8', '13TeV-CP2-PY8')
 taskname = taskname.replace(':','___')
 taskname = "xsec" + taskname
 if(len(taskname)>100): taskname = taskname[0:99]
@@ -34,6 +35,7 @@ config.Data.inputDBS = 'global'
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 100
 #config.Data.outLFNDirBase = '/store/user/abuccill/DiPhotonAnalysis'
+config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/xsec'
 
 config.section_("Site")
 config.Site.storageSite = 'T3_US_FNALLPC' #'T2_CH_CERN'

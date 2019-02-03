@@ -12,7 +12,7 @@ options.register('nEventsSample',
                  VarParsing.multiplicity.singleton,
                  VarParsing.varType.int,
                  "Total number of events in dataset for event weight calculation.")
-## 'maxEvents' is already registered by the Framework, changing default value 
+## 'maxEvents' is already registered by the Framework, changing default value
 options.setDefault('maxEvents', 100)
 
 options.parseArguments()

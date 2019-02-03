@@ -1,8 +1,8 @@
-## Template file for CRAB submission. The script generate_crab_config.py 
+## Template file for CRAB submission. The script generate_crab_config.py
 ## replaces the following two lines with the appropriate values
 ## Do not edit manually!
 dataset = 'DATASETNAME'
-nevents = NEVENTS
+nevents = 'NEVENTS'
 
 # CRAB3 task names can no longer be greater than 100 characters; need to shorten task name
 taskname = dataset[1:].replace('/','__').replace('RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2','MiniAODv2').replace('TuneCUETP8M1_13TeV-madgraphMLM-pythia8','13TeV-MG-PY8')
@@ -10,6 +10,7 @@ taskname = taskname.replace('RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asympt
 taskname = taskname.replace('RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016','80XMiniAODv1')
 taskname = taskname.replace('RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1','80XMiniAODv2')
 taskname = taskname.replace('RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2','80XMiniAODv2')
+taskname = taskname.replace('RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1', '94XMiniAODv2').replace('TuneCP2_13TeV_pythia8', '13TeV-CP2-PY8')
 taskname = taskname.replace(':','___')
 if(len(taskname)>100): taskname = taskname[0:99]
 
@@ -21,20 +22,20 @@ config = Configuration()
 
 config.section_("General")
 config.General.requestName = taskname
-config.General.workArea = 'out_crab_data'
+config.General.workArea = 'out_crab'
 config.General.transferLogs = False
 
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
-#config.JobType.psetName = 'diphoton-analysis/ExoDiPhotonAnalyzer/test/diphoton_cfg.py'
-config.JobType.psetName = '/afs/cern.ch/user/c/ciperez/CMSSW_8_0_25/src/diphoton-analysis/ExoDiPhotonAnalyzer/test/diphoton_cfg.py'
+config.JobType.psetName = 'diphoton-analysis/ExoDiPhotonAnalyzer/test/diphoton_cfg.py'
 config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_' + datasetID + '.root']
 
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
 #config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/Run2016Data'
-config.Data.outLFNDirBase = '/store/user/ciperez/ADDGravToGGSherpa'
+#config.Data.outLFNDirBase = '/store/user/ciperez/ADDGravToGGSherpa'
+config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/Signal17-18'
 
 if "Run2017" in taskname:
     config.Data.splitting = 'LumiBased'
