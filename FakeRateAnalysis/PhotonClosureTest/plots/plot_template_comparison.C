@@ -7,8 +7,10 @@ void plot_template_comparison() {
   gStyle->SetNdivisions(505);
   gStyle->SetOptStat(0);
   
-  TFile *fData = TFile::Open("../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root");
-  TFile *fMC = TFile::Open("../../RealTemplateAnalysis/analysis/diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
+  // TFile *fData = TFile::Open("../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root");
+  // TFile *fMC = TFile::Open("../../RealTemplateAnalysis/analysis/diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root");
+  TFile *fData = TFile::Open("../../DataFakeRateAnalysis/analysis/jetht_fakerate_all_newDenomDef.root");
+  TFile *fMC = TFile::Open("../../RealTemplateAnalysis/analysis/diphoton_fake_rate_real_templates_all_GGJets_GJets_94X_MiniAOD_histograms.root");
   
   TFile *fClosureTestMCasData = TFile::Open("../analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");
   TFile *fClosureTestMCmatching = TFile::Open("../analysis/diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root");

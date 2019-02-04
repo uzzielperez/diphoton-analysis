@@ -45,14 +45,19 @@ void allSamples(const std::string &region, TFile * output)
   double xMax = 6000.;
 
   std::map<std::string, std::string> cuts;
-  cuts["BB"] = "isGood*(Diphoton.deltaR > 0.45 && Photon1.pt>75 && Photon2.pt>75 && Photon1.isEB && Photon2.isEB)";
-  cuts["BE"] = "isGood*(Diphoton.deltaR > 0.45 && Photon1.pt>75 && Photon2.pt>75 && ( (Photon1.isEB && Photon2.isEE) || (Photon2.isEB &&  Photon1.isEE )))";
+  cuts["BB"] = "isGood*(Diphoton.deltaR > 0.45 && Photon1.pt>125 && Photon2.pt>125 && Photon1.isEB && Photon2.isEB)";
+  cuts["BE"] = "isGood*(Diphoton.deltaR > 0.45 && Photon1.pt>125 && Photon2.pt>125 && ( (Photon1.isEB && Photon2.isEE) || (Photon2.isEB &&  Photon1.isEE )))";
 
   std::vector<std::string> samples = getSampleList();
 
   // add scale variations
-  samples.push_back("gg_R2F2");
-  samples.push_back("gg_R0p5F0p5");
+  samples.push_back("gg_R2F2_2016");
+  samples.push_back("gg_R2F2_2017");
+  samples.push_back("gg_R2F2_2018");
+  samples.push_back("gg_R0p5F0p5_2016");
+  samples.push_back("gg_R0p5F0p5_2017");
+  samples.push_back("gg_R0p5F0p5_2018");
+
 
   std::vector<int> stringScales = {3000, 3500, 4000, 4500, 5000, 5500, 6000};
 
@@ -63,13 +68,18 @@ void allSamples(const std::string &region, TFile * output)
     std::string sampleCut = cuts[region];
     // skip the Sherpa GEN trees
     if( isample.compare("ggGen") == 0) continue;
+    if( isample.find("unskimmed") != std::string::npos ) continue;
     // apply weights for all samples except data
     if( isample.find("data") == std::string::npos ) sampleCut+="*weightAll";
-    else sampleCut += "*(HLT_DoublePhoton60>0)";
+    else if (isample.find("data_2015") != std::string::npos || isample.find("data_2016") != std::string::npos) sampleCut += "*(HLT_DoublePhoton60>0)";
+    else sampleCut += "*(HLT_DoublePhoton70>0)";
     // apply k-factor to Sherpa GG sample
-    if( isample.compare("gg") == 0) sampleCut += "*" + kfactorString(region, "R1F1");
-    if( isample.compare("gg_R2F2") == 0) sampleCut += "*" + kfactorString(region, "R2F2");
-    if( isample.compare("gg_R0p5F0p5") == 0) sampleCut += "*" + kfactorString(region, "R0p5F0p5");
+    if( isample.find("gg_R2F2_") != std::string::npos) sampleCut += "*" + kfactorString(region, "R2F2");
+    else if( isample.find("gg_R0p5F0p5_") != std::string::npos) sampleCut += "*" + kfactorString(region, "R0p5F0p5");
+    else if( isample.find("gg_") != std::string::npos) sampleCut += "*" + kfactorString(region, "R1F1");
+    // if( isample.compare("gg") == 0) sampleCut += "*" + kfactorString(region, "R1F1");
+    // if( isample.compare("gg_R2F2") == 0) sampleCut += "*" + kfactorString(region, "R2F2");
+    // if( isample.compare("gg_R0p5F0p5") == 0) sampleCut += "*" + kfactorString(region, "R0p5F0p5");
     std::cout << "Making histograms for sample " << isample << " with cut\n" << sampleCut << std::endl;
     TH1F *hist = new TH1F(isample.c_str(), isample.c_str(), nBins, xMin, xMax);
     std::cout << "Making histograms for sample " << hist->GetName() << " with cut\n" << sampleCut << std::endl;
@@ -83,7 +93,11 @@ void allSamples(const std::string &region, TFile * output)
 // ignore variations to get dataset name
 std::string getBase(const std::string & sampleName)
 {
-  if(sampleName.compare("gg_R2F2") == 0 ) return "gg";
-  if(sampleName.compare("gg_R0p5F0p5") == 0 ) return "gg";
+  if(sampleName.compare("gg_R2F2_2016") == 0 ) return "gg_2016";
+  if(sampleName.compare("gg_R0p5F0p5_2016") == 0 ) return "gg_2016";
+  if(sampleName.compare("gg_R2F2_2017") == 0 ) return "gg_2017";
+  if(sampleName.compare("gg_R0p5F0p5_2017") == 0 ) return "gg_2017";
+  if(sampleName.compare("gg_R2F2_2018") == 0 ) return "gg_2018";
+  if(sampleName.compare("gg_R0p5F0p5_2018") == 0 ) return "gg_2018";
   return sampleName;
 }

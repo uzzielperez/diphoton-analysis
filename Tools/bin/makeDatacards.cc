@@ -22,12 +22,14 @@ public:
   std::vector<std::string> m_contribution;
 };
 
-double getYield(const std::string& region, const std::string& sample, const int& minBin, const int& maxBin, double& yieldError, const TF1 * scaleFactor = 0);
+double getYield(const std::string& region, const std::string& sample, const std::string& datacardYear, const int& minBin, const int& maxBin, double& yieldError, const TF1 * scaleFactor = 0);
 std::string getDiphotonYieldVariations(const std::string& region, const int& minBin, const int& maxBin, const std::string& variation);
 void makeOneDatacard(const std::string& signalPoint, const std::string& datacardYear, const std::string& interferenceType);
 
 bool positiveInterference;
 bool useInterference;
+
+std::string datacardYear;
 
 // Loop over ADD samples to make datacards for each
 int main(int argc, char *argv[])
@@ -37,13 +39,12 @@ int main(int argc, char *argv[])
   positiveInterference=true;
 
   if(argc!=2 && argc!=3) {
-    std::cout << "Syntax: makeDatacards.exe [2015/2016] [positive/negative]\n";
+    std::cout << "Syntax: makeDatacards.exe [2015/2016/2017/2018] [positive/negative]\n";
     std::cout << "If 'positive' or 'negative' are not specified,\n";
     std::cout << "linear scaling will be used for the interference term." << std::endl;
     return -1;
   }
-  std::string datacardYear(argv[1]);
-  if(datacardYear.compare("2016") == 0) luminosity = luminosity2016;
+  datacardYear = argv[1];
   if(argc==3) {
     interferenceType = argv[2];
     if(interferenceType.compare("negative") != 0 and interferenceType.compare("positive") != 0) {
@@ -158,8 +159,7 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& datacard
   nuisance diphotonkfactorStat3("diphotonkfactorStat3", "lnN", {"-", diphotonkfactorStatValue3, "-", "-"});
   std::string diphotonkfactorScalesValue = getDiphotonYieldVariations("BB", binLowerLimits.at(iBin), binUpperLimits.at(iBin), "diphotonkfactorScales");
   nuisance diphotonkfactorScales("diphotonkfactorScales", "lnN", {"-", diphotonkfactorScalesValue, "-", "-"});
-  std::string lumiError = std::to_string(1 + luminosityError);
-  if(datacardYear.compare("2016") == 0) lumiError = std::to_string(1 + luminosity2016Error);
+  std::string lumiError = std::to_string(1 + luminosityErrorFrac[datacardYear]);
   nuisance lumi("lumi", "lnN", {lumiError, lumiError, "-", lumiError});
   nuisance pileup("pileup", "lnN", {"1.05", "1.05", "-", "1.05"});
   nuisance fakes("fakes", "lnN", {"-", "-", "1.3", "-"});
@@ -216,12 +216,12 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& datacard
     // definition of bins and rates
     output << "bin          ";
     for(unsigned int i=0; i<nchannels; i++) {
-      output << i << "   ";
+      output << "b" << i << "   ";
     }
     output << "\n";
     output << "observation  ";
     for(auto iregion : regions) {
-      output << getYield(iregion, "data_" + datacardYear, binLowerLimits.at(iBin), binUpperLimits.at(iBin), yieldError) << " " ;
+      output << getYield(iregion, "data_" + datacardYear, datacardYear, binLowerLimits.at(iBin), binUpperLimits.at(iBin), yieldError) << " " ;
     }
     output << "\n";
     
@@ -230,7 +230,7 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& datacard
     
     for(unsigned iregion=0; iregion<regions.size(); iregion++) {
       for(auto iprocess : processes) {
-	output << iregion << "    ";
+	output << "b" << iregion << "    ";
       }
     }
     output << "\n";
@@ -255,7 +255,7 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& datacard
     output << "rate        ";
     for(auto iregion : regions) {
       for(auto iprocess : processes) {
-	output << getYield(iregion, iprocess, binLowerLimits.at(iBin), binUpperLimits.at(iBin), yieldError) << "    ";
+	output << getYield(iregion, iprocess, datacardYear, binLowerLimits.at(iBin), binUpperLimits.at(iBin), yieldError) << "    ";
       }
     }
     output << "\n-------------------" << std::endl;
@@ -277,7 +277,7 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& datacard
   }
 }
 
-double getYield(const std::string& region, const std::string& sample, const int& minBin, const int& maxBin, double& yieldError, const TF1 * scaleFactor)
+double getYield(const std::string& region, const std::string& sample, const std::string& datacardYear, const int& minBin, const int& maxBin, double& yieldError, const TF1 * scaleFactor)
 {
   double integral = 0.0;
 
@@ -286,7 +286,7 @@ double getYield(const std::string& region, const std::string& sample, const int&
 
   // histograms for photon fakes from data-driven method are in a different file
   if(sample.find("gjDataDriven") != std::string::npos) {
-    TFile *inputFakes = TFile::Open("data/fakes.root");
+    TFile *inputFakes = TFile::Open(Form("data/fakes_%s_jetht.root", datacardYear.c_str()));
     histName+=sample;
     histName+=region;
 
@@ -301,13 +301,15 @@ double getYield(const std::string& region, const std::string& sample, const int&
     }
     TFile *input = TFile::Open(filename);
     histName+=sample;
+    if(sample.find("data") == std::string::npos && sample.find("ADD") == std::string::npos) histName += "_" + datacardYear;
+
     
     std::cout << "Getting histogram " << histName << std::endl;
     TH1D *hist = static_cast<TH1D*>(input->Get(histName.c_str()));
     // take max to avoid negative entries arising from
     // negative weights in NLO samples
     integral = std::max(hist->Integral(minBin, maxBin), 0.0);
-    if(sample.find("data") == std::string::npos) integral *= luminosity;
+    if(sample.find("data") == std::string::npos) integral *= luminosity[datacardYear];
     else {
       std::cout << "Using bin with range " << hist->GetBinLowEdge(minBin) << " to " << hist->GetBinLowEdge(maxBin+1) << std::endl;
     }
@@ -324,10 +326,10 @@ double getYield(const std::string& region, const std::string& sample, const int&
       // if the sample is an ADD sample, need to subtract SM background
       if(sample.find("ADD") != std::string::npos) {
 	std::string gg70HistName(region);
-	gg70HistName+="/gg70";
+	gg70HistName+="/gg70_" + datacardYear;
 
 	TH1D *gg70 = static_cast<TH1D*>(input->Get(gg70HistName.c_str()));
-	integral -= luminosity*gg70->Integral(minBin, maxBin);
+	integral -= luminosity[datacardYear]*gg70->Integral(minBin, maxBin);
       }
     }
     input->Close();
@@ -345,7 +347,7 @@ std::string getDiphotonYieldVariations(const std::string& region, const int& min
     if(strcmp(variation.c_str(), "diphotonkfactorStat2")==0) parameter = 2;
     if(strcmp(variation.c_str(), "diphotonkfactorStat3")==0) parameter = 3;
     TFile *input = TFile::Open("data/Minv_histos.root");
-    TH1D* diphoton = static_cast<TH1D*>(input->Get(Form("%s/gg", region.c_str())));
+    TH1D* diphoton = static_cast<TH1D*>(input->Get(Form("%s/gg_%s", region.c_str(), datacardYear.c_str())));
     TH1D* diphotonStatUp = static_cast<TH1D*>(diphoton->Clone("diphotonStatUp"));
     TH1D* diphotonStatDown = static_cast<TH1D*>(diphoton->Clone("diphotonStatDown"));
     TF1 *kfactorFunction = kfactor(region, "R1F1");
@@ -375,7 +377,7 @@ std::string getDiphotonYieldVariations(const std::string& region, const int& min
   }
   if(strcmp(variation.c_str(), "diphotonkfactorScales")==0) {
     TFile *input = TFile::Open("data/Minv_histos.root");
-    TH1D* diphoton = static_cast<TH1D*>(input->Get(Form("%s/gg", region.c_str())));
+    TH1D* diphoton = static_cast<TH1D*>(input->Get(Form("%s/gg_%s", region.c_str(), datacardYear.c_str())));
     TH1D* diphotonScalesUp = static_cast<TH1D*>(diphoton->Clone("diphotonScalesUp"));
     TH1D* diphotonScalesDown = static_cast<TH1D*>(diphoton->Clone("diphotonScalesDown"));
     TF1 *kfactorFunctionScalesUp = kfactor(region, "R2F2");
