@@ -33,7 +33,6 @@ if "Run201" in outName:
 
 # to avoid processing with an incorrect global tag, don't set a valid default
 globalTag = 'notset'
-
 jetLabel = "selectedUpdatedPatJetsUpdatedJEC"
 # options for data
 JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
@@ -56,10 +55,12 @@ if "Run2017" in outName:
     jetLabel = "updatedPatJetsUpdatedJEC"
 # override options for MC
 if isMC:
+    print "isMC"
     version = os.getenv("CMSSW_VERSION")
     if "CMSSW_10" in version:
 	globalTag = '102X_upgrade2018_realistic_v12'
     if "CMSSW_9" in version:
+	#globalTag = '94X_mc2017_realistic_v14'
 	globalTag = '94X_mc2017_realistic_v17'
     if "CMSSW_8" in version:
         if "Spring16" in outName:
@@ -70,11 +71,11 @@ if isMC:
             # samples intended to match data previous to the
             # 03Feb2017 re-miniAOD
             globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
-    elif "CMSSW_7" in version:
+    if "CMSSW_7" in version:
         globalTag = '76X_mcRun2_asymptotic_v12'
-    else:
+    elif globalTag == 'notset':
         print "Could not determine appropriate MC global tag from filename"
-        sys.exit()
+	sys.exit()
     JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
 
 
