@@ -57,6 +57,8 @@ if "Run2017" in outName:
 # override options for MC
 if isMC:
     version = os.getenv("CMSSW_VERSION")
+    if "CMSSW_10" in version:
+	globalTag = '102X_upgrade2018_realistic_v12'
     if "CMSSW_9" in version:
 	globalTag = '94X_mc2017_realistic_v17'
     if "CMSSW_8" in version:

@@ -544,8 +544,8 @@ for ilist in DATASETS:
     f = open(outputfile, 'w')
     f.write(s)
     f.close()
-    print "DA: Wrote crab configuration file " + outputfile
+    print "Wrote crab configuration file " + outputfile
 
     cmd = "crab submit -c " + outputfile
     os.system(cmd)
-    print "DA: Submitted ", ids
+    print "Submitted ", ids

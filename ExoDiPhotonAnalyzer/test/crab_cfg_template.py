@@ -33,8 +33,6 @@ config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_'
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
-#config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/Run2016Data'
-#config.Data.outLFNDirBase = '/store/user/ciperez/ADDGravToGGSherpa'
 config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/Signal17-18'
 
 if "Run2017" in taskname:
