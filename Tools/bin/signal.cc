@@ -53,7 +53,7 @@ void oneSignal(int ned, int kk, bool bkgSub)
   l->SetFillStyle(0);
   // draw SM background first
   TH1F *histSM = new TH1F("gg70", "gg70", nBins, xMin, xMax);
-  chains["gg70"]->Project("gg70", "Diphoton.Minv", barrelCut);
+  chains["gg70_2016"]->Project("gg70", "Diphoton.Minv", barrelCut);
   TLatex * lat = new TLatex;
   for(size_t i=0; i<stringScales.size(); i++) {
     TString sample(Form("ADDGravToGG_MS-%d_NED-%d_KK-%d", stringScales.at(i), ned, kk));
