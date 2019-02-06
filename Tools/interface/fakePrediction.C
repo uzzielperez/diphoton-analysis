@@ -274,7 +274,7 @@ void fakePrediction::Loop(int year, const std::string &dataset)
    }
 
    // barrel, barrel fakes sum
-   TH1D *sum[2], *sum_copy[2];
+   TH1D *sum[2], *sum_copy[2], *sum_for_datacard[2];
    sum[BB] = static_cast<TH1D*>(TF[BB]->Clone("gjDataDrivenBB"));
    sum[BB]->Add(FT[BB]);
    sum[BB]->Add(FF[BB]);
@@ -284,6 +284,8 @@ void fakePrediction::Loop(int year, const std::string &dataset)
    sum[BE]->Add(FF[BE]);
    sum_copy[BB] = static_cast<TH1D*>(sum[BB]->Clone("BB_Minv"));
    sum_copy[BE] = static_cast<TH1D*>(sum[BE]->Clone("BE_Minv"));
+   sum_for_datacard[BB] = static_cast<TH1D*>(sum[BB]->Clone("gj"));
+   sum_for_datacard[BE] = static_cast<TH1D*>(sum[BE]->Clone("gj"));
 
    std::cout << "Writing histograms." << std::endl;
    
@@ -297,6 +299,7 @@ void fakePrediction::Loop(int year, const std::string &dataset)
      FF[i]->Write();
      sum[i]->Write();
      sum_copy[i]->Write();
+     sum_for_datacard[i]->Write();
      pt1[i]->Write();
      pt2[i]->Write();
      qt[i]->Write();
