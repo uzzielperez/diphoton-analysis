@@ -68,10 +68,14 @@ if "Run2018" in outName:
 # override options for MC
 if isMC:
     version = os.getenv("CMSSW_VERSION")
-    if "CMSSW_9" in version:
-        globalTag = '94X_mc2017_realistic_v14'
+    major_version = version.split('_')[1] # version number formattted as CMSSW_X_Y_Z
+    if major_version == "10":
+        globalTag = '102X_upgrade2018_realistic_v12'
         jetLabel = "slimmedJets"
-    elif "CMSSW_8" in version:
+    elif major_version == "9":
+        globalTag = '94X_mc2017_realistic_v17'
+        jetLabel = "slimmedJets"
+    elif major_version == "8":
         if "Spring16" in outName:
             globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
         if "Summer16" in outName:
@@ -80,7 +84,7 @@ if isMC:
             # samples intended to match data previous to the
             # 03Feb2017 re-miniAOD
             globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
-    elif "CMSSW_7" in version:
+    elif major_version == "7":
         globalTag = '76X_mcRun2_asymptotic_v12'
     else:
         print "Could not determine appropriate MC global tag from filename"
