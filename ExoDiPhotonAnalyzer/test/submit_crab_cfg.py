@@ -308,7 +308,7 @@ if do2015signalint:
   DATASETS.append(['/GG_M-8000To13000_Pt-70_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
 
 if do2016signal:
-#  DATASETS.append(['/ADDGravToGG_MS-3000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+  DATASETS.append(['/ADDGravToGG_MS-3000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
 #  DATASETS.append(['/ADDGravToGG_MS-3000_NED-2_KK-1_M-2000To3000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
 #  DATASETS.append(['/ADDGravToGG_MS-3000_NED-2_KK-1_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
 #  DATASETS.append(['/ADDGravToGG_MS-3000_NED-2_KK-4_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
@@ -334,7 +334,7 @@ if do2016signal:
  #  DATASETS.append(['/ADDGravToGG_MS-4000_NED-2_KK-4_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #  DATASETS.append(['/ADDGravToGG_MS-4000_NED-2_KK-4_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #  DATASETS.append(['/ADDGravToGG_MS-4000_NED-2_KK-4_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-  DATASETS.append(['/ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+#  DATASETS.append(['/ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
   #DATASETS.append(['/ADDGravToGG_MS-4000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
   #DATASETS.append(['/ADDGravToGG_MS-4000_NED-4_KK-1_M-200To500_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
   #DATASETS.append(['/ADDGravToGG_MS-4000_NED-4_KK-1_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
@@ -440,7 +440,7 @@ if do2016signalint:
   DATASETS.append(['/GG_M-8000To13000_Pt-70_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
 
 if do2017signal:
-#  DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-10000_M-2000To4000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-10000_M-2000To4000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
 #  DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-11000_M-1000To2000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
 #  DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-13000_M-1000To2000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
 #  DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-4500_M-2000To3000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
@@ -545,6 +545,7 @@ for ilist in DATASETS:
     f.write(s)
     f.close()
     print "Wrote crab configuration file " + outputfile
+    print os.getenv('CMSSW_VERSION')
 
     cmd = "crab submit -c " + outputfile
     os.system(cmd)
