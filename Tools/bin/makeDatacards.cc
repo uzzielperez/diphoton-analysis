@@ -138,14 +138,14 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& region, 
     processes.insert(processes.begin()+1, signalPointInt);
   }
 
-  std::string diphotonkfactorStatValue0 = getDiphotonYieldVariations(region, "diphotonkfactorStat0");
-  nuisance diphotonkfactorStat0("diphotonkfactorStat0", "lnN", {"-", diphotonkfactorStatValue0, "-", "-"});
-  std::string diphotonkfactorStatValue1 = getDiphotonYieldVariations(region, "diphotonkfactorStat1");
-  nuisance diphotonkfactorStat1("diphotonkfactorStat1", "lnN", {"-", diphotonkfactorStatValue1, "-", "-"});
-  std::string diphotonkfactorStatValue2 = getDiphotonYieldVariations(region, "diphotonkfactorStat2");
-  nuisance diphotonkfactorStat2("diphotonkfactorStat2", "lnN", {"-", diphotonkfactorStatValue2, "-", "-"});
-  std::string diphotonkfactorStatValue3 = getDiphotonYieldVariations(region, "diphotonkfactorStat3");
-  nuisance diphotonkfactorStat3("diphotonkfactorStat3", "lnN", {"-", diphotonkfactorStatValue3, "-", "-"});
+  // std::string diphotonkfactorStatValue0 = getDiphotonYieldVariations(region, "diphotonkfactorStat0");
+  // nuisance diphotonkfactorStat0("diphotonkfactorStat0", "lnN", {"-", diphotonkfactorStatValue0, "-", "-"});
+  // std::string diphotonkfactorStatValue1 = getDiphotonYieldVariations(region, "diphotonkfactorStat1");
+  // nuisance diphotonkfactorStat1("diphotonkfactorStat1", "lnN", {"-", diphotonkfactorStatValue1, "-", "-"});
+  // std::string diphotonkfactorStatValue2 = getDiphotonYieldVariations(region, "diphotonkfactorStat2");
+  // nuisance diphotonkfactorStat2("diphotonkfactorStat2", "lnN", {"-", diphotonkfactorStatValue2, "-", "-"});
+  // std::string diphotonkfactorStatValue3 = getDiphotonYieldVariations(region, "diphotonkfactorStat3");
+  // nuisance diphotonkfactorStat3("diphotonkfactorStat3", "lnN", {"-", diphotonkfactorStatValue3, "-", "-"});
   std::string diphotonkfactorScalesValue = getDiphotonYieldVariations(region, "diphotonkfactorScales");
   nuisance diphotonkfactorScales("diphotonkfactorScales", "lnN", {"-", diphotonkfactorScalesValue, "-", "-"});
   std::string lumiError = std::to_string(1 + luminosityErrorFrac[datacardYear]);
@@ -300,14 +300,15 @@ double getYield(const std::string& region, const std::string& sample, const std:
 
 std::string getDiphotonYieldVariations(const std::string& region, const std::string& variation)
 {
+  TString histogramFile(Form("datacards/Minv_histos_%s_%s.root", region.c_str(), datacardYear.c_str()));
   // put dummy values here for now
   if(variation.find("diphotonkfactorStat") != std::string::npos) {
     int parameter = 0;
     if(strcmp(variation.c_str(), "diphotonkfactorStat1")==0) parameter = 1;
     if(strcmp(variation.c_str(), "diphotonkfactorStat2")==0) parameter = 2;
     if(strcmp(variation.c_str(), "diphotonkfactorStat3")==0) parameter = 3;
-    TFile *input = TFile::Open("data/Minv_histos.root");
-    TH1D* diphoton = static_cast<TH1D*>(input->Get(Form("%s/gg_%s", region.c_str(), datacardYear.c_str())));
+    TFile *input = TFile::Open(histogramFile);
+    TH1D* diphoton = static_cast<TH1D*>(input->Get(Form("%s/gg", region.c_str())));
     TH1D* diphotonStatUp = static_cast<TH1D*>(diphoton->Clone("diphotonStatUp"));
     TH1D* diphotonStatDown = static_cast<TH1D*>(diphoton->Clone("diphotonStatDown"));
     TF1 *kfactorFunction = kfactor(region, "R1F1");
@@ -315,8 +316,6 @@ std::string getDiphotonYieldVariations(const std::string& region, const std::str
     TString filename="data/kfactor_" + region + "_R1F1.root";
     TFile *file = TFile::Open(filename);
     TFitResult* fitResult = static_cast<TFitResult*>(file->Get(Form("TFitResult-id1-%s",fitFunc.Data())));
-
-    //    TF1 * variation(bool up, int parameter, TF1* nominal, TFitResult* fitResult)
 
     TF1 *kfactorStatUp = eigenvectorVariation(true, parameter, kfactorFunction, fitResult);
     TF1 *kfactorStatDown = eigenvectorVariation(false, parameter, kfactorFunction, fitResult);
@@ -336,8 +335,8 @@ std::string getDiphotonYieldVariations(const std::string& region, const std::str
     return std::to_string(1+averageVariation/integral);
   }
   if(strcmp(variation.c_str(), "diphotonkfactorScales")==0) {
-    TFile *input = TFile::Open("data/Minv_histos.root");
-    TH1D* diphoton = static_cast<TH1D*>(input->Get(Form("%s/gg_%s", region.c_str(), datacardYear.c_str())));
+    TFile *input = TFile::Open(histogramFile);
+    TH1D* diphoton = static_cast<TH1D*>(input->Get(Form("%s/gg", region.c_str())));
     TH1D* diphotonScalesUp = static_cast<TH1D*>(diphoton->Clone("diphotonScalesUp"));
     TH1D* diphotonScalesDown = static_cast<TH1D*>(diphoton->Clone("diphotonScalesDown"));
     TF1 *kfactorFunctionScalesUp = kfactor(region, "R2F2");

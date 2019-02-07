@@ -1,4 +1,8 @@
+#ifdef __CINT__
+#include "interface/sampleList.hh"
+#else
 #include "diphoton-analysis/Tools/interface/sampleList.hh"
+#endif
 
 #include "TAxis.h"
 #include "TCanvas.h"
@@ -12,6 +16,7 @@
 bool useLogy = false;
 bool drawObservedLimit = false;
 
+void limit();
 void oneLimit(int ned, int kk, const std::string& directory);
 void setStyle()
 {
@@ -58,6 +63,11 @@ double intersection(TGraph *gr, double value)
 }
 
 int main(int argc, char *argv[])
+{
+  limit();
+}
+
+void limit()
 {
   const std::string limitDirectory="/uscms/homes/c/cawest/diphoton/limits/CMSSW_8_1_0/src/HiggsAnalysis/CombinedLimit";
 
