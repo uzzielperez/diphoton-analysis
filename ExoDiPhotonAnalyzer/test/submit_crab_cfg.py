@@ -9,7 +9,7 @@ import os
 diphoton_analysis = __import__("diphoton-analysis.CommonClasses.das_utils")
 
 
-do2017signal = False
+do2017signal = True
 do2018data = False
 do2018datarereco = False
 do2018dataJetHT = False
@@ -605,19 +605,19 @@ for ilist in DATASETS:
   for ids in ilist:
     cmssw_base = os.getenv("CMSSW_BASE")
     datasetID = ids.replace('/', '', 1).replace('/', '_', 1)
-  datasetID = datasetID[0:datasetID.find('/')]
-  inputfile = cmssw_base + "/src/diphoton-analysis/ExoDiPhotonAnalyzer/test/crab_cfg_template.py"
-  outputfile = "crab_cfg_" + datasetID + ".py"
+    datasetID = datasetID[0:datasetID.find('/')]
+    inputfile = cmssw_base + "/src/diphoton-analysis/ExoDiPhotonAnalyzer/test/crab_cfg_template.py"
+    outputfile = "crab_cfg_" + datasetID + ".py"
 
-  s = open(inputfile).read()
-  s = s.replace('DATASETNAME', ids)
-  s = s.replace('NEVENTS', str(nevents))
-  f = open(outputfile, 'w')
-  f.write(s)
-  f.close()
-  print "Wrote crab configuration file " + outputfile
+    s = open(inputfile).read()
+    s = s.replace('DATASETNAME', ids)
+    s = s.replace('NEVENTS', str(nevents))
+    f = open(outputfile, 'w')
+    f.write(s)
+    f.close()
+    print "Wrote crab configuration file " + outputfile
 
-  cmd = "crab submit -c " + outputfile
-  os.system(cmd)
-  print "Submitted ", ids
+    cmd = "crab submit -c " + outputfile
+    os.system(cmd)
+    print "Submitted ", ids
 
