@@ -56,7 +56,8 @@ int main(int argc, char *argv[])
 
   // string scales
   std::vector<std::string> MS = {"3000", "3500", "4000", "4500",
-                                 "5000", "5500", "6000"};
+                                 "5000", "5500", "6000", "7000",
+				 "8000", "9000", "10000", "11000"};
   // number of extra dimensions
   std::vector<std::string> NED = {"2", "4"};
   // KK cutoff conventions
@@ -75,6 +76,8 @@ int main(int argc, char *argv[])
         // no samples were generated with KK convention 4
         // and four extra dimensions
         if(strcmp(iKK.c_str(), "4")==0 && strcmp(iNED.c_str(), "4")==0) continue;
+	// Hewett- convention samples do not extend past Mgg > 6 TeV
+	if(iNED.compare("2")==0 && iKK.compare("4")==0 && std::stoi(iMS)>6000) continue;
 	std::string pointName = "ADDGravToGG_MS-";
         pointName += iMS;
 	if(!useInterference) {

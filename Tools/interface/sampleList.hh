@@ -560,7 +560,8 @@ void initADD()
 {
   // ADD samples
   std::vector<std::string> MS = {"3000", "3500", "4000", "4500",
-				 "5000", "5500", "6000"};
+				 "5000", "5500", "6000", "7000",
+				 "8000", "9000", "10000", "11000"};
   std::vector<std::string> NED = {"2", "4"};
   std::vector<std::string> KK = {"1", "4"};
   std::map<std::string, std::vector<std::string>> MggBins;
@@ -572,7 +573,12 @@ void initADD()
   MggBins["4500"] = {"250To500", "500To1000", "1000To2000", "2000To3000", "3000To4500"};
   MggBins["5000"] = {"250To500", "500To1000", "1000To2000", "2000To3000", "3000To5000"};
   MggBins["5500"] = {"250To500", "500To1000", "1000To2000", "2000To4000", "4000To5500"};
-  MggBins["6000"] = {"250To500", "500To1000", "1000To2000", "2000To4000", "4000To6000"};
+  MggBins["6000"] = {"500To1000", "1000To2000", "2000To4000", "4000To6000"};
+  MggBins["7000"] = {"500To1000", "1000To2000", "2000To4000", "4000To7000"};
+  MggBins["8000"] = {"500To1000", "1000To2000", "2000To4000", "4000To8000"};
+  MggBins["9000"] = {"500To1000", "1000To2000", "2000To4000", "4000To9000"};
+  MggBins["10000"] = {"500To1000", "1000To2000", "2000To4000", "4000To10000"};
+  MggBins["11000"] = {"500To1000", "1000To2000", "2000To4000", "4000To11000"};
 
   for(const auto iMS : MS) {
     for(const auto iNED : NED) {
@@ -589,7 +595,9 @@ void initADD()
 	chains[pointName] = new TChain("diphoton/fTree");
 	for(std::string iMgg : MggBins[iMS] ) {
 	  // the 200To500 bins are only present for the NED=4 samples
-	  if(strcmp(iNED.c_str(), "2")==0 && strcmp(iMgg.c_str(), "250To500")==0) continue;
+	  if(iNED.compare("2")==0 && iMgg.compare("250To500")==0) continue;
+	  // Hewett- convention samples do not extend past Mgg > 6 TeV
+	  if(iNED.compare("2")==0 && iKK.compare("4")==0 && std::stoi(iMgg)>6000) continue;
 	  std::string sampleName(pointName);
 	  sampleName += "_M-";
 	  sampleName += iMgg;

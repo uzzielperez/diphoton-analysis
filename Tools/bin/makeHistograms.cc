@@ -96,6 +96,12 @@ void allSamples(const std::string &region, const std::string &year, TFile * outp
     histograms[baseName] = hist;
     std::cout << "Making histograms for sample " << hist->GetName() << " with cut\n" << sampleCut << std::endl;
     chains[getBase(isample)]->Project(baseName.c_str(), "Diphoton.Minv",  sampleCut.c_str());
+    // move overflow to last bin
+    int nbins = histograms[baseName]->GetNbinsX();
+    float lastBin = histograms[baseName]->GetBinContent(nbins);
+    float overflow = histograms[baseName]->GetBinContent(nbins+1);
+    histograms[baseName]->SetBinContent(nbins, lastBin + overflow);
+    histograms[baseName]->SetBinContent(nbins+1, 0.0);
     std::cout << "Integral: " << histograms[baseName]->Integral() << std::endl;
     output->cd(region.c_str());
   }

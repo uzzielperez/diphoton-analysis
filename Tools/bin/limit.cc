@@ -16,7 +16,7 @@
 bool useLogy = false;
 bool drawObservedLimit = false;
 
-void limit();
+void limit(const std::string &directory);
 void oneLimit(int ned, int kk, const std::string& directory);
 void setStyle()
 {
@@ -64,16 +64,24 @@ double intersection(TGraph *gr, double value)
 
 int main(int argc, char *argv[])
 {
-  limit();
+  std::string limitDirectory = "/uscms/homes/c/cawest/diphoton/limits/CMSSW_8_1_0/src/HiggsAnalysis/CombinedLimit";
+  if(argc > 2) {
+    std::cout << "Syntax: limit.exe [combine directory]" << std::endl;
+    return -1;
+  }
+  else if(argc == 2) {
+    limitDirectory = argv[1];
+  }
+
+  limit(limitDirectory);
 }
 
-void limit()
+void limit(const std::string &directory)
 {
-  const std::string limitDirectory="/uscms/homes/c/cawest/diphoton/limits/CMSSW_8_1_0/src/HiggsAnalysis/CombinedLimit";
 
-  oneLimit(2, 1, limitDirectory);
-  oneLimit(2, 4, limitDirectory);
-  oneLimit(4, 1, limitDirectory);
+  oneLimit(2, 1, directory);
+  oneLimit(2, 4, directory);
+  oneLimit(4, 1, directory);
 }
 
 void oneLimit(int ned, int kk, const std::string &directory)
@@ -82,13 +90,15 @@ void oneLimit(int ned, int kk, const std::string &directory)
   kkconvention[1] = "HLZ";
   kkconvention[4] = "Hewett-";
 
-  std::vector<float> stringScales = {3000, 3500, 4000, 4500, 5000, 5500, 6000};
+  std::vector<float> stringScales = {3000, 3500, 4000, 4500, 5000, 5500, 6000,
+				     7000, 8000, 9000, 10000, 11000};
   std::vector<float> minus2Sigma, minus1Sigma, mean, plus1Sigma, plus2Sigma;
   std::vector<float> observed;
   std::vector<float> dummy;
 
   TFile *f;
   for(unsigned int i=0; i<stringScales.size(); i++) {
+    if(ned == 2 && kk == 4 && stringScales.at(i) > 6000) continue;
     TString filename(Form("%s/higgsCombineADDGravToGG_MS-%d_NED-%d_KK-%d.AsymptoticLimits.mH120.root", directory.c_str(), static_cast<int>(stringScales.at(i)), ned, kk));
     f = TFile::Open(filename);
     if(!f->IsOpen()) {
@@ -196,5 +206,4 @@ void oneLimit(int ned, int kk, const std::string &directory)
 
   drawHeader();
   c->Print(Form("plots/limits_ADDGravToGG_NED-%d_KK-%d.pdf", ned, kk));
-  f->Close();
 }
