@@ -30,6 +30,10 @@ config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'diphoton-analysis/ExoDiPhotonAnalyzer/test/diphoton_cfg.py'
 config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_' + datasetID + '.root']
 
+#Uzzie only
+config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/EGammaData'
+
+
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
