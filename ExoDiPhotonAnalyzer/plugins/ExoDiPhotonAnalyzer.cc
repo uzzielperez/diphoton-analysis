@@ -1,21 +1,8 @@
-// -*- C++ -*-
-//
-// Package:    diphoton-analysis/ExoDiPhotonBackgroundAnalyzer
-// Class:      ExoDiPhotonBackgroundAnalyzer
-// 
-/**\class ExoDiPhotonBackgroundAnalyzer ExoDiPhotonBackgroundAnalyzer.cc diphoton-analysis/ExoDiPhotonBackgroundAnalyzer/plugins/ExoDiPhotonBackgroundAnalyzer.cc
-
- Description: [one line class summary]
-
- Implementation:
-     [Notes on implementation]
-*/
 //
 // Original Author:  Andrew Buccilli
 //         Created:  Tue, 05 Apr 2016 22:30:14 GMT
 //
 //
-
 
 // system include files
 #include <memory>
@@ -44,45 +31,20 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "TTree.h"
 
-// for ECAL topology
-#include "Geometry/CaloTopology/interface/CaloTopology.h"
+#include "Geometry/CaloTopology/interface/CaloTopology.h" // for ECAL topology
 #include "Geometry/CaloEventSetup/interface/CaloTopologyRecord.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "DataFormats/EcalDetId/interface/EBDetId.h"
 #include "DataFormats/EcalDetId/interface/EEDetId.h"
-
-// for EGM ID
-#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
-
-// for photons
+#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h" // for EGM ID
 #include "DataFormats/PatCandidates/interface/Photon.h"
-
-// for jets
 #include "DataFormats/PatCandidates/interface/Jet.h"
-
-// for genParticles
-#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
-
-// for genEventInfo
-#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
-
-// for deltaR
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h" // for genParticles
+#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h" // for genEventInfo
 #include "DataFormats/Math/interface/deltaR.h"
-
-// for trigger and filter decisions
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "FWCore/Common/interface/TriggerNames.h"
-
-//
-// class declaration
-//
-
-// If the analyzer does not use TFileService, please remove
-// the template argument to the base class so the class inherits
-// from  edm::one::EDAnalyzer<> and also remove the line from
-// constructor "usesResource("TFileService");"
-// This will improve performance in multithreaded jobs.
 
 class ExoDiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
    public:
@@ -91,13 +53,13 @@ class ExoDiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResource
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
       void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles, const std::vector<edm::Ptr<pat::Photon>> selectedPhotons);
-      void photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons, const edm::Handle<EcalRecHitCollection>& recHitsEB, const edm::Handle<EcalRecHitCollection>& recHitsEE, 
+      void photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons, const edm::Handle<EcalRecHitCollection>& recHitsEB, const edm::Handle<EcalRecHitCollection>& recHitsEE,
 			const edm::Handle<edm::ValueMap<bool> >* id_decisions,
 			ExoDiPhotons::photonInfo_t& photon1Info, ExoDiPhotons::photonInfo_t& photon2Info, ExoDiPhotons::diphotonInfo_t& diphotonInfo);
       void sherpaDiphotonFiller(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
 				std::vector<edm::Ptr<const reco::GenParticle>> sherpaDiphotons);
       void mcTruthFiller(const pat::Photon *photon, ExoDiPhotons::photonInfo_t& photonInfo, const edm::Handle<edm::View<reco::GenParticle> > genParticles);
-  
+
    private:
       virtual void beginJob() override;
       virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
@@ -106,7 +68,7 @@ class ExoDiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResource
   // ----------member data ---------------------------
   // genParticle token
   edm::EDGetTokenT<edm::View<reco::GenParticle> > genParticlesMiniAODToken_;
-  
+
   // miniAOD photon token
   edm::EDGetToken photonsMiniAODToken_;
   double fMinPt;
@@ -115,56 +77,33 @@ class ExoDiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResource
   edm::EDGetToken jetsMiniAODToken_;
   double jetPtThreshold;
   double jetEtaThreshold;
-    
-  // ECAL recHits
+
   edm::InputTag recHitsEBTag_;
   edm::InputTag recHitsEETag_;
   edm::EDGetTokenT<EcalRecHitCollection> recHitsEBToken;
   edm::EDGetTokenT<EcalRecHitCollection> recHitsEEToken;
 
-  // BeamHaloSummary token
   edm::EDGetToken beamHaloSummaryToken_;
-
-  // Filter decisions token
   edm::EDGetToken filterDecisionToken_;
-
-  // trigger decisions token
   edm::EDGetToken triggerDecisionToken_;
-
-  // trigger prescales token
   edm::EDGetToken prescalesToken_;
-
-  // rho token
   edm::EDGetTokenT<double> rhoToken_;
-  
-  // vertex token
   edm::EDGetTokenT<reco::VertexCollection> verticesToken_;
-
-  // Pileup summary token
   edm::EDGetTokenT<std::vector<PileupSummaryInfo> > pileupToken_;
-
-  // beam spot token
   edm::EDGetTokenT<reco::BeamSpot> beamSpotToken_;
 
-  // rho variable
-  double rho_;
-
-  // EGM eff. areas
-  EffectiveAreas effAreaChHadrons_;
-  EffectiveAreas effAreaNeuHadrons_;
-  EffectiveAreas effAreaPhotons_;
-
-  // EGM ID decision tokens
   edm::EDGetTokenT<edm::ValueMap<bool> > phoLooseIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > phoMediumIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > phoTightIdMapToken_;
-  
-  // output file name
+
+  // Variables
+  double rho_;
+  EffectiveAreas effAreaChHadrons_;
+  EffectiveAreas effAreaNeuHadrons_;
+  EffectiveAreas effAreaPhotons_;
   TString outputFile_;
-  // number of events in sample
   uint32_t nEventsSample_;
 
-  // trees
   TTree *fTree;
   TTree *fSherpaGenTree;
 
@@ -176,33 +115,18 @@ class ExoDiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResource
   ExoDiPhotons::photonInfo_t fTrueOrFakePhoton1Info[2][2]; // leading, all combinations: TT, FT, TF and FF
   ExoDiPhotons::photonInfo_t fTrueOrFakePhoton2Info[2][2]; // subleading, all combinations: TT, FT, TF and FF
 
-  // jets
   ExoDiPhotons::jetInfo_t fJetInfo;
-  
-  // event
   ExoDiPhotons::eventInfo_t fEventInfo;
-
-  // vertex
   ExoDiPhotons::vertexInfo_t fVertex0Info;
   ExoDiPhotons::vertexInfo_t fPrimaryVertexInfo;
-
-  // beam spot
   ExoDiPhotons::beamSpotInfo_t fBeamSpotInfo;
-
-  // triggers
   ExoDiPhotons::triggerInfo_t fTriggerBitInfo;
   ExoDiPhotons::triggerInfo_t fTriggerPrescaleInfo;
-
-  // gen event info token
   edm::EDGetTokenT<GenEventInfoProduct> genInfoToken_;
 
-  // flag to determine if sample is data or MC
+  // Flags
   bool isMC_;
-
-  // flag to determine if MC sample is used for closure test
   bool isClosureTest_;
-  
-  // flag to determine if sample is reco or re-reco
   bool isReMINIAOD_;
 
   // genParticles
@@ -211,11 +135,9 @@ class ExoDiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResource
 
   // diphotons
   ExoDiPhotons::diphotonInfo_t fDiphotonInfo; // all good photons
-  // photons (separated by whether each of the two leading photons are true or fake)
-  ExoDiPhotons::diphotonInfo_t fTrueOrFakeDiphotonInfo[2][2];
+  ExoDiPhotons::diphotonInfo_t fTrueOrFakeDiphotonInfo[2][2];   // photons (separated by whether each of the two leading photons are true or fake)
+  ExoDiPhotons::diphotonInfo_t fGenDiphotonInfo;   // gen diphoton (two true)
 
-  // gen diphoton (two true)
-  ExoDiPhotons::diphotonInfo_t fGenDiphotonInfo;
   // sherpa gen information
   ExoDiPhotons::genParticleInfo_t fSherpaGenPhoton1Info; // leading
   ExoDiPhotons::genParticleInfo_t fSherpaGenPhoton2Info; // subleading
@@ -253,17 +175,6 @@ class ExoDiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResource
   };
 };
 
-//
-// constants, enums and typedefs
-//
-
-//
-// static data member definitions
-//
-
-//
-// constructors and destructor
-//
 ExoDiPhotonAnalyzer::ExoDiPhotonAnalyzer(const edm::ParameterSet& iConfig)
   : rhoToken_(consumes<double> (iConfig.getParameter<edm::InputTag>("rho"))),
     verticesToken_(consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"))),
@@ -286,7 +197,7 @@ ExoDiPhotonAnalyzer::ExoDiPhotonAnalyzer(const edm::ParameterSet& iConfig)
   usesResource("TFileService");
 
   edm::Service<TFileService> fs;
-  
+
   // tree for objects passing numerator or denominator definitions
   fTree = fs->make<TTree>("fTree","DiPhotonTree");
   fTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
@@ -345,9 +256,7 @@ ExoDiPhotonAnalyzer::ExoDiPhotonAnalyzer(const edm::ParameterSet& iConfig)
   fTree->Branch("isTF", &isTF_);
   fTree->Branch("isFT", &isFT_);
   fTree->Branch("isFF", &isFF_);
-
-  // number of reconstructed primary vertices
-  fTree->Branch("nPV", &nPV_);
+  fTree->Branch("nPV", &nPV_);  // number of reconstructed primary vertices
 
   // photon token
   photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
@@ -355,31 +264,24 @@ ExoDiPhotonAnalyzer::ExoDiPhotonAnalyzer(const edm::ParameterSet& iConfig)
 
   // genParticle token
   genParticlesMiniAODToken_ = mayConsume<edm::View<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticlesMiniAOD"));
-  
+
   // AK4 jets token
   jetsMiniAODToken_ = mayConsume< edm::View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("jetsMiniAOD"));
   jetPtThreshold = iConfig.getParameter<double>("jetPtThreshold");
   jetEtaThreshold = iConfig.getParameter<double>("jetEtaThreshold");
-  
+
   // ECAL RecHits
   recHitsEBTag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEBTag",edm::InputTag("reducedEgamma:reducedEBRecHits"));
   recHitsEETag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEETag",edm::InputTag("reducedEgamma:reducedEERecHits"));
   recHitsEBToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEBTag_);
   recHitsEEToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEETag_);
 
-  // BeamHaloSummary
+  // More Tokens
   beamHaloSummaryToken_ = consumes<reco::BeamHaloSummary>( edm::InputTag("BeamHaloSummary") );
-
   pileupToken_ = consumes<std::vector<PileupSummaryInfo> >( edm::InputTag("slimmedAddPileupInfo") );
-
-  // Filter decisions (created in "PAT" process in MC but "RECO" in data)
-  filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","",(isMC_||isReMINIAOD_)?("PAT"):("RECO")) );
-
-  // Trigger decisions
-  triggerDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","HLT") );
-
-  // trigger prescales
-  prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","",(isMC_||isReMINIAOD_)?("PAT"):("RECO")) );
+  filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","",(isMC_||isReMINIAOD_)?("PAT"):("RECO")) ); // Filter decisions (created in "PAT" process in MC but "RECO" in data)
+  triggerDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","HLT") );  // Trigger decisions
+  prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","",(isMC_||isReMINIAOD_)?("PAT"):("RECO")) ); // trigger prescales
 
   // set appropriate year (used for pileup reweighting)
   if(outputFile_.Contains("2015")) year = 2015;
@@ -389,18 +291,12 @@ ExoDiPhotonAnalyzer::ExoDiPhotonAnalyzer(const edm::ParameterSet& iConfig)
 
 ExoDiPhotonAnalyzer::~ExoDiPhotonAnalyzer()
 {
- 
+
    // do anything here that needs to be done at desctruction time
    // (e.g. close files, deallocate resources etc.)
 
 }
 
-
-//
-// member functions
-//
-
-// ------------ method called for each event  ------------
 void
 ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
@@ -411,32 +307,25 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 
   isGood_ = isTT_ = isTF_ = isFT_ = isFF_ = false;
   nPV_ = 0;
-  // set to a large value so that photons will not be considered
-  // isolated by default
-  SherpaGenPhoton0_iso_ = SherpaGenPhoton1_iso_ = 9999.99;
+  SherpaGenPhoton0_iso_ = SherpaGenPhoton1_iso_ = 9999.99;   // set to a large value so that photons will not be considered isolated by default
 
-  // ==========
-  // EVENT INFO
-  // ==========
-
+  // Handles
   edm::Handle< reco::BeamHaloSummary > bhsHandle;
   iEvent.getByToken(beamHaloSummaryToken_,bhsHandle);
   const reco::BeamHaloSummary* bhs = &(*bhsHandle);
+  edm::Handle<GenEventInfoProduct> genInfo;
+  edm::Handle<std::vector< PileupSummaryInfo > > puSummary;
+  edm::Handle<reco::BeamSpot> beamSpotHandle;
+  iEvent.getByToken(beamSpotToken_,beamSpotHandle);
 
-  
+  // Initialize Branch Info
   ExoDiPhotons::InitEventInfo(fEventInfo);
   ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
   ExoDiPhotons::FillBeamHaloEventInfo(fEventInfo, bhs);
-  
+
   //  cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
 
-  // ==============
-  // GEN EVENT INFO
-  // ==============
-
-  // get genEventInfo
-  edm::Handle<GenEventInfoProduct> genInfo;
-  edm::Handle<std::vector< PileupSummaryInfo > > puSummary;
+  // Update Branch Info
   if(isMC_) {
     iEvent.getByToken(genInfoToken_,genInfo);
     iEvent.getByToken(pileupToken_, puSummary);
@@ -444,16 +333,7 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     ExoDiPhotons::FillPileupInfo(fEventInfo, &(*puSummary));
   }
   ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
-
-  // =========
-  // BEAM SPOT
-  // =========
-
   ExoDiPhotons::InitBeamSpotInfo(fBeamSpotInfo);
-
-  edm::Handle<reco::BeamSpot> beamSpotHandle;
-  iEvent.getByToken(beamSpotToken_,beamSpotHandle);
-
   ExoDiPhotons::FillBeamSpotInfo(fBeamSpotInfo,&(*beamSpotHandle));
 
   // ========
@@ -468,7 +348,7 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 
   // fill vertex0
   ExoDiPhotons::FillVertexInfo(fVertex0Info,&(vertices->at(0)));
-  
+
   // select the primary vertex, if any
   const reco::Vertex *myPV = &(vertices->front());
   bool foundPV = false;
@@ -488,24 +368,24 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   // ====
   // JETS
   // ====
-  
+
   ExoDiPhotons::InitJetInfo(fJetInfo);
-  
+
   // add jet HT information
   edm::Handle< edm::View<pat::Jet> > jets;
   iEvent.getByToken(jetsMiniAODToken_,jets);
-  
+
   ExoDiPhotons::FillJetInfo(fJetInfo, &(*jets), jetPtThreshold, jetEtaThreshold);
-  
+
   // =====================
   // FILTER DECISION INFO
   // =====================
-  
+
   edm::Handle<edm::TriggerResults> filtHandle;
   iEvent.getByToken(filterDecisionToken_,filtHandle);
   const edm::TriggerResults *filterResults = filtHandle.product();
   std::vector<std::string> trigNames = iEvent.triggerNames(*filterResults).triggerNames();
-  
+
   int EEBadScFilterNum = -1;
   for (unsigned int i=0; i < trigNames.size(); i++){
     std::string tempName = trigNames.at(i);
@@ -515,15 +395,15 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     }
   }
   if (EEBadScFilterNum < 0) throw cms::Exception("FilterDecisionInfo") << "Cannot find Flag_eeBadScFilter in the filter decision object!! This must be investigated!!!";
-  
+
   bool passEEBadScFilter = filterResults->accept(EEBadScFilterNum);
-  
+
   // Go to next photon if this filter is not passed
   if (!passEEBadScFilter){
     cout << "Event did not pass the EE Bad Supercrystal Filter, skip it!" << endl;
     return;
   }
-  
+
   // =====================
   // TRIGGER DECISION INFO
   // =====================
@@ -542,18 +422,18 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   // ===
   // RHO
   // ===
-  
+
   // Get rho
   edm::Handle< double > rhoH;
   iEvent.getByToken(rhoToken_,rhoH);
   rho_ = *rhoH;
-  
+
   //  cout << "rho: " << rho_ << endl;
 
   // ======
   // EGM ID
   // ======
-  
+
   edm::Handle<edm::ValueMap<bool> > id_decisions[3];
   iEvent.getByToken(phoLooseIdMapToken_, id_decisions[LOOSE]);
   iEvent.getByToken(phoMediumIdMapToken_, id_decisions[MEDIUM]);
@@ -562,10 +442,10 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   // =========
   // ECAL INFO
   // =========
-  
+
   // ECAL RecHits
   edm::Handle<EcalRecHitCollection> recHitsEB;
-  iEvent.getByToken(recHitsEBToken,recHitsEB);   
+  iEvent.getByToken(recHitsEBToken,recHitsEB);
   edm::Handle<EcalRecHitCollection> recHitsEE;
   iEvent.getByToken(recHitsEEToken,recHitsEE);
 
@@ -585,7 +465,7 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   ExoDiPhotons::InitDiphotonInfo(fTrueOrFakeDiphotonInfo[1][0]);
   ExoDiPhotons::InitDiphotonInfo(fTrueOrFakeDiphotonInfo[1][1]);
   if(isMC_) ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo);
-  
+
   // ============
   // GENPARTICLES
   // ============
@@ -615,10 +495,10 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   // =======
   // PHOTONS
   // =======
-   
+
   ExoDiPhotons::InitPhotonInfo(fPhoton1Info);
   ExoDiPhotons::InitPhotonInfo(fPhoton2Info);
-  
+
   // loop over combinations of true and fake
   for(unsigned int i=0; i<2; i++) {
     for(unsigned int j=0; j<2; j++) {
@@ -637,16 +517,16 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   // pointer to photon in collection that passes high pt ID
   std::vector<edm::Ptr<pat::Photon>> goodPhotons;
   std::vector<edm::Ptr<pat::Photon>> selectedPhotons[2][2]; // combinations of real and fake for both leading candidates
-    
+
   std::vector<std::pair<edm::Ptr<pat::Photon>, int> > realAndFakePhotons;
 
   //for (edm::View<pat::Photon>::const_iterator pho = photons->begin(); pho != photons->end(); ++pho) {
   for (size_t i = 0; i < photons->size(); ++i) {
     const auto pho = photons->ptrAt(i);
-    
+
     // print photon info
     //    cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
-    
+
     // check if photon is saturated
     isSat = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
 
@@ -688,7 +568,7 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       mcTruthFiller(&(*selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].at(1)), fTrueOrFakePhoton2Info[photon1TrueOrFake][photon2TrueOrFake], genParticles);
     }
   }
-  
+
   if (goodPhotons.size() >= 2) {
     isGood_ = true;
     photonFiller(goodPhotons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fDiphotonInfo);
@@ -702,7 +582,7 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       }
     }
   }
-  
+
   // fill tree with sherpa generator information
   // need to save _all_ events for Sherpa so that PDF uncertainties
   // can be calculated
@@ -716,15 +596,15 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       fTree->Fill();
     }
   }
-  
+
 
   //  cout << endl;
-  
+
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
    Handle<ExampleData> pIn;
    iEvent.getByLabel("example",pIn);
 #endif
-   
+
 #ifdef THIS_IS_AN_EVENTSETUP_EXAMPLE
    ESHandle<SetupData> pSetup;
    iSetup.get<SetupRecord>().get(pSetup);
@@ -733,14 +613,14 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 
 
 // ------------ method called once each job just before starting event loop  ------------
-void 
+void
 ExoDiPhotonAnalyzer::beginJob()
 {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-void 
-ExoDiPhotonAnalyzer::endJob() 
+void
+ExoDiPhotonAnalyzer::endJob()
 {
 }
 
@@ -812,7 +692,7 @@ void ExoDiPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParti
 
   } // end of genParticle loop.
 
-  sort(genPhotons.begin(), genPhotons.end(), ExoDiPhotons::comparePhotonsByPt);  
+  sort(genPhotons.begin(), genPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
 
     // fill interacting partons
   if (interactingPartons.size() == 2) {
@@ -920,15 +800,15 @@ void ExoDiPhotonAnalyzer::sherpaDiphotonFiller(const edm::Handle<edm::View<reco:
 void ExoDiPhotonAnalyzer::mcTruthFiller(const pat::Photon *photon, ExoDiPhotons::photonInfo_t& photonInfo, const edm::Handle<edm::View<reco::GenParticle> > genParticles)
 {
   bool printInfo = false;
-  
+
   if (printInfo) std::cout << "Photon: pt = " << photon->pt() << "; eta = " << photon->eta() << "; phi = " << photon->phi() << std::endl;
-  
+
   const double deltaR_cut = 0.1;
   double minDeltaR = deltaR_cut;
-  
+
   const reco::GenParticle *photon_gen_match = NULL;
-  
-  // find best match to reco photon among all final state gen particles in dR cone 
+
+  // find best match to reco photon among all final state gen particles in dR cone
   for (size_t i = 0; i < genParticles->size(); ++i) {
     const auto gen = genParticles->ptrAt(i);
     double deltaR = reco::deltaR(photon->eta(),photon->phi(),gen->eta(),gen->phi());
@@ -945,7 +825,7 @@ void ExoDiPhotonAnalyzer::mcTruthFiller(const pat::Photon *photon, ExoDiPhotons:
   } // end for loop over gen particles
 
   bool is_fake = false;
-  
+
   // if matched, look at gen. history to determine if reco photon is fake
   if (photon_gen_match) {
     if (printInfo) {
@@ -1011,7 +891,7 @@ void ExoDiPhotonAnalyzer::mcTruthFiller(const pat::Photon *photon, ExoDiPhotons:
   } // end if photon gen. match
 
   if (is_fake) photonInfo.isMCTruthFake = true;
-  
+
 } // end mcTruthFiller
 
 //define this as a plug-in
