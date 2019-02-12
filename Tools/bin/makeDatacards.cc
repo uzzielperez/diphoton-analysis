@@ -149,8 +149,7 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& region, 
   // nuisance diphotonkfactorStat2("diphotonkfactorStat2", "lnN", {"-", diphotonkfactorStatValue2, "-", "-"});
   // std::string diphotonkfactorStatValue3 = getDiphotonYieldVariations(region, "diphotonkfactorStat3");
   // nuisance diphotonkfactorStat3("diphotonkfactorStat3", "lnN", {"-", diphotonkfactorStatValue3, "-", "-"});
-  std::string diphotonkfactorScalesValue = getDiphotonYieldVariations(region, "diphotonkfactorScales");
-  nuisance diphotonkfactorScales("diphotonkfactorScales", "lnN", {"-", diphotonkfactorScalesValue, "-", "-"});
+  nuisance diphotonkfactorScales("diphotonkfactorScales", "shape", {"-", "1", "-", "-"});
   std::string lumiError = std::to_string(1 + luminosityErrorFrac[datacardYear]);
   nuisance lumi("lumi", "lnN", {lumiError, lumiError, "-", lumiError});
   nuisance pileup("pileup", "lnN", {"1.05", "1.05", "-", "1.05"});

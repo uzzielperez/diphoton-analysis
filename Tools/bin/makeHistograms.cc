@@ -36,7 +36,6 @@ int main(int argc, char *argv[])
   TFile *output = new TFile(Form("datacards/Minv_histos_%s_%s.root", region.c_str(), year.c_str()), "recreate");
   output->mkdir(region.c_str());
   TFile *fakes = new TFile(Form("data/fakes_%s_average.root", year.c_str()));
-  fakes->Print("v");
   TH1F *fakeHist = static_cast<TH1F*>(fakes->Get(Form("%s/gj", region.c_str())));
   output->cd(region.c_str());
   fakeHist->Write();
@@ -49,7 +48,7 @@ int main(int argc, char *argv[])
 void allSamples(const std::string &region, const std::string &year, TFile * output)
 {
 
-  int nBins = 120;
+  int nBins = 240;
   double xMin = 0.0;
   double xMax = 6000.;
 
@@ -120,6 +119,12 @@ std::string getSampleBase(const std::string & sampleName, const std::string & ye
   std::string newString(sampleName);
   if( sampleName.find("_201") != std::string::npos) {
     newString.replace(newString.find("_201"), 5, "");
+  }
+  if(sampleName.find("_R2F2") != std::string::npos) {
+    newString.replace(newString.find("_R2F2"), 5, "_diphotonkfactorScalesUp");
+  }
+  if(sampleName.find("_R0p5F0p5") != std::string::npos) {
+    newString.replace(newString.find("_R0p5F0p5"), 9, "_diphotonkfactorScalesDown");
   }
   // "data_obs" is always the name of the data observation histogram
   std::string data("data_" + year);

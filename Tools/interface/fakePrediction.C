@@ -81,7 +81,7 @@ void fakePrediction::Loop(int year, const std::string &dataset)
   const std::vector<std::string> regions = {"BB", "BE"};
 
   // define binning for input to datacard
-  int nbins=40;
+  int nbins=80;
   double xmin=0.0;
   double xmax=2000.0;
 
