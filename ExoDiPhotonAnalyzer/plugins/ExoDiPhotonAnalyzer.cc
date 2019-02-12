@@ -258,30 +258,23 @@ ExoDiPhotonAnalyzer::ExoDiPhotonAnalyzer(const edm::ParameterSet& iConfig)
   fTree->Branch("isFF", &isFF_);
   fTree->Branch("nPV", &nPV_);  // number of reconstructed primary vertices
 
-  // photon token
-  photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
-  fMinPt = iConfig.getParameter<double>("minPhotonPt");
-
-  // genParticle token
-  genParticlesMiniAODToken_ = mayConsume<edm::View<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticlesMiniAOD"));
-
-  // AK4 jets token
-  jetsMiniAODToken_ = mayConsume< edm::View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("jetsMiniAOD"));
-  jetPtThreshold = iConfig.getParameter<double>("jetPtThreshold");
-  jetEtaThreshold = iConfig.getParameter<double>("jetEtaThreshold");
-
-  // ECAL RecHits
-  recHitsEBTag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEBTag",edm::InputTag("reducedEgamma:reducedEBRecHits"));
-  recHitsEETag_ = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEETag",edm::InputTag("reducedEgamma:reducedEERecHits"));
-  recHitsEBToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEBTag_);
-  recHitsEEToken = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEETag_);
-
   // More Tokens
+  photonsMiniAODToken_ = mayConsume<edm::View<pat::Photon> >(iConfig.getParameter<edm::InputTag>("photonsMiniAOD"));
+  genParticlesMiniAODToken_ = mayConsume<edm::View<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genParticlesMiniAOD"));
+  jetsMiniAODToken_ = mayConsume< edm::View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("jetsMiniAOD"));   // AK4 jets token
   beamHaloSummaryToken_ = consumes<reco::BeamHaloSummary>( edm::InputTag("BeamHaloSummary") );
   pileupToken_ = consumes<std::vector<PileupSummaryInfo> >( edm::InputTag("slimmedAddPileupInfo") );
   filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","",(isMC_||isReMINIAOD_)?("PAT"):("RECO")) ); // Filter decisions (created in "PAT" process in MC but "RECO" in data)
   triggerDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","HLT") );  // Trigger decisions
   prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","",(isMC_||isReMINIAOD_)?("PAT"):("RECO")) ); // trigger prescales
+
+  fMinPt          = iConfig.getParameter<double>("minPhotonPt");
+  jetPtThreshold  = iConfig.getParameter<double>("jetPtThreshold");
+  jetEtaThreshold = iConfig.getParameter<double>("jetEtaThreshold");
+  recHitsEBTag_   = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEBTag",edm::InputTag("reducedEgamma:reducedEBRecHits"));
+  recHitsEETag_   = iConfig.getUntrackedParameter<edm::InputTag>("RecHitsEETag",edm::InputTag("reducedEgamma:reducedEERecHits"));
+  recHitsEBToken  = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEBTag_);
+  recHitsEEToken  = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEETag_);
 
   // set appropriate year (used for pileup reweighting)
   if(outputFile_.Contains("2015")) year = 2015;
@@ -316,16 +309,27 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   edm::Handle<GenEventInfoProduct> genInfo;
   edm::Handle<std::vector< PileupSummaryInfo > > puSummary;
   edm::Handle<reco::BeamSpot> beamSpotHandle;
+  edm::Handle<reco::VertexCollection> vertices;
+  edm::Handle< edm::View<pat::Jet> > jets;
+  edm::Handle<edm::TriggerResults> filterHandle;  // Filter Handle
+  edm::Handle<edm::TriggerResults> triggerHandle;
+
   iEvent.getByToken(beamSpotToken_,beamSpotHandle);
+  iEvent.getByToken(verticesToken_,vertices);
+  iEvent.getByToken(jetsMiniAODToken_,jets);
+  iEvent.getByToken(filterDecisionToken_,filterHandle);
 
   // Initialize Branch Info
   ExoDiPhotons::InitEventInfo(fEventInfo);
-  ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
-  ExoDiPhotons::FillBeamHaloEventInfo(fEventInfo, bhs);
-
+  ExoDiPhotons::InitBeamSpotInfo(fBeamSpotInfo);
+  ExoDiPhotons::InitVertexInfo(fVertex0Info);
+  ExoDiPhotons::InitVertexInfo(fPrimaryVertexInfo);
+  ExoDiPhotons::InitJetInfo(fJetInfo);
   //  cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
 
   // Update Branch Info
+  ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
+  ExoDiPhotons::FillBeamHaloEventInfo(fEventInfo, bhs);
   if(isMC_) {
     iEvent.getByToken(genInfoToken_,genInfo);
     iEvent.getByToken(pileupToken_, puSummary);
@@ -333,20 +337,8 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     ExoDiPhotons::FillPileupInfo(fEventInfo, &(*puSummary));
   }
   ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
-  ExoDiPhotons::InitBeamSpotInfo(fBeamSpotInfo);
   ExoDiPhotons::FillBeamSpotInfo(fBeamSpotInfo,&(*beamSpotHandle));
 
-  // ========
-  // VERTICES
-  // ========
-
-  ExoDiPhotons::InitVertexInfo(fVertex0Info);
-  ExoDiPhotons::InitVertexInfo(fPrimaryVertexInfo);
-
-  edm::Handle<reco::VertexCollection> vertices;
-  iEvent.getByToken(verticesToken_,vertices);
-
-  // fill vertex0
   ExoDiPhotons::FillVertexInfo(fVertex0Info,&(vertices->at(0)));
 
   // select the primary vertex, if any
@@ -362,28 +354,13 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     }
   }
 
-  // fill vertex0
   ExoDiPhotons::FillVertexInfo(fPrimaryVertexInfo,&(*myPV));
-
-  // ====
-  // JETS
-  // ====
-
-  ExoDiPhotons::InitJetInfo(fJetInfo);
-
-  // add jet HT information
-  edm::Handle< edm::View<pat::Jet> > jets;
-  iEvent.getByToken(jetsMiniAODToken_,jets);
-
   ExoDiPhotons::FillJetInfo(fJetInfo, &(*jets), jetPtThreshold, jetEtaThreshold);
 
   // =====================
   // FILTER DECISION INFO
   // =====================
-
-  edm::Handle<edm::TriggerResults> filtHandle;
-  iEvent.getByToken(filterDecisionToken_,filtHandle);
-  const edm::TriggerResults *filterResults = filtHandle.product();
+  const edm::TriggerResults *filterResults = filterHandle.product();
   std::vector<std::string> trigNames = iEvent.triggerNames(*filterResults).triggerNames();
 
   int EEBadScFilterNum = -1;
@@ -408,7 +385,7 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   // TRIGGER DECISION INFO
   // =====================
 
-  edm::Handle<edm::TriggerResults> triggerHandle;
+
   iEvent.getByToken(triggerDecisionToken_,triggerHandle);
   const edm::TriggerResults* triggerResults = triggerHandle.product();
 
