@@ -1,8 +1,8 @@
-## Template file for CRAB submission. The script generate_crab_config.py 
+## Template file for CRAB submission. The script generate_crab_config.py
 ## replaces the following two lines with the appropriate values
 ## Do not edit manually!
 dataset = 'DATASETNAME'
-nevents = NEVENTS
+nevents = 'NEVENTS'
 
 # CRAB3 task names can no longer be greater than 100 characters; need to shorten task name
 taskname = dataset[1:].replace('/','__').replace('RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2','MiniAODv2').replace('TuneCUETP8M1_13TeV-madgraphMLM-pythia8','13TeV-MG-PY8')
@@ -22,7 +22,7 @@ config = Configuration()
 
 config.section_("General")
 config.General.requestName = taskname
-config.General.workArea = 'out_crab'
+config.General.workArea = 'outCRAB_ExoDiphotonAnalyzer'
 config.General.transferLogs = False
 
 config.section_("JobType")
@@ -30,13 +30,14 @@ config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'diphoton-analysis/ExoDiPhotonAnalyzer/test/diphoton_cfg.py'
 config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_' + datasetID + '.root']
 
-#Uzzie only
-config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/EGammaData'
-
-
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
+
+#Uzzie only
+#config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/EGammaData'
+config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/Signal17-18-ExoDiPhotonAnalyzer'
+
 if "Run2018" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 10

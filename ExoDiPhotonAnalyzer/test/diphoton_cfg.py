@@ -12,7 +12,7 @@ options.register('nEventsSample',
                  VarParsing.multiplicity.singleton,
                  VarParsing.varType.int,
                  "Total number of events in dataset for event weight calculation.")
-## 'maxEvents' is already registered by the Framework, changing default value 
+## 'maxEvents' is already registered by the Framework, changing default value
 options.setDefault('maxEvents', 100)
 
 options.parseArguments()
@@ -24,6 +24,7 @@ if "output" in outName: # if an input file name is specified, event weights can 
     print "Output root file name: " + outName
 else:
     options.inputFiles = "file:GGJets_M-1000To2000_Pt-50_13TeV-sherpa.root"
+    #options.inputFiles = '/store/mc/RunIIFall17MiniAODv2/ADDGravToGG_NegInt-1_LambdaT-8000_M-2000To4000_TuneCP2_13TeV-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/40000/E657F255-2A1E-E911-8E02-00266CFFCC54.root'
 #    outName = "ExoDiphotonAnalyzer.root"
 
 isMC = True

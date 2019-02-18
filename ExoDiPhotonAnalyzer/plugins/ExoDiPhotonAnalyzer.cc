@@ -304,8 +304,6 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 
   // Handles
   edm::Handle< reco::BeamHaloSummary > bhsHandle;
-  iEvent.getByToken(beamHaloSummaryToken_,bhsHandle);
-  const reco::BeamHaloSummary* bhs = &(*bhsHandle);
   edm::Handle<GenEventInfoProduct> genInfo;
   edm::Handle<std::vector< PileupSummaryInfo > > puSummary;
   edm::Handle<reco::BeamSpot> beamSpotHandle;
@@ -313,11 +311,30 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   edm::Handle< edm::View<pat::Jet> > jets;
   edm::Handle<edm::TriggerResults> filterHandle;  // Filter Handle
   edm::Handle<edm::TriggerResults> triggerHandle;
+  edm::Handle<pat::PackedTriggerPrescales> prescalesHandle;
+  edm::Handle< double > rhoH;
+  edm::Handle<edm::ValueMap<bool> > id_decisions[3];
+  edm::Handle<EcalRecHitCollection> recHitsEB;
+  edm::Handle<EcalRecHitCollection> recHitsEE;
+  Handle<edm::View<reco::GenParticle> > genParticles;
+  edm::Handle<edm::View<pat::Photon> > photons;
 
+
+  const reco::BeamHaloSummary* bhs = &(*bhsHandle);
+  iEvent.getByToken(beamHaloSummaryToken_,bhsHandle);
   iEvent.getByToken(beamSpotToken_,beamSpotHandle);
   iEvent.getByToken(verticesToken_,vertices);
   iEvent.getByToken(jetsMiniAODToken_,jets);
   iEvent.getByToken(filterDecisionToken_,filterHandle);
+  iEvent.getByToken(triggerDecisionToken_,triggerHandle);
+  iEvent.getByToken(prescalesToken_,prescalesHandle);
+  iEvent.getByToken(rhoToken_,rhoH);
+  iEvent.getByToken(phoLooseIdMapToken_, id_decisions[LOOSE]);
+  iEvent.getByToken(phoMediumIdMapToken_, id_decisions[MEDIUM]);
+  iEvent.getByToken(phoTightIdMapToken_ , id_decisions[TIGHT]);
+  iEvent.getByToken(recHitsEBToken,recHitsEB);
+  iEvent.getByToken(recHitsEEToken,recHitsEE);
+  iEvent.getByToken(photonsMiniAODToken_,photons);
 
   // Initialize Branch Info
   ExoDiPhotons::InitEventInfo(fEventInfo);
@@ -381,61 +398,21 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     return;
   }
 
-  // =====================
   // TRIGGER DECISION INFO
-  // =====================
-
-
-  iEvent.getByToken(triggerDecisionToken_,triggerHandle);
   const edm::TriggerResults* triggerResults = triggerHandle.product();
-
-  edm::Handle<pat::PackedTriggerPrescales> prescalesHandle;
-  iEvent.getByToken(prescalesToken_,prescalesHandle);
   const pat::PackedTriggerPrescales* prescales = prescalesHandle.product();
-
   ExoDiPhotons::FillTriggerBits(fTriggerBitInfo, triggerResults, iEvent); // fill trigger bits into trigger bit branch
   ExoDiPhotons::FillTriggerPrescales(fTriggerPrescaleInfo, triggerResults, prescales, iEvent); // fill trigger prescale info in trigger prescale branch
 
-  // ===
-  // RHO
-  // ===
-
   // Get rho
-  edm::Handle< double > rhoH;
-  iEvent.getByToken(rhoToken_,rhoH);
   rho_ = *rhoH;
-
-  //  cout << "rho: " << rho_ << endl;
-
-  // ======
-  // EGM ID
-  // ======
-
-  edm::Handle<edm::ValueMap<bool> > id_decisions[3];
-  iEvent.getByToken(phoLooseIdMapToken_, id_decisions[LOOSE]);
-  iEvent.getByToken(phoMediumIdMapToken_, id_decisions[MEDIUM]);
-  iEvent.getByToken(phoTightIdMapToken_ , id_decisions[TIGHT]);
-
-  // =========
-  // ECAL INFO
-  // =========
-
-  // ECAL RecHits
-  edm::Handle<EcalRecHitCollection> recHitsEB;
-  iEvent.getByToken(recHitsEBToken,recHitsEB);
-  edm::Handle<EcalRecHitCollection> recHitsEE;
-  iEvent.getByToken(recHitsEEToken,recHitsEE);
-
   // ECAL Topology
   edm::ESHandle<CaloTopology> caloTopology;
   iSetup.get<CaloTopologyRecord>().get(caloTopology);
   subDetTopologyEB_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalBarrel);
   subDetTopologyEE_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalEndcap);
 
-  // =========
   // DIPHOTONS
-  // =========
-
   ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo);
   ExoDiPhotons::InitDiphotonInfo(fTrueOrFakeDiphotonInfo[0][0]);
   ExoDiPhotons::InitDiphotonInfo(fTrueOrFakeDiphotonInfo[0][1]);
@@ -443,36 +420,27 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   ExoDiPhotons::InitDiphotonInfo(fTrueOrFakeDiphotonInfo[1][1]);
   if(isMC_) ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo);
 
-  // ============
   // GENPARTICLES
-  // ============
 
-  Handle<edm::View<reco::GenParticle> > genParticles;
   if(isMC_) {
     ExoDiPhotons::InitGenParticleInfo(fGenPhoton1Info);
     ExoDiPhotons::InitGenParticleInfo(fGenPhoton2Info);
-
     // get genParticle collection
     iEvent.getByToken(genParticlesMiniAODToken_,genParticles);
   }
   if(isSherpaDiphoton_) {
     std::vector<edm::Ptr<const reco::GenParticle>> sherpaDiphotons;
-
     // find diphoton candidates
     for(size_t i=0; i<genParticles->size(); i++) {
       edm::Ptr<reco::GenParticle> gen = genParticles->ptrAt(i);
       if(gen->status()==3 && gen->pdgId()==22) sherpaDiphotons.push_back(gen);
     }
-
     // the following assumes that we have exactly two photons
     if(sherpaDiphotons.size()==2) sherpaDiphotonFiller(genParticles, sherpaDiphotons);
     else throw cms::Exception("Should always have exactly two photons with status==3 in the diphoton sample");
   }
 
-  // =======
   // PHOTONS
-  // =======
-
   ExoDiPhotons::InitPhotonInfo(fPhoton1Info);
   ExoDiPhotons::InitPhotonInfo(fPhoton2Info);
 
@@ -484,34 +452,24 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     }
   }
 
-  // get photon collection
-  edm::Handle<edm::View<pat::Photon> > photons;
-  iEvent.getByToken(photonsMiniAODToken_,photons);
+  bool isSat = false; // check if photon in loop is saturated
 
-  // check if photon in loop is saturated
-  bool isSat = false;
-
-  // pointer to photon in collection that passes high pt ID
-  std::vector<edm::Ptr<pat::Photon>> goodPhotons;
+  std::vector<edm::Ptr<pat::Photon>> goodPhotons;   // pointer to photon in collection that passes high pt ID
   std::vector<edm::Ptr<pat::Photon>> selectedPhotons[2][2]; // combinations of real and fake for both leading candidates
-
   std::vector<std::pair<edm::Ptr<pat::Photon>, int> > realAndFakePhotons;
 
   //for (edm::View<pat::Photon>::const_iterator pho = photons->begin(); pho != photons->end(); ++pho) {
   for (size_t i = 0; i < photons->size(); ++i) {
     const auto pho = photons->ptrAt(i);
 
-    // print photon info
     //    cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
-
-    // check if photon is saturated
-    isSat = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+    isSat = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));     // check if photon is saturated
 
     bool passID = ExoDiPhotons::passHighPtID(&(*pho), rho_, isSat);
     bool denominatorObject = ExoDiPhotons::passDenominatorCut(&(*pho), rho_, isSat);
-    // fill photons that pass high pt ID
+
     if(passID) {
-      goodPhotons.push_back(pho);
+      goodPhotons.push_back(pho); // fill photons that pass high pt ID
       realAndFakePhotons.push_back(std::pair<edm::Ptr<pat::Photon>, int>(pho, TRUE));
     }
     if(denominatorObject) {
