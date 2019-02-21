@@ -149,12 +149,15 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& region, 
   // nuisance diphotonkfactorStat2("diphotonkfactorStat2", "lnN", {"-", diphotonkfactorStatValue2, "-", "-"});
   // std::string diphotonkfactorStatValue3 = getDiphotonYieldVariations(region, "diphotonkfactorStat3");
   // nuisance diphotonkfactorStat3("diphotonkfactorStat3", "lnN", {"-", diphotonkfactorStatValue3, "-", "-"});
-  nuisance diphotonkfactorScales("diphotonkfactorScales", "shape", {"-", "1", "-", "-"});
+  nuisance diphotonkfactorScalesBB("diphotonkfactorScalesBB", "shape", {"-", "1", "-", "-"});
+  nuisance diphotonkfactorScalesBB_dummy("diphotonkfactorScalesBB", "shape", {"-", "-", "-", "-"});
+  nuisance diphotonkfactorScalesBE("diphotonkfactorScalesBE", "shape", {"-", "1", "-", "-"});
+  nuisance diphotonkfactorScalesBE_dummy("diphotonkfactorScalesBE", "shape", {"-", "-", "-", "-"});
   std::string lumiError = std::to_string(1 + luminosityErrorFrac[datacardYear]);
   nuisance lumi("lumi", "lnN", {lumiError, lumiError, "-", lumiError});
   nuisance pileup("pileup", "lnN", {"1.05", "1.05", "-", "1.05"});
-  nuisance fakes("fakes", "lnN", {"-", "-", "1.3", "-"});
-  nuisance eff("eff", "lnN", {"1.1", "1.1", "1.05", "1.05"});
+  nuisance fake_sample("fake_sample", "shape", {"-", "-", "1.0", "-"});
+  nuisance eff("eff", "lnN", {"1.1", "1.1", "1.05", "1.1"});
   nuisance xsec_minor_bkg("xsec_minor_bkg", "lnN", {"-", "-", "-", "1.5"});
 
   std::vector<nuisance> allNuisances;
@@ -162,10 +165,17 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& region, 
   // allNuisances.push_back(diphotonkfactorStat1);
   // allNuisances.push_back(diphotonkfactorStat2);
   // allNuisances.push_back(diphotonkfactorStat3);
-  allNuisances.push_back(diphotonkfactorScales);
+  if(region.compare("BB") == 0) {
+    allNuisances.push_back(diphotonkfactorScalesBB);
+    allNuisances.push_back(diphotonkfactorScalesBE_dummy);
+  }
+  else {
+    allNuisances.push_back(diphotonkfactorScalesBB_dummy);
+    allNuisances.push_back(diphotonkfactorScalesBE);
+  }
   allNuisances.push_back(lumi);
   allNuisances.push_back(pileup);
-  allNuisances.push_back(fakes);
+  allNuisances.push_back(fake_sample);
   allNuisances.push_back(eff);
   allNuisances.push_back(xsec_minor_bkg);
 

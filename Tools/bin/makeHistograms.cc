@@ -35,10 +35,18 @@ int main(int argc, char *argv[])
 
   TFile *output = new TFile(Form("datacards/Minv_histos_%s_%s.root", region.c_str(), year.c_str()), "recreate");
   output->mkdir(region.c_str());
-  TFile *fakes = new TFile(Form("data/fakes_%s_average.root", year.c_str()));
-  TH1F *fakeHist = static_cast<TH1F*>(fakes->Get(Form("%s/gj", region.c_str())));
-  output->cd(region.c_str());
-  fakeHist->Write();
+  std::vector<std::string> fakeRates = {"average", "doublemuon", "jetht"};
+  std::map<std::string, std::string> histPostFix;
+  histPostFix["average"] = "";
+  histPostFix["jetht"] = "_fake_sampleUp";
+  histPostFix["doublemuon"] = "_fake_sampleDown";
+  for (const auto& fakeRate : fakeRates) {
+    TFile *fakes = new TFile(Form("data/fakes_%s_%s.root", year.c_str(), fakeRate.c_str()));
+    TH1F *fakeHist = static_cast<TH1F*>(fakes->Get(Form("%s/gj", region.c_str())));
+    output->cd(region.c_str());
+    fakeHist->SetName(Form("gj%s", histPostFix[fakeRate].c_str()));
+    fakeHist->Write();
+  }
   allSamples(region, year, output);
   output->Write();
   output->Close();
@@ -105,11 +113,21 @@ void allSamples(const std::string &region, const std::string &year, TFile * outp
     output->cd(region.c_str());
   }
 
+  // subtract nonresonant background
   for(auto histogram : histograms) {
     std::string title(histogram.second->GetTitle());
     if(title.find("ADD") != std::string::npos) histogram.second->Add(histograms["gg70"], -1);
     histogram.second->Write();
   }
+
+  // create additional histograms for scale variations only in BB or BE
+  TH1F *scaleUp = dynamic_cast<TH1F*>(histograms["gg_diphotonkfactorScalesUp"]->Clone());
+  std::string histNameBase("gg_diphotonkfactorScales");
+  std::string histName = histNameBase + region + "Up";
+  scaleUp->SetName(histName.c_str());
+  TH1F *scaleDown = dynamic_cast<TH1F*>(histograms["gg_diphotonkfactorScalesDown"]->Clone());
+  histName = histNameBase + region + "Down";
+  scaleDown->SetName(histName.c_str());
 
 }
 
