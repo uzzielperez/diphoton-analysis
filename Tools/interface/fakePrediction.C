@@ -4,6 +4,7 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include <TMath.h>
 
 #include <iostream>
 
@@ -288,7 +289,7 @@ void fakePrediction::Loop(int year, const std::string &dataset)
    sum_for_datacard[BE] = static_cast<TH1D*>(sum[BE]->Clone("gj"));
 
    std::cout << "Writing histograms." << std::endl;
-   
+
    for(unsigned int i = 0; i < regions.size(); i++) {
      output->cd(regions[i].c_str());
      std::cout << "Changed directory to " << gDirectory->GetName() << std::endl;
@@ -330,4 +331,3 @@ bool fakePrediction::isBarrelEndcap(double eta1, double eta2)
 	  ((fabs(eta2) < etaMaxBarrel && (fabs(eta1) > etaMinEndcap && fabs(eta1) < etaMaxEndcap))));
 
 }
-

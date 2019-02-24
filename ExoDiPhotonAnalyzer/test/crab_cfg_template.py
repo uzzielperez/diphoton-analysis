@@ -33,6 +33,7 @@ config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_'
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
+config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/ExoANDiphoton'
 if "Run2018" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 10

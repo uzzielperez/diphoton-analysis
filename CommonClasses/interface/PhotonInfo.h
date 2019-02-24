@@ -185,7 +185,7 @@ namespace ExoDiPhotons
     photonInfo.phi         = photon->phi();
     photonInfo.scEta       = photon->superCluster()->eta();
     photonInfo.scPhi       = photon->superCluster()->phi();
-    photonInfo.rapidity    = photon->Rapidity()
+    photonInfo.rapidity    = photon->rapidity();
 
     // fiducial flags
     photonInfo.isEB        = photon_eta < 1.4442; //photon->isEB();

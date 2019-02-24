@@ -11,6 +11,7 @@
 #include "TGraphAsymmErrors.h"
 #include "TH1.h"
 #include "TLatex.h"
+#include <TMath.h>
 
 #include <iostream>
 #include <algorithm>
@@ -44,7 +45,7 @@ int main()
 
 int efficiency(const std::string& year, const std::string& variable)
 {
-  std::cout << "Calculating trigger turn-on for " << variable 
+  std::cout << "Calculating trigger turn-on for " << variable
 	    << " in " << year << " data." << std::endl;
 
   bool isTF = false;
@@ -81,7 +82,7 @@ void oneHist(const std::string& varname, TChain *ch, const std::string& year, bo
 
   std::string histnames[2] = {"numerator", "denominator"};
   std::vector<TH1F*> hists;
-  
+
   for(int i = 0; i < 2; i++) {
     hists.push_back(new TH1F(histnames[i].c_str(), histnames[i].c_str(), nbins[varname], min[varname], max[varname]));
   }
