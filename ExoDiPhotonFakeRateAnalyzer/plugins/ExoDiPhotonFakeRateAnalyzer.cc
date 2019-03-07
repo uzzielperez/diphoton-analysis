@@ -150,6 +150,9 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
   
   // vertex collection
   ExoDiPhotons::vertexCollInfo_t fVertexCollInfo;
+
+  // flag to determine if sample is reco or re-reco
+  bool isReMINIAOD_;
 };
 
 //
@@ -170,7 +173,8 @@ ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet
     effAreaPhotons_( (iConfig.getParameter<edm::FileInPath>("effAreaPhoFile")).fullPath() ),
     phoLooseIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoLooseIdMap"))),
     phoMediumIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoMediumIdMap"))),
-    phoTightIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoTightIdMap")))
+    phoTightIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoTightIdMap"))),
+    isReMINIAOD_(iConfig.getParameter<bool>("isReMINIAOD"))
 {
   //now do what ever initialization is needed
   usesResource("TFileService");
@@ -214,13 +218,13 @@ ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet
   beamHaloSummaryToken_ = consumes<reco::BeamHaloSummary>( edm::InputTag("BeamHaloSummary") );
 
   // Filter decisions
-  filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","RECO") );
+  filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","",isReMINIAOD_?("PAT"):("RECO")) );
 
   // Trigger decisions
   triggerDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","HLT") );
 
   // trigger prescales
-  prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","","RECO") );
+  prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","",isReMINIAOD_?("PAT"):("RECO")) );
 
   // vertices
   verticesToken_ = consumes<reco::VertexCollection>( edm::InputTag("offlineSlimmedPrimaryVertices") );

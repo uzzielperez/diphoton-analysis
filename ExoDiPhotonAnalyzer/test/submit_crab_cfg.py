@@ -8,8 +8,7 @@ import json
 import os
 diphoton_analysis = __import__("diphoton-analysis.CommonClasses.das_utils")
 
-
-do2017signal = True
+# Data
 do2018data = False
 do2018datarereco = False
 do2018dataJetHT = False
@@ -17,17 +16,22 @@ do2017dataprompt = False
 do2017data = False
 do2017dataJetHT = False
 do2016data = False
+do2016data03FEB2017rereco = False
+do2015data = False
+# Background MC
 do2017mc = False
 do2017mcv1 = False
 do2016mc = False
 dospring2016ggmc = False
 do2016ggmc = False
-do2015data = False
 do2015mc = False
+# Signal MC
 do2015signal = False
 do2015signalint = False
 do2016signal = False
 do2016signalint = False
+do2017signal = False
+do2017signalint = False
 
 DATASETS = [[]]
 # each entry contains a list of datasets, including extensions
@@ -36,6 +40,13 @@ DATASETS = [[]]
 #   datasets.append(["/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM",
 #                   "/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2_ext1-v1/MINIAODSIM"])
 
+if do2017signalint:
+  DATASETS.append(['/GG_M-200To500_Pt-70_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/GG_M-500To1000_Pt-70_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/GG_M-1000To2000_Pt-70_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/GG_M-2000To4000_Pt-70_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'])
+  DATASETS.append(['/GG_M-4000To6000_Pt-70_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/GG_M-6000To8000_Pt-70_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
 if do2017signal:
   DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-10000_M-2000To4000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
 #  DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-11000_M-1000To2000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
@@ -179,7 +190,7 @@ if do2017dataJetHT:
   DATASETS.append(["/JetHT/Run2017E-31Mar2018-v1/MINIAOD"])
   DATASETS.append(["/JetHT/Run2017F-31Mar2018-v1/MINIAOD"])
 # diphoton samples (2016 data)
-if do2016data:
+if do2016data03FEB2017rereco:
 # The /DoubleEG/Run2016B-03Feb2017_ver1-v1 dataset does not contain any lumisections
 # passing the good run JSON
 #  DATASETS.append(["/DoubleEG/Run2016B-03Feb2017_ver1-v1/MINIAOD"])
@@ -200,6 +211,18 @@ if do2016data:
 #  DATASETS.append(["/DoubleEG/Run2016G-23Sep2016-v1/MINIAOD"])
 #  DATASETS.append(["/DoubleEG/Run2016H-PromptReco-v2/MINIAOD"])
 #  DATASETS.append(["/DoubleEG/Run2016H-PromptReco-v3/MINIAOD"])
+if do2016data:
+# The /DoubleEG/Run2016B-17Jul2018_ver1-v1 dataset does not contain any lumisections
+# passing the good run JSON
+#  DATASETS.append(["/DoubleEG/Run2016B-17Jul2018_ver1-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016B-17Jul2018_ver2-v2/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016C-17Jul2018-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016D-17Jul2018-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016E-17Jul2018-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016F-17Jul2018-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016G-17Jul2018-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016H-17Jul2018_ver2-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016H-17Jul2018_ver3-v1/MINIAOD"])
 
 if do2017mc:
   DATASETS.append(["/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])

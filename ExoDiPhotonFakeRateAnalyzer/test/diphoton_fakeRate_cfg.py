@@ -94,6 +94,7 @@ process.diphoton = cms.EDAnalyzer(
     phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
     phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
     phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
+    isReMINIAOD = cms.bool(True)
     )
 
 process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton)
