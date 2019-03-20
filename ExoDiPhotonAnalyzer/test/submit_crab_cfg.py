@@ -215,14 +215,13 @@ if do2016data:
 # The /DoubleEG/Run2016B-17Jul2018_ver1-v1 dataset does not contain any lumisections
 # passing the good run JSON
 #  DATASETS.append(["/DoubleEG/Run2016B-17Jul2018_ver1-v1/MINIAOD"])
-  DATASETS.append(["/DoubleEG/Run2016B-17Jul2018_ver2-v2/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016B-17Jul2018_ver2-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2016C-17Jul2018-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2016D-17Jul2018-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2016E-17Jul2018-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2016F-17Jul2018-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2016G-17Jul2018-v1/MINIAOD"])
-  DATASETS.append(["/DoubleEG/Run2016H-17Jul2018_ver2-v1/MINIAOD"])
-  DATASETS.append(["/DoubleEG/Run2016H-17Jul2018_ver3-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2016H-17Jul2018-v1/MINIAOD"])
 
 if do2017mc:
   DATASETS.append(["/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
