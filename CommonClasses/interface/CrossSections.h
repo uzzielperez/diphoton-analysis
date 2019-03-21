@@ -237,13 +237,29 @@ namespace ExoDiPhotons {
     if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-5000_M-2000To3000_TuneCP2_13TeV-pythia8")) xsec =  1.707e-03;
     if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-5500_M-1000To2000_TuneCP2_13TeV-pythia8")) xsec =  1.443e-02;
     if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-5500_M-2000To4000_TuneCP2_13TeV-pythia8")) xsec =  1.643e-03;
-    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-6000_M-1000To2000_TuneCP2_13TeV-pythia8")) xsec =  1.409e-02;
-    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-6000_M-500To1000_TuneCP2_13TeV-pythia8")) xsec =  1.282e-01;
+
+    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-6000_M-500To1000_TuneCP2_13TeV-pythia8")) xsec = 1.282e-01;
+    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-6000_M-1000To2000_TuneCP2_13TeV-pythia8")) xsec = 1.409e-02;
+    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-6000_M-2000To4000_TuneCP2_13TeV-pythia8")) xsec =  1.234e-03;
+    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-6000_M-4000To6000_TuneCP2_13TeV-pythia8")) xsec =  2.006e-04;
+
     if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-6500_M-500To1000_TuneCP2_13TeV-pythia8")) xsec =  1.284e-01;
     if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-7500_M-1000To2000_TuneCP2_13TeV-pythia8")) xsec =  1.362e-02;
     if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-7500_M-2000To4000_TuneCP2_13TeV-pythia8")) xsec =  8.364e-04;
-    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-8000_M-2000To4000_TuneCP2_13TeV-pythia8")) xsec =  7.903e-04;
+
+    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-8000_M-500To1000_TuneCP2_13TeV-pythia8")) xsec =  1.280e-01;
+    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-8000_M-1000To2000_TuneCP2_13TeV-pythia8")) xsec =  1.354e-02;
+    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-8000_M-2000To4000_TuneCP2_13TeV-pythia8")) xsec = 7.903e-04;
+    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-8000_M-4000To8000_TuneCP2_13TeV-pythia8")) xsec =  4.138e-05;
+
     if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-9000_M-2000To4000_TuneCP2_13TeV-pythia8")) xsec =  7.384e-04;
+
+    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-10000_M-500To1000_TuneCP2_13TeV-pythia8")) xsec =  1.280e-01;
+    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-10000_M-1000To2000_TuneCP2_13TeV-pythia8")) xsec =  1.347e-02;
+    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-10000_M-2000To4000_TuneCP2_13TeV-pythia8")) xsec =  7.145e-04;
+    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-10000_M-4000To10000_TuneCP2_13TeV-pythia8")) xsec =  1.679e-05;
+
+
     if(sample.Contains("GluGluSpin0ToGammaGamma_W_0p014_M_750_TuneCP2_13TeV_pythia8")) xsec =  3.035e-11;
     if(sample.Contains("GluGluSpin0ToGammaGamma_W_0p014_M_1000_TuneCP2_13TeV_pythia8")) xsec =  5.945e-12;
     if(sample.Contains("GluGluSpin0ToGammaGamma_W_0p014_M_1250_TuneCP2_13TeV_pythia8")) xsec =  1.132e-12;
@@ -317,7 +333,7 @@ namespace ExoDiPhotons {
     if(sample.Contains("RSGravitonToGammaGamma_kMpl01_M_4500_TuneCP2_13TeV_pythia8")) xsec =  5.367e-05;
     if(sample.Contains("RSGravitonToGammaGamma_kMpl01_M_4750_TuneCP2_13TeV_pythia8")) xsec =  3.368e-05;
     if(sample.Contains("RSGravitonToGammaGamma_kMpl01_M_5000_TuneCP2_13TeV_pythia8")) xsec =  2.163e-05;
-
+    if(sample.Contains("RSGravitonToGammaGamma_kMpl01_M_5250_TuneCP2_13TeV_pythia8")) xsec =  1.398e-05
     if(sample.Contains("RSGravitonToGammaGamma_kMpl01_M_5500_TuneCP2_13TeV_pythia8")) xsec = 9.145e-06;
     if(sample.Contains("RSGravitonToGammaGamma_kMpl01_M_5750_TuneCP2_13TeV_pythia8")) xsec =  6.022e-06;
     if(sample.Contains("RSGravitonToGammaGamma_kMpl01_M_6000_TuneCP2_13TeV_pythia8")) xsec =  3.967e-06;
@@ -338,7 +354,7 @@ namespace ExoDiPhotons {
     if(sample.Contains("RSGravitonToGammaGamma_kMpl02_M_4500_TuneCP2_13TeV_pythia8")) xsec = 2.157e-04;
     if(sample.Contains("RSGravitonToGammaGamma_kMpl02_M_4750_TuneCP2_13TeV_pythia8")) xsec = 1.364e-04;
     if(sample.Contains("RSGravitonToGammaGamma_kMpl02_M_5000_TuneCP2_13TeV_pythia8")) xsec =  8.732e-05;
-
+    if(sample.Contains("RSGravitonToGammaGamma_kMpl02_M_5250_TuneCP2_13TeV_pythia8")) xsec =  5.709e-05;
     if(sample.Contains("RSGravitonToGammaGamma_kMpl02_M_5500_TuneCP2_13TeV_pythia8")) xsec =  3.748e-05;
     if(sample.Contains("RSGravitonToGammaGamma_kMpl02_M_5750_TuneCP2_13TeV_pythia8")) xsec =  2.479e-05;
     if(sample.Contains("RSGravitonToGammaGamma_kMpl02_M_6000_TuneCP2_13TeV_pythia8")) xsec = 1.652e-05;
