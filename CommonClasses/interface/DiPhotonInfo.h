@@ -16,13 +16,15 @@ namespace ExoDiPhotons
     double deltaR;
     double cosThetaStar;
     double cosThetaStar_old;
-    double chiDiphoton;
 
     // fiducial flags
     bool isEBEB;
     bool isEBEE;
     bool isEEEB;
     bool isEEEE;
+
+    // new kinematic variables
+    double chiDiphoton;
   };
 
   std::string diphotonBranchDefString("Minv/D:qt:deltaPhi:deltaEta:deltaR:cosThetaStar:cosThetaStar_old:isEBEB/O:isEBEE:isEEEB:isEEEE:chiDiphoton/D");
