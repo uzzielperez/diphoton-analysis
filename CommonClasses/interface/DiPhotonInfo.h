@@ -25,7 +25,7 @@ namespace ExoDiPhotons
     bool isEEEE;
   };
 
-  std::string diphotonBranchDefString("Minv/D:qt:deltaPhi:deltaEta:deltaR:cosThetaStar:cosThetaStar_old:chiDiphoton:isEBEB/O:isEBEE:isEEEB:isEEEE");
+  std::string diphotonBranchDefString("Minv/D:qt:deltaPhi:deltaEta:deltaR:cosThetaStar:cosThetaStar_old:isEBEB/O:isEBEE:isEEEB:isEEEE:chiDiphoton/D");
 
   void InitDiphotonInfo(diphotonInfo_t &diphotonInfo) {
     // kinematics
