@@ -11,6 +11,7 @@ diphoton_analysis = __import__("diphoton-analysis.CommonClasses.das_utils")
 # Data
 do2018data = False
 do2018datarereco = False
+do2018Ddatarereco = False
 do2018dataJetHT = False
 do2017dataprompt = False
 do2017data = False
@@ -172,6 +173,8 @@ if do2018datarereco:
   DATASETS.append(["/EGamma/Run2018A-17Sep2018-v2/MINIAOD"])
   DATASETS.append(["/EGamma/Run2018B-17Sep2018-v1/MINIAOD"])
   DATASETS.append(["/EGamma/Run2018C-17Sep2018-v1/MINIAOD"])
+if do2018Ddatarereco:
+  DATASETS.append(["/EGamma/Run2018D-22Jan2019-v2/MINIAOD"])
 if do2018data:
   DATASETS.append(["/EGamma/Run2018A-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/EGamma/Run2018A-PromptReco-v2/MINIAOD"])
