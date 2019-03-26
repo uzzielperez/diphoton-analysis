@@ -478,7 +478,7 @@ void FakeRateAnalysis::Loop(int iCut = 0, TString era = "UNKNOWN", TString datas
   if (iCut == 1) jetMatch = "_matchedtoLeadingJet";
   else if (iCut == 2) jetMatch = "_matchedtoSubleadingJet";
   TString pv = Form("_nPV%i-%i", pvCutLow, pvCutHigh);
-  TString outName = TString::Format("%s_fakerate_%s%s%s_newDenomDef_test.root", dataset.Data(), era.Data(), jetMatch.Data(), pv.Data());
+  TString outName = TString::Format("%s_fakerate_%s%s%s_newDenomDef.root", dataset.Data(), era.Data(), jetMatch.Data(), pv.Data());
   TFile file_out(outName,"RECREATE");
   
   // sigmaIetaIetaEB->Write();

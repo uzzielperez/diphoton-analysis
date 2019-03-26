@@ -64,10 +64,10 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   
   // for real templates (same for data and mc)
   TString extra("");
-  if(era.Contains("2016")) {
-    if(sample == "jetht") extra = "_JetHT";
-    if(sample == "doublemuon") extra = "_DoubleMuon";
-  }
+  // if(era.Contains("2016")) {
+  //   if(sample == "jetht") extra = "_JetHT";
+  //   if(sample == "doublemuon") extra = "_DoubleMuon";
+  // }
   
   // for numerator, fake templates, and denominator (choose data or mc)
   TString data_filename = "";

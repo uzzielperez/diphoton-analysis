@@ -268,20 +268,27 @@ void init(bool includeUnskimmed = false)
   }
 
   TChain *chData2016 = new TChain(treeType);
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016H-03Feb2017_ver3-v1__MINIAOD/180412_014155/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016F-03Feb2017-v1__MINIAOD/180412_013649/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016B-03Feb2017_ver2-v2__MINIAOD/180410_215122/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016D-03Feb2017-v1__MINIAOD/180412_013334/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016C-03Feb2017-v1__MINIAOD/180412_013202/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016E-03Feb2017-v1__MINIAOD/180412_013513/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016H-03Feb2017_ver2-v1__MINIAOD/180412_013955/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016G-03Feb2017-v1__MINIAOD/180412_013820/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016H-03Feb2017_ver3-v1__MINIAOD/180412_014155/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016F-03Feb2017-v1__MINIAOD/180412_013649/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016B-03Feb2017_ver2-v2__MINIAOD/180410_215122/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016D-03Feb2017-v1__MINIAOD/180412_013334/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016C-03Feb2017-v1__MINIAOD/180412_013202/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016E-03Feb2017-v1__MINIAOD/180412_013513/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016H-03Feb2017_ver2-v1__MINIAOD/180412_013955/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016G-03Feb2017-v1__MINIAOD/180412_013820/*.root");
   // chData2016->Add(filestring("DoubleEG__Run2016B-03Feb2017"));
   // chData2016->Add(filestring("DoubleEG__Run2016C-03Feb2017"));
   // chData2016->Add(filestring("DoubleEG__Run2016D-03Feb2017"));
   // chData2016->Add(filestring("DoubleEG__Run2016E-03Feb2017"));
   // chData2016->Add(filestring("DoubleEG__Run2016F-03Feb2017"));
   // chData2016->Add(filestring("DoubleEG__Run2016G-03Feb2017"));
+  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016B-17Jul2018_ver2-v1__MINIAOD/190320_015926/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016C-17Jul2018-v1__MINIAOD/190305_231112/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016D-17Jul2018-v1__MINIAOD/190305_231126/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016E-17Jul2018-v1__MINIAOD/190305_231137/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016F-17Jul2018-v1__MINIAOD/190305_231149/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016G-17Jul2018-v1__MINIAOD/190305_231202/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016H-17Jul2018-v1__MINIAOD/190320_020004/*.root");
   // both _ver2 and _ver3 should be included, corresponding to -v2 and -v3
   // of the PromptReco
   // chData2016->Add(filestring("DoubleEG__Run2016H-03Feb2017_ver2"));
