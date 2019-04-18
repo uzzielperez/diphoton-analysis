@@ -15,7 +15,7 @@ if preFitNuisances:
     extraOptions += " -t -1 "
 
 regions = {"BB", "BE"}
-years = {"2017", "2018"}
+years = {"2016", "2017", "2018"}
 for idim in dimensions:
     for i in dict[idim]:
         name = 'ADDGravToGG_MS-' + str(i) + '_' + idim
