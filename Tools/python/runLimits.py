@@ -24,7 +24,7 @@ for idim in dimensions:
         # combine datacards
         for year in years:
             for region in regions:
-                fulldatacardcmd += "datacards/" + name + "_" + year + "_" + region + ".dat "
+                fulldatacardcmd += region + "_" + year + "=datacards/" + name + "_" + year + "_" + region + ".dat "
         fulldatacardcmd += " > " + outputdatacard
         print fulldatacardcmd
         # output combined datacard

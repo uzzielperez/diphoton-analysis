@@ -131,6 +131,8 @@ void makeTable(const std::string& region)
 
 void makeOneDatacard(const std::string& signalPoint, const std::string& region, const std::string& datacardYear, const std::string& interferenceType)
 {
+  const bool scaleRegionNorm = true;
+
   makeTable(region);
 
   std::string signalPointInt = signalPoint;
@@ -153,6 +155,10 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& region, 
   nuisance diphotonkfactorScalesBB_dummy("diphotonkfactorScalesBB", "shape", {"-", "-", "-", "-"});
   nuisance diphotonkfactorScalesBE("diphotonkfactorScalesBE", "shape", {"-", "1", "-", "-"});
   nuisance diphotonkfactorScalesBE_dummy("diphotonkfactorScalesBE", "shape", {"-", "-", "-", "-"});
+  nuisance diphotonNormBB("diphotonNormBB", "lnU", {"-", "1.5", "-", "-"});
+  nuisance diphotonNormBB_dummy("diphotonNormBB_dummy", "lnU", {"-", "-", "-", "-"});
+  nuisance diphotonNormBE("diphotonNormBE", "lnU", {"-", "1.5", "-", "-"});
+  nuisance diphotonNormBE_dummy("diphotonNormBE_dummy", "lnU", {"-", "-", "-", "-"});
   std::string lumiError = std::to_string(1 + luminosityErrorFrac[datacardYear]);
   nuisance lumi("lumi", "lnN", {lumiError, lumiError, "-", lumiError});
   nuisance pileup("pileup", "lnN", {"1.05", "1.05", "-", "1.05"});
@@ -168,10 +174,18 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& region, 
   if(region.compare("BB") == 0) {
     allNuisances.push_back(diphotonkfactorScalesBB);
     allNuisances.push_back(diphotonkfactorScalesBE_dummy);
+    if(scaleRegionNorm) {
+      allNuisances.push_back(diphotonNormBE);
+      allNuisances.push_back(diphotonNormBB_dummy);
+    }
   }
   else {
     allNuisances.push_back(diphotonkfactorScalesBB_dummy);
     allNuisances.push_back(diphotonkfactorScalesBE);
+    if(scaleRegionNorm) {
+      allNuisances.push_back(diphotonNormBB);
+      allNuisances.push_back(diphotonNormBE_dummy);
+    }
   }
   allNuisances.push_back(lumi);
   allNuisances.push_back(pileup);
