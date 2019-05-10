@@ -3,6 +3,8 @@
    Note that this script only works on lxplus.'''
 import os
 
+OFFSITE = True
+
 # set PATH according to option 1 here: 
 # http://cms-service-lumi.web.cern.ch/cms-service-lumi/brilwsdoc.html#prerequisite
 os.environ["PATH"] = os.environ["HOME"] + "/.local/bin:/cvmfs/cms-bril.cern.ch/brilconda/bin:" + os.environ["PATH"]
@@ -11,7 +13,7 @@ CMD_BASE = "brilcalc lumi -u /fb"
 NORMTAGS = {'2015': "/afs/cern.ch/user/l/lumipro/public/normtag_file/OfflineNormtagV3_DCSOnly.json",
             '2016': "/afs/cern.ch/user/l/lumipro/public/Normtags/normtag_DATACERT.json",
             '2017': "/cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_PHYSICS.json",
-            '2018': "/cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_BRIL.json"}
+            '2018': "/cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_PHYSICS.json"}
 
 DATASETS = []
 #DATASETS.append('DoubleEG__Run2015C_25ns-16Dec2015-v1')
@@ -34,7 +36,7 @@ DATASETS.append('EGamma__Run2018B-PromptReco-v2')
 DATASETS.append('EGamma__Run2018C-PromptReco-v1')
 DATASETS.append('EGamma__Run2018C-PromptReco-v2')
 DATASETS.append('EGamma__Run2018C-PromptReco-v3')
-DATASETS.append('EGamma__Run2018D-PromptReco-v2')
+DATASETS.append('EGamma__Run2018D-22Jan2019-v2')
 
 
 for dataset in DATASETS:
@@ -54,5 +56,7 @@ for dataset in DATASETS:
         normtag = NORMTAGS['2018']
         trigger = 'HLT_DoublePhoton70*'
     cmd = CMD_BASE + " --normtag " + normtag + " -i " + json + " --hltpath " + trigger
+    if OFFSITE:
+        cmd += " -c offsite"
     print cmd
     os.system(cmd)

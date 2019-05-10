@@ -23,9 +23,8 @@
 
 // 20.3 fb^-1 were acquired in 2018 before loss of HEM15/HEM16
 // 59.97 fb^-1 are validated but only 59.28 fb^-1 available in EGamma dataset
-std::map<std::string, double> luminosity { {"2015", 2.62}, {"2016", 35.9}, {"2017", 41.527}, {"2018", 59.28}, {"2018_newjson", 56.077-54.19}, {"2018ABC_prompt", 28.04}, {"2018ABC_rereco", 28.04}};
-// 2017 uncertainties currently used for 2018
-std::map<std::string, double> luminosityErrorFrac { {"2015", 0.023}, {"2016", 0.026}, {"2017", 0.023}, {"2018", 0.023}, {"2018_newjson", 0.023}, {"2018ABC_prompt", 0.023}, {"2018ABC_rereco", 0.023}};
+std::map<std::string, double> luminosity { {"2015", 2.62}, {"2016", 35.9}, {"2017", 41.527}, {"2018", 59.67}, {"2018_newjson", 56.077-54.19}, {"2018ABC_prompt", 28.04}, {"2018ABC_rereco", 28.04}};
+std::map<std::string, double> luminosityErrorFrac { {"2015", 0.023}, {"2016", 0.026}, {"2017", 0.023}, {"2018", 0.025}, {"2018_newjson", 0.025}, {"2018ABC_prompt", 0.025}, {"2018ABC_rereco", 0.025}};
 
 std::map<std::string, TChain*> chains;
 std::map<std::string, int> lineStyles;
@@ -110,7 +109,7 @@ void init(bool includeUnskimmed = false)
   // skimmed version of chData2018_unskimmed
   TChain *chData2018 = new TChain(treeType);
   chData2018->Add(chData2018ABC_rereco);
-  chData2018->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/*.root");
+  chData2018->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/*.root");
 
   TChain *chData2018_prompt = new TChain(treeType);
   chData2018_prompt->Add(chData2018ABC_prompt);
@@ -154,16 +153,13 @@ void init(bool includeUnskimmed = false)
   TChain *chData2018_unskimmed = new TChain(treeType);
   if(includeUnskimmed) {
     chData2018_unskimmed->Add(chData2018ABC_rereco_unskimmed);
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0000/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0001/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0002/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0003/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0004/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0005/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0006/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0007/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0008/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0009/*.root");
+    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/0000/*.root");
+    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/0001/*.root");
+    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/0002/*.root");
+    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/0003/*.root");
+    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/0004/*.root");
+    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/0005/*.root");
+    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/0006/*.root");
   }
 
   TChain *chData2018_prompt_unskimmed = new TChain(treeType);
@@ -459,7 +455,8 @@ void init(bool includeUnskimmed = false)
   chains["gg_aMC_2015"] = chGG_aMC_2015;
   chains["gg_2018"] = chGG;
   chains["gg_2017"] = chGG;
-  chains["gg_2016"] = chGG_2016;
+  //  chains["gg_2016"] = chGG_2016;
+  chains["gg_2016"] = chGG;
   chains["ggGen"] = chGGGen;
   chains["gj_2018"] = chGJ;
   chains["gj_2017"] = chGJ;
