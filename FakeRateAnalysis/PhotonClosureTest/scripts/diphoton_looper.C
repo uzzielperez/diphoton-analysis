@@ -6,8 +6,8 @@
 #include "TStopwatch.h"
 #include <iostream>
 
-#include "MCFakeRateClosureTest.C"
-#include "MCFakeRateClosureTestWithFakes.C"
+#include "../analysis/MCFakeRateClosureTest.C"
+#include "../analysis/MCFakeRateClosureTestWithFakes.C"
 
 using namespace std;
 
