@@ -40,7 +40,7 @@ void MCFakeRateClosureTest::Loop()
     return;
   }
   cout << "\nUsing sample: " << sample << endl;
-  
+
   // output filename
   TString filename = "";
   if (sample == "QCD")    filename = "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
@@ -48,14 +48,16 @@ void MCFakeRateClosureTest::Loop()
   if (sample == "GGJets") filename = "diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
   if (sample == "all")    filename = "diphoton_fake_rate_closure_test_all_samples_76X_MiniAOD_histograms.root";
   cout << "Output filename: " << filename << endl << endl;
-  
+
   // count number of numerator photons
   int nNumerator              = 0;
   int nNumerator_passSipipCut = 0;
-  
+
   // define number of bin edges
-  const int nBins = 10;
-  double ptBinArray[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
+  //const int nBins = 10;
+  //double ptBinArray[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
+  const int nBins = 6;
+  double ptBinArray[nBins] = { 50., 70., 90., 130., 200., 600. };
 
   // vector of chIso sidebands
   std::vector< std::pair<double,double> > chIsoSidebands;
@@ -80,7 +82,7 @@ void MCFakeRateClosureTest::Loop()
   sieie_EE_sidebands.push_back( std::make_pair(0.0280,1.000) );
   sieie_EE_sidebands.push_back( std::make_pair(0.0280,0.040) );
   sieie_EE_sidebands.push_back( std::make_pair(0.0400,0.060) );
-  
+
   // vector of nPV regions
   std::vector< std::pair<int,int> > nPV_regions;
   nPV_regions.push_back( std::make_pair(0,100000) ); // no cut
@@ -89,7 +91,7 @@ void MCFakeRateClosureTest::Loop()
   nPV_regions.push_back( std::make_pair(18,20) );
   nPV_regions.push_back( std::make_pair(21,24) );
   nPV_regions.push_back( std::make_pair(25,100000) ); // 25-Inf
-  
+
   // pt spectrum of denominator objects
   // variable binned
   TH1D phoPtEB_denominator_varbin("phoPtEB_denominator_varbin","",nBins-1,ptBinArray);
@@ -97,32 +99,32 @@ void MCFakeRateClosureTest::Loop()
   phoPtEB_denominator_varbin.Sumw2();
   phoPtEE_denominator_varbin.Sumw2();
   // all objects
-  TH1D *photon_pt_denominator_EB = new TH1D("photon_pt_denominator_EB","",200,0,2000);
-  TH1D *photon_pt_denominator_EE = new TH1D("photon_pt_denominator_EE","",200,0,2000);
+  TH1D *photon_pt_denominator_EB = new TH1D("photon_pt_denominator_EB","",50,0,2000);
+  TH1D *photon_pt_denominator_EE = new TH1D("photon_pt_denominator_EE","",50,0,2000);
   photon_pt_denominator_EB->Sumw2();
   photon_pt_denominator_EE->Sumw2();
-  TH1D *photon_eta_denominator_EB = new TH1D("photon_eta_denominator_EB","",100,-5,5);
-  TH1D *photon_eta_denominator_EE = new TH1D("photon_eta_denominator_EE","",100,-5,5);
+  TH1D *photon_eta_denominator_EB = new TH1D("photon_eta_denominator_EB","",25,-5,5);
+  TH1D *photon_eta_denominator_EE = new TH1D("photon_eta_denominator_EE","",25,-5,5);
   photon_eta_denominator_EB->Sumw2();
   photon_eta_denominator_EE->Sumw2();
-  TH1D *photon_phi_denominator_EB = new TH1D("photon_phi_denominator_EB","",100,-5,5);
-  TH1D *photon_phi_denominator_EE = new TH1D("photon_phi_denominator_EE","",100,-5,5);
+  TH1D *photon_phi_denominator_EB = new TH1D("photon_phi_denominator_EB","",25,-5,5);
+  TH1D *photon_phi_denominator_EE = new TH1D("photon_phi_denominator_EE","",25,-5,5);
   photon_phi_denominator_EB->Sumw2();
   photon_phi_denominator_EE->Sumw2();
   // weighted by fake rake objects
-  TH1D *photon_pt_denominator_fake_rate_weighted_EB = new TH1D("photon_pt_denominator_fake_rate_weighted_EB","",200,0,2000);
-  TH1D *photon_pt_denominator_fake_rate_weighted_EE = new TH1D("photon_pt_denominator_fake_rate_weighted_EE","",200,0,2000);
+  TH1D *photon_pt_denominator_fake_rate_weighted_EB = new TH1D("photon_pt_denominator_fake_rate_weighted_EB","",50,0,2000);
+  TH1D *photon_pt_denominator_fake_rate_weighted_EE = new TH1D("photon_pt_denominator_fake_rate_weighted_EE","",50,0,2000);
   photon_pt_denominator_fake_rate_weighted_EB->Sumw2();
   photon_pt_denominator_fake_rate_weighted_EE->Sumw2();
-  TH1D *photon_eta_denominator_fake_rate_weighted_EB = new TH1D("photon_eta_denominator_fake_rate_weighted_EB","",100,-5,5);
-  TH1D *photon_eta_denominator_fake_rate_weighted_EE = new TH1D("photon_eta_denominator_fake_rate_weighted_EE","",100,-5,5);
+  TH1D *photon_eta_denominator_fake_rate_weighted_EB = new TH1D("photon_eta_denominator_fake_rate_weighted_EB","",25,-5,5);
+  TH1D *photon_eta_denominator_fake_rate_weighted_EE = new TH1D("photon_eta_denominator_fake_rate_weighted_EE","",25,-5,5);
   photon_eta_denominator_fake_rate_weighted_EB->Sumw2();
   photon_eta_denominator_fake_rate_weighted_EE->Sumw2();
-  TH1D *photon_phi_denominator_fake_rate_weighted_EB = new TH1D("photon_phi_denominator_fake_rate_weighted_EB","",100,-5,5);
-  TH1D *photon_phi_denominator_fake_rate_weighted_EE = new TH1D("photon_phi_denominator_fake_rate_weighted_EE","",100,-5,5);
+  TH1D *photon_phi_denominator_fake_rate_weighted_EB = new TH1D("photon_phi_denominator_fake_rate_weighted_EB","",25,-5,5);
+  TH1D *photon_phi_denominator_fake_rate_weighted_EE = new TH1D("photon_phi_denominator_fake_rate_weighted_EE","",25,-5,5);
   photon_phi_denominator_fake_rate_weighted_EB->Sumw2();
   photon_phi_denominator_fake_rate_weighted_EE->Sumw2();
-  
+
   // fake templates for each pt bin and each sideband definition
   std::vector< std::vector<TH1D*> > sIeIeFakeTemplatesEB;
   std::vector< std::vector<TH1D*> > sIeIeFakeTemplatesEE;
@@ -137,75 +139,75 @@ void MCFakeRateClosureTest::Loop()
     chIsoFakeTemplatesEB.push_back(ebvec);
     chIsoFakeTemplatesEE.push_back(ebvec);
   }
-  
+
   // numerator histogram vector for each pt bin
   std::vector<TH1D*> sIeIeNumeratorEB;
   std::vector<TH1D*> sIeIeNumeratorEE;
   std::vector<TH1D*> chIsoNumeratorEB;
   std::vector<TH1D*> chIsoNumeratorEE;
-  
+
   // denominator histogram vector for each pt bin
   std::vector<TH1D*> denomPtEB;
   std::vector<TH1D*> denomPtEE;
-  
+
   // loop over pT bins and book histograms
   for (int i = 0; i < nBins-1; i++) {
-    
+
     // get bin edges
     double binLowEdge = ptBinArray[i];
-    double binUpperEdge = ptBinArray[i+1];  
-    
+    double binUpperEdge = ptBinArray[i+1];
+
     // form sieie histograms with chIso sideband
-    for (chIsoIt it = chIsoSidebands.begin(); it != chIsoSidebands.end(); ++it) {  
+    for (chIsoIt it = chIsoSidebands.begin(); it != chIsoSidebands.end(); ++it) {
       double sidebandLow = it->first;
       double sidebandHigh = it->second;
-      TH1D* sieieEB_faketemplate = new TH1D(Form( "sieieEB_faketemplate_pt%dTo%d_chIso%dTo%d",(int)binLowEdge,(int)binUpperEdge,(int)sidebandLow,(int)sidebandHigh ),"",200,0.,0.1);
+      TH1D* sieieEB_faketemplate = new TH1D(Form( "sieieEB_faketemplate_pt%dTo%d_chIso%dTo%d",(int)binLowEdge,(int)binUpperEdge,(int)sidebandLow,(int)sidebandHigh ),"",20,0.,0.03);
       sieieEB_faketemplate->Sumw2();
       sIeIeFakeTemplatesEB.at(i).push_back( sieieEB_faketemplate );
-      TH1D* sieieEE_faketemplate = new TH1D(Form( "sieieEE_faketemplate_pt%dTo%d_chIso%dTo%d",(int)binLowEdge,(int)binUpperEdge,(int)sidebandLow,(int)sidebandHigh ),"",100,0.,0.1);
+      TH1D* sieieEE_faketemplate = new TH1D(Form( "sieieEE_faketemplate_pt%dTo%d_chIso%dTo%d",(int)binLowEdge,(int)binUpperEdge,(int)sidebandLow,(int)sidebandHigh ),"",20,0.,0.08);
       sieieEE_faketemplate->Sumw2();
       sIeIeFakeTemplatesEE.at(i).push_back( sieieEE_faketemplate );
     } // end loop over chIso sidebands
 
     // form chIso histograms with sieie sideband
     // EB
-    for (std::vector< std::pair<double,double> >::const_iterator it = sieie_EB_sidebands.begin(); it != sieie_EB_sidebands.end(); ++it) {  
+    for (std::vector< std::pair<double,double> >::const_iterator it = sieie_EB_sidebands.begin(); it != sieie_EB_sidebands.end(); ++it) {
       double sidebandLow = it->first;
       double sidebandHigh = it->second;
-      TH1D* chIsoEB_faketemplate = new TH1D(Form( "chIsoEB_faketemplate_pt%dTo%d_sieie%1.4fTo%1.4f",(int)binLowEdge,(int)binUpperEdge,sidebandLow,sidebandHigh ),"",100,0.,50.);
+      TH1D* chIsoEB_faketemplate = new TH1D(Form( "chIsoEB_faketemplate_pt%dTo%d_sieie%1.4fTo%1.4f",(int)binLowEdge,(int)binUpperEdge,sidebandLow,sidebandHigh ),"",10,0.,10.);
       chIsoEB_faketemplate->Sumw2();
       chIsoFakeTemplatesEB.at(i).push_back( chIsoEB_faketemplate );
     } // end loop over sieie EB sidebands
     // EE
-    for (std::vector< std::pair<double,double> >::const_iterator it = sieie_EE_sidebands.begin(); it != sieie_EE_sidebands.end(); ++it) {  
+    for (std::vector< std::pair<double,double> >::const_iterator it = sieie_EE_sidebands.begin(); it != sieie_EE_sidebands.end(); ++it) {
       double sidebandLow = it->first;
       double sidebandHigh = it->second;
-      TH1D* chIsoEE_faketemplate = new TH1D(Form( "chIsoEE_faketemplate_pt%dTo%d_sieie%1.4fTo%1.4f",(int)binLowEdge,(int)binUpperEdge,sidebandLow,sidebandHigh ),"",100,0.,50.);
+      TH1D* chIsoEE_faketemplate = new TH1D(Form( "chIsoEE_faketemplate_pt%dTo%d_sieie%1.4fTo%1.4f",(int)binLowEdge,(int)binUpperEdge,sidebandLow,sidebandHigh ),"",10,0.,10.);
       chIsoEE_faketemplate->Sumw2();
       chIsoFakeTemplatesEE.at(i).push_back( chIsoEE_faketemplate );
     } // end loop over sieie EE sidebands
-    
+
     // book sieie numberator histograms
-    TH1D *hEB_sieie_numerator = new TH1D(Form("sieieEB_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+    TH1D *hEB_sieie_numerator = new TH1D(Form("sieieEB_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",20,0.,0.03);
     hEB_sieie_numerator->Sumw2();
     sIeIeNumeratorEB.push_back(hEB_sieie_numerator);
-    TH1D *hEE_sieie_numerator = new TH1D(Form("sieieEE_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
+    TH1D *hEE_sieie_numerator = new TH1D(Form("sieieEE_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",20,0.,0.08);
     hEE_sieie_numerator->Sumw2();
     sIeIeNumeratorEE.push_back(hEE_sieie_numerator);
-    
+
     // book chIso numberator histograms
-    TH1D *hEB_chIso_numerator = new TH1D(Form("chIsoEB_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEB",100,0.,50.);
+    TH1D *hEB_chIso_numerator = new TH1D(Form("chIsoEB_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEB",10,0.,10.);
     hEB_chIso_numerator->Sumw2();
     chIsoNumeratorEB.push_back(hEB_chIso_numerator);
-    TH1D *hEE_chIso_numerator = new TH1D(Form("chIsoEE_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEE",100,0.,50.);
+    TH1D *hEE_chIso_numerator = new TH1D(Form("chIsoEE_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEE",10,0.,10.);
     hEE_chIso_numerator->Sumw2();
     chIsoNumeratorEE.push_back(hEE_chIso_numerator);
 
     // book denominator histograms
-    TH1D *hEB_denominator = new TH1D(Form("PtEB_denominator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEB",100,binLowEdge,binUpperEdge);
+    TH1D *hEB_denominator = new TH1D(Form("PtEB_denominator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEB",50,binLowEdge,binUpperEdge);
     hEB_denominator->Sumw2();
     denomPtEB.push_back(hEB_denominator);
-    TH1D *hEE_denominator = new TH1D(Form("PtEE_denominator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEE",100,binLowEdge,binUpperEdge);
+    TH1D *hEE_denominator = new TH1D(Form("PtEE_denominator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEE",50,binLowEdge,binUpperEdge);
     hEE_denominator->Sumw2();
     denomPtEE.push_back(hEE_denominator);
   } // end loop over pt bins
@@ -223,9 +225,9 @@ void MCFakeRateClosureTest::Loop()
   std::vector<TH1D*> corPhotonIsoEE;
   std::vector<TH1D*> corPhotonIsoEE1;
   std::vector<TH1D*> corPhotonIsoEE2;
-  
+
   for (std::vector<std::pair<int,int> >::const_iterator it = nPV_regions.begin(); it != nPV_regions.end(); ++it) {
-    
+
     int pv_low = it->first;
     int pv_high = it->second;
 
@@ -248,7 +250,7 @@ void MCFakeRateClosureTest::Loop()
     TH1D* photon_iso_EE2 = new TH1D(Form( "photonIso_EE2_nPV%dTo%d",(int)pv_low,(int)pv_high),"",80,-20,20);
     photon_iso_EE2->Sumw2();
     photonIsoEE2.push_back( photon_iso_EE2 );
-    
+
     // corrected photon isolation
     TH1D* cor_photon_iso_EB = new TH1D(Form( "corPhotonIso_EB_nPV%dTo%d",(int)pv_low,(int)pv_high),"",80,-20,20);
     cor_photon_iso_EB->Sumw2();
@@ -268,12 +270,12 @@ void MCFakeRateClosureTest::Loop()
     TH1D* cor_photon_iso_EE2 = new TH1D(Form( "corPhotonIso_EE2_nPV%dTo%d",(int)pv_low,(int)pv_high),"",80,-20,20);
     cor_photon_iso_EE2->Sumw2();
     corPhotonIsoEE2.push_back( cor_photon_iso_EE2 );
-    
+
   } // end loop over pv bins
-  
+
   // loop over all entries
   Long64_t nentries = fChain->GetEntriesFast();
-  
+
   Long64_t nbytes = 0, nb = 0;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
@@ -287,9 +289,9 @@ void MCFakeRateClosureTest::Loop()
     bool is_sieie_numerator_object = Photon_isNumeratorObjCand && Photon_passChIso;
     bool is_chIso_numerator_object = Photon_isNumeratorObjCand && Photon_passSieie;
     bool is_denominator_object = Photon_isDenominatorObj && Photon_hadronicOverEm < 0.1;
-    
+
     if (is_sieie_numerator_object) nNumerator++;
-    
+
     // reject beam halo
     // if (Event_beamHaloIDTight2015) continue;
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
@@ -298,14 +300,14 @@ void MCFakeRateClosureTest::Loop()
 
     // photon pt cut (already applied in the analyzer)
     if (Photon_pt < 50.) continue;
-    
+
     // calculate nPV
     int nPV_after_cut = 0;
     for (unsigned int i = 0; i < VertexCollInfo_vx->size(); i++) {
       int ndof = VertexCollInfo_ndof->at(i);
       double absZ = fabs(VertexCollInfo_vz->at(i));
       double d0 = VertexCollInfo_d0->at(i);
-      if ( (ndof >= 4) && (absZ <= 24.) && (d0 <= 2.) ) 
+      if ( (ndof >= 4) && (absZ <= 24.) && (d0 <= 2.) )
         nPV_after_cut++;
     }
 
@@ -350,7 +352,7 @@ void MCFakeRateClosureTest::Loop()
 	} // end if pV cuts
       } // end for loop over PV regions
     } // end if high-pT ID photons
-    
+
     // denominator objects not in pt bins
     if (is_denominator_object) {
       // EB
@@ -374,11 +376,11 @@ void MCFakeRateClosureTest::Loop()
 	photon_phi_denominator_fake_rate_weighted_EE->Fill(Photon_phi,Event_weightAll*FakeRateEE(Photon_pt));
       } // end EE
     } // end if denominator object
-    
+
     // fill pt binned histograms
     for (int i = 0; i < nBins-1; i++) {
       double binLowEdge = ptBinArray[i];
-      double binUpperEdge = ptBinArray[i+1];  
+      double binUpperEdge = ptBinArray[i+1];
       // pt cut
       if (binLowEdge < Photon_pt && Photon_pt < binUpperEdge) {
 	// fill sieie numerator histograms
@@ -440,9 +442,9 @@ void MCFakeRateClosureTest::Loop()
 	} // end for loop over sieie sidebands for fake templates EE
       } // end if pt cut
     } // end for loop over pt bins
-    
+
   } // end loop over entries
-  
+
   cout << endl;
   cout << "Number of numerator photons: " << nNumerator << endl;
   cout << " ...passing sipip cut      : " << nNumerator_passSipipCut << endl;
@@ -450,7 +452,7 @@ void MCFakeRateClosureTest::Loop()
 
   // create output file
   TFile file_out(filename,"RECREATE");
-  
+
   // write denominator histograms
   // variable binned
   phoPtEB_denominator_varbin.Write();
@@ -483,7 +485,7 @@ void MCFakeRateClosureTest::Loop()
   photon_phi_denominator_fake_rate_weighted_EE->Write();
   cout << photon_phi_denominator_fake_rate_weighted_EB->GetName() << "\t integral: " << photon_phi_denominator_fake_rate_weighted_EB->Integral() << endl;
   cout << photon_phi_denominator_fake_rate_weighted_EE->GetName() << "\t integral: " << photon_phi_denominator_fake_rate_weighted_EE->Integral() << endl;
-  
+
   // write sieie numerator histograms
   for (vector<TH1D*>::iterator it = sIeIeNumeratorEB.begin() ; it != sIeIeNumeratorEB.end(); ++it) {
     cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
@@ -598,10 +600,10 @@ void MCFakeRateClosureTest::Loop()
       tempHistEE->Write();
     }
   }
-  
+
   file_out.ls();
   file_out.Close();
-  
+
 } // end of Loop()
 
 
