@@ -24,3 +24,24 @@ See RooFitTemplateFitting
 ## Closure test
 See MCFakeRateClosureTest
 
+### The Closure Test in steps 
+1. Testing the Fake Template Derived using the Sideband Definition <br>
+
+Create the fake templates.
+```bash 
+
+cd PhotonClosureTest/scripts 
+root -l diphoton_looper.C
+
+```
+Create the real templates. 
+
+```bash 
+
+cd RealTemplateAnalysis/scripts
+root -l diphoton_looper.C
+
+```
+The binning and the histograms are defined in analysis/MCFakeRateAnalysis.C.
+
+
