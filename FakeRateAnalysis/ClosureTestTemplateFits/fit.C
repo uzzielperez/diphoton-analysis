@@ -56,7 +56,7 @@ TH1* GetHist(int ptbin, bool isEB, hist_t type)
     oss << "Pt" << (isEB ? "EB" : "EE") << "_denominator_pt" << PTBINS[ptbin] << "To" << PTBINS[ptbin+1];
   else if(type==Truth)
     oss << "sieie" << (isEB ? "EB" : "EE") << "_numerator_fakes_pt" << PTBINS[ptbin] << "To" << PTBINS[ptbin+1];
-  
+
   TH1* h=dynamic_cast<TH1*>( gROOT->FindObject(oss.str().c_str()) );
   if(!h) {
     cout << "Cannot find object " << oss.str().c_str() << " (" << ptbin << ", " << isEB << ", " << type << ")" << endl;
@@ -69,7 +69,7 @@ TH1* GetHist(int ptbin, bool isEB, hist_t type)
     else
       h=h->Rebin(NEEBINS, TString(h->GetName())+"_rebin", EEBINS);
   }
-  
+
   return h;
 }
 
@@ -80,7 +80,7 @@ void NLL(int &, double *, double &f, double *par, int)
   double frac=par[0];
   double norm1=theData->Integral()/theBkg1->Integral();
   double norm2=theData->Integral()/theBkg2->Integral();
-  
+
   f=0.0;
   for(int i=1; i<=theData->GetNbinsX(); i++) {
     double obs=theData->GetBinContent(i);
@@ -130,7 +130,7 @@ int performFit(TH1* hData, TH1* hBkg1, TH1* hBkg2, double &frac, double &frace)
 
   // set the error to the symmetrized minos errors
   frace=(eplus-eminus)/2.0;
-  
+
   return err;
 }
 
@@ -153,19 +153,19 @@ void fit(void)
   double EETruth[NPTBINS], EETruthE[NPTBINS];
   int EBTruthStatus[NPTBINS], EETruthStatus[NPTBINS];
 
-  
+
   for(int isTruth=0; isTruth<2; isTruth++) {
     for(int isEB=0; isEB<2; isEB++) {
       for(int ptbin=0; ptbin<NPTBINS; ptbin++) {
-	
+
 	TH1* hReal=GetHist(ptbin, isEB, Real);
 	TH1* hFake= isTruth ? GetHist(ptbin, isEB, Truth) : GetHist(ptbin, isEB, Fake);
 	TH1* hNum=GetHist(ptbin, isEB, Numerator);
 	TH1* hDem=GetHist(ptbin, isEB, Denominator);
-	
+
 	double frac, frace;
 	int err=performFit(hNum, hReal, hFake, frac, frace);
-	
+
 	double norm1=hNum->Integral()/hReal->Integral();
 	double norm2=hNum->Integral()/hFake->Integral();
 	hReal->Scale(norm1*frac);
@@ -174,13 +174,13 @@ void fit(void)
 	hReal->SetFillStyle(3001);
 	hFake->SetFillColor(kRed);
 	hFake->SetFillStyle(3002);
-	
+
 	ostringstream oss;
 	oss << "h" << PTBINS[ptbin] << "To" << PTBINS[ptbin+1] << "_" << (isEB ? "EB" : "EE") << "_" << (isTruth ? "Truth" : "Fake");
 	THStack *hs=new THStack(oss.str().c_str(), "");
 	hs->Add(hFake, "HIST");
 	hs->Add(hReal, "HIST");
-	
+
 	if(isTruth) {
 	  if(isEB) cEBTruth->cd(ptbin+1);
 	  else     cEETruth->cd(ptbin+1);
@@ -192,7 +192,7 @@ void fit(void)
 	hNum->Draw("same");
 	gPad->SetLogy(1);
 	hs->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
-	
+
 	double num=0.0, nume2=0.0;
 	int nbins=isEB ? EBSIEIECUTBIN-1 : EESIEIECUTBIN-1;
 	for(int i=1; i<=nbins; i++) {
