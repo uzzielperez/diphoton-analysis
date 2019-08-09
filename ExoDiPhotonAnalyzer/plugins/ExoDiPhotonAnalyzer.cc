@@ -204,6 +204,8 @@ class ExoDiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResource
   
   // flag to determine if sample is reco or re-reco
   bool isReMINIAOD_;
+  // process name in data
+  std::string processNameData_;
 
   // genParticles
   ExoDiPhotons::genParticleInfo_t fGenPhoton1Info; // leading
@@ -304,6 +306,9 @@ ExoDiPhotonAnalyzer::ExoDiPhotonAnalyzer(const edm::ParameterSet& iConfig)
   fTree->Branch("GenDiphoton",&fGenDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
 
   isSherpaDiphoton_ = outputFile_.Contains("GGJets_M");
+  processNameData_ =  "RECO";
+  // 17Jul2018 re-MINIAOD runs in the "DQM" process
+  if(isReMINIAOD_ && outputFile_.Contains("17Jul2018")) processNameData_ = "DQM";
   // need a separate branch for sherpa photons so that k-factor reweighting can be applied
   // even if there is no RECO match
   if(isSherpaDiphoton_) {
@@ -373,13 +378,13 @@ ExoDiPhotonAnalyzer::ExoDiPhotonAnalyzer(const edm::ParameterSet& iConfig)
   pileupToken_ = consumes<std::vector<PileupSummaryInfo> >( edm::InputTag("slimmedAddPileupInfo") );
 
   // Filter decisions (created in "PAT" process in MC but "RECO" in data)
-  filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","",(isMC_||isReMINIAOD_)?("PAT"):("RECO")) );
+  filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","",(isMC_)?("PAT"):(processNameData_)) );
 
   // Trigger decisions
   triggerDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","HLT") );
 
   // trigger prescales
-  prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","",(isMC_||isReMINIAOD_)?("PAT"):("RECO")) );
+  prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","",(isMC_)?("PAT"):(processNameData_)) );
 
   // set appropriate year (used for pileup reweighting)
   if(outputFile_.Contains("2015")) year = 2015;

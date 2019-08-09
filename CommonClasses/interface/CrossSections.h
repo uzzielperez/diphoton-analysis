@@ -8,14 +8,38 @@ namespace ExoDiPhotons {
     double xsec = -1.0;
     if(sample.Contains("DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8")) xsec = 135.1;
     if(sample.Contains("DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa")) xsec = 82.81; // +/- 0.12
-    if(sample.Contains("GGJets_M-60To200_Pt-50_13TeV-sherpa")) xsec = 5.785e+00;
-    if(sample.Contains("GGJets_M-200To500_Pt-50_13TeV-sherpa")) xsec = 2.244e+00;
-    if(sample.Contains("GGJets_M-500To1000_Pt-50_13TeV-sherpa")) xsec = 1.510e-01;
-    if(sample.Contains("GGJets_M-1000To2000_Pt-50_13TeV-sherpa")) xsec = 1.084e-02;
-    if(sample.Contains("GGJets_M-2000To4000_Pt-50_13TeV-sherpa")) xsec = 3.690e-04;
-    if(sample.Contains("GGJets_M-4000To6000_Pt-50_13TeV-sherpa")) xsec = 2.451e-06;
-    if(sample.Contains("GGJets_M-6000To8000_Pt-50_13TeV-sherpa")) xsec = 1.753e-08;
-    if(sample.Contains("GGJets_M-8000To13000_Pt-50_13TeV-sherpa")) xsec = 7.053e-11;
+    if(sample.Contains("GGJets_M-60To200_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) xsec = 6.278e+00;
+      else xsec = 5.785e+00;
+    }
+    if(sample.Contains("GGJets_M-200To500_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) xsec = 2.451e+00;
+      else xsec = 2.244e+00;
+    }
+    if(sample.Contains("GGJets_M-500To1000_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) xsec = 1.739e-01;
+      else xsec = 1.510e-01;
+    }
+    if(sample.Contains("GGJets_M-1000To2000_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) xsec = 1.445e-02;
+      else xsec = 1.084e-02;
+    }
+    if(sample.Contains("GGJets_M-2000To4000_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) xsec = 5.115e-04;
+      else xsec = 3.690e-04;
+    }
+    if(sample.Contains("GGJets_M-4000To6000_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) xsec = 3.394e-06;
+      else xsec = 2.451e-06;
+    }
+    if(sample.Contains("GGJets_M-6000To8000_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) xsec = 4.117e-08;
+      else xsec = 1.753e-08;
+    }
+    if(sample.Contains("GGJets_M-8000To13000_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) xsec = 5.754e-10;
+      else xsec = 7.053e-11;
+    }
     // 2017 Sherpa, from running GenXsecAnalyzer on full sample
     if(sample.Contains("GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 1.862e+04;
     if(sample.Contains("GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 8.625e+03;
@@ -435,14 +459,38 @@ namespace ExoDiPhotons {
 
     // average weight is non-zero for these samples because
     // of the njet weighting in Sherpa
-    if(sample.Contains("GGJets_M-60To200_Pt-50_13TeV-sherpa")) average = 3.895719e-01;
-    if(sample.Contains("GGJets_M-200To500_Pt-50_13TeV-sherpa")) average = 2.818643e-01;
-    if(sample.Contains("GGJets_M-500To1000_Pt-50_13TeV-sherpa")) average = 2.094533e-01;
-    if(sample.Contains("GGJets_M-1000To2000_Pt-50_13TeV-sherpa")) average = 1.749053e-01;
-    if(sample.Contains("GGJets_M-2000To4000_Pt-50_13TeV-sherpa")) average = 1.638999e-01;
-    if(sample.Contains("GGJets_M-4000To6000_Pt-50_13TeV-sherpa")) average = 1.673106e-01;
-    if(sample.Contains("GGJets_M-6000To8000_Pt-50_13TeV-sherpa")) average = 1.816810e-01;
-    if(sample.Contains("GGJets_M-8000To13000_Pt-50_13TeV-sherpa")) average = 1.972643e-01;
+    if(sample.Contains("GGJets_M-60To200_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) average = 3.52301168809078302e-01;
+      else average = 3.895719e-01;
+    }
+    if(sample.Contains("GGJets_M-200To500_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) average = 2.63880645720520890e-01;
+      else average = 2.818643e-01;
+    }
+    if(sample.Contains("GGJets_M-500To1000_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) average = 1.97343491858191583e-01;
+      else average = 2.094533e-01;
+    }
+    if(sample.Contains("GGJets_M-1000To2000_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) average = 1.65930493374440380e-01;
+      else average = 1.749053e-01;
+    }
+    if(sample.Contains("GGJets_M-2000To4000_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) average = 1.53686513958987775e-01;
+      else average = 1.638999e-01;
+    }
+    if(sample.Contains("GGJets_M-4000To6000_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) average = 1.54441035528284226e-01;
+      else average = 1.673106e-01;
+    }
+    if(sample.Contains("GGJets_M-6000To8000_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) average = 1.68124672498689981e-01;
+      else average = 1.816810e-01;
+    }
+    if(sample.Contains("GGJets_M-8000To13000_Pt-50_13TeV-sherpa")) {
+      if(sample.Contains("mc2017")) average = 1.90791526332210665e-01;
+      else average = 1.972643e-01;
+    }
     if(sample.Contains("DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa")) average = 4.730018e-01;
 
     // Madgraph5_aMC@NLO samples at NLO have a non-zero average weight

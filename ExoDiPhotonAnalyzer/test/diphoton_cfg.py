@@ -49,6 +49,10 @@ if "Run2016" in outName:
     elif '03Feb2017' in outName:
         globalTag = '80X_dataRun2_2016SeptRepro_v7'
         isReMINIAOD = True
+    elif "17Jul2018" in outName:
+        isReMINIAOD = True
+        globalTag = '94X_dataRun2_v10'
+        jetLabel = "updatedPatJetsUpdatedJEC"
     else:
         globalTag = '80X_dataRun2_2016SeptRepro_v4'
 if "Run2017" in outName:
@@ -64,7 +68,7 @@ if "Run2018" in outName:
     if "17Sep2018" in outName:
         globalTag = '102X_dataRun2_Sep2018Rereco_v1'
     else:
-        globalTag = '101X_dataRun2_Prompt_v11'
+        globalTag = '102X_dataRun2_Prompt_v11'
 # override options for MC
 if isMC:
     version = os.getenv("CMSSW_VERSION")

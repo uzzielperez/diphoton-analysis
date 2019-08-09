@@ -24,6 +24,12 @@ void fakePrediction::fakeRateInit(int year, std::string fakeRateType)
   std::vector<std::string> datasets = {"jetht", "doublemuon"};
   std::vector<std::string> regions = {"EB", "EE"};
   std::vector<std::string> pvCuts = {"0-22", "23-27", "28-32", "33-37", "38-200"};
+  if(year==2016) pvCuts.push_back("28-200");
+  else {
+    pvCuts.push_back("28-32");
+    pvCuts.push_back("33-37");
+    pvCuts.push_back("38-200");
+  }
 
   for(auto region : regions) {
     for(auto dataset : datasets) {
@@ -82,7 +88,7 @@ void fakePrediction::Loop(int year, const std::string &dataset)
   const std::vector<std::string> regions = {"BB", "BE"};
 
   // define binning for input to datacard
-  int nbins=40;
+  int nbins=80;
   double xmin=0.0;
   double xmax=2000.0;
 

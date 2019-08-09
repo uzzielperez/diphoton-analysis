@@ -137,7 +137,7 @@ TF1 * eigenvectorVariation(bool up, int parameter, TF1* nominal, TFitResult* fit
 }
 
 // needed to convert from Hewett-minus convention to GRW
-double k = 2/TMath::Pi();
+const double k = 2/TMath::Pi();
 
 void getSignalAndInterference(std::string pointNameBase, std::string region, TH1D*& background, TH1D *& signal, TH1D *&interference, bool update=false)
 {

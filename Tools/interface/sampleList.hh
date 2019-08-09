@@ -23,9 +23,8 @@
 
 // 20.3 fb^-1 were acquired in 2018 before loss of HEM15/HEM16
 // 59.97 fb^-1 are validated but only 59.28 fb^-1 available in EGamma dataset
-std::map<std::string, double> luminosity { {"2015", 2.62}, {"2016", 35.9}, {"2017", 41.527}, {"2018", 59.28}, {"2018_newjson", 56.077-54.19}, {"2018ABC_prompt", 28.04}, {"2018ABC_rereco", 28.04}};
-// 2017 uncertainties currently used for 2018
-std::map<std::string, double> luminosityErrorFrac { {"2015", 0.023}, {"2016", 0.026}, {"2017", 0.023}, {"2018", 0.023}, {"2018_newjson", 0.023}, {"2018ABC_prompt", 0.023}, {"2018ABC_rereco", 0.023}};
+std::map<std::string, double> luminosity { {"2015", 2.62}, {"2016", 35.9}, {"2017", 41.527}, {"2018", 59.67}, {"2018_newjson", 56.077-54.19}, {"2018ABC_prompt", 28.04}, {"2018ABC_rereco", 28.04}};
+std::map<std::string, double> luminosityErrorFrac { {"2015", 0.023}, {"2016", 0.026}, {"2017", 0.023}, {"2018", 0.025}, {"2018_newjson", 0.025}, {"2018ABC_prompt", 0.025}, {"2018ABC_rereco", 0.025}};
 
 std::map<std::string, TChain*> chains;
 std::map<std::string, int> lineStyles;
@@ -110,7 +109,7 @@ void init(bool includeUnskimmed = false)
   // skimmed version of chData2018_unskimmed
   TChain *chData2018 = new TChain(treeType);
   chData2018->Add(chData2018ABC_rereco);
-  chData2018->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/*.root");
+  chData2018->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/*.root");
 
   TChain *chData2018_prompt = new TChain(treeType);
   chData2018_prompt->Add(chData2018ABC_prompt);
@@ -154,16 +153,13 @@ void init(bool includeUnskimmed = false)
   TChain *chData2018_unskimmed = new TChain(treeType);
   if(includeUnskimmed) {
     chData2018_unskimmed->Add(chData2018ABC_rereco_unskimmed);
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0000/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0001/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0002/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0003/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0004/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0005/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0006/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0007/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0008/*.root");
-    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0009/*.root");
+    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/0000/*.root");
+    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/0001/*.root");
+    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/0002/*.root");
+    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/0003/*.root");
+    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/0004/*.root");
+    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/0005/*.root");
+    chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/190411_173655/0006/*.root");
   }
 
   TChain *chData2018_prompt_unskimmed = new TChain(treeType);
@@ -268,20 +264,27 @@ void init(bool includeUnskimmed = false)
   }
 
   TChain *chData2016 = new TChain(treeType);
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016H-03Feb2017_ver3-v1__MINIAOD/180412_014155/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016F-03Feb2017-v1__MINIAOD/180412_013649/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016B-03Feb2017_ver2-v2__MINIAOD/180410_215122/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016D-03Feb2017-v1__MINIAOD/180412_013334/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016C-03Feb2017-v1__MINIAOD/180412_013202/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016E-03Feb2017-v1__MINIAOD/180412_013513/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016H-03Feb2017_ver2-v1__MINIAOD/180412_013955/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016G-03Feb2017-v1__MINIAOD/180412_013820/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016H-03Feb2017_ver3-v1__MINIAOD/180412_014155/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016F-03Feb2017-v1__MINIAOD/180412_013649/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016B-03Feb2017_ver2-v2__MINIAOD/180410_215122/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016D-03Feb2017-v1__MINIAOD/180412_013334/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016C-03Feb2017-v1__MINIAOD/180412_013202/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016E-03Feb2017-v1__MINIAOD/180412_013513/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016H-03Feb2017_ver2-v1__MINIAOD/180412_013955/*.root");
+  // chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016G-03Feb2017-v1__MINIAOD/180412_013820/*.root");
   // chData2016->Add(filestring("DoubleEG__Run2016B-03Feb2017"));
   // chData2016->Add(filestring("DoubleEG__Run2016C-03Feb2017"));
   // chData2016->Add(filestring("DoubleEG__Run2016D-03Feb2017"));
   // chData2016->Add(filestring("DoubleEG__Run2016E-03Feb2017"));
   // chData2016->Add(filestring("DoubleEG__Run2016F-03Feb2017"));
   // chData2016->Add(filestring("DoubleEG__Run2016G-03Feb2017"));
+  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016B-17Jul2018_ver2-v1__MINIAOD/190320_015926/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016C-17Jul2018-v1__MINIAOD/190305_231112/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016D-17Jul2018-v1__MINIAOD/190305_231126/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016E-17Jul2018-v1__MINIAOD/190305_231137/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016F-17Jul2018-v1__MINIAOD/190305_231149/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016G-17Jul2018-v1__MINIAOD/190305_231202/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/DoubleEG/crab_DoubleEG__Run2016H-17Jul2018-v1__MINIAOD/190320_020004/*.root");
   // both _ver2 and _ver3 should be included, corresponding to -v2 and -v3
   // of the PromptReco
   // chData2016->Add(filestring("DoubleEG__Run2016H-03Feb2017_ver2"));
@@ -452,7 +455,8 @@ void init(bool includeUnskimmed = false)
   chains["gg_aMC_2015"] = chGG_aMC_2015;
   chains["gg_2018"] = chGG;
   chains["gg_2017"] = chGG;
-  chains["gg_2016"] = chGG_2016;
+  //  chains["gg_2016"] = chGG_2016;
+  chains["gg_2016"] = chGG;
   chains["ggGen"] = chGGGen;
   chains["gj_2018"] = chGJ;
   chains["gj_2017"] = chGJ;
@@ -560,7 +564,8 @@ void initADD()
 {
   // ADD samples
   std::vector<std::string> MS = {"3000", "3500", "4000", "4500",
-				 "5000", "5500", "6000"};
+				 "5000", "5500", "6000", "7000",
+				 "8000", "9000", "10000", "11000"};
   std::vector<std::string> NED = {"2", "4"};
   std::vector<std::string> KK = {"1", "4"};
   std::map<std::string, std::vector<std::string>> MggBins;
@@ -572,7 +577,12 @@ void initADD()
   MggBins["4500"] = {"250To500", "500To1000", "1000To2000", "2000To3000", "3000To4500"};
   MggBins["5000"] = {"250To500", "500To1000", "1000To2000", "2000To3000", "3000To5000"};
   MggBins["5500"] = {"250To500", "500To1000", "1000To2000", "2000To4000", "4000To5500"};
-  MggBins["6000"] = {"250To500", "500To1000", "1000To2000", "2000To4000", "4000To6000"};
+  MggBins["6000"] = {"500To1000", "1000To2000", "2000To4000", "4000To6000"};
+  MggBins["7000"] = {"500To1000", "1000To2000", "2000To4000", "4000To7000"};
+  MggBins["8000"] = {"500To1000", "1000To2000", "2000To4000", "4000To8000"};
+  MggBins["9000"] = {"500To1000", "1000To2000", "2000To4000", "4000To9000"};
+  MggBins["10000"] = {"500To1000", "1000To2000", "2000To4000", "4000To10000"};
+  MggBins["11000"] = {"500To1000", "1000To2000", "2000To4000", "4000To11000"};
 
   for(const auto iMS : MS) {
     for(const auto iNED : NED) {
@@ -589,7 +599,9 @@ void initADD()
 	chains[pointName] = new TChain("diphoton/fTree");
 	for(std::string iMgg : MggBins[iMS] ) {
 	  // the 200To500 bins are only present for the NED=4 samples
-	  if(strcmp(iNED.c_str(), "2")==0 && strcmp(iMgg.c_str(), "250To500")==0) continue;
+	  if(iNED.compare("2")==0 && iMgg.compare("250To500")==0) continue;
+	  // Hewett- convention samples do not extend past Mgg > 6 TeV
+	  if(iNED.compare("2")==0 && iKK.compare("4")==0 && std::stoi(iMgg)>6000) continue;
 	  std::string sampleName(pointName);
 	  sampleName += "_M-";
 	  sampleName += iMgg;

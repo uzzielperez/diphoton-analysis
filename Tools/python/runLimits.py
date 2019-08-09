@@ -4,8 +4,8 @@ import os
 
 preFitNuisances = True
 
-dict = {'NED-2_KK-1': {3000, 3500, 4000, 4500, 5000, 5500, 6000}, 
-        'NED-4_KK-1': {3000, 3500, 4000, 4500, 5000, 5500, 6000}, 
+dict = {'NED-2_KK-1': {3000, 3500, 4000, 4500, 5000, 5500, 6000, 7000, 8000, 9000, 10000, 11000},
+        'NED-4_KK-1': {3000, 3500, 4000, 4500, 5000, 5500, 6000, 7000, 8000, 9000, 10000, 11000},
         'NED-2_KK-4': {3000, 3500, 4000, 4500, 5000, 5500, 6000}}
 
 dimensions = {'NED-2_KK-1', 'NED-4_KK-1', 'NED-2_KK-4'}
@@ -15,7 +15,7 @@ if preFitNuisances:
     extraOptions += " -t -1 "
 
 regions = {"BB", "BE"}
-years = {"2017", "2018"}
+years = {"2016", "2017", "2018"}
 for idim in dimensions:
     for i in dict[idim]:
         name = 'ADDGravToGG_MS-' + str(i) + '_' + idim
@@ -24,7 +24,7 @@ for idim in dimensions:
         # combine datacards
         for year in years:
             for region in regions:
-                fulldatacardcmd += "datacards/" + name + "_" + year + "_" + region + ".dat "
+                fulldatacardcmd += region + "_" + year + "=datacards/" + name + "_" + year + "_" + region + ".dat "
         fulldatacardcmd += " > " + outputdatacard
         print fulldatacardcmd
         # output combined datacard

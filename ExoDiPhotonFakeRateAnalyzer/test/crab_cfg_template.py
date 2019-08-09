@@ -28,7 +28,7 @@ config.General.transferLogs = False
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'diphoton-analysis/ExoDiPhotonFakeRateAnalyzer/test/diphoton_fakeRate_cfg.py'
-#config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_' + datasetID + '.root']
+config.JobType.pyCfgParams = ['outputFile=out_' + datasetID + '.root']
 
 config.section_("Data")
 config.Data.inputDataset = dataset

@@ -35,11 +35,18 @@ int main(int argc, char *argv[])
 
   TFile *output = new TFile(Form("datacards/Minv_histos_%s_%s.root", region.c_str(), year.c_str()), "recreate");
   output->mkdir(region.c_str());
-  TFile *fakes = new TFile(Form("data/fakes_%s_average.root", year.c_str()));
-  fakes->Print("v");
-  TH1F *fakeHist = static_cast<TH1F*>(fakes->Get(Form("%s/gj", region.c_str())));
-  output->cd(region.c_str());
-  fakeHist->Write();
+  std::vector<std::string> fakeRates = {"average", "doublemuon", "jetht"};
+  std::map<std::string, std::string> histPostFix;
+  histPostFix["average"] = "";
+  histPostFix["jetht"] = "_fake_sampleUp";
+  histPostFix["doublemuon"] = "_fake_sampleDown";
+  for (const auto& fakeRate : fakeRates) {
+    TFile *fakes = new TFile(Form("data/fakes_%s_%s.root", year.c_str(), fakeRate.c_str()));
+    TH1F *fakeHist = static_cast<TH1F*>(fakes->Get(Form("%s/gj", region.c_str())));
+    output->cd(region.c_str());
+    fakeHist->SetName(Form("gj%s", histPostFix[fakeRate].c_str()));
+    fakeHist->Write();
+  }
   allSamples(region, year, output);
   output->Write();
   output->Close();
@@ -49,7 +56,7 @@ int main(int argc, char *argv[])
 void allSamples(const std::string &region, const std::string &year, TFile * output)
 {
 
-  int nBins = 120;
+  int nBins = 240;
   double xMin = 0.0;
   double xMax = 6000.;
 
@@ -96,15 +103,31 @@ void allSamples(const std::string &region, const std::string &year, TFile * outp
     histograms[baseName] = hist;
     std::cout << "Making histograms for sample " << hist->GetName() << " with cut\n" << sampleCut << std::endl;
     chains[getBase(isample)]->Project(baseName.c_str(), "Diphoton.Minv",  sampleCut.c_str());
+    // move overflow to last bin
+    int nbins = histograms[baseName]->GetNbinsX();
+    float lastBin = histograms[baseName]->GetBinContent(nbins);
+    float overflow = histograms[baseName]->GetBinContent(nbins+1);
+    histograms[baseName]->SetBinContent(nbins, lastBin + overflow);
+    histograms[baseName]->SetBinContent(nbins+1, 0.0);
     std::cout << "Integral: " << histograms[baseName]->Integral() << std::endl;
     output->cd(region.c_str());
   }
 
+  // subtract nonresonant background
   for(auto histogram : histograms) {
     std::string title(histogram.second->GetTitle());
     if(title.find("ADD") != std::string::npos) histogram.second->Add(histograms["gg70"], -1);
     histogram.second->Write();
   }
+
+  // create additional histograms for scale variations only in BB or BE
+  TH1F *scaleUp = dynamic_cast<TH1F*>(histograms["gg_diphotonkfactorScalesUp"]->Clone());
+  std::string histNameBase("gg_diphotonkfactorScales");
+  std::string histName = histNameBase + region + "Up";
+  scaleUp->SetName(histName.c_str());
+  TH1F *scaleDown = dynamic_cast<TH1F*>(histograms["gg_diphotonkfactorScalesDown"]->Clone());
+  histName = histNameBase + region + "Down";
+  scaleDown->SetName(histName.c_str());
 
 }
 
@@ -114,6 +137,12 @@ std::string getSampleBase(const std::string & sampleName, const std::string & ye
   std::string newString(sampleName);
   if( sampleName.find("_201") != std::string::npos) {
     newString.replace(newString.find("_201"), 5, "");
+  }
+  if(sampleName.find("_R2F2") != std::string::npos) {
+    newString.replace(newString.find("_R2F2"), 5, "_diphotonkfactorScalesUp");
+  }
+  if(sampleName.find("_R0p5F0p5") != std::string::npos) {
+    newString.replace(newString.find("_R0p5F0p5"), 9, "_diphotonkfactorScalesDown");
   }
   // "data_obs" is always the name of the data observation histogram
   std::string data("data_" + year);
