@@ -298,6 +298,15 @@ void init(bool includeUnskimmed = false)
   chData2016_2017_2018->Add(chData2016);
   chData2016_2017_2018->Add(chData2017_2018);
 
+  TChain *chGG_2018 = new TChain(treeType);
+  chGG_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINIAO/190516_221631/0000/*.root");
+  chGG_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINIA/190516_221559/0000*.root");
+  chGG_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINI/190516_204316/0000/*.root");
+  chGG_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/190516_221537/0000/*.root");
+  chGG_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/crab_GGJets_M-2000To4000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/190516_221548/0000/*.root");
+  chGG_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/crab_GGJets_M-4000To6000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/190516_221610/0000/*.root");
+  chGG_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/190516_221620/0000/*.root");
+  chGG_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MI/190516_221641/0000*.root");
 
   TChain *chGG = new TChain(treeType);
   // MINIAODv2
@@ -406,6 +415,27 @@ void init(bool includeUnskimmed = false)
   chOther->Add(chDY);
   chOther->Add(chTTG);
 
+  TChain *chGGGen_2017 = new TChain("diphoton/fSherpaGenTree");
+  chGGGen_2017->Add(baseDirectory + "/store/user/cawest/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14/180531_184256/0000/*.root");
+  chGGGen_2017->Add(baseDirectory + "/store/user/cawest/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v1/180531_184217/0000/*.root");
+  chGGGen_2017->Add(baseDirectory + "/store/user/cawest/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v/180531_184235/0000/*.root");
+  chGGGen_2017->Add(baseDirectory + "/store/user/cawest/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_/180531_184157/0000/*.root");
+  chGGGen_2017->Add(baseDirectory + "/store/user/cawest/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/crab_GGJets_M-2000To4000_Pt-50_13TeV-sherpa__Fall17_PU2017-v2__MINIAODSIM/190131_195335/0000/*.root");
+  chGGGen_2017->Add(baseDirectory + "/store/user/cawest/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/crab_GGJets_M-4000To6000_Pt-50_13TeV-sherpa__Fall17_PU2017-v2__MINIAODSIM/180925_195312/0000/*.root");
+  chGGGen_2017->Add(baseDirectory + "/store/user/cawest/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_/180531_182940/0000/*.root");
+  chGGGen_2017->Add(baseDirectory + "/store/user/cawest/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__Fall17_PU2017-v1__MINIAODSIM/190131_195356/0000//*.root");
+
+  TChain *chGGGen_2018 = new TChain("diphoton/fSherpaGenTree");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINIAO/190516_221631/0000/*.root");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINIA/190516_221559/0000*.root");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINI/190516_204316/0000/*.root");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/190516_221537/0000/*.root");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/crab_GGJets_M-2000To4000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/190516_221548/0000/*.root");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/crab_GGJets_M-4000To6000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/190516_221610/0000/*.root");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/190516_221620/0000/*.root");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MI/190516_221641/0000*.root");
+
+
   TChain *chGGGen = new TChain("diphoton/fSherpaGenTree");
   chGGGen->Add(filestring("GGJets_M-60To200_Pt-50_13TeV-sherpa"));
   chGGGen->Add(filestring("GGJets_M-200To500_Pt-50_13TeV-sherpa"));
@@ -453,11 +483,14 @@ void init(bool includeUnskimmed = false)
   chains["data_2017_2018"] = chData2017_2018;
   chains["data_2016_2017_2018"] = chData2016_2017_2018;
   chains["gg_aMC_2015"] = chGG_aMC_2015;
-  chains["gg_2018"] = chGG;
+  chains["gg_2018"] = chGG_2018;
   chains["gg_2017"] = chGG;
   //  chains["gg_2016"] = chGG_2016;
   chains["gg_2016"] = chGG;
   chains["ggGen"] = chGGGen;
+  chains["gg_gen_2016"] = chGGGen_2017;
+  chains["gg_gen_2017"] = chGGGen_2017;
+  chains["gg_gen_2018"] = chGGGen_2018;
   chains["gj_2018"] = chGJ;
   chains["gj_2017"] = chGJ;
   chains["gj_2016"] = chGJ_2016;
