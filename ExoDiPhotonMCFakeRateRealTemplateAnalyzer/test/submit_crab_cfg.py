@@ -3,29 +3,8 @@
 of events in the sample as a parameter to CRAB so that
 the event weight can be computed."""
 
-import subprocess
-import json
 import os
-
-def get_number_of_events(dataset):
-  """Get number of events for dataset from DAS"""
-  query = "file dataset=" + dataset + " | sum(file.nevents)"
-
-  cmd = "das_client --format=json --query='" + query + "'"
-  print "Executing: " + cmd
-  data = subprocess.check_output(cmd, shell=True)
-
-  if isinstance(data, basestring):
-    dasjson = json.loads(data)
-  else:
-    dasjson = data
-  status  = dasjson.get('status')
-  if  status == 'ok':
-    data = dasjson.get('data')
-    sumevents = 0
-    for idata in data:
-      sumevents += idata.get('result').get('value')
-    return sumevents
+diphoton_analysis = __import__("diphoton-analysis.CommonClasses.das_utils")
 
 do_2015_DiPhotonJets = False
 do_2015_GGJets = False
@@ -33,9 +12,12 @@ do_2015_GJets = False
 # no_2015_GJets_sherpa
 
 do_2016_DiPhotonJets = False
-do_2016_GGJets = True
-do_2016_GJets = True
+do_2016_GGJets = False
+do_2016_GJets = False
 do_2016_GJets_sherpa = False
+
+do_2017_GGJets = True
+do_2017_GJets = True
 
 DATASETS = [[]]
 # each entry contains a list of datasets, including extensions
@@ -86,12 +68,27 @@ if do_2016_GJets_sherpa:
   DATASETS.append(["/GJets_Pt-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"])
   DATASETS.append(["/GJets_Pt-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"])
   DATASETS.append(["/GJets_Pt-2000To5000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"])
-  
+if do_2017_GGJets:
+  DATASETS.append(["/GGJets_M-60To200_Pt-50_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-200To500_Pt-50_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-500To1000_Pt-50_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+  DATASETS.append(["/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+if do_2017_GJets:
+  DATASETS.append(["/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_1core_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM"])
+  DATASETS.append(["/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+  DATASETS.append(["/GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+  DATASETS.append(["/GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+  DATASETS.append(["/GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+
 for ilist in DATASETS:
   nevents = 0
   print ""
   for ids in ilist:
-    nevents += get_number_of_events(ids)
+    nevents += diphoton_analysis.CommonClasses.das_utils.get_number_of_events(ids)
     print "running nevents is " + str(nevents)
 
   for ids in ilist:

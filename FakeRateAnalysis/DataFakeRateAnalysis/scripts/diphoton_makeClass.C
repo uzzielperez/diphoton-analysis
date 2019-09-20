@@ -4,7 +4,7 @@
 
 void diphoton_makeClass() {
   // load file
-  TFile *f = TFile::Open("root://cmsxrootd.fnal.gov//store/user/abuccill/DiPhotonAnalysis/FakeRateMerged/diphoton_fakeRate_JetHT_Run2015C_25ns-16Dec2015-v1_MINIAOD_merged.root");
+  TFile *f = TFile::Open("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018C-PromptReco-v3__MINIAOD/181001_212426/0000/ExoDiphotonAnalyzer_1.root");
   
   // list the contents of this file
   f->ls();

@@ -3,7 +3,8 @@
  *
  * This function calls /analysis/rooFitFakeRateProducer.C
  * From /analysis, run
- * root -l -b -q ../scripts/fakeRateCalculation.C'("mc","sieie")'
+ * root -l -b -q ../scripts/fakeRateCalculation.C'("mc","sieie", era)'
+ * where year = 2016 or 2017
  */
 
 #include "rooFitFakeRateProducer.C"
@@ -13,7 +14,7 @@ double fakeRateUncertainty(double denominator, double fakeerror, double fakerate
   return uncert;
 }
 
-void fakeRateCalculation(TString sample, TString templateVariable)
+void fakeRateCalculation(TString sample, TString templateVariable, TString era, int pvCutLow = 0, int pvCutHigh = 2000)
 {
   // use stopwatch to time
   TStopwatch sw;
@@ -21,8 +22,13 @@ void fakeRateCalculation(TString sample, TString templateVariable)
   
   cout << "\nStarting fakeRateCalculation()\n" << endl;
   
-  if (sample != "data" && sample != "mc" && sample != "mc_QCD" && sample != "mc_GJets" && sample != "mc_GGJets") {
-    cout << "Choose sample: data, mc, mc_QCD, mc_GJets, or mc_GGJets\n" << endl;
+  if (!era.Contains("2016") && !era.Contains("2017") && !era.Contains("2018")) {
+    cout << "Only years 2016, 2017 and 2018 are supported" << endl;
+    return;
+  }
+
+  if (sample != "jetht" && sample != "doublemuon" && sample != "mc" && sample != "mc_QCD" && sample != "mc_GJets" && sample != "mc_GGJets") {
+    cout << "Choose sample: jetht, doublemuon, mc, mc_QCD, mc_GJets, or mc_GGJets\n" << endl;
     return;
   }
 
@@ -36,10 +42,20 @@ void fakeRateCalculation(TString sample, TString templateVariable)
   cout << "Using template variable: " << templateVariable << endl;
   
   // array of pt bin edges
-  const int nBins = 10;
-  int ptBinArray[nBins] = { 50, 70, 90, 110, 130, 150, 200, 250, 300, 600 };
-  double ptBinArray_double[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
-  
+  std::vector<int> ptBinArray({ 50, 70, 90, 110, 130, 150});
+  // With higher statistics in JetHT sample, additional bins can be used
+  if(sample=="jetht") {
+    ptBinArray.push_back(200);
+    ptBinArray.push_back(250);
+    ptBinArray.push_back(300);
+  }
+  ptBinArray.push_back(600);
+  std::vector<double> ptBinArray_double;
+  for (auto iBin : ptBinArray) {
+    ptBinArray_double.push_back(static_cast<double>(iBin));
+  }
+  const int nBins = ptBinArray.size();
+
   // make vector of chIso sidebands
   std::vector< std::pair<double,double> > chIsoSidebands;
   typedef std::vector< std::pair<double,double> >::const_iterator chIsoIt;
@@ -118,12 +134,17 @@ void fakeRateCalculation(TString sample, TString templateVariable)
     bkgvsptEE->GetXaxis()->SetTitle("p_{T} (GeV)");
     bkgVsPtEEVec.push_back(bkgvsptEE);
   }
-  
-  TFile outfile("fakeRatePlots.root","recreate");
+  TString pvCut = "";
+  if(pvCutLow!=0 || pvCutHigh!=2000) pvCut = Form("_nPV%i-%i", pvCutLow, pvCutHigh);
+  TFile outfile("fakeRatePlots_" + sample + "_" + era + pvCut + ".root","recreate");
   outfile.Close(); // create the file so it can be updated in the rooFitFakeRateProducer, we don't need it open here too
 
   TString input_filename;
-  if (sample == "data")      input_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
+  //  if (sample == "data")      input_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
+  //  if (sample == "data")      input_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_UNKNOWN_newDenomDef.root";
+  if (sample == "jetht" or sample == "doublemuon") {
+    input_filename = "../../DataFakeRateAnalysis/analysis/" + sample + "_fakerate_" + era + pvCut + "_newDenomDef.root";
+  }
   if (sample == "mc")        input_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_all_samples_76X_MiniAOD_histograms.root";
   if (sample == "mc_QCD")    input_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
   if (sample == "mc_GJets")  input_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
@@ -151,7 +172,7 @@ void fakeRateCalculation(TString sample, TString templateVariable)
       else if (templateVariable == "chIso")
 	postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
       
-      std::pair<double,double> resEB = rooFitFakeRateProducer(sample,templateVariable,binName,TString("EB"),sidebandsEB.at(j),i+1); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
+      std::pair<double,double> resEB = rooFitFakeRateProducer(sample,templateVariable,binName,TString("EB"),sidebandsEB.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
       
       // record fake rate in TGraphs
       TString histNameEB = TString::Format("PtEB_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
@@ -190,7 +211,7 @@ void fakeRateCalculation(TString sample, TString templateVariable)
       else if (templateVariable == "chIso")
 	postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
       
-      std::pair<double,double> resEE = rooFitFakeRateProducer(sample,templateVariable,binName,TString("EE"),sidebandsEE.at(j),i+1); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
+      std::pair<double,double> resEE = rooFitFakeRateProducer(sample,templateVariable,binName,TString("EE"),sidebandsEE.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
       
       // record fake rate in TGraphs
       TString histNameEE = TString::Format("PtEE_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
@@ -247,7 +268,7 @@ void fakeRateCalculation(TString sample, TString templateVariable)
     }
   }
   
-  TFile outfile2("fakeRatePlots.root","update");
+  TFile outfile2("fakeRatePlots_" + sample + "_" + era + pvCut + ".root","update");
   outfile2.cd();
   denomvsptEB->Write();
   denomvsptEE->Write();
@@ -277,6 +298,7 @@ void fakeRateCalculation(TString sample, TString templateVariable)
     // fakeRatesEB.at(j)->SetTitle("EB");
     fakeRatesEB.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
     fakeRatesEB.at(j)->GetYaxis()->SetTitle("fake rate");
+    fakeRatesEB.at(j)->GetYaxis()->SetRangeUser(0.0, 0.25);
     fakeRatesEB.at(j)->GetYaxis()->SetTitleOffset(1.6);
 
     TLatex *t_label = new TLatex();
@@ -284,7 +306,7 @@ void fakeRateCalculation(TString sample, TString templateVariable)
     t_label->DrawLatexNDC(0.50,0.75,"ECAL barrel");
     t_label->DrawLatexNDC(0.50,0.70,label);
     
-    c.SaveAs("fake_rate_EB"+postFix+".pdf");
+    c.SaveAs("plots/fake_rate_" + sample + "_" + era + "_EB"+postFix+ pvCut + ".pdf");
   }
   
   for (unsigned int j = 0; j < sidebandsEE.size(); j++) {
@@ -312,6 +334,7 @@ void fakeRateCalculation(TString sample, TString templateVariable)
     // fakeRatesEE.at(j)->SetTitle("EE");
     fakeRatesEE.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
     fakeRatesEE.at(j)->GetYaxis()->SetTitle("fake rate");
+    fakeRatesEE.at(j)->GetYaxis()->SetRangeUser(0.0, 0.6);
     fakeRatesEE.at(j)->GetYaxis()->SetTitleOffset(1.6);
 
     TLatex *t_label = new TLatex();
@@ -319,7 +342,7 @@ void fakeRateCalculation(TString sample, TString templateVariable)
     t_label->DrawLatexNDC(0.50,0.75,"ECAL endcap");
     t_label->DrawLatexNDC(0.50,0.70,label);
     
-    c.SaveAs("fake_rate_EE"+postFix+".pdf");
+    c.SaveAs("plots/fake_rate_" + sample + "_" + era + "_EE"+postFix+ pvCut + ".pdf");
   }
 
   outfile2.Close();

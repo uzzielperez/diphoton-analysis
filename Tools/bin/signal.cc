@@ -45,7 +45,14 @@ void oneSignal(int ned, int kk, bool bkgSub)
   TString barrelCut("weightAll*isGood*(Diphoton.Minv>230 && Photon1.pt>75 && Photon2.pt>75 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442)");
   if(bkgSub) barrelCut = "weightAll*isGood*(Diphoton.Minv>500 && Photon1.pt>75 && Photon2.pt>75 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442)";
   std::vector<int> stringScales = {3000, 3500, 4000, 4500, 5000, 5500, 6000};
-
+  // samples beyond 6 TeV not available for Hewett- convention
+  if(!(ned==2 && kk==4)) {
+    stringScales.push_back(7000);
+    stringScales.push_back(8000);
+    stringScales.push_back(9000);
+    stringScales.push_back(10000);
+    stringScales.push_back(11000);
+  }
   TCanvas *c = new TCanvas;
   c->SetLogy();
   TLegend *l = new TLegend(0.6, 0.55, 0.9, 0.85);
@@ -53,7 +60,7 @@ void oneSignal(int ned, int kk, bool bkgSub)
   l->SetFillStyle(0);
   // draw SM background first
   TH1F *histSM = new TH1F("gg70", "gg70", nBins, xMin, xMax);
-  chains["gg70"]->Project("gg70", "Diphoton.Minv", barrelCut);
+  chains["gg70_2016"]->Project("gg70", "Diphoton.Minv", barrelCut);
   TLatex * lat = new TLatex;
   for(size_t i=0; i<stringScales.size(); i++) {
     TString sample(Form("ADDGravToGG_MS-%d_NED-%d_KK-%d", stringScales.at(i), ned, kk));

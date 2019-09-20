@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Wed Feb  8 16:35:31 2017 by ROOT version 6.02/13
+// Wed Oct  3 15:57:24 2018 by ROOT version 6.10/09
 // from TTree fTree/PhotonTree
-// found on file: root://cmseos.fnal.gov//store/user/skaplan/noreplica/FakeRate/WithVertexColl/JetHT/crab_JetHT_Run2016C/161208_223835/0000/ExoDiphotonAnalyzer_90.root
+// found on file: root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018C-PromptReco-v3__MINIAOD/181001_212426/0000/ExoDiphotonAnalyzer_1.root
 //////////////////////////////////////////////////////////
 
 #ifndef FakeRateAnalysis_h
@@ -176,6 +176,7 @@ public :
    Int_t           TriggerBit_HLT_DoublePhoton40;
    Int_t           TriggerBit_HLT_DoublePhoton50;
    Int_t           TriggerBit_HLT_DoublePhoton60;
+   Int_t           TriggerBit_HLT_DoublePhoton70;
    Int_t           TriggerBit_HLT_DoublePhoton85;
    Int_t           TriggerBit_HLT_ECALHT800;
    Int_t           TriggerBit_HLT_Ele105_CaloIdVT_GsfTrkIdT;
@@ -481,6 +482,7 @@ public :
    Int_t           TriggerBit_HLT_VBF_DisplacedJet40_VVTightID_DisplacedTrack;
    Int_t           TriggerBit_HLT_VBF_DisplacedJet40_VVTightID_Hadronic;
    Int_t           TriggerBit_HLT_ZeroBias;
+   Int_t           TriggerBit_HLT_DoublePhoton33_CaloIdL;
    Int_t           TriggerPrescale_HLT_AK4PFDJet60_Eta2p1ForPPRef;
    Int_t           TriggerPrescale_HLT_AK4PFDJet80_Eta2p1ForPPRef;
    Int_t           TriggerPrescale_HLT_AK8DiPFJet250_200_TrimMass30_BTagCSV0p45;
@@ -590,6 +592,7 @@ public :
    Int_t           TriggerPrescale_HLT_DoublePhoton40;
    Int_t           TriggerPrescale_HLT_DoublePhoton50;
    Int_t           TriggerPrescale_HLT_DoublePhoton60;
+   Int_t           TriggerPrescale_HLT_DoublePhoton70;
    Int_t           TriggerPrescale_HLT_DoublePhoton85;
    Int_t           TriggerPrescale_HLT_ECALHT800;
    Int_t           TriggerPrescale_HLT_Ele105_CaloIdVT_GsfTrkIdT;
@@ -895,6 +898,7 @@ public :
    Int_t           TriggerPrescale_HLT_VBF_DisplacedJet40_VVTightID_DisplacedTrack;
    Int_t           TriggerPrescale_HLT_VBF_DisplacedJet40_VVTightID_Hadronic;
    Int_t           TriggerPrescale_HLT_ZeroBias;
+   Int_t           TriggerPrescale_HLT_DoublePhoton33_CaloIdL;
    Double_t        Photon_pt;
    Double_t        Photon_eta;
    Double_t        Photon_phi;
@@ -950,6 +954,7 @@ public :
    Bool_t          Photon_isNumeratorObjCand;
    Bool_t          Photon_isDenominatorObj;
    Bool_t          Photon_isSaturated;
+   Bool_t          Photon_isMCTruthFake;
    vector<double>  *VertexCollInfo_vx;
    vector<double>  *VertexCollInfo_vy;
    vector<double>  *VertexCollInfo_vz;
@@ -984,7 +989,9 @@ public :
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual void     Loop(int iCut = 0);
+   virtual void     Loop(int iCut = 0, TString era="UNKNOWN", TString dataset="UNKNOWN", int pvCutLow = 0, int pvCutHigh = 500);
+
+   //virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
 };
@@ -997,11 +1004,11 @@ FakeRateAnalysis::FakeRateAnalysis(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmseos.fnal.gov//store/user/skaplan/noreplica/FakeRate/WithVertexColl/JetHT/crab_JetHT_Run2016C/161208_223835/0000/ExoDiphotonAnalyzer_90.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018C-PromptReco-v3__MINIAOD/181001_212426/0000/ExoDiphotonAnalyzer_1.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("root://cmseos.fnal.gov//store/user/skaplan/noreplica/FakeRate/WithVertexColl/JetHT/crab_JetHT_Run2016C/161208_223835/0000/ExoDiphotonAnalyzer_90.root");
+         f = new TFile("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018C-PromptReco-v3__MINIAOD/181001_212426/0000/ExoDiphotonAnalyzer_1.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("root://cmseos.fnal.gov//store/user/skaplan/noreplica/FakeRate/WithVertexColl/JetHT/crab_JetHT_Run2016C/161208_223835/0000/ExoDiphotonAnalyzer_90.root:/diphoton");
+      TDirectory * dir = (TDirectory*)f->Get("root://cmseos.fnal.gov//eos/uscms/store/user/cawest/JetHT/crab_JetHT__Run2018C-PromptReco-v3__MINIAOD/181001_212426/0000/ExoDiphotonAnalyzer_1.root:/diphoton");
       dir->GetObject("fTree",tree);
 
    }

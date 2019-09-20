@@ -27,7 +27,7 @@ namespace ExoDiPhotons
     int nJets;
   };
 
-  std::string jetBranchDefString("jetHT/F:leadingJetPt:leadingJetEta:leadingJetPhi:leadingJetMass:secondleadingJetPt:secondleadingJetEta:secondleadingJetPhi:secondleadingJetMass:thirdleadingJetPt:thirdleadingJetEta:thirdleadingJetPhi:thirdleadingJetMass:nJets/I");
+  const std::string jetBranchDefString("jetHT/F:leadingJetPt:leadingJetEta:leadingJetPhi:leadingJetMass:secondleadingJetPt:secondleadingJetEta:secondleadingJetPhi:secondleadingJetMass:thirdleadingJetPt:thirdleadingJetEta:thirdleadingJetPhi:thirdleadingJetMass:nJets/I");
 
   void InitJetInfo(jetInfo_t &jetInfo) {
     jetInfo.jetHT = -99999.99;

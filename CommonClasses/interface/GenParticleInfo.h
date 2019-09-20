@@ -53,7 +53,7 @@ namespace ExoDiPhotons
     int grandmotherPdgId;
   };
 
-  std::string genParticleBranchDefString("pt/D:eta:phi:deltaR_match:deltaR_matchDau:ptDiff_match:matchCategory/I:matchType:nPhotonMotherDaughters:status:motherStatus:grandmotherStatus:pdgId:motherPdgId:grandmotherPdgId");
+  const std::string genParticleBranchDefString("pt/D:eta:phi:deltaR_match:deltaR_matchDau:ptDiff_match:matchCategory/I:matchType:nPhotonMotherDaughters:status:motherStatus:grandmotherStatus:pdgId:motherPdgId:grandmotherPdgId");
 
   void InitGenParticleInfo(genParticleInfo_t &genParticleInfo) {
     // kinematics

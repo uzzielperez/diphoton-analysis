@@ -1,24 +1,33 @@
 # runtime options
 
+import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
+from os.path import basename
 
 options = VarParsing ('python')
-
-options.register('globalTag',
-                 #'76X_dataRun2_v15',
-                 '76X_dataRun2_16Dec2015_v0',
-                 VarParsing.multiplicity.singleton,
-                 VarParsing.varType.string,
-                 "global tag to use when running"
-                 )
-
-## 'maxEvents' is already registered by the Framework, changing default value
-options.setDefault('maxEvents', 100)
-
 options.parseArguments()
 
-import FWCore.ParameterSet.Config as cms
+outName = options.outputFile
+print("Default output name: " + outName)
+if "output" in outName: # if an input file name is specified, event weights can be determined
+    outName = "out_" + basename(options.inputFiles[0])
+    print("Output root file name: " + outName)
+else:
+    options.inputFiles = "file:GGJets_M-1000To2000_Pt-50_13TeV-sherpa.root"
 
+reapplyJEC = False
+jetCollection = "slimmedJets"
+if reapplyJEC:
+    jetCollection = "updatedPatJetsUpdatedJEC"
+if "Run2016" in outName:
+    globalTag = "94X_dataRun2_v10"
+elif "Run2017" in outName:
+    globalTag = "94X_dataRun2_v11"
+elif "Run2018" in outName:
+    if "17Sep2018" in outName:
+        globalTag = "102X_dataRun2_Sep2018Rereco_v1"
+    else:
+        globalTag = "102X_dataRun2_Prompt_v11"
 process = cms.Process("ExoDiPhoton")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -33,15 +42,14 @@ process.source = cms.Source(
     "PoolSource",
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
-        #'file:myfile.root'
-        'root://cmsxrootd.fnal.gov//store/data/Run2015D/JetHT/MINIAOD/16Dec2015-v1/50000/1E73A933-51A9-E511-B71D-A0369F7F9170.root'
+        options.inputFiles
         )
     )
 
 # for global tag
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
-process.GlobalTag.globaltag = options.globalTag
-print options.globalTag
+process.GlobalTag.globaltag = globalTag
+print("Using global tag: " + globalTag)
 
 # geometry for saturation
 process.load("Configuration.StandardSequences.GeometryDB_cff")
@@ -78,7 +86,7 @@ process.diphoton = cms.EDAnalyzer(
     # photon tag
     photonsMiniAOD = cms.InputTag("slimmedPhotons"),
     # ak4 jets
-    jetsMiniAOD = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
+    jetsMiniAOD = cms.InputTag(jetCollection),
     jetPtThreshold = cms.double(30.),
     jetEtaThreshold = cms.double(2.5),
     # rho tag
@@ -91,6 +99,12 @@ process.diphoton = cms.EDAnalyzer(
     phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
     phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
     phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
+    # output file name
+    outputFile = cms.string(outName),
+    isReMINIAOD = cms.bool(True)
     )
 
-process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton)
+if reapplyJEC:
+    process.p = cms.Path(process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.egmPhotonIDSequence * process.diphoton)
+else:
+    process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton)

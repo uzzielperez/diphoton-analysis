@@ -204,6 +204,8 @@ class ExoDiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResource
   
   // flag to determine if sample is reco or re-reco
   bool isReMINIAOD_;
+  // process name in data
+  std::string processNameData_;
 
   // genParticles
   ExoDiPhotons::genParticleInfo_t fGenPhoton1Info; // leading
@@ -304,6 +306,9 @@ ExoDiPhotonAnalyzer::ExoDiPhotonAnalyzer(const edm::ParameterSet& iConfig)
   fTree->Branch("GenDiphoton",&fGenDiphotonInfo,ExoDiPhotons::diphotonBranchDefString.c_str());
 
   isSherpaDiphoton_ = outputFile_.Contains("GGJets_M");
+  processNameData_ =  "RECO";
+  // 17Jul2018 re-MINIAOD runs in the "DQM" process
+  if(isReMINIAOD_ && outputFile_.Contains("17Jul2018")) processNameData_ = "DQM";
   // need a separate branch for sherpa photons so that k-factor reweighting can be applied
   // even if there is no RECO match
   if(isSherpaDiphoton_) {
@@ -373,13 +378,13 @@ ExoDiPhotonAnalyzer::ExoDiPhotonAnalyzer(const edm::ParameterSet& iConfig)
   pileupToken_ = consumes<std::vector<PileupSummaryInfo> >( edm::InputTag("slimmedAddPileupInfo") );
 
   // Filter decisions (created in "PAT" process in MC but "RECO" in data)
-  filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","",(isMC_||isReMINIAOD_)?("PAT"):("RECO")) );
+  filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","",(isMC_)?("PAT"):(processNameData_)) );
 
   // Trigger decisions
   triggerDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","HLT") );
 
   // trigger prescales
-  prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","",(isMC_||isReMINIAOD_)?("PAT"):("RECO")) );
+  prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","",(isMC_)?("PAT"):(processNameData_)) );
 
   // set appropriate year (used for pileup reweighting)
   if(outputFile_.Contains("2015")) year = 2015;
@@ -428,7 +433,7 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
   ExoDiPhotons::FillBeamHaloEventInfo(fEventInfo, bhs);
   
-  cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
+  //  cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
 
   // ==============
   // GEN EVENT INFO
@@ -548,7 +553,7 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   iEvent.getByToken(rhoToken_,rhoH);
   rho_ = *rhoH;
   
-  cout << "rho: " << rho_ << endl;
+  //  cout << "rho: " << rho_ << endl;
 
   // ======
   // EGM ID
@@ -645,7 +650,7 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     const auto pho = photons->ptrAt(i);
     
     // print photon info
-    cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
+    //    cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
     
     // check if photon is saturated
     isSat = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
@@ -696,9 +701,9 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       fillGenInfo(genParticles, goodPhotons);
       if (isClosureTest_) {
 	mcTruthFiller(&(*goodPhotons[0]), fPhoton1Info, genParticles);
-	cout << "fPhoton1Info.isMCTruthFake: " << fPhoton1Info.isMCTruthFake << endl;
+	//	cout << "fPhoton1Info.isMCTruthFake: " << fPhoton1Info.isMCTruthFake << endl;
 	mcTruthFiller(&(*goodPhotons[1]), fPhoton2Info, genParticles);
-	cout << "fPhoton2Info.isMCTruthFake: " << fPhoton2Info.isMCTruthFake << endl;
+	//	cout << "fPhoton2Info.isMCTruthFake: " << fPhoton2Info.isMCTruthFake << endl;
       }
     }
   }
@@ -718,7 +723,7 @@ ExoDiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   }
   
 
-  cout << endl;
+  //  cout << endl;
   
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
    Handle<ExampleData> pIn;
@@ -842,15 +847,15 @@ void ExoDiPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>&
 						 const edm::Handle<edm::ValueMap<bool> >* id_decisions,
 						 ExoDiPhotons::photonInfo_t& photon1Info, ExoDiPhotons::photonInfo_t& photon2Info, ExoDiPhotons::diphotonInfo_t& diphotonInfo)
 {
-  std::cout << "Photon 1 pt = " << photons[0]->pt() << "; eta = " << photons[0]->eta() << "; phi = " << photons[0]->phi() << std::endl;
-  std::cout << "Photon 2 pt = " << photons[1]->pt() << "; eta = " << photons[1]->eta() << "; phi = " << photons[1]->phi() << std::endl;
+  //  std::cout << "Photon 1 pt = " << photons[0]->pt() << "; eta = " << photons[0]->eta() << "; phi = " << photons[0]->phi() << std::endl;
+  //  std::cout << "Photon 2 pt = " << photons[1]->pt() << "; eta = " << photons[1]->eta() << "; phi = " << photons[1]->phi() << std::endl;
 
   // ==================
   // fill photon 1 info
   // ==================
   // fill photon saturation
   photon1Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[0]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-  std::cout << "Photon 1 isSat: " << photon1Info.isSaturated << std::endl;
+  //  std::cout << "Photon 1 isSat: " << photon1Info.isSaturated << std::endl;
 
   // fill photon info
   ExoDiPhotons::FillBasicPhotonInfo(photon1Info, &(*photons[0]));
@@ -867,7 +872,7 @@ void ExoDiPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>&
   // ==================
   // fill photon saturation
   photon2Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[1]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-  std::cout << "Photon 2 isSat: " << photon2Info.isSaturated << std::endl;
+  //  std::cout << "Photon 2 isSat: " << photon2Info.isSaturated << std::endl;
 
   // fill photon info
   ExoDiPhotons::FillBasicPhotonInfo(photon2Info, &(*photons[1]));

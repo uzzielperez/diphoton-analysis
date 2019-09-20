@@ -35,7 +35,6 @@ config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFileName=o
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
-config.Data.outLFNDirBase = '/store/user/abuccill/DiPhotonAnalysis/RealTemplates'
 config.Data.publication = False
 if "Run2016" in taskname:
     config.Data.splitting = 'LumiBased'
@@ -47,7 +46,7 @@ if "Run2015" in taskname:
     config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver_v2.txt'
 else:
     config.Data.splitting = 'FileBased'
-    config.Data.unitsPerJob = 10
+    config.Data.unitsPerJob = 5
 
 
 config.section_("Site")

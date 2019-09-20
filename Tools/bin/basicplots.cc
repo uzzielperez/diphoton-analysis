@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
   std::string region;
 
   if(argc!=3) {
-    std::cout << "Syntax: basicplots.exe [barrel/endcap] [2015/2016/2017]" << std::endl;
+    std::cout << "Syntax: basicplots.exe [barrel/endcap] [2015/2016/2017/2018/2017_2018/2016_2017_2018/2018_newjson]" << std::endl;
     return -1;
   }
   else {
@@ -20,8 +20,9 @@ int main(int argc, char *argv[])
       return -1;
     }
     data_year = argv[2];
-    if(data_year.compare("2015") !=0 && data_year.compare("2016") != 0 && data_year.compare("2017") != 0 ) {
-      std::cout << "Only '2015', '2016', and '2017' are allowed years." << std::endl;
+    if(data_year.compare("2015") !=0 && data_year.compare("2016") != 0 && data_year.compare("2017") != 0
+       && data_year.compare("2018") != 0 && data_year.compare("2017_2018") && data_year.compare("2018_newjson") != 0  ) {
+      std::cout << "Only '2015', '2016', '2017', '2018', and '2017_2018' are allowed years, plus '2018_newjson' for the data from the latest JSON." << std::endl;
       return -1;
     }
   }
@@ -31,8 +32,17 @@ int main(int argc, char *argv[])
   std::string kfactor = kfactorString("BB", "R1F1");
   if(endcap) kfactor = kfactorString("BE", "R1F1");
 
-  std::string cut("Photon1.pt>125&&Photon2.pt>125 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442 && Diphoton.Minv > 500 && Diphoton.Minv < 1000 && isGood");
-  if(endcap) cut = "Photon1.pt>125&&Photon2.pt>125 && Diphoton.Minv > 500 && Diphoton.Minv < 1000 && isGood && ( !(abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442) && ((abs(Photon1.eta)<1.4442 && (abs(Photon2.eta)>1.56&&abs(Photon2.eta)<2.5)) || (abs(Photon2.eta)<1.4442 && (abs(Photon1.eta)>1.56&&abs(Photon1.eta)<2.5))))";
+  std::string pt_cut("125");
+  if(data_year.compare("2016") == 0) pt_cut = "125";
+  std::string minv_cut("Diphoton.Minv > 500");
+  std::string kinematic_cuts("Photon1.pt>" + pt_cut + " && Photon2.pt>" + pt_cut + "&&" + minv_cut);
+  std::string id_cuts("Photon1.r9_5x5 > 0.8 && Photon2.r9_5x5 > 0.8");
+  std::string eta_cuts_BB("abs(Photon1.scEta)<1.4442 && abs(Photon2.scEta)<1.4442");
+  std::string eta_cuts_BE("( !(abs(Photon1.scEta)<1.4442 && abs(Photon2.scEta)<1.4442) && ((abs(Photon1.scEta)<1.4442 && (abs(Photon2.scEta)>1.566&&abs(Photon2.scEta)<2.5)) || (abs(Photon2.scEta)<1.4442 && (abs(Photon1.scEta)>1.566&&abs(Photon1.scEta)<2.5))))");
+  std::string cut_no_Minv(kinematic_cuts + "&&" + eta_cuts_BB + "&&" + id_cuts + "&& isGood");
+  if(endcap) cut_no_Minv = kinematic_cuts + "&&" + eta_cuts_BE + "&&" + id_cuts + "&& isGood";
+  std::string cut(cut_no_Minv);
+  cut += "&& Diphoton.Minv < 1000";
   int nbins=100;
   double xmin=0.0; // GeV
   double xmax=2000; // GeV
@@ -40,36 +50,58 @@ int main(int argc, char *argv[])
   // initialize chains and default styles
   init();
 
+  std::string trigger("(HLT_DoublePhoton70 || HLT_ECALHT800)");
+  if(data_year.compare("2016") == 0) trigger = "(HLT_DoublePhoton60 || HLT_ECALHT800)";
   // define samples to be used in histograms
-  sample data("data_" + data_year, "Data");
-  sample gg("gg", "#gamma#gamma", kfactor);
-  sample gj("gj", "#gamma + jets");
-  sample vg("vg", "V#gamma");
-  sample w("w", "W");
-  sample dy("dy", "DY");
-  sample ttg("ttg", "t#bar{t}#gamma");
+  sample data("data", "Data", data_year, trigger);
+  data.isData = true;
+  sample gg("gg", "#gamma#gamma", data_year, kfactor);
+  sample gj("gj", "#gamma + jets", data_year);
+  sample jj("jj", "QCD", data_year);
+  sample vg("vg", "V#gamma", data_year);
+  sample w("w", "W", data_year);
+  sample dy("dy", "DY", data_year);
+  sample ttg("ttg", "t#bar{t}#gamma", data_year);
   std::vector<sample> samples;
   samples.push_back(data);
   samples.push_back(ttg);
   samples.push_back(w);
   samples.push_back(vg);
   samples.push_back(dy);
+  samples.push_back(jj);
   samples.push_back(gj);
   samples.push_back(gg);
 
-  plot p0(samples, "Minv", cut, nbins/2, xmin, xmax);
-  plot p1(samples, "Photon1.pt", cut, nbins/2, xmin, xmax/2);
-  plot p2(samples, "Photon2.pt", cut, nbins/2, xmin, xmax/2);
+  plot p0(samples, "Minv", cut_no_Minv, 40, 0, 2000);
+  plot p1(samples, "Photon1.pt", cut, 40, xmin, xmax/2);
+  plot p2(samples, "Photon2.pt", cut, 40, xmin, xmax/2);
   plot p3(samples, "Diphoton.qt", cut, nbins/2, xmin, xmax/2);
   plot p4(samples, "Diphoton.deltaPhi", cut, nbins/2, -TMath::Pi(), TMath::Pi());
   plot p5(samples, "Diphoton.deltaEta", cut, nbins/2, -5, 5);
   plot p6(samples, "abs(Diphoton.cosThetaStar)", cut, 20, 0, 1);
-  plot p7(samples, "nPV", cut, 50, 0, 50);
-  plot p8(samples, "Diphoton.deltaR", cut, nbins/2, 0, 5);
-  plot p9(samples, "Photon1.eta", cut, nbins/2, -5, 5);
-  plot p10(samples, "Photon2.eta", cut, nbins/2, -5, 5);
+  plot p7(samples, "nPV", cut, 80, 0, 80);
+  plot p8(samples, "Diphoton.deltaR", cut, 60, 0, 6);
+  plot p9(samples, "Photon1.scEta", cut, nbins/2, -5, 5);
+  plot p10(samples, "Photon2.scEta", cut, nbins/2, -5, 5);
   plot p11(samples, "Photon1.phi", cut, nbins/2, -TMath::Pi(), TMath::Pi());
   plot p12(samples, "Photon2.phi", cut, nbins/2, -TMath::Pi(), TMath::Pi());
+  plot p13(samples, "abs(Diphoton.deltaPhi)", cut, nbins/4, 0, TMath::Pi());
+  plot p14(samples, "Photon1.sigmaIphiIphi5x5", cut, 40, 0, 0.04);
+  plot p15(samples, "Photon2.sigmaIphiIphi5x5", cut, 40, 0, 0.04);
+  plot p16(samples, "Photon1.r9_5x5", cut, nbins/2, 0., 1.0);
+  plot p17(samples, "Photon2.r9_5x5", cut, nbins/2, 0., 1.0);
+  plot p18(samples, "Photon1.chargedHadIso03", cut, nbins/2, 0., 10);
+  plot p19(samples, "Photon2.chargedHadIso03", cut, nbins/2, 0., 10);
+  plot p20(samples, "Photon1.hadTowerOverEm", cut, nbins/2, 0., 1.);
+  plot p21(samples, "Photon2.hadTowerOverEm", cut, nbins/2, 0., 1.);
+  plot p22(samples, "Photon1.hadronicOverEm", cut, nbins/2, 0., 1.);
+  plot p23(samples, "Photon2.hadronicOverEm", cut, nbins/2, 0., 1.);
+  plot p24(samples, "Photon1.corPhotonIso03", cut, nbins/2, -5., 5.);
+  plot p25(samples, "Photon2.corPhotonIso03", cut, nbins/2, -5., 5.);
+  plot p26(samples, "Photon1.rhoCorPhotonIso03", cut, nbins/2, 0., 5.);
+  plot p27(samples, "Photon2.rhoCorPhotonIso03", cut, nbins/2, 0., 5.);
+  plot p28(samples, "Photon1.sigmaIetaIeta", cut, nbins, 0., region=="barrel" ? 0.02 : 0.04);
+  plot p29(samples, "Photon2.sigmaIetaIeta", cut, nbins, 0., region=="barrel" ? 0.02 : 0.04);
 
   std::string extraFilenameInfo(region);
   extraFilenameInfo += "_";
@@ -88,5 +120,22 @@ int main(int argc, char *argv[])
   p10.output("plots", extraFilenameInfo);
   p11.output("plots", extraFilenameInfo);
   p12.output("plots", extraFilenameInfo);
+  p13.output("plots", extraFilenameInfo);
+  p14.output("plots", extraFilenameInfo);
+  p15.output("plots", extraFilenameInfo);
+  p16.output("plots", extraFilenameInfo);
+  p17.output("plots", extraFilenameInfo);
+  p18.output("plots", extraFilenameInfo);
+  p19.output("plots", extraFilenameInfo);
+  p20.output("plots", extraFilenameInfo);
+  p21.output("plots", extraFilenameInfo);
+  p22.output("plots", extraFilenameInfo);
+  p23.output("plots", extraFilenameInfo);
+  p24.output("plots", extraFilenameInfo);
+  p25.output("plots", extraFilenameInfo);
+  p26.output("plots", extraFilenameInfo);
+  p27.output("plots", extraFilenameInfo);
+  p28.output("plots", extraFilenameInfo);
+  p29.output("plots", extraFilenameInfo);
 
 }

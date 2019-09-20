@@ -34,7 +34,7 @@ if "Run201" in outName:
 # to avoid processing with an incorrect global tag, don't set a valid default
 globalTag = 'notset'
 
-jetLabel = "selectedUpdatedPatJetsUpdatedJEC"
+jetLabel = "updatedPatJetsUpdatedJEC"
 # options for data
 JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
 # necessary because in re-MINIAOD the process labels are "PAT", not "RECO"
@@ -49,15 +49,32 @@ if "Run2016" in outName:
     elif '03Feb2017' in outName:
         globalTag = '80X_dataRun2_2016SeptRepro_v7'
         isReMINIAOD = True
+    elif "17Jul2018" in outName:
+        isReMINIAOD = True
+        globalTag = '94X_dataRun2_v11'
     else:
         globalTag = '80X_dataRun2_2016SeptRepro_v4'
 if "Run2017" in outName:
-    globalTag = '92X_dataRun2_Prompt_v8'
-    jetLabel = "updatedPatJetsUpdatedJEC"
+    if "31Mar2018" in outName:
+        isReMINIAOD = True
+        globalTag = '94X_dataRun2_v11'
+    else:
+        globalTag = '92X_dataRun2_Prompt_v8'
+if "Run2018" in outName:
+    if "17Sep2018" in outName:
+        globalTag = '102X_dataRun2_v11'
+    else:
+        globalTag = '102X_dataRun2_Prompt_v11'
 # override options for MC
 if isMC:
     version = os.getenv("CMSSW_VERSION")
-    if "CMSSW_8" in version:
+    major_version = version.split('_')[1] # version number formattted as CMSSW_X_Y_Z
+    if major_version == "10":
+        globalTag = '102X_upgrade2018_realistic_v19'
+    elif major_version == "9":
+        if "Summer16MiniAODv3" in outName:
+        globalTag = '94X_mc2017_realistic_v17'
+    elif major_version == "8":
         if "Spring16" in outName:
             globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
         if "Summer16" in outName:
@@ -66,7 +83,7 @@ if isMC:
             # samples intended to match data previous to the
             # 03Feb2017 re-miniAOD
             globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
-    elif "CMSSW_7" in version:
+    elif major_version == "7":
         globalTag = '76X_mcRun2_asymptotic_v12'
     else:
         print "Could not determine appropriate MC global tag from filename"
@@ -174,9 +191,6 @@ process.diphoton = cms.EDAnalyzer(
 # analyzer to print cross section
 process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
 if isMC:
-    process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton * process.xsec)
+    process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.diphoton * process.xsec)
 else:
-    if "Run2017" in outName:
-        process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.diphoton)
-    else:
-        process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton)
+    process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.diphoton)
