@@ -73,7 +73,9 @@ if isMC:
         globalTag = '102X_upgrade2018_realistic_v19'
     elif major_version == "9":
         if "Summer16MiniAODv3" in outName:
-        globalTag = '94X_mc2017_realistic_v17'
+            globalTag = '94X_mcRun2_asymptotic_v3'
+        if "RunIIFall17MiniAODv2" in outName:
+            globalTag = '94X_mc2017_realistic_v17'
     elif major_version == "8":
         if "Spring16" in outName:
             globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
