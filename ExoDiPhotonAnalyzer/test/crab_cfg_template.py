@@ -1,8 +1,12 @@
 ## Template file for CRAB submission. The script generate_crab_config.py 
 ## replaces the following two lines with the appropriate values
 ## Do not edit manually!
+import os
+import subprocess
+
 dataset = 'DATASETNAME'
 nevents = NEVENTS
+user = os.environ['USER']
 
 # CRAB3 task names can no longer be greater than 100 characters; need to shorten task name
 taskname = dataset[1:].replace('/','__').replace('RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2','MiniAODv2').replace('TuneCUETP8M1_13TeV-madgraphMLM-pythia8','13TeV-MG-PY8')
@@ -33,12 +37,17 @@ config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_'
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
-#config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/ExoANDiphoton'
+if user == "cawest":
+    cmssw_base = os.environ['CMSSW_BASE']
+    commit_hash = subprocess.check_output(['git', '--git-dir=' + cmssw_base + '/src/diphoton-analysis/.git',  'rev-parse', '--short', 'HEAD']).replace('\n', '')
+    config.Data.outLFNDirBase = '/store/user/' + user + '/diphoton/' + commit_hash
+else:
+    config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/ExoANDiphoton'
 
 if "Run2018" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 10
-    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions18/13TeV/PromptReco/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt'
+    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions18/13TeV/ReReco/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt'
 elif "Run2017" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100
@@ -64,6 +73,5 @@ else:
     config.Data.unitsPerJob = 5
 
 config.section_("Site")
-#config.Site.storageSite = 'T2_CH_CERN'
 config.Site.storageSite = 'T3_US_FNALLPC'
 config.Site.blacklist = ['T1_RU_JINR', 'T2_US_Vanderbilt']
