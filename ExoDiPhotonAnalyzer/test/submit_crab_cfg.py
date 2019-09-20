@@ -48,7 +48,6 @@ DATASETS = [[]]
 # datasets with extensions should be added following this example:
 #   datasets.append(["/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM",
 #                   "/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2_ext1-v1/MINIAODSIM"])
-DATASETS.append(["/GGJets_M-500To1000_Pt-50_13TeV-sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
 
 if do2018signalADD:
     DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-10000_M-1000To2000_TuneCP2_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'])
@@ -981,5 +980,5 @@ for ilist in DATASETS:
     print "Wrote crab configuration file " + outputfile
 
     cmd = "crab submit -c " + outputfile
-#    os.system(cmd)
+    os.system(cmd)
     print "Submitted ", ids
