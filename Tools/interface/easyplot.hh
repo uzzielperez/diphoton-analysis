@@ -306,8 +306,8 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
   sum->SetFillStyle(3344);
   sum->Draw("E2,same");
 
-  TH1D *ratio = 0;
-  TH1D *ratioError = 0;
+  TH1D *ratio = nullptr;
+  TH1D *ratioError = nullptr;
   // draw data histogram on top
   foundData = false;
   for(auto ihist : hists) {
