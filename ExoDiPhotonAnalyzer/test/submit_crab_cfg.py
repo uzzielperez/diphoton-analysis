@@ -22,6 +22,7 @@ do2018Ddatarereco = False
 do2018dataJetHT = False
 do2017dataprompt = False
 do2017data = False
+do2017dataUL = False
 do2017dataJetHT = False
 do2016data = False
 do2016data03FEB2017rereco = False
@@ -508,6 +509,12 @@ if do2017data:
   DATASETS.append(["/DoubleEG/Run2017D-31Mar2018-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2017E-31Mar2018-v1/MINIAOD"])
   DATASETS.append(["/DoubleEG/Run2017F-31Mar2018-v1/MINIAOD"])
+if do2017dataUL:
+  DATASETS.append(["/DoubleEG/Run2017B-09Aug2019_UL2017-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017C-09Aug2019_UL2017-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017D-09Aug2019_UL2017-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017E-09Aug2019_UL2017-v1/MINIAOD"])
+  DATASETS.append(["/DoubleEG/Run2017F-09Aug2019_UL2017-v1/MINIAOD"])
 if do2017dataJetHT:
   DATASETS.append(["/JetHT/Run2017B-31Mar2018-v1/MINIAOD"])
   DATASETS.append(["/JetHT/Run2017C-31Mar2018-v1/MINIAOD"])

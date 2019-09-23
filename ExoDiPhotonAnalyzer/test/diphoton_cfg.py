@@ -58,6 +58,9 @@ if "Run2017" in outName:
     if "31Mar2018" in outName:
         isReMINIAOD = True
         globalTag = '94X_dataRun2_v11'
+    elif "09Aug2019" in outName:
+        isReMINIAOD = True
+        globalTag = '106X_dataRun2_v20'
     else:
         globalTag = '92X_dataRun2_Prompt_v8'
 if "Run2018" in outName:
