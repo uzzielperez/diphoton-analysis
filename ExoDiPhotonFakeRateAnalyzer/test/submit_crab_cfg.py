@@ -9,7 +9,7 @@ import os
 diphoton_analysis = __import__("diphoton-analysis.CommonClasses.das_utils")
 
 do2018data = False
-do2018datarereco = False
+do2018dataprompt = False
 do2018dataDoubleMuon = False
 do2017data = False
 do2017datarereco = False
@@ -34,14 +34,17 @@ DATASETS = [[]]
 #   datasets.append(["/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM",
 #                   "/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2_ext1-v1/MINIAODSIM"])
 
-if do2018datarereco:
+if do2018data:
   DATASETS.append(["/JetHT/Run2018A-17Sep2018-v1/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018B-17Sep2018-v1/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018C-17Sep2018-v1/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2018D-PromptReco-v1/MINIAOD"])
+  DATASETS.append(["/JetHT/Run2018D-PromptReco-v2/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2018A-17Sep2018-v2/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2018B-17Sep2018-v1/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2018C-17Sep2018-v1/MINIAOD"])
-if do2018data:
+  DATASETS.append(["/DoubleMuon/Run2018D-PromptReco-v2/MINIAOD"])
+if do2018dataprompt:
   DATASETS.append(["/JetHT/Run2018A-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018A-PromptReco-v2/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018A-PromptReco-v3/MINIAOD"])

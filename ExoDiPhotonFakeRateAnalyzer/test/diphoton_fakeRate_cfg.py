@@ -25,9 +25,9 @@ elif "Run2017" in outName:
     globalTag = "94X_dataRun2_v11"
 elif "Run2018" in outName:
     if "17Sep2018" in outName:
-        globalTag = "102X_dataRun2_Sep2018Rereco_v1"
+        globalTag = "102X_dataRun2_v11"
     else:
-        globalTag = "102X_dataRun2_Prompt_v11"
+        globalTag = "102X_dataRun2_Prompt_v14"
 process = cms.Process("ExoDiPhoton")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
