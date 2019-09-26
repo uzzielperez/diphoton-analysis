@@ -157,7 +157,7 @@ class ExoDiPhotonFakeRateAnalyzer : public edm::one::EDAnalyzer<edm::one::Shared
   // flag to determine if sample is reco or re-reco
   bool isReMINIAOD_;
   // process name in reMINIAOD
-  std::string processNamereMINIAOD_;
+  std::string processNameData_;
 };
 
 //
@@ -223,17 +223,20 @@ ExoDiPhotonFakeRateAnalyzer::ExoDiPhotonFakeRateAnalyzer(const edm::ParameterSet
   // BeamHaloSummary
   beamHaloSummaryToken_ = consumes<reco::BeamHaloSummary>( edm::InputTag("BeamHaloSummary") );
 
-  processNamereMINIAOD_ =  "RECO";
+  processNameData_ =  "RECO";
   // 17Jul2018 re-MINIAOD runs in the "DQM" process
-  if(isReMINIAOD_ && outputFile_.Contains("17Jul2018")) processNamereMINIAOD_ = "DQM";
+  if(isReMINIAOD_) {
+    if(outputFile_.Contains("17Jul2018")) processNameData_ = "DQM";
+    if(outputFile_.Contains("31Mar2018")) processNameData_ = "PAT";
+  }
   // Filter decisions
-  filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","",isReMINIAOD_?(processNamereMINIAOD_):("RECO")) );
+  filterDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","",isReMINIAOD_?(processNameData_):("RECO")) );
 
   // Trigger decisions
   triggerDecisionToken_ = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","HLT") );
 
   // trigger prescales
-  prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","",isReMINIAOD_?(processNamereMINIAOD_):("RECO")) );
+  prescalesToken_ = consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger","",isReMINIAOD_?(processNameData_):("RECO")) );
 
   // vertices
   verticesToken_ = consumes<reco::VertexCollection>( edm::InputTag("offlineSlimmedPrimaryVertices") );
