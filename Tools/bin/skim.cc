@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
   TString selection;
   if(input.Contains("Run2015") || input.Contains("Run2016")) selection = "HLT_DoublePhoton60 || HLT_ECALHT800";
-  else if(input.Contains("Run2017") || input.Contains("Run2018")) selection = "HLT_DoublePhoton70 && Minv<1000";
+  else if(input.Contains("Run2017") || input.Contains("Run2018")) selection = "HLT_DoublePhoton70 || HLT_ECALHT800";
   else {
     std::cout << "Could not determine year from input filename." << std::endl;
     return -1;
