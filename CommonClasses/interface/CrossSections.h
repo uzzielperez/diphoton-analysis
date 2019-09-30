@@ -67,6 +67,7 @@ namespace ExoDiPhotons {
     if(sample.Contains("QCD_HT1500to2000_TuneCP5_13TeV-madgraph-pythia8")) xsec = 9.913e+01;
     if(sample.Contains("QCD_HT2000toInf_TuneCP5_13TeV-madgraph-pythia8")) xsec = 2.019e+01;
     if(sample.Contains("WGJets_MonoPhoton_PtG-40to130_TuneCP5_13TeV-madgraph")) xsec = 7.163e-01; // +/ 2.925e-04
+    if(sample.Contains("WGJets_MonoPhoton_PtG-130_TuneCP5_13TeV-madgraph")) xsec = 7.152e-01; // +/ 2.628e-04
     if(sample.Contains("TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8")) xsec = 4.108e+00; // +/ 8.777e-03
     if(sample.Contains("DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8")) xsec = 6.491e+03; // +/ 1.045e+01
     // cross sections and filter efficiencies from MCM
@@ -96,7 +97,10 @@ namespace ExoDiPhotons {
     if(sample.Contains("QCD_Pt_3200toInf_TuneCUETP8M1")) xsec = 0.000165445;
     // cross sections from https://twiki.cern.ch/twiki/bin/viewauth/CMS/SummaryTable1G25ns
     if(sample.Contains("WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")) xsec = 405.271;
+    if(sample.Contains("WGToLNuG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8")) xsec = 1.916e+02; // +/- 2.954e-01
+    if(sample.Contains("WGToLNuG_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 4.647e+02; // +/- 1.423e-01
     if(sample.Contains("ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")) xsec = 117.864;
+    if(sample.Contains("ZGToLLG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8")) xsec = 5.559e+01; // +/- 8.293e-02
     if(sample.Contains("TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8")) xsec = 3.697;
     if(sample.Contains("DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")) xsec = 1921.8*3;
     // MCM cross sections (NLO)
@@ -502,7 +506,9 @@ namespace ExoDiPhotons {
     // that should be removed, as well as negative weights
     if(sample.Contains("DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8")) average = 2.80907981496934667e+02*5.50762575783666608e-01;
     if(sample.Contains("WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")) average = 1.501086e+03*6.283186e-01;
+    if(sample.Contains("WGToLNuG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8")) average = 3.56378496224989874e+02*6.00800000000000001e-01;
     if(sample.Contains("ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")) average = 3.479100e+02*7.019238e-01;
+    if(sample.Contains("ZGToLLG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8")) average = 1.08567085412723003e+02*6.32200000000000095e-01;
     if(sample.Contains("DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")) average = 2.344342e+04*6.286050e-01;
     if(sample.Contains("WToLNu_0J_13TeV-amcatnloFXFX-pythia8")) average = 7.143788e+04*8.534599e-01;
     if(sample.Contains("WToLNu_1J_13TeV-amcatnloFXFX-pythia8")) average = 9.293282e+04*5.323924e-01;
