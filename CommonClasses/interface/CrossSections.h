@@ -66,10 +66,12 @@ namespace ExoDiPhotons {
     if(sample.Contains("QCD_HT1000to1500_TuneCP5_13TeV-madgraph-pythia8")) xsec = 1.095e+03;
     if(sample.Contains("QCD_HT1500to2000_TuneCP5_13TeV-madgraph-pythia8")) xsec = 9.913e+01;
     if(sample.Contains("QCD_HT2000toInf_TuneCP5_13TeV-madgraph-pythia8")) xsec = 2.019e+01;
-    if(sample.Contains("WGJets_MonoPhoton_PtG-40to130_TuneCP5_13TeV-madgraph")) xsec = 7.163e-01; // +/ 2.925e-04
-    if(sample.Contains("WGJets_MonoPhoton_PtG-130_TuneCP5_13TeV-madgraph")) xsec = 7.152e-01; // +/ 2.628e-04
-    if(sample.Contains("TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8")) xsec = 4.108e+00; // +/ 8.777e-03
-    if(sample.Contains("DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8")) xsec = 6.491e+03; // +/ 1.045e+01
+    if(sample.Contains("WGJets_MonoPhoton_PtG-40to130_TuneCUETP8M1_13TeV-madgraph")) xsec = 1.270e+01; // +/- 4.610e-03
+    if(sample.Contains("WGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph")) xsec = 6.565e-01; // +/- 7.876e-04
+    if(sample.Contains("WGJets_MonoPhoton_PtG-40to130_TuneCP5_13TeV-madgraph")) xsec = 7.163e-01; // +/- 2.925e-04
+    if(sample.Contains("WGJets_MonoPhoton_PtG-130_TuneCP5_13TeV-madgraph")) xsec = 7.152e-01; // +/- 2.628e-04
+    if(sample.Contains("TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8")) xsec = 4.108e+00; // +/- 8.777e-03
+    if(sample.Contains("DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8")) xsec = 6.491e+03; // +/- 1.045e+01
     // cross sections and filter efficiencies from MCM
     if(sample.Contains("QCD_Pt-20to30_EMEnriched")) xsec = 557600000*0.0096; // filter efficiency error (MCM): 0.0003
     if(sample.Contains("QCD_Pt-30to50_EMEnriched")) xsec = 136000000*0.073; // filter efficiency error (MCM): 0.015
