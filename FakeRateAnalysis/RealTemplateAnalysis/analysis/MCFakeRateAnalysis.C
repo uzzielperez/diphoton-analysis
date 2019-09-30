@@ -12,6 +12,7 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
   std::map<int, TString> cmssw_version;
   cmssw_version[2016] = "76X";
   cmssw_version[2017] = "94X";
+  cmssw_version[2018] = "102X";
 
 //   In a ROOT session, you can do:
 //      root> .L MCFakeRateAnalysis.C
@@ -230,48 +231,16 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
   
   TFile file_out(filename,"RECREATE");
   
-  // write our histograms to file
-  // EB
-  for (std::vector<TH1D*>::iterator it = chIsoEB.begin(); it != chIsoEB.end(); ++it) {
-    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
-    (*it)->Scale(1.0/(*it)->Integral());
-    (*it)->Write();
-  }
-  for (std::vector<TH1D*>::iterator it = sigmaIetaIetaEB.begin(); it != sigmaIetaIetaEB.end(); ++it) {
-    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
-    (*it)->Scale(1.0/(*it)->Integral());
-    (*it)->Write();
-  }
-  for (std::vector<TH1D*>::iterator it = sigmaIetaIetaEB1.begin(); it != sigmaIetaIetaEB1.end(); ++it) {
-    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
-    (*it)->Scale(1.0/(*it)->Integral());
-    (*it)->Write();
-  }
-  for (std::vector<TH1D*>::iterator it = sigmaIetaIetaEB2.begin(); it != sigmaIetaIetaEB2.end(); ++it) {
-    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
-    (*it)->Scale(1.0/(*it)->Integral());
-    (*it)->Write();
-  }
-  // EE
-  for (std::vector<TH1D*>::iterator it = chIsoEE.begin(); it != chIsoEE.end(); ++it) {
-    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
-    (*it)->Scale(1.0/(*it)->Integral());
-    (*it)->Write();
-  }
-  for (std::vector<TH1D*>::iterator it = sigmaIetaIetaEE.begin(); it != sigmaIetaIetaEE.end(); ++it) {
-    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
-    (*it)->Scale(1.0/(*it)->Integral());
-    (*it)->Write();
-  }
-  for (std::vector<TH1D*>::iterator it = sigmaIetaIetaEE1.begin(); it != sigmaIetaIetaEE1.end(); ++it) {
-    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
-    (*it)->Scale(1.0/(*it)->Integral());
-    (*it)->Write();
-  }
-  for (std::vector<TH1D*>::iterator it = sigmaIetaIetaEE2.begin(); it != sigmaIetaIetaEE2.end(); ++it) {
-    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
-    (*it)->Scale(1.0/(*it)->Integral());
-    (*it)->Write();
+  // normalize histograms and write to file
+  std::vector<std::vector<TH1D*>> hists_to_normalize = {chIsoEB, sigmaIetaIetaEB, sigmaIetaIetaEB1, sigmaIetaIetaEB2, // EB
+							chIsoEE, sigmaIetaIetaEE, sigmaIetaIetaEE1, sigmaIetaIetaEE2}; // EE
+
+  for(auto& hists : hists_to_normalize) {
+    for (auto& it : hists) {
+      std::cout << it->GetName() << "\t integral: " << it->Integral() << std::endl;
+      it->Scale(1.0/it->Integral());
+      it->Write();
+    }
   }
   
   jetPhoDrEB_realtemplate->Write();
