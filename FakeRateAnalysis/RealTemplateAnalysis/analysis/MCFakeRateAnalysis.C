@@ -1,11 +1,13 @@
 #define MCFakeRateAnalysis_cxx
 #include "MCFakeRateAnalysis.h"
 #include <TH2.h>
+#include <TLorentzVector.h>
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <map>
+#include <iostream>
 
-void MCFakeRateAnalysis::Loop(int year, int pvCutLow = 0, int pvCutHigh = 500)
+void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow = 0, int pvCutHigh = 500)
 {
   std::map<int, TString> cmssw_version;
   cmssw_version[2016] = "76X";
@@ -35,16 +37,6 @@ void MCFakeRateAnalysis::Loop(int year, int pvCutLow = 0, int pvCutHigh = 500)
 //    fChain->GetEntry(jentry);       //read all branches
 //by  b_branchname->GetEntry(ientry); //read only this branch
   if (fChain == 0) return;
-
-  // input what sample is being run on
-  TString sample = "";
-  cout << "Enter sample being run on (DiPhotonJets, GGJets, GJets, or all): ";
-  cin >> sample;
-  if (sample != "DiPhotonJets" && sample != "GGJets" && sample != "GJets" && sample != "all") {
-    cout << "Invalid choice!" << endl;
-    return;
-  }
-  cout << "\nUsing sample: " << sample << endl;
   
   TString pv = Form("_nPV%i-%i", pvCutLow, pvCutHigh);
   TString filename = "";
@@ -53,8 +45,7 @@ void MCFakeRateAnalysis::Loop(int year, int pvCutLow = 0, int pvCutHigh = 500)
   if (sample == "GJets")        filename = "diphoton_fake_rate_real_templates_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version[year] + pv + "_MiniAOD_histograms.root";
   if (sample == "all")          filename = "diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[year] + pv + "_MiniAOD_histograms.root";
   
-  cout << "\nOutput filename: " << filename << endl << endl;
-  
+  std::cout << "\nOutput filename: " << filename << std::endl << std::endl;
   
   // define our pT bin increments
   std::vector<int> ptBinArray({ 50, 70, 90, 110, 130, 150, 200, 250, 300, 600});
@@ -70,14 +61,14 @@ void MCFakeRateAnalysis::Loop(int year, int pvCutLow = 0, int pvCutHigh = 500)
   const int nBins = ptBinArray.size() + 1;
 
   // define vectors of desired histograms
-  vector<TH1D*> sigmaIetaIetaEB;
-  vector<TH1D*> sigmaIetaIetaEB1;
-  vector<TH1D*> sigmaIetaIetaEB2;
-  vector<TH1D*> sigmaIetaIetaEE;
-  vector<TH1D*> sigmaIetaIetaEE1;
-  vector<TH1D*> sigmaIetaIetaEE2;
-  vector<TH1D*> chIsoEB;
-  vector<TH1D*> chIsoEE;
+  std::vector<TH1D*> sigmaIetaIetaEB;
+  std::vector<TH1D*> sigmaIetaIetaEB1;
+  std::vector<TH1D*> sigmaIetaIetaEB2;
+  std::vector<TH1D*> sigmaIetaIetaEE;
+  std::vector<TH1D*> sigmaIetaIetaEE1;
+  std::vector<TH1D*> sigmaIetaIetaEE2;
+  std::vector<TH1D*> chIsoEB;
+  std::vector<TH1D*> chIsoEE;
   
   // loop over bins increments and create histograms
   for (int i = 0; i < nBins; i++) {
@@ -167,6 +158,7 @@ void MCFakeRateAnalysis::Loop(int year, int pvCutLow = 0, int pvCutHigh = 500)
     
     // if (!PFJet400Fired) continue;
     
+    /*
     TLorentzVector photon;
     TLorentzVector leadingJet;
     TLorentzVector secondleadingJet;
@@ -196,8 +188,9 @@ void MCFakeRateAnalysis::Loop(int year, int pvCutLow = 0, int pvCutHigh = 500)
 
     }
     
-    // if (matched) continue;
-    
+    if (matched) continue;
+    */
+
     // loop over pT bin increments
     for (int i = 0; i < nBins; i++) {
       double binLowEdge = binLowEdges[i];
@@ -239,44 +232,44 @@ void MCFakeRateAnalysis::Loop(int year, int pvCutLow = 0, int pvCutHigh = 500)
   
   // write our histograms to file
   // EB
-  for (vector<TH1D*>::iterator it = chIsoEB.begin(); it != chIsoEB.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = chIsoEB.begin(); it != chIsoEB.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sigmaIetaIetaEB.begin(); it != sigmaIetaIetaEB.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sigmaIetaIetaEB.begin(); it != sigmaIetaIetaEB.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sigmaIetaIetaEB1.begin(); it != sigmaIetaIetaEB1.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sigmaIetaIetaEB1.begin(); it != sigmaIetaIetaEB1.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sigmaIetaIetaEB2.begin(); it != sigmaIetaIetaEB2.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sigmaIetaIetaEB2.begin(); it != sigmaIetaIetaEB2.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
   // EE
-  for (vector<TH1D*>::iterator it = chIsoEE.begin(); it != chIsoEE.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = chIsoEE.begin(); it != chIsoEE.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sigmaIetaIetaEE.begin(); it != sigmaIetaIetaEE.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sigmaIetaIetaEE.begin(); it != sigmaIetaIetaEE.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sigmaIetaIetaEE1.begin(); it != sigmaIetaIetaEE1.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sigmaIetaIetaEE1.begin(); it != sigmaIetaIetaEE1.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sigmaIetaIetaEE2.begin(); it != sigmaIetaIetaEE2.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sigmaIetaIetaEE2.begin(); it != sigmaIetaIetaEE2.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Scale(1.0/(*it)->Integral());
     (*it)->Write();
   }

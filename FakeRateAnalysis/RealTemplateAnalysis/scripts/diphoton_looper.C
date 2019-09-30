@@ -1,29 +1,18 @@
-#include "../analysis/MCFakeRateAnalysis.C"
+#include "diphoton-analysis/FakeRateAnalysis/RealTemplateAnalysis/analysis/MCFakeRateAnalysis.C"
 
-void diphoton_looper(int nPVLow, int nPVHigh) {
+#include "TChain.h"
+#include "TStopwatch.h"
+
+#include <iostream>
+#include <map>
+
+void diphoton_looper(int year, const std::string & sample, int nPVLow, int nPVHigh) {
   // ntuple path (change as needed)
   std::map<int, TString> ntuple_paths;
   ntuple_paths[2016] = "root://cmseos.fnal.gov//eos/uscms/store/user/abuccill/diphoton-analysis/fake_rate_real_templates";
   ntuple_paths[2017] = "root://cmseos.fnal.gov//eos/uscms/store/user/cawest";
   // currently 2017 MC is used for 2018 samples
   ntuple_paths[2018] = "root://cmseos.fnal.gov//eos/uscms/store/user/cawest";
-
-  // input what sample to run on
-  TString sample = "";
-  cout << "Enter sample being run on (DiPhotonJets, GGJets, GJets, or all): ";
-  cin >> sample;
-  if (sample != "DiPhotonJets" && sample != "GGJets" && sample != "GJets" && sample != "all") {
-    cout << "Invalid choice!" << endl;
-    return;
-  }
-  int year;
-  cout << "Enter year (2016, 2017 or 2018):";
-  cin >> year;
-  if(year != 2016 and year != 2017 and year != 2018) {
-    cout << "Invalid choice!" << std::endl;
-  }
-  cout << "\nUsing sample: " << sample << " for analysis of " << year << " data." << endl;
-  cout << endl;
   
   // use stopwatch to time
   TStopwatch sw;
@@ -31,7 +20,6 @@ void diphoton_looper(int nPVLow, int nPVHigh) {
 
   // create tchain of all files to loop over
   TChain *chain = new TChain("diphoton/fTree");
-
   
   // wildcard not supported when using xrootd
   // added ",0" to print correct number of entries, not entries=1234567890
@@ -81,13 +69,13 @@ void diphoton_looper(int nPVLow, int nPVHigh) {
   
   // list chain and entries
   chain->ls();
-  cout << "Total number of entries: " << chain->GetEntries() << endl; 
+  std::cout << "Total number of entries: " << chain->GetEntries() << std::endl;
 
   // create instance of class, passing our chain
   MCFakeRateAnalysis loop(chain);
 
   // loop over all entries of our tree
-  loop.Loop(year, nPVLow, nPVHigh);
+  loop.Loop(year, sample, nPVLow, nPVHigh);
 
   // stop stopwatch
   sw.Stop();

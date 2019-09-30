@@ -965,16 +965,16 @@ public :
    Int_t           PhotonGenMatch_pdgId;
    Int_t           PhotonGenMatch_motherPdgId;
    Int_t           PhotonGenMatch_grandmotherPdgId;
-   vector<double>  *VertexCollInfo_vx;
-   vector<double>  *VertexCollInfo_vy;
-   vector<double>  *VertexCollInfo_vz;
-   vector<double>  *VertexCollInfo_vxError;
-   vector<double>  *VertexCollInfo_vyError;
-   vector<double>  *VertexCollInfo_vzError;
-   vector<double>  *VertexCollInfo_ndof;
-   vector<double>  *VertexCollInfo_d0;
-   vector<int>     *VertexCollInfo_nTracks;
-   vector<int>     *VertexCollInfo_isFake;
+   std::vector<double>  *VertexCollInfo_vx;
+   std::vector<double>  *VertexCollInfo_vy;
+   std::vector<double>  *VertexCollInfo_vz;
+   std::vector<double>  *VertexCollInfo_vxError;
+   std::vector<double>  *VertexCollInfo_vyError;
+   std::vector<double>  *VertexCollInfo_vzError;
+   std::vector<double>  *VertexCollInfo_ndof;
+   std::vector<double>  *VertexCollInfo_d0;
+   std::vector<int>     *VertexCollInfo_nTracks;
+   std::vector<int>     *VertexCollInfo_isFake;
 
    // List of branches
    TBranch        *b_Event;   //!
@@ -1000,7 +1000,7 @@ public :
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual void     Loop(int year, int pvCutLow, int pvCutHigh);
+   virtual void     Loop(int year, const std::string & sample, int pvCutLow, int pvCutHigh);
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
 };
