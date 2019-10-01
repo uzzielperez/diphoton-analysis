@@ -1,10 +1,24 @@
 #define FakeRateAnalysis_cxx
 #include "FakeRateAnalysis.h"
+#include <TLorentzVector.h>
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void FakeRateAnalysis::Loop(int iCut = 0, TString era = "UNKNOWN", TString dataset = "UNKNOWN", int pvCutLow = 0, int pvCutHigh = 500)
+#include <iostream>
+
+void FakeRateAnalysisBase::Loop() {};
+
+class FakeRateAnalysis : public FakeRateAnalysisBase {
+
+public:
+  using FakeRateAnalysisBase::FakeRateAnalysisBase;
+  void Loop() {};
+  void Loop(int iCut = 0, TString era="UNKNOWN", TString dataset="UNKNOWN", int pvCutLow = 0, int pvCutHigh = 500);
+};
+
+
+void FakeRateAnalysis::Loop(int iCut, TString era, TString dataset, int pvCutLow, int pvCutHigh)
 {
 //   In a ROOT session, you can do:
 //      root> .L FakeRateAnalysis.C
@@ -299,7 +313,7 @@ void FakeRateAnalysis::Loop(int iCut = 0, TString era = "UNKNOWN", TString datas
 
         double dRCut = 0.6;
         // these will all work because the jet 4 vectors are filled with dummy information, but I'll only use them if they are real jets
-        bool matchedToLeadingJet = (photonLeadingJetDr < dRCut);
+	//        bool matchedToLeadingJet = (photonLeadingJetDr < dRCut);
         bool matchedToSecondLeadingJet = (photonSecondLeadingJetDr < dRCut);
         // bool matchedToThirdLeadingJet = (photonThirdLeadingJetDr < dRCut);
 
@@ -503,34 +517,24 @@ void FakeRateAnalysis::Loop(int iCut = 0, TString era = "UNKNOWN", TString datas
     phoPtEE_faketemplates.at(i)->Write();
   }
 
-  // write numerator histograms
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEB.begin() ; it != sIeIeNumeratorEB.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
-    (*it)->Write();
-  }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEE.begin() ; it != sIeIeNumeratorEE.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
-    (*it)->Write();
-  }
+  std::vector<std::vector<TH1D*>> hists_to_write = {sIeIeNumeratorEB, sIeIeNumeratorEE, // numerator
+						    denomPtEB, denomPtEE}; // denominator
 
-  // write denominator histograms
-  for (vector<TH1D*>::iterator it = denomPtEB.begin() ; it != denomPtEB.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
-    (*it)->Write();
-  }
-  for (vector<TH1D*>::iterator it = denomPtEE.begin() ; it != denomPtEE.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
-    (*it)->Write();
+  for(auto& hists : hists_to_write) {
+    for (auto& it : hists) {
+      std::cout << it->GetName() << "\t integral: " << it->Integral() << std::endl;
+      it->Write();
+    }
   }
 
   // scale fake template histograms to unity and write to file
-  // for (vector<TH1D*>::iterator it = sIeIeFakeTemplateEB.begin() ; it != sIeIeFakeTemplateEB.end(); ++it) {
-  //   cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  // for (std::vector<TH1D*>::iterator it = sIeIeFakeTemplateEB.begin() ; it != sIeIeFakeTemplateEB.end(); ++it) {
+  //   std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
   //   (*it)->Scale(1.0/(*it)->Integral());
   //   (*it)->Write();
   // }
-  // for (vector<TH1D*>::iterator it = sIeIeFakeTemplateEE.begin() ; it != sIeIeFakeTemplateEE.end(); ++it) {
-  //   cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  // for (std::vector<TH1D*>::iterator it = sIeIeFakeTemplateEE.begin() ; it != sIeIeFakeTemplateEE.end(); ++it) {
+  //   std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
   //   (*it)->Scale(1.0/(*it)->Integral());
   //   (*it)->Write();
   // }
@@ -539,11 +543,11 @@ void FakeRateAnalysis::Loop(int iCut = 0, TString era = "UNKNOWN", TString datas
       TH1D* tempHistEB = sIeIeFakeTemplatesEB.at(i).at(j);
       TH1D* tempHistEE = sIeIeFakeTemplatesEE.at(i).at(j);
 
-      cout << tempHistEB->GetName() << "\t integral: " << tempHistEB->Integral() << endl;
+      std::cout << tempHistEB->GetName() << "\t integral: " << tempHistEB->Integral() << std::endl;
       tempHistEB->Scale(1./tempHistEB->Integral());
       tempHistEB->Write();
 
-      cout << tempHistEE->GetName() << "\t integral: " << tempHistEE->Integral() << endl;
+      std::cout << tempHistEE->GetName() << "\t integral: " << tempHistEE->Integral() << std::endl;
       tempHistEE->Scale(1./tempHistEE->Integral());
       tempHistEE->Write();
     }

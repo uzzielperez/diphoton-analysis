@@ -2,5 +2,6 @@
 <use name="rootinteractive"/>
 <environment>
   <bin file="real_templates.cc" name="real_templates.exe"/>
+  <bin file="fake_templates.cc" name="fake_templates.exe"/>
 </environment>
 <flags CXXFLAGS="-Wall -g"/>
