@@ -53,7 +53,8 @@ if do2018dataprompt:
   DATASETS.append(["/JetHT/Run2018C-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018C-PromptReco-v2/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018C-PromptReco-v3/MINIAOD"])
-  DATASETS.append(["/JetHT/Run2018D-PromptReco-v1/MINIAOD"])
+# contains only runs 320413, 320416 and 320434, which are not in good run JSON
+#  DATASETS.append(["/JetHT/Run2018D-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018D-PromptReco-v2/MINIAOD"])
 if do2018dataDoubleMuon:
   DATASETS.append(["/DoubleMuon/Run2018A-PromptReco-v1/MINIAOD"])
@@ -64,7 +65,6 @@ if do2018dataDoubleMuon:
   DATASETS.append(["/DoubleMuon/Run2018C-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2018C-PromptReco-v2/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2018C-PromptReco-v3/MINIAOD"])
-  DATASETS.append(["/DoubleMuon/Run2018D-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2018D-PromptReco-v2/MINIAOD"])
 # diphoton samples (2017 data)
 if do2017data:
@@ -95,7 +95,8 @@ if do2017datarereco:
   DATASETS.append(["/DoubleMuon/Run2017F-31Mar2018-v1/MINIAOD"])
 # samples for fake rate (2016 data)
 if do2016data:
-  DATASETS.append(["/DoubleMuon/Run2016B-17Jul2018_ver1-v1/MINIAOD"])
+# contains only up to run 273017, still in commissioning period
+#  DATASETS.append(["/DoubleMuon/Run2016B-17Jul2018_ver1-v1/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2016B-17Jul2018_ver2-v1/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2016C-17Jul2018-v1/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2016D-17Jul2018-v1/MINIAOD"])
@@ -103,7 +104,9 @@ if do2016data:
   DATASETS.append(["/DoubleMuon/Run2016F-17Jul2018-v1/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2016G-17Jul2018-v1/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2016H-17Jul2018-v1/MINIAOD"])
+# contains only up to run 273017, still in commissioning period
 #  DATASETS.append(["/JetHT/Run2016B-17Jul2018_ver1-v1/MINIAOD"])
+# invalid dataset
 #  DATASETS.append(["/JetHT/Run2016B-17Jul2018_ver2-v1/MINIAOD"])
   DATASETS.append(["/JetHT/Run2016B-17Jul2018_ver2-v2/MINIAOD"])
   DATASETS.append(["/JetHT/Run2016C-17Jul2018-v1/MINIAOD"])
