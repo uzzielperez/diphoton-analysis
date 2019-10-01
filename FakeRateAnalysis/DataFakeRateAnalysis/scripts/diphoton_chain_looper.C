@@ -95,9 +95,9 @@ void diphoton_chain_looper(TString run, TString dataset, int npvLow = 0, int npv
       chain->Add(ntuple_path + "/JetHT/crab_JetHT__Run2018B-PromptReco-v2__MINIAOD/181130_211801/0000/*.root");
     }
     if(run=="Run2018C" or run=="2018") {
-      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018C-17Sep2018-v1__MINIAOD/190925_233045/0000/0000/*.root");
-      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018C-17Sep2018-v1__MINIAOD/190925_233045/0000/0001/*.root");
-      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018C-17Sep2018-v1__MINIAOD/190925_233045/0000/0002/*.root");
+      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018C-17Sep2018-v1__MINIAOD/190925_233045/0000/*.root");
+      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018C-17Sep2018-v1__MINIAOD/190925_233045/0001/*.root");
+      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018C-17Sep2018-v1__MINIAOD/190925_233045/0002/*.root");
     }
     if(run=="Run2018Cprompt" or run=="2018prompt") {
       chain->Add(ntuple_path + "/JetHT/crab_JetHT__Run2018C-PromptReco-v1__MINIAOD/181130_211816/0000/*.root");
