@@ -24,17 +24,17 @@ void fakePrediction::fakeRateInit(int year, std::string fakeRateType)
   std::vector<std::string> datasets = {"jetht", "doublemuon"};
   std::vector<std::string> regions = {"EB", "EE"};
   std::vector<std::string> pvCuts = {"0-22", "23-27", "28-32", "33-37", "38-200"};
-  if(year==2016) pvCuts.push_back("28-200");
-  else {
+  //  if(year==2016) pvCuts.push_back("28-200");
+  //  else {
     pvCuts.push_back("28-32");
     pvCuts.push_back("33-37");
     pvCuts.push_back("38-200");
-  }
+    //  }
 
   for(auto region : regions) {
     for(auto dataset : datasets) {
       for(auto pvCut : pvCuts) {
-	TFile *f = TFile::Open(Form("../FakeRateAnalysis/RooFitTemplateFitting/analysis/fakeRatePlots_%s_%d_nPV%s.root", dataset.c_str(), year, pvCut.c_str()));
+	TFile *f = TFile::Open(Form("../FakeRateAnalysis/fakeRatePlots_%s_%d_nPV%s.root", dataset.c_str(), year, pvCut.c_str()));
 	const TString graphName(Form("fakeRate%s_%s", region.c_str(), iso.c_str()));
 	TGraphAsymmErrors *gr = dynamic_cast<TGraphAsymmErrors*>(f->Get(graphName));
 	gr->Eval(1000.0);

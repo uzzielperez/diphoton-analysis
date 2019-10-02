@@ -10,6 +10,7 @@
 #include "RooExtendPdf.h"
 #include "RooNDKeysPdf.h"
 #include "TFile.h"
+#include "TLatex.h"
 #include "TLegend.h"
 #include "TText.h"
 #include "TGraphErrors.h"
@@ -40,11 +41,11 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   cmssw_version["Run2017D"] = "94X";
   cmssw_version["Run2017E"] = "94X";
   cmssw_version["Run2017F"] = "94X";
-  cmssw_version["2018"] = "94X"; // 2018 analysis temporarily still uses 2017 MC
-  cmssw_version["Run2018A"] = "94X"; // 2018 analysis temporarily still uses 2017 MC
-  cmssw_version["Run2018B"] = "94X"; // 2018 analysis temporarily still uses 2017 MC
-  cmssw_version["Run2018C"] = "94X"; // 2018 analysis temporarily still uses 2017 MC
-  cmssw_version["Run2018D"] = "94X"; // 2018 analysis temporarily still uses 2017 MC
+  cmssw_version["2018"] = "102X";
+  cmssw_version["Run2018A"] = "102X";
+  cmssw_version["Run2018B"] = "102X";
+  cmssw_version["Run2018C"] = "102X";
+  cmssw_version["Run2018D"] = "102X";
 
   gROOT->SetBatch();
   gSystem->Load("libRooFit");
@@ -70,6 +71,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   // }
   
   // for numerator, fake templates, and denominator (choose data or mc)
+  TString basefilename("root://cmseos.fnal.gov//store/user/cawest/fake_rate/");
   TString data_filename = "";
   TString pvCut = "";
   //  if (sample == "data")      data_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
@@ -80,14 +82,14 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
     if(sample == "jetht" and useJetMatching) matching = "_matchedtoLeadingJet";
     if(pvCutLow!=0 || pvCutHigh!=2000) pvCut = Form("_nPV%i-%i", pvCutLow, pvCutHigh);
     TFile outfile("fakeRatePlots_" + sample + "_" + era + pvCut + ".root","recreate");
-    data_filename = "../../DataFakeRateAnalysis/analysis/" + sample + "_fakerate_" + era + matching + pvCut + "_newDenomDef.root";
+    data_filename = basefilename +  sample + "_fakerate_" + era + matching + pvCut + "_newDenomDef.root";
   }
   if (sample == "mc")        data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_all_samples_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "mc_QCD")    data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "mc_GJets")  data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "mc_GGJets") data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   TFile *histojetfile = TFile::Open(data_filename);
-  TFile *historealmcfile = TFile::Open("../../RealTemplateAnalysis/analysis/diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + pvCut + "_MiniAOD_histograms" + extra + ".root");
+  TFile *historealmcfile = TFile::Open(basefilename + "/diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + pvCut + "_MiniAOD_histograms" + extra + ".root");
   
   double sidebandLow = sideband.first;
   double sidebandHigh = sideband.second;
@@ -177,7 +179,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   TH1D* fitHist = (TH1D*) model.createHistogram("template_fit_variable",hData->GetNbinsX());
   
   double fitres = hData->Chi2Test(fitHist,"CHI2/NDF");
-  // cout << "CHI2 FIT RES = " << fitres << endl;
+  cout << "CHI2 FIT RES = " << fitres << endl;
 
   TCanvas *canvas = new TCanvas("canvas","Fit Result",1600,600);
   canvas->Divide(2,1);
