@@ -4,10 +4,11 @@
 // needed to get default implementations from base class
 #define ntupleAnalyzerBase_cxx
 
-//#include "ntupleAnalyzerBase.h"
+#include "ntupleAnalyzerBase.h"
+// only for use with legacy ntuples
 //#include "ntupleAnalyzerBase2016.h"
 //#include "ntupleAnalyzerBase2017.h"
-#include "ntupleAnalyzerBase2018.h"
+//#include "ntupleAnalyzerBase2018.h"
 
 #include "TGraphAsymmErrors.h"
 
