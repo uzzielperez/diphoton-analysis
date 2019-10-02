@@ -68,16 +68,16 @@ namespace ExoDiPhotons {
     if(sample.Contains("QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 1207.0;
     if(sample.Contains("QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 120.0;
     if(sample.Contains("QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 25.25;
-    if(sample.Contains("QCD_HT50to100_TuneCP5_13TeV-madgraph-pythia8")) xsec = 28060000.0;
-    if(sample.Contains("QCD_HT100to200_TuneCP5_13TeV-madgraph-pythia8")) xsec = 23700000.0;
+    if(sample.Contains("QCD_HT50to100_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 28060000.0;
+    if(sample.Contains("QCD_HT100to200_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 23700000.0;
     // from running GenXsecAnalyzer on full sample
-    if(sample.Contains("QCD_HT200to300_TuneCP5_13TeV-madgraph-pythia8")) xsec = 1.554e+06;
-    if(sample.Contains("QCD_HT300to500_TuneCP5_13TeV-madgraph-pythia8")) xsec = 3.234e+05;
-    if(sample.Contains("QCD_HT500to700_TuneCP5_13TeV-madgraph-pythia8")) xsec = 3.004e+04;
-    if(sample.Contains("QCD_HT700to1000_TuneCP5_13TeV-madgraph-pythia8")) xsec = 6.353e+03;
-    if(sample.Contains("QCD_HT1000to1500_TuneCP5_13TeV-madgraph-pythia8")) xsec = 1.095e+03;
-    if(sample.Contains("QCD_HT1500to2000_TuneCP5_13TeV-madgraph-pythia8")) xsec = 9.913e+01;
-    if(sample.Contains("QCD_HT2000toInf_TuneCP5_13TeV-madgraph-pythia8")) xsec = 2.019e+01;
+    if(sample.Contains("QCD_HT200to300_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 1.554e+06;
+    if(sample.Contains("QCD_HT300to500_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 3.234e+05;
+    if(sample.Contains("QCD_HT500to700_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 3.004e+04;
+    if(sample.Contains("QCD_HT700to1000_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 6.353e+03;
+    if(sample.Contains("QCD_HT1000to1500_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 1.095e+03;
+    if(sample.Contains("QCD_HT1500to2000_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 9.913e+01;
+    if(sample.Contains("QCD_HT2000toInf_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 2.019e+01;
     if(sample.Contains("WGJets_MonoPhoton_PtG-40to130_TuneCUETP8M1_13TeV-madgraph")) xsec = 1.270e+01; // +/- 4.610e-03
     if(sample.Contains("WGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph")) xsec = 6.565e-01; // +/- 7.876e-04
     if(sample.Contains("WGJets_MonoPhoton_PtG-40to130_TuneCP5_13TeV-madgraph")) xsec = 7.163e-01; // +/- 2.925e-04
