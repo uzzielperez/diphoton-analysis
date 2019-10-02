@@ -28,14 +28,19 @@ DATASETS = []
 #DATASETS.append('DoubleEG__Run2016H-03Feb2017_ver2-v1')
 #DATASETS.append('DoubleEG__Run2016H-03Feb2017_ver3-v1')
 
-DATASETS.append('EGamma__Run2018A-PromptReco-v1')
-DATASETS.append('EGamma__Run2018A-PromptReco-v2')
-DATASETS.append('EGamma__Run2018A-PromptReco-v3')
-DATASETS.append('EGamma__Run2018B-PromptReco-v1')
-DATASETS.append('EGamma__Run2018B-PromptReco-v2')
-DATASETS.append('EGamma__Run2018C-PromptReco-v1')
-DATASETS.append('EGamma__Run2018C-PromptReco-v2')
-DATASETS.append('EGamma__Run2018C-PromptReco-v3')
+#DATASETS.append('EGamma__Run2018A-PromptReco-v1')
+#DATASETS.append('EGamma__Run2018A-PromptReco-v2')
+#DATASETS.append('EGamma__Run2018A-PromptReco-v3')
+#DATASETS.append('EGamma__Run2018B-PromptReco-v1')
+#DATASETS.append('EGamma__Run2018B-PromptReco-v2')
+#DATASETS.append('EGamma__Run2018C-PromptReco-v1')
+#DATASETS.append('EGamma__Run2018C-PromptReco-v2')
+#DATASETS.append('EGamma__Run2018C-PromptReco-v3')
+
+# new datasets start here
+DATASETS.append('EGamma__Run2018A-17Sep2018-v2')
+DATASETS.append('EGamma__Run2018B-17Sep2018-v1')
+DATASETS.append('EGamma__Run2018C-17Sep2018-v1')
 DATASETS.append('EGamma__Run2018D-22Jan2019-v2')
 
 
