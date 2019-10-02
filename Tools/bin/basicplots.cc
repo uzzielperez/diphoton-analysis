@@ -29,8 +29,13 @@ int main(int argc, char *argv[])
 
   bool endcap = (region=="endcap");
 
-  std::string kfactor = kfactorString("BB", "R1F1");
-  if(endcap) kfactor = kfactorString("BE", "R1F1");
+  std::string kfactor;
+  if(data_year.compare("2015") == 0 or data_year.compare("2016") == 0 ) {
+    kfactor = endcap ? kfactorString("BE", "R1F1_125GeV_CT10") : kfactorString("BB", "R1F1_125GeV_CT10");
+  }
+  else {
+    kfactor = endcap ? kfactorString("BE", "R1F1") : kfactorString("BB", "R1F1");
+  }
 
   std::string pt_cut("125");
   if(data_year.compare("2016") == 0) pt_cut = "125";
@@ -51,7 +56,7 @@ int main(int argc, char *argv[])
   init();
 
   std::string trigger("(HLT_DoublePhoton70 || HLT_ECALHT800)");
-  if(data_year.compare("2016") == 0) trigger = "(HLT_DoublePhoton60 || HLT_ECALHT800)";
+  if(data_year.compare("2015") == 0 or data_year.compare("2016") == 0) trigger = "(HLT_DoublePhoton60 || HLT_ECALHT800)";
   // define samples to be used in histograms
   sample data("data", "Data", data_year, trigger);
   data.isData = true;
