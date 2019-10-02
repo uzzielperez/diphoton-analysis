@@ -255,23 +255,23 @@ void init(bool includeUnskimmed = false)
 
   TChain *chData2016_unskimmed = new TChain(treeType);
   if(includeUnskimmed) {
-    chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016B-17Jul2018_ver2-v1__MINIAOD/190921_175517/*.root");
-    chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016C-17Jul2018-v1__MINIAOD/190921_175532/*.root");
-    chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016D-17Jul2018-v1__MINIAOD/190921_175546/*.root");
-    chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016E-17Jul2018-v1__MINIAOD/190921_175602/*.root");
-    chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016F-17Jul2018-v1__MINIAOD/190921_175715/*.root");
-    chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016G-17Jul2018-v1__MINIAOD/190921_175729/*.root");
-    chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016H-17Jul2018-v1__MINIAOD/190921_175744/*.root");
+    chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016B-17Jul2018_ver2-v1__MINIAOD/190921_175517/0000/*.root");
+    chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016C-17Jul2018-v1__MINIAOD/190921_175532/0000/*.root");
+    chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016D-17Jul2018-v1__MINIAOD/190921_175546/0000/*.root");
+    chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016E-17Jul2018-v1__MINIAOD/190921_175602/0000/*.root");
+    chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016F-17Jul2018-v1__MINIAOD/190921_175715/0000/*.root");
+    chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016G-17Jul2018-v1__MINIAOD/190921_175729/0000/*.root");
+    chData2016_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016H-17Jul2018-v1__MINIAOD/190921_175744/0000/*.root");
   }
 
   TChain *chData2016 = new TChain(treeType);
-  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016B-17Jul2018_ver2-v1__MINIAOD/190921_175517/0000/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016C-17Jul2018-v1__MINIAOD/190921_175532/0000/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016D-17Jul2018-v1__MINIAOD/190921_175546/0000/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016E-17Jul2018-v1__MINIAOD/190921_175602/0000/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016F-17Jul2018-v1__MINIAOD/190921_175715/0000/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016G-17Jul2018-v1__MINIAOD/190921_175729/0000/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016H-17Jul2018-v1__MINIAOD/190921_175744/0000/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016B-17Jul2018_ver2-v1__MINIAOD/190921_175517/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016C-17Jul2018-v1__MINIAOD/190921_175532/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016D-17Jul2018-v1__MINIAOD/190921_175546/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016E-17Jul2018-v1__MINIAOD/190921_175602/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016F-17Jul2018-v1__MINIAOD/190921_175715/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016G-17Jul2018-v1__MINIAOD/190921_175729/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016H-17Jul2018-v1__MINIAOD/190921_175744/*.root");
 
   TChain *chData2017_2018 = new TChain(treeType);
   chData2017_2018->Add(chData2017);
