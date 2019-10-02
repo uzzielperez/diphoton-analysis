@@ -59,6 +59,8 @@ namespace ExoDiPhotons {
     if(sample.Contains("GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 9.465e+01;
     if(sample.Contains("GJets_DR-0p4_HT-400To600")) xsec = 1.560e+04;
     // from xsdb
+    if(sample.Contains("WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 50260.0;
+    if(sample.Contains("WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 52940.0;
     if(sample.Contains("QCD_HT50to100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 246300000.0;
     if(sample.Contains("QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 28060000.0;
     if(sample.Contains("QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 1710000.0;
