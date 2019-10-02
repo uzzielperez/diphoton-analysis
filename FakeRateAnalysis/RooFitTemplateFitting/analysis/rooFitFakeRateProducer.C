@@ -1,3 +1,5 @@
+#include "diphoton-analysis/Tools/interface/sampleList.hh"
+
 #include "TROOT.h"
 #include "TSystem.h"
 #include "TH1F.h"
@@ -12,6 +14,7 @@
 #include "TFile.h"
 #include "TLatex.h"
 #include "TLegend.h"
+#include "TMath.h"
 #include "TText.h"
 #include "TGraphErrors.h"
 #include "TGraphAsymmErrors.h"
@@ -19,10 +22,9 @@
 #include "TCanvas.h"
 #include "TStyle.h"
 #include "RooChi2Var.h"
+
 #include <vector>
 #include <algorithm>
-
-#include "../../../Tools/interface/sampleList.hh"
 
 /**
  * Return background and uncertainty instead of fakerate
@@ -130,7 +132,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
     templateVariableMin = 0.;
     templateVariableMax = 0.1;
   }
-  else if (templateVariable == "chIso") {
+  else { // otherwise, variable is "chIso"
     templateVariableMin = 0.;
     templateVariableMax = 50.;
   }
@@ -146,14 +148,11 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   double template_fit_variable_cut;
   if (templateVariable == "sieie") {
     // using cuts for unsaturated photons
-    if (etaBin.Contains("EB")) template_fit_variable_cut = 0.0105;
-    if (etaBin.Contains("EE")) template_fit_variable_cut = 0.028;
+    etaBin.Contains("EB") ? template_fit_variable_cut = 0.0105 : template_fit_variable_cut = 0.028;
   }
-  else if (templateVariable == "chIso") {
-    if (etaBin.Contains("EB")) template_fit_variable_cut = 5.0;
-    if (etaBin.Contains("EE")) template_fit_variable_cut = 5.0;
+  else { // otherwise assume "chIso"
+    etaBin.Contains("EB") ? template_fit_variable_cut = 5.0 : template_fit_variable_cut = 5.0;
   }
-  
   template_fit_variable.setRange("sigrange",0.0,template_fit_variable_cut);
 
   RooDataHist faketemplate("faketemplate","fake template",template_fit_variable,hfakeTemplate);
@@ -196,12 +195,10 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   canvas->cd(1);
   
   if (templateVariable == "sieie") {
-    if (etaBin.Contains("EB")) xframe->GetXaxis()->SetRangeUser(0.,0.03);
-    if (etaBin.Contains("EE")) xframe->GetXaxis()->SetRangeUser(0.,0.08);
+    etaBin.Contains("EB") ? xframe->GetXaxis()->SetRangeUser(0.,0.03) : xframe->GetXaxis()->SetRangeUser(0.,0.08);
   }
-  else if (templateVariable == "chIso") {
-    if (etaBin.Contains("EB")) xframe->GetXaxis()->SetRangeUser(0.,10.);
-    if (etaBin.Contains("EE")) xframe->GetXaxis()->SetRangeUser(0.,10.);
+  else { // otherwise assume "chIso"
+    etaBin.Contains("EB") ? xframe->GetXaxis()->SetRangeUser(0.,10.) : xframe->GetXaxis()->SetRangeUser(0.,10.);
   }
   float xframemax = xframe->GetMaximum();
   xframe->GetYaxis()->SetRangeUser(1.e-1,1.1*xframemax);
@@ -229,10 +226,10 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   t_label->DrawLatexNDC(0.70, 0.975, Form("%1.1f fb^{-1} (13 TeV)", luminosity[era.Data()]));
   //  t_label->     DrawLatexNDC(0.55,0.45,TString::Format("#chi^{2}/ndf = %6.1f",fitres));
   
-  TObject *objdata;
-  TObject *objmodel;
-  TObject *objsignal;
-  TObject *objfake;
+  TObject *objdata = nullptr;
+  TObject *objmodel = nullptr;
+  TObject *objsignal = nullptr;
+  TObject *objfake = nullptr;
 
   for (int i = 0; i < xframe->numItems(); i++) {
     cout << xframe->nameOf(i) << endl;
@@ -265,12 +262,10 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   //  t_label->DrawLatexNDC(0.17,0.975,txt);
 
   if (templateVariable == "sieie") {
-    if (etaBin.Contains("EB")) xframeClone->GetXaxis()->SetRangeUser(0.,0.03);
-    if (etaBin.Contains("EE")) xframeClone->GetXaxis()->SetRangeUser(0.,0.08);
+    etaBin.Contains("EB") ? xframeClone->GetXaxis()->SetRangeUser(0.,0.03) : xframeClone->GetXaxis()->SetRangeUser(0.,0.08);
   }
-  else if (templateVariable == "chIso") {
-    if (etaBin.Contains("EB")) xframeClone->GetXaxis()->SetRangeUser(0.,50.);
-    if (etaBin.Contains("EE")) xframeClone->GetXaxis()->SetRangeUser(0.,50.);
+  else { // otherwise "chIso"
+    etaBin.Contains("EB") ? xframeClone->GetXaxis()->SetRangeUser(0.,50.) : xframeClone->GetXaxis()->SetRangeUser(0.,50.);
   }
   xframeClone->GetYaxis()->SetRangeUser(1.e-1,10.0*xframemax);
   xframeClone->GetYaxis()->SetTitle("#gamma Candidates / ( 0.0005 )");
@@ -282,10 +277,10 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   canvas->Print( TString("plots/fakeRatePlot_") + sample + "_" + era + "_" +  etaBin + TString("_pT") + ptBin + postFix + TString(".pdf") );
   
   // change to TH1D just so we can change the name
-  TH1D *hobjdata;
-  TH1D *hobjmodel;
-  TH1D *hobjsignal;
-  TH1D *hobjfake;
+  TH1D *hobjdata = nullptr;
+  TH1D *hobjmodel = nullptr;
+  TH1D *hobjsignal = nullptr;
+  TH1D *hobjfake = nullptr;
   for (int i = 0; i < xframe->numItems(); i++) {
     cout << xframe->nameOf(i) << endl;
     TString objname = xframe->nameOf(i);
