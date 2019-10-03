@@ -29,11 +29,15 @@ int main(int argc, char *argv[])
 
   bool endcap = (region=="endcap");
 
-  std::string kfactor = kfactorString("BB", "R1F1");
-  if(endcap) kfactor = kfactorString("BE", "R1F1");
+  std::string kfactor;
+  if(data_year.compare("2015") == 0 or data_year.compare("2016") == 0 ) {
+    kfactor = endcap ? kfactorString("BE", "R1F1_125GeV_CT10") : kfactorString("BB", "R1F1_125GeV_CT10");
+  }
+  else {
+    kfactor = endcap ? kfactorString("BE", "R1F1") : kfactorString("BB", "R1F1");
+  }
 
   std::string pt_cut("125");
-  if(data_year.compare("2016") == 0) pt_cut = "125";
   std::string minv_cut("Diphoton.Minv > 500");
   std::string kinematic_cuts("Photon1.pt>" + pt_cut + " && Photon2.pt>" + pt_cut + "&&" + minv_cut);
   std::string id_cuts("Photon1.r9_5x5 > 0.8 && Photon2.r9_5x5 > 0.8");
