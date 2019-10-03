@@ -199,7 +199,7 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
   TString dataHistName;
   for(auto isample : m_samples) {
     TString newCut(m_cut.c_str());
-    if(isample.isData) newCut = Form("(%s)*((%s)*(%s))",
+    if(isample.isData) newCut = Form("(%s)*((%s)*(%s)*(Diphoton.Minv < 1000))",
 				     isample.extraWeight().c_str(), m_cut.c_str(), isample.extraCut().c_str());
     else newCut = Form("weightAll*%6.6e*(%s)*((%s)*(%s))",
 		       luminosity[isample.year()], isample.extraWeight().c_str(), m_cut.c_str(), isample.extraCut().c_str());

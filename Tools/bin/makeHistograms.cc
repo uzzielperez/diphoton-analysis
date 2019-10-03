@@ -91,8 +91,12 @@ void allSamples(const std::string &region, const std::string &year, TFile * outp
     if( isample.find(year) == std::string::npos && isample.find("ADD") == std::string::npos ) continue;
     // apply weights for all samples except data
     if( isample.find("data") == std::string::npos ) sampleCut+="*weightAll*" + std::to_string(luminosity[year]);
-    else if (isample.find("data_2015") != std::string::npos || isample.find("data_2016") != std::string::npos) sampleCut += "*(HLT_DoublePhoton60>0 || HLT_ECALHT800>0)";
-    else sampleCut += "*(HLT_DoublePhoton70>0 || HLT_ECALHT800>0)";
+    else if (isample.find("data_2015") != std::string::npos || isample.find("data_2016") != std::string::npos) {
+      sampleCut += "*(HLT_DoublePhoton60>0 || HLT_ECALHT800>0)*(Diphoton.Minv < 1000)";
+    }
+    else {
+      sampleCut += "*(HLT_DoublePhoton70>0 || HLT_ECALHT800>0)*(Diphoton.Minv < 1000)";
+    }
     // apply k-factor to Sherpa GG sample
     bool is2016or2017 = isample.find("2015") != std::string::npos || isample.find("2016") != std::string::npos;
     if( isample.find("gg_R2F2_") != std::string::npos) {
