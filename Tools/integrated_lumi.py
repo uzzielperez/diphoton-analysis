@@ -38,6 +38,21 @@ DATASETS = []
 #DATASETS.append('EGamma__Run2018C-PromptReco-v3')
 
 # new datasets start here
+
+DATASETS.append('processedLumis_DoubleEG__Run2016B-17Jul2018_ver2-v1')
+DATASETS.append('processedLumis_DoubleEG__Run2016C-17Jul2018-v1')
+DATASETS.append('processedLumis_DoubleEG__Run2016D-17Jul2018-v1')
+DATASETS.append('processedLumis_DoubleEG__Run2016E-17Jul2018-v1')
+DATASETS.append('processedLumis_DoubleEG__Run2016F-17Jul2018-v1')
+DATASETS.append('processedLumis_DoubleEG__Run2016G-17Jul2018-v1')
+DATASETS.append('processedLumis_DoubleEG__Run2016H-17Jul2018-v1')
+
+DATASETS.append('processedLumis_DoubleEG__Run2017B-31Mar2018-v1')
+DATASETS.append('processedLumis_DoubleEG__Run2017C-31Mar2018-v1')
+DATASETS.append('processedLumis_DoubleEG__Run2017D-31Mar2018-v1')
+DATASETS.append('processedLumis_DoubleEG__Run2017E-31Mar2018-v1')
+DATASETS.append('processedLumis_DoubleEG__Run2017F-31Mar2018-v1')
+
 DATASETS.append('EGamma__Run2018A-17Sep2018-v2')
 DATASETS.append('EGamma__Run2018B-17Sep2018-v1')
 DATASETS.append('EGamma__Run2018C-17Sep2018-v1')
