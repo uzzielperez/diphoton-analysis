@@ -51,7 +51,7 @@ if "Run2016" in outName:
         isReMINIAOD = True
     elif "17Jul2018" in outName:
         isReMINIAOD = True
-        globalTag = '94X_dataRun2_v11'
+        globalTag = '94X_dataRun2_v10'
     else:
         globalTag = '80X_dataRun2_2016SeptRepro_v4'
 if "Run2017" in outName:
@@ -67,7 +67,7 @@ if "Run2018" in outName:
     if "17Sep2018" in outName:
         globalTag = '102X_dataRun2_v11'
     else:
-        globalTag = '102X_dataRun2_Prompt_v11'
+        globalTag = '102X_dataRun2_Prompt_v14'
 # override options for MC
 if isMC:
     version = os.getenv("CMSSW_VERSION")
