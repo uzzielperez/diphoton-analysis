@@ -1,16 +1,11 @@
+from os.path import basename
 # runtime options
 
-from FWCore.ParameterSet.VarParsing import VarParsing
+diphoton_analysis = __import__("diphoton-analysis.CommonClasses.submit_utils")
 
+from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing ('python')
 
-options.register('globalTag',
-                 #'76X_mcRun2_asymptotic_v12',
-                 '80X_mcRun2_asymptotic_2016_TrancheIV_v8',
-                 VarParsing.multiplicity.singleton,
-                 VarParsing.varType.string,
-                 "Global tag to use when running"
-                 )
 options.register('nEventsSample',
                  # 999011, # number of events in GGJets_M-500To1000_Pt-50_13TeV-sherpa 2015 sample
                  999921,
@@ -29,7 +24,16 @@ options.setDefault('maxEvents', 1000)
 
 options.parseArguments()
 
-print "Output file name: ", options.outputFileName
+outName = options.outputFile
+print("Default output name: " + outName)
+if "output" in outName: # if an input file name is specified, event weights can be determined
+    outName = "out_" + basename(options.inputFiles[0])
+    print("Output root file name: " + outName)
+else:
+    options.inputFiles = "file:GGJets_M-1000To2000_Pt-50_13TeV-sherpa.root"
+
+
+print "Output file name: ", outName
 print "Number of events in sample: ", options.nEventsSample
 
 import FWCore.ParameterSet.Config as cms
@@ -64,7 +68,7 @@ process.source = cms.Source(
 
 # for global tag
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
-process.GlobalTag.globaltag = options.globalTag
+process.GlobalTag.globaltag = diphoton_analysis.CommonClasses.submit_utils.get_global_tag(outName)
 
 # geometry for saturation
 process.load("Configuration.StandardSequences.GeometryDB_cff")
@@ -72,7 +76,7 @@ process.load("Configuration.StandardSequences.GeometryDB_cff")
 # for output file
 process.TFileService = cms.Service(
     "TFileService",
-    fileName = cms.string(options.outputFileName)
+    fileName = cms.string(outName)
     )
 
 # Setup VID for EGM ID
@@ -103,7 +107,7 @@ process.diphoton = cms.EDAnalyzer(
     # genParticle tag
     genParticlesMiniAOD = cms.InputTag("prunedGenParticles"),
     # ak4 jets
-    jetsMiniAOD = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
+    jetsMiniAOD = cms.InputTag("updatedPatJetsUpdatedJEC"),
     jetPtThreshold = cms.double(30.),
     jetEtaThreshold = cms.double(2.5),
     # rho tag
@@ -117,7 +121,7 @@ process.diphoton = cms.EDAnalyzer(
     phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
     phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
     # out file name
-    outputFile = cms.string(options.outputFileName),
+    outputFile = cms.string(outName),
     # number of events in the sample (for calculation of event weights)
     nEventsSample = cms.uint32(options.nEventsSample),
     # gen event info
@@ -127,4 +131,4 @@ process.diphoton = cms.EDAnalyzer(
 # analyzer to print cross section
 process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
 
-process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton * process.xsec)
+process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.diphoton * process.xsec)
