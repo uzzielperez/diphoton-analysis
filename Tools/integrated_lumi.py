@@ -58,6 +58,11 @@ DATASETS.append('EGamma__Run2018B-17Sep2018-v1')
 DATASETS.append('EGamma__Run2018C-17Sep2018-v1')
 DATASETS.append('EGamma__Run2018D-22Jan2019-v2')
 
+# ultra-legacy reprocessing
+#DATASETS.append('Run2017C-09Aug2019_UL2017-v1')
+#DATASETS.append('Run2017D-09Aug2019_UL2017-v1')
+#DATASETS.append('Run2017E-09Aug2019_UL2017-v1')
+#DATASETS.append('Run2017F-09Aug2019_UL2017-v1')
 
 for dataset in DATASETS:
     json = "json/processedLumis_" + dataset + ".json"
