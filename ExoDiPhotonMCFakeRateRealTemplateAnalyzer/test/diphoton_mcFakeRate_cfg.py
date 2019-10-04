@@ -13,12 +13,6 @@ options.register('nEventsSample',
                  VarParsing.varType.int,
                  "Total number of events in dataset for event weight calculation."
                  )
-options.register('outputFileName',
-                 "out_default_GGJets_M-500To1000_Pt-50_13TeV-sherpa.root",
-                 VarParsing.multiplicity.singleton,
-                 VarParsing.varType.string,
-                 "Output filename."
-                 )
 
 options.setDefault('maxEvents', 1000)
 

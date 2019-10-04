@@ -34,15 +34,16 @@ config.General.transferLogs = True
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'diphoton-analysis/ExoDiPhotonMCFakeRateRealTemplateAnalyzer/test/diphoton_mcFakeRate_cfg.py'
-config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFileName=out_' + datasetID + '.root']
+config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_' + datasetID + '.root']
 
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
 config.Data.publication = False
-cmssw_base = os.environ['CMSSW_BASE']
-commit_hash = subprocess.check_output(['git', '--git-dir=' + cmssw_base + '/src/diphoton-analysis/.git',  'rev-parse', '--short', 'HEAD']).replace('\n', '')
-config.Data.outLFNDirBase = '/store/user/' + user + '/diphoton_fake/' + commit_hash
+if user == "cawest":
+    cmssw_base = os.environ['CMSSW_BASE']
+    commit_hash = subprocess.check_output(['git', '--git-dir=' + cmssw_base + '/src/diphoton-analysis/.git',  'rev-parse', '--short', 'HEAD']).replace('\n', '')
+    config.Data.outLFNDirBase = '/store/user/' + user + '/diphoton_fake/' + commit_hash
 
 if "Run2016" in taskname:
     config.Data.splitting = 'LumiBased'
