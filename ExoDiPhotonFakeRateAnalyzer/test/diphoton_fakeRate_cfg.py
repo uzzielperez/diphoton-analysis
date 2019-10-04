@@ -3,6 +3,7 @@
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 from os.path import basename
+import os
 
 options = VarParsing ('python')
 options.parseArguments()
@@ -17,6 +18,7 @@ else:
 
 reapplyJEC = False
 jetCollection = "slimmedJets"
+JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
 if reapplyJEC:
     jetCollection = "updatedPatJetsUpdatedJEC"
 if "Run2016" in outName:
@@ -28,6 +30,37 @@ elif "Run2018" in outName:
         globalTag = "102X_dataRun2_v11"
     else:
         globalTag = "102X_dataRun2_Prompt_v14"
+isMC = True
+# data always has "Run201" in its filename
+if "Run201" in outName:
+    isMC = False
+# override options for MC
+if isMC:
+    version = os.getenv("CMSSW_VERSION")
+    major_version = version.split('_')[1] # version number formattted as CMSSW_X_Y_Z
+    if major_version == "10":
+        globalTag = '102X_upgrade2018_realistic_v19'
+    elif major_version == "9":
+        if "Summer16MiniAODv3" in outName:
+            globalTag = '94X_mcRun2_asymptotic_v3'
+        if "RunIIFall17MiniAODv2" in outName:
+            globalTag = '94X_mc2017_realistic_v17'
+    elif major_version == "8":
+        if "Spring16" in outName:
+            globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
+        if "Summer16" in outName:
+            #globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
+            # the previous tag should only be used when to process
+            # samples intended to match data previous to the
+            # 03Feb2017 re-miniAOD
+            globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
+    elif major_version == "7":
+        globalTag = '76X_mcRun2_asymptotic_v12'
+    else:
+        print "Could not determine appropriate MC global tag from filename"
+        sys.exit()
+    JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
+
 process = cms.Process("ExoDiPhoton")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -77,7 +110,7 @@ updateJetCollection(
    process,
    jetSource = cms.InputTag('slimmedJets'),
    labelName = 'UpdatedJEC',
-   jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')  # Do not forget 'L2L3Residual' on data!
+   jetCorrections = ('AK4PFchs', JEC, 'None')  # Do not forget 'L2L3Residual' on data!
 )
 
 # analyzer and inputs
