@@ -62,7 +62,9 @@ process.source = cms.Source(
 
 # for global tag
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
-process.GlobalTag.globaltag = diphoton_analysis.CommonClasses.submit_utils.get_global_tag(outName)
+globalTag = diphoton_analysis.CommonClasses.submit_utils.get_global_tag(outName)
+process.GlobalTag.globaltag = globalTag
+print("Using global tag: " + globalTag)
 
 # geometry for saturation
 process.load("Configuration.StandardSequences.GeometryDB_cff")
