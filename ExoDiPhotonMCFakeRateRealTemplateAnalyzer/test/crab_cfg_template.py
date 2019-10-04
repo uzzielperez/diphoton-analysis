@@ -1,8 +1,12 @@
 ## Template file for CRAB submission. The script generate_crab_config.py 
 ## replaces the following two lines with the appropriate values
 ## Do not edit manually!
+import os
+import subprocess
+
 dataset = 'DATASETNAME'
 nevents = NEVENTS
+user = os.environ['USER']
 
 # CRAB3 task names can no longer be greater than 100 characters; need to shorten task name
 taskname = dataset[1:].replace('/','__').replace('RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2','MiniAODv2').replace('TuneCUETP8M1_13TeV-madgraphMLM-pythia8','13TeV-MG-PY8')
@@ -36,6 +40,10 @@ config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
 config.Data.publication = False
+cmssw_base = os.environ['CMSSW_BASE']
+commit_hash = subprocess.check_output(['git', '--git-dir=' + cmssw_base + '/src/diphoton-analysis/.git',  'rev-parse', '--short', 'HEAD']).replace('\n', '')
+config.Data.outLFNDirBase = '/store/user/' + user + '/diphoton_fake/' + commit_hash
+
 if "Run2016" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100
