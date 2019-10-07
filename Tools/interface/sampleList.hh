@@ -266,12 +266,12 @@ void init(bool includeUnskimmed = false)
 
   TChain *chData2016 = new TChain(treeType);
   chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/6d756bd/DoubleEG/crab_DoubleEG__Run2016B-17Jul2018_ver2-v1__MINIAOD_resub/191003_170307/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/6d756bd/DoubleEG/crab_DoubleEG__Run2016C-17Jul2018-v1__MINIAOD_resub/191003_170319/0000/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016D-17Jul2018-v1__MINIAOD/190921_175546/0000/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/6d756bd/DoubleEG/crab_DoubleEG__Run2016E-17Jul2018-v1__MINIAOD_resub/191003_170342/0000/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/6d756bd/DoubleEG/crab_DoubleEG__Run2016F-17Jul2018-v1__MINIAOD_resub/191003_170354/0000/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/6d756bd/DoubleEG/crab_DoubleEG__Run2016G-17Jul2018-v1__MINIAOD_resub/191003_170407/0000/*.root");
-  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/6d756bd/DoubleEG/crab_DoubleEG__Run2016H-17Jul2018-v1__MINIAOD_resub/191003_170422/0000/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/6d756bd/DoubleEG/crab_DoubleEG__Run2016C-17Jul2018-v1__MINIAOD_resub/191003_170319/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/ced6fc8/DoubleEG/crab_DoubleEG__Run2016D-17Jul2018-v1__MINIAOD/190921_175546/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/6d756bd/DoubleEG/crab_DoubleEG__Run2016E-17Jul2018-v1__MINIAOD_resub/191003_170342/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/6d756bd/DoubleEG/crab_DoubleEG__Run2016F-17Jul2018-v1__MINIAOD_resub/191003_170354/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/6d756bd/DoubleEG/crab_DoubleEG__Run2016G-17Jul2018-v1__MINIAOD_resub/191003_170407/*.root");
+  chData2016->Add(baseDirectory + "/store/user/cawest/diphoton/6d756bd/DoubleEG/crab_DoubleEG__Run2016H-17Jul2018-v1__MINIAOD_resub/191003_170422/*.root");
 
   TChain *chData2017_2018 = new TChain(treeType);
   chData2017_2018->Add(chData2017);
