@@ -16,3 +16,8 @@ for dataset in datasets:
             pu = str(bin[0]) + " " + str(bin[1])
             arguments = dataset + " " + variable + " " + str(year) +  " " + pu
             print("fakeRateCalculation.exe " + arguments)
+
+print("compare_pv.exe");
+for year in years:
+    print("compare_pv.exe " + str(year))
+    print("compare_pv_bin.exe " + str(year))

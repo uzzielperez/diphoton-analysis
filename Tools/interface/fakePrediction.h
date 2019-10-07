@@ -26,11 +26,12 @@ class fakePrediction : public ntupleAnalyzerBase {
   void Loop(int year, const std::string&);
   void setIsMC(bool mc) { isMC = mc; };
   bool isMC;
-  void fakeRateInit(int year, std::string fakeRateType);
+  void fakeRateInit(std::string fakeRateType);
   double getFakeRate(double pt, int region);
  private:
   std::map<std::string, TGraphAsymmErrors*> m_fakeRates;
   std::string m_fakeRateType;
+  int m_year;
 };
 
 #endif

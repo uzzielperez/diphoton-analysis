@@ -57,6 +57,7 @@ void compare_pv(int year)
   colors["28-32"] = kRed;
   colors["33-37"] = kCyan;
   colors["38-200"] = kGreen;
+  colors["28-200"] = kRed;
   std::map<std::string, std::string> isoLabel;
   isoLabel["chIso5To10"] = "5 < Iso_{Ch} < 10 GeV";
   std::map<std::string, std::string> datasetLabel;
