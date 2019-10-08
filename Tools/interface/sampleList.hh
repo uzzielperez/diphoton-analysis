@@ -322,13 +322,13 @@ void init(bool includeUnskimmed = false)
   TChain *chGG_aMC_2015 = new TChain(treeType);
   chGG_aMC_2015->Add(filestring("DiPhotonJets_MGG-80toInf_2015"));
   TChain *chGG_2016 = new TChain(treeType);
-  chGG_2016->Add(filestring("GGJets_M-60To200_Pt-50_13TeV-sherpa"));
-  chGG_2016->Add(filestring("GGJets_M-200To500_Pt-50_13TeV-sherpa"));
-  chGG_2016->Add(filestring("GGJets_M-500To1000_Pt-50_13TeV-sherpa"));
-  chGG_2016->Add(filestring("GGJets_M-1000To2000_Pt-50_13TeV-sherpa"));
-  chGG_2016->Add(filestring("GGJets_M-2000To4000_Pt-50_13TeV-sherpa"));
-  chGG_2016->Add(filestring("GGJets_M-4000To6000_Pt-50_13TeV-sherpa"));
-  chGG_2016->Add(filestring("GGJets_M-6000To8000_Pt-50_13TeV-sherpa"));
+  chGG_2016->Add(baseDirectory + "/store/user/cawest/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_/171130_184611/0000/*.root");
+  chGG_2016->Add(baseDirectory + "/store/user/cawest/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016/171130_184632/0000/*.root");
+  chGG_2016->Add(baseDirectory + "/store/user/cawest/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_201/171130_184657/0000/*.root");
+  chGG_2016->Add(baseDirectory + "/store/user/cawest/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_20/171130_184716/0000/*.root");
+  chGG_2016->Add(baseDirectory + "/store/user/cawest/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/crab_GGJets_M-2000To4000_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_20/171130_184733/0000/*.root");
+  chGG_2016->Add(baseDirectory + "/store/user/cawest/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/crab_GGJets_M-4000To6000_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_20/171130_184751/0000/*.root");
+  chGG_2016->Add(baseDirectory + "/store/user/cawest/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_20/171130_184811/0000/*.root");
 
   TChain *chGG_fake_2016 = new TChain(treeType);
   TString old_directory("root://cmseos.fnal.gov//store/user/abuccill/diphoton-analysis/fake_rate_real_templates");
@@ -507,13 +507,14 @@ void init(bool includeUnskimmed = false)
   chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/ff27678/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/190920_195304/0000/*.root");
 
   TChain *chGGGen_2016 = new TChain("diphoton/fSherpaGenTree");
-  chGGGen_2016->Add(filestring("GGJets_M-60To200_Pt-50_13TeV-sherpa"));
-  chGGGen_2016->Add(filestring("GGJets_M-200To500_Pt-50_13TeV-sherpa"));
-  chGGGen_2016->Add(filestring("GGJets_M-500To1000_Pt-50_13TeV-sherpa"));
-  chGGGen_2016->Add(filestring("GGJets_M-1000To2000_Pt-50_13TeV-sherpa"));
-  chGGGen_2016->Add(filestring("GGJets_M-2000To4000_Pt-50_13TeV-sherpa"));
-  chGGGen_2016->Add(filestring("GGJets_M-4000To6000_Pt-50_13TeV-sherpa"));
-  chGGGen_2016->Add(filestring("GGJets_M-6000To8000_Pt-50_13TeV-sherpa"));
+  chGGGen_2016->Add(baseDirectory + "/store/user/cawest/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_20/171130_184716/0000/*.root");
+  chGGGen_2016->Add(baseDirectory + "/store/user/cawest/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/crab_GGJets_M-2000To4000_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_20/171130_184733/0000/*.root");
+  chGGGen_2016->Add(baseDirectory + "/store/user/cawest/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016/171130_184632/0000/*.root");
+  chGGGen_2016->Add(baseDirectory + "/store/user/cawest/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/crab_GGJets_M-4000To6000_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_20/171130_184751/0000/*.root");
+  chGGGen_2016->Add(baseDirectory + "/store/user/cawest/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_201/171130_184657/0000/*.root");
+  chGGGen_2016->Add(baseDirectory + "/store/user/cawest/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_20/171130_184811/0000/*.root");
+  chGGGen_2016->Add(baseDirectory + "/store/user/cawest/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_/171130_184611/0000/*.root");
+
   // These samples are defined in the same way as the SM background in the signal samples.
   // They are needed to take into account interference of the signal with SM backgrounds.
   TChain *chGG70 = new TChain(treeType);
