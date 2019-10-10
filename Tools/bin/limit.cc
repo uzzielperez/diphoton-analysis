@@ -91,15 +91,16 @@ void oneLimit(int ned, int kk, const std::string &directory)
   kkconvention[4] = "Hewett-";
 
   std::vector<float> stringScales = {3000, 3500, 4000, 4500, 5000, 5500, 6000,
-				     7000, 8000, 9000, 10000, 11000};
+				     7000, 8000, 9000, 10000};
   std::vector<float> minus2Sigma, minus1Sigma, mean, plus1Sigma, plus2Sigma;
+  std::vector<float> minus2SigmaError, minus1SigmaError, plus1SigmaError, plus2SigmaError;
   std::vector<float> observed;
   std::vector<float> dummy;
 
   TFile *f;
-  for(unsigned int i=0; i<stringScales.size(); i++) {
-    if(ned == 2 && kk == 4 && stringScales.at(i) > 6000) continue;
-    TString filename(Form("%s/higgsCombineADDGravToGG_MS-%d_NED-%d_KK-%d.AsymptoticLimits.mH120.root", directory.c_str(), static_cast<int>(stringScales.at(i)), ned, kk));
+  for(const auto& stringScale : stringScales) {
+    if(ned == 2 && kk == 4 && stringScale > 6000) continue;
+    TString filename(Form("%s/higgsCombineADDGravToGG_NED-%d_KK-%d.AsymptoticLimits.mH%d.root", directory.c_str(), ned, kk, static_cast<int>(stringScale)));
     f = TFile::Open(filename);
     if(!f->IsOpen()) {
       std::cout << "Could not open file " << filename << std::endl;
@@ -130,20 +131,28 @@ void oneLimit(int ned, int kk, const std::string &directory)
 
     double xSec;
     xSec=1;
-    minus2Sigma.push_back(abs(minus2SigmaExpected-meanExpected)*xSec);
-    minus1Sigma.push_back(abs(minus1SigmaExpected-meanExpected)*xSec);
     mean.push_back(meanExpected*xSec);
-    plus1Sigma.push_back(abs(plus1SigmaExpected-meanExpected)*xSec);
-    plus2Sigma.push_back(abs(plus2SigmaExpected-meanExpected)*xSec);
+    minus2SigmaError.push_back(abs(minus2SigmaExpected-meanExpected)*xSec);
+    minus1SigmaError.push_back(abs(minus1SigmaExpected-meanExpected)*xSec);
+    plus1SigmaError.push_back(abs(plus1SigmaExpected-meanExpected)*xSec);
+    plus2SigmaError.push_back(abs(plus2SigmaExpected-meanExpected)*xSec);
+    minus2Sigma.push_back(minus2SigmaExpected);
+    minus1Sigma.push_back(minus1SigmaExpected);
+    plus1Sigma.push_back(plus1SigmaExpected);
+    plus2Sigma.push_back(plus2SigmaExpected);
     observed.push_back(obs*xSec);
     dummy.push_back(0);
+
+    std::cout << "n_{ED} = " << ned << " KK = " << kk << " " << stringScale << std::endl;
+    std::cout << "observed: " << observed.back() << " + " << plus1SigmaError.back() << " - " << minus1SigmaError.back() << "\n" << std::endl;
+
   }
 
   setStyle();
   TCanvas *c = new TCanvas;
   if(useLogy) c->SetLogy();
 
-  TGraph *gr = new TGraph(mean.size(), &stringScales.at(0), &mean.at(0));
+  TGraph *gr = new TGraph(mean.size(), stringScales.data(), mean.data());
   gr->SetTitle(";M_{S} (GeV);Signal strength");
   gr->SetMarkerStyle(kFullCircle);
   gr->GetYaxis()->SetTitleOffset(1.4);
@@ -158,19 +167,26 @@ void oneLimit(int ned, int kk, const std::string &directory)
     gr->SetMaximum(3);
   }
   // expected limit +/- 1 sigma
-  TGraphAsymmErrors *grMean = new TGraphAsymmErrors(mean.size(), &stringScales.at(0), &mean.at(0), 
-						    &dummy.at(0), &dummy.at(0),
-						    &minus1Sigma.at(0), &plus1Sigma.at(0));
+  TGraphAsymmErrors *grMean = new TGraphAsymmErrors(mean.size(), stringScales.data(), mean.data(),
+						    dummy.data(), dummy.data(),
+						    minus1SigmaError.data(), plus1SigmaError.data());
   grMean->SetLineColor(kBlack);
   grMean->SetFillColor(kGreen+1);
 
+  TGraphAsymmErrors *grPlus1Sigma = new TGraphAsymmErrors(mean.size(), stringScales.data(), plus1Sigma.data(),
+							  dummy.data(), dummy.data(), dummy.data(), dummy.data());
+
+  TGraphAsymmErrors *grMinus1Sigma = new TGraphAsymmErrors(mean.size(), stringScales.data(), minus1Sigma.data(),
+							  dummy.data(), dummy.data(), dummy.data(), dummy.data());
+
+
   // expected limit +/- 2 sigma
-  TGraphAsymmErrors *grMean2Sigma = new TGraphAsymmErrors(mean.size(), &stringScales.at(0), &mean.at(0), 
-							  &dummy.at(0), &dummy.at(0),
-							  &minus2Sigma.at(0), &plus2Sigma.at(0));
+  TGraphAsymmErrors *grMean2Sigma = new TGraphAsymmErrors(mean.size(), stringScales.data(), mean.data(),
+							  dummy.data(), dummy.data(),
+							  minus2SigmaError.data(), plus2SigmaError.data());
   grMean2Sigma->SetFillColor(kYellow);
 
-  TGraph *grObserved = new TGraph(observed.size(), &stringScales.at(0), &observed.at(0));
+  TGraph *grObserved = new TGraph(observed.size(), stringScales.data(), observed.data());
   grObserved->SetLineWidth(2);
   grObserved->SetMarkerSize(2);
 
@@ -178,8 +194,11 @@ void oneLimit(int ned, int kk, const std::string &directory)
   gr->Draw("AL");
   grMean2Sigma->Draw("L3");
   grMean->Draw("L3");
-  std::cout << "Expected limit (mu=1): " << intersection(gr, 1) << std::endl;
-  std::cout << "Expected limit (mu=2): " << intersection(gr, 2) << std::endl;
+  std::cout << "Expected limit (mu=1): " << intersection(grMean, 1)
+	    << " + "
+	    << intersection(grPlus1Sigma, 1) - intersection(grMean, 1)
+	    << " - "
+	    <<  intersection(grMean, 1) - intersection(grMinus1Sigma, 1) << std::endl;
 
   grMean->Draw("LX,same");
   if(drawObservedLimit) grObserved->Draw("LP");

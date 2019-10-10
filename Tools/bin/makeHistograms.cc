@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 void allSamples(const std::string &region, const std::string &year, TFile * output)
 {
 
-  int nBins = 240;
+  int nBins = 120;
   double xMin = 0.0;
   double xMax = 6000.;
 
@@ -90,7 +90,16 @@ void allSamples(const std::string &region, const std::string &year, TFile * outp
     if( isample.find("gj") != std::string::npos ) continue;
     if( isample.find(year) == std::string::npos && isample.find("ADD") == std::string::npos ) continue;
     // apply weights for all samples except data
-    if( isample.find("data") == std::string::npos ) sampleCut+="*weightAll*" + std::to_string(luminosity[year]);
+    bool is2015or2016 = isample.find("2015") != std::string::npos || isample.find("2016") != std::string::npos;
+    if( isample.find("data") == std::string::npos ) {
+      sampleCut+="*weightAll*" + std::to_string(luminosity[year]);
+      // need to increase selection for ADD cuts to avoid negative weights
+      // from background subtraction
+      if( isample.find("ADD") != std::string::npos
+	  or isample.find("gg70") != std::string::npos ) {
+	sampleCut += "*(Diphoton.Minv > 600)";
+      }
+    }
     else if (isample.find("data_2015") != std::string::npos || isample.find("data_2016") != std::string::npos) {
       sampleCut += "*(HLT_DoublePhoton60>0 || HLT_ECALHT800>0)*(Diphoton.Minv < 1000)";
     }
@@ -98,17 +107,16 @@ void allSamples(const std::string &region, const std::string &year, TFile * outp
       sampleCut += "*(HLT_DoublePhoton70>0 || HLT_ECALHT800>0)*(Diphoton.Minv < 1000)";
     }
     // apply k-factor to Sherpa GG sample
-    bool is2016or2017 = isample.find("2015") != std::string::npos || isample.find("2016") != std::string::npos;
     if( isample.find("gg_R2F2_") != std::string::npos) {
-      if( is2016or2017 ) sampleCut += "*" + kfactorString(region, "R2F2_125GeV_CT10");
+      if( is2015or2016 ) sampleCut += "*" + kfactorString(region, "R2F2_125GeV_CT10");
       else sampleCut += "*" + kfactorString(region, "R2F2");
     }
     else if( isample.find("gg_R0p5F0p5_") != std::string::npos) {
-      if( is2016or2017 ) sampleCut += "*" + kfactorString(region, "R0p5F0p5_125GeV_CT10");
+      if( is2015or2016 ) sampleCut += "*" + kfactorString(region, "R0p5F0p5_125GeV_CT10");
       else sampleCut += "*" + kfactorString(region, "R0p5F0p5");
     }
     else if( isample.find("gg_") != std::string::npos) {
-      if( is2016or2017 ) sampleCut += "*" + kfactorString(region, "R1F1_125GeV_CT10");
+      if( is2015or2016 ) sampleCut += "*" + kfactorString(region, "R1F1_125GeV_CT10");
       else sampleCut += "*" + kfactorString(region, "R1F1");
     }
     std::cout << "Making histograms for sample " << isample << " with cut\n" << sampleCut << std::endl;
