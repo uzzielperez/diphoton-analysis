@@ -112,15 +112,15 @@ void allSamples(const std::string &region, const std::string &year, TFile * outp
     // apply k-factor to Sherpa GG sample
     if( isample.find("gg_R2F2_") != std::string::npos) {
       if( is2015or2016 ) sampleCut += "*" + kfactorString(region, "R2F2_125GeV_CT10");
-      else sampleCut += "*" + kfactorString(region, "R2F2");
+      else sampleCut += "*" + kfactorString(region, "R2F2_125GeV_NNPDF");
     }
     else if( isample.find("gg_R0p5F0p5_") != std::string::npos) {
       if( is2015or2016 ) sampleCut += "*" + kfactorString(region, "R0p5F0p5_125GeV_CT10");
-      else sampleCut += "*" + kfactorString(region, "R0p5F0p5");
+      else sampleCut += "*" + kfactorString(region, "R0p5F0p5_125GeV_NNPDF");
     }
     else if( isample.find("gg_") != std::string::npos) {
       if( is2015or2016 ) sampleCut += "*" + kfactorString(region, "R1F1_125GeV_CT10");
-      else sampleCut += "*" + kfactorString(region, "R1F1");
+      else sampleCut += "*" + kfactorString(region, "R1F1_125GeV_NNPDF");
     }
     std::cout << "Making histograms for sample " << isample << " with cut\n" << sampleCut << std::endl;
     std::string baseName(getSampleBase(isample, year));

@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     kfactor = endcap ? kfactorString("BE", "R1F1_125GeV_CT10") : kfactorString("BB", "R1F1_125GeV_CT10");
   }
   else {
-    kfactor = endcap ? kfactorString("BE", "R1F1") : kfactorString("BB", "R1F1");
+    kfactor = endcap ? kfactorString("BE", "R1F1_125GeV_NNPDF") : kfactorString("BB", "R1F1_125GeV_NNPDF");
   }
 
   std::string pt_cut("125");

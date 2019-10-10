@@ -23,9 +23,6 @@ int main(int argc, char *argv[])
 
   bool endcap = (region=="endcap");
 
-  std::string kfactor = kfactorString("BB", "R1F1");
-  if(endcap) kfactor = kfactorString("BE", "R1F1");
-
   std::string pt_cut("125");
   std::string minv_cut("Diphoton.Minv > 500");
   std::string kinematic_cuts("Photon1.pt>" + pt_cut + " && Photon2.pt>" + pt_cut + "&&" + minv_cut);
