@@ -35,6 +35,8 @@
  */
 std::pair<double,double> rooFitFakeRateProducer(TString sample, TString templateVariable, TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin, TString era, int pvCutLow, int pvCutHigh)
 {
+  bool no_template_pv_binning = true;
+
   std::map<TString, TString> cmssw_version;
   cmssw_version["2016"] = "76X";
   cmssw_version["2017"] = "94X";
@@ -75,6 +77,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   // for numerator, fake templates, and denominator (choose data or mc)
   TString basefilename("root://cmseos.fnal.gov//store/user/cawest/fake_rate/");
   TString data_filename = "";
+  TString data_filename_templates = "";
   TString pvCut = "";
   //  if (sample == "data")      data_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
   //  if (sample == "data")      data_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_UNKNOWN_newDenomDef.root";
@@ -85,13 +88,22 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
     if(pvCutLow!=0 || pvCutHigh!=2000) pvCut = Form("_nPV%i-%i", pvCutLow, pvCutHigh);
     TFile outfile("fakeRatePlots_" + sample + "_" + era + pvCut + ".root","recreate");
     data_filename = basefilename +  sample + "_fakerate_" + era + matching + pvCut + "_newDenomDef.root";
+    data_filename_templates = basefilename +  sample + "_fakerate_" + era + matching + "_nPV0-200_newDenomDef.root";
   }
   if (sample == "mc")        data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_all_samples_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "mc_QCD")    data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "mc_GJets")  data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "mc_GGJets") data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   TFile *histojetfile = TFile::Open(data_filename);
-  TFile *historealmcfile = TFile::Open(basefilename + "/diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + pvCut + "_MiniAOD_histograms" + extra + ".root");
+  TFile *histojetfile_templates;
+  if(no_template_pv_binning) histojetfile_templates = TFile::Open(data_filename_templates);
+  else histojetfile_templates = TFile::Open(data_filename);
+  TString mc_filename(basefilename + "/diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + pvCut + "_MiniAOD_histograms" + extra + ".root");
+  TFile *historealmcfile = TFile::Open(mc_filename);
+  TString mc_filename_templates(basefilename + "/diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + "_nPV0-200_MiniAOD_histograms" + extra + ".root");
+  TFile *historealmcfile_templates;
+  if(no_template_pv_binning) historealmcfile_templates = TFile::Open(mc_filename_templates);
+  else historealmcfile = TFile::Open(mc_filename);
   
   double sidebandLow = sideband.first;
   double sidebandHigh = sideband.second;
@@ -105,13 +117,13 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   TString histName( templateVariable + etaBin + TString("_faketemplate_pt") + ptBin + postFix );
   std::cout << "Getting " << histName << std::endl;
   histojetfile->Print();
-  TH1D *hfakeTemplate = (TH1D*) histojetfile->    Get(histName);
+  TH1D *hfakeTemplate = (TH1D*) histojetfile_templates->Get(histName);
   hfakeTemplate->Print();
-  TH1D *hrealTemplate = (TH1D*) historealmcfile-> Get( templateVariable + etaBin + TString("_realtemplate_pt") + ptBin );
+  TH1D *hrealTemplate = (TH1D*) historealmcfile_templates->Get( templateVariable + etaBin + TString("_realtemplate_pt") + ptBin );
   hrealTemplate->Print();
-  TH1D *hData         = (TH1D*) histojetfile->    Get( templateVariable + etaBin + TString("_numerator_pt") + ptBin);
+  TH1D *hData         = (TH1D*) histojetfile->Get( templateVariable + etaBin + TString("_numerator_pt") + ptBin);
   hData->Print();
-  TH1D *hdenom        = (TH1D*) histojetfile->    Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );
+  TH1D *hdenom        = (TH1D*) histojetfile->Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );
   hdenom->Print();
 
   // avoiding 0 entries in the histograms
