@@ -337,9 +337,9 @@ std::string getDiphotonYieldVariations(const std::string& region, const std::str
     TH1D* diphoton = static_cast<TH1D*>(input->Get(Form("%s/gg", region.c_str())));
     TH1D* diphotonStatUp = static_cast<TH1D*>(diphoton->Clone("diphotonStatUp"));
     TH1D* diphotonStatDown = static_cast<TH1D*>(diphoton->Clone("diphotonStatDown"));
-    TF1 *kfactorFunction = kfactor(region, "R1F1");
+    TF1 *kfactorFunction = kfactor(region, "R1F1_125GeV_NNPDF");
     TString fitFunc("pol3");
-    TString filename="data/kfactor_" + region + "_R1F1.root";
+    TString filename="data/kfactor_" + region + "_R1F1_125GeV_NNPDF.root";
     TFile *file = TFile::Open(filename);
     TFitResult* fitResult = static_cast<TFitResult*>(file->Get(Form("TFitResult-id1-%s",fitFunc.Data())));
 
