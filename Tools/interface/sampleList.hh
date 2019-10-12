@@ -36,7 +36,7 @@ std::map<std::string, std::string> prettyName;
 
 TString filestring(TString sample);
 void init(bool includeUnskimmmed); // initializes samples; can skip long initialization of unskimmed samples
-void initADD(); // initializes ADD samples; performed by a loop rather than being listed explicitly
+void initADD(const TString & baseDirectory); // initializes ADD samples; performed by a loop rather than being listed explicitly
 void listSamples(); // list the available samples
 
 TString filestring(TString sample)
@@ -518,12 +518,13 @@ void init(bool includeUnskimmed = false)
   // These samples are defined in the same way as the SM background in the signal samples.
   // They are needed to take into account interference of the signal with SM backgrounds.
   TChain *chGG70 = new TChain(treeType);
-  chGG70->Add(filestring("GG_M-200To500_Pt-70_13TeV-sherpa"));
-  chGG70->Add(filestring("GG_M-500To1000_Pt-70_13TeV-sherpa"));
-  chGG70->Add(filestring("GG_M-1000To2000_Pt-70_13TeV-sherpa"));
-  chGG70->Add(filestring("GG_M-2000To4000_Pt-70_13TeV-sherpa"));
-  chGG70->Add(filestring("GG_M-4000To8000_Pt-70_13TeV-sherpa"));
-  chGG70->Add(filestring("GG_M-8000To13000_Pt-70_13TeV-sherpa"));
+  chGG70->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/GG_M-200To500_Pt-70_13TeV-sherpa/crab_GG_M-200To500_Pt-70_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_015949/0000/*.root");
+  chGG70->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/GG_M-500To1000_Pt-70_13TeV-sherpa/crab_GG_M-500To1000_Pt-70_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020043/0000/*.root");
+  chGG70->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/GG_M-1000To2000_Pt-70_13TeV-sherpa/crab_GG_M-1000To2000_Pt-70_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_015936/0000/*.root");
+  // 94X version of this sample doesn't exist
+  chGG70->Add(baseDirectory + "/store/user/cawest/GG_M-2000To4000_Pt-70_13TeV-sherpa/crab_GG_M-2000To4000_Pt-70_13TeV-sherpa__80XMiniAODv2__MINIAODSIM/181106_183756/0000/*.root");
+  chGG70->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/GG_M-4000To8000_Pt-70_13TeV-sherpa/crab_GG_M-4000To8000_Pt-70_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020027/0000/*.root");
+  chGG70->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/GG_M-8000To13000_Pt-70_13TeV-sherpa/crab_GG_M-8000To13000_Pt-70_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020100/0000/*.root");
 
   std::vector<std::string> sampleNames = {"data", "data_2015", "data_2016", "data_2017", "data_2018", "data_2018_newjson", "data_2017_2018", "gg", "gj", "jj", "vg", "w", "dy", "ttg", "gg70", "gg_2016", "gj_2016"};
   // std::vector<std::string> sampleNames = {"data_2018_newjson", "data_2017_2018",  "gg70"};
@@ -593,7 +594,7 @@ void init(bool includeUnskimmed = false)
   chains["other_2016"] = chOther_2016;
 
   // ADD initialization done separately to avoid clutter
-  initADD();
+  initADD(baseDirectory);
 
   // set default styles
   for( auto isample : sampleNames ) {
@@ -609,38 +610,14 @@ void init(bool includeUnskimmed = false)
   fillColors["data_2016"] = kWhite;
   fillColors["data_2016_preREMINIAOD"] = kWhite;
   fillColors["gg"] = kCyan;
-  // fillColors["gg_2018"] = kCyan;
-  // fillColors["gg_2017"] = kCyan;
-  // fillColors["gg_2016"] = kCyan;
   fillColors["gg_aMC_2015"] = kCyan;
   fillColors["gj"] = kBlue;
-  // fillColors["gj_2018"] = kBlue;
-  // fillColors["gj_2017"] = kBlue;
-  // fillColors["gj_2016"] = kBlue;
   fillColors["jj"] = kSpring;
-  // fillColors["jj_2018"] = kSpring;
-  // fillColors["jj_2017"] = kSpring;
-  // fillColors["jj_2016"] = kSpring;
   fillColors["vg"] = kOrange;
-  // fillColors["vg_2018"] = kOrange;
-  // fillColors["vg_2017"] = kOrange;
-  // fillColors["vg_2016"] = kOrange;
   fillColors["w"] = kBlack;
-  // fillColors["w_2018"] = kBlack;
-  // fillColors["w_2017"] = kBlack;
-  // fillColors["w_2016"] = kBlack;
   fillColors["dy"] = kYellow;
-  // fillColors["dy_2018"] = kYellow;
-  // fillColors["dy_2017"] = kYellow;
-  // fillColors["dy_2016"] = kYellow;
   fillColors["ttg"] = kMagenta;
-  // fillColors["ttg_2018"] = kMagenta;
-  // fillColors["ttg_2017"] = kMagenta;
-  // fillColors["ttg_2016"] = kMagenta;
   fillColors["gg70"] = kCyan;
-  // fillColors["gg70_2018"] = kCyan;
-  // fillColors["gg70_2017"] = kCyan;
-  // fillColors["gg70_2016"] = kCyan;
 
   prettyName["data"]="Data";
   prettyName["data_2015"]="Data (2015)";
@@ -669,7 +646,7 @@ void init(bool includeUnskimmed = false)
   setTDRStyle();
 }
 
-void initADD()
+void initADD(const TString & baseDirectory)
 {
   // ADD samples
   std::vector<std::string> MS = {"3000", "3500", "4000", "4500",
@@ -715,7 +692,8 @@ void initADD()
 	  sampleName += "_M-";
 	  sampleName += iMgg;
 	  sampleName += "_13TeV-sherpa";
-	  chains[pointName]->Add(filestring(sampleName));
+	  // the following line only works for 80X samples
+	  //	  chains[pointName]->Add(filestring(sampleName));
 	  lineColors[pointName] = kBlack;
 	  fillStyles[pointName] = 1001;
 	  lineStyles[pointName] = kSolid;
@@ -723,6 +701,130 @@ void initADD()
       }
     }
   }
+
+  chains["ADDGravToGG_MS-10000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-10000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-10000_NED-2_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191006_233205/0000/*.root");
+  chains["ADDGravToGG_MS-10000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-10000_NED-2_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-10000_NED-2_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020115/0000/*.root");
+  chains["ADDGravToGG_MS-10000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-10000_NED-2_KK-1_M-4000To10000_13TeV-sherpa/crab_ADDGravToGG_MS-10000_NED-2_KK-1_M-4000To10000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020128/0000/*.root");
+  chains["ADDGravToGG_MS-10000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-10000_NED-2_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-10000_NED-2_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/191007_020147/0000/*.root");
+  chains["ADDGravToGG_MS-10000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-10000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-10000_NED-4_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020205/0000/*.root");
+  chains["ADDGravToGG_MS-10000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-10000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-10000_NED-4_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/191007_020218/0000/*.root");
+  chains["ADDGravToGG_MS-10000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-10000_NED-4_KK-1_M-4000To10000_13TeV-sherpa/crab_ADDGravToGG_MS-10000_NED-4_KK-1_M-4000To10000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020230/0000/*.root");
+  chains["ADDGravToGG_MS-10000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-10000_NED-4_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-10000_NED-4_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020243/0000/*.root");
+  chains["ADDGravToGG_MS-11000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-11000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-11000_NED-2_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191008_123031/0000/*.root");
+  chains["ADDGravToGG_MS-11000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-11000_NED-2_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-11000_NED-2_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020309/0000/*.root");
+  chains["ADDGravToGG_MS-11000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-11000_NED-2_KK-1_M-4000To11000_13TeV-sherpa/crab_ADDGravToGG_MS-11000_NED-2_KK-1_M-4000To11000_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/191007_020322/0000/*.root");
+  chains["ADDGravToGG_MS-11000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-11000_NED-2_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-11000_NED-2_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020335/0000/*.root");
+  chains["ADDGravToGG_MS-11000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-11000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-11000_NED-4_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/191007_020350/0000/*.root");
+  chains["ADDGravToGG_MS-11000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-11000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-11000_NED-4_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020405/0000/*.root");
+  chains["ADDGravToGG_MS-11000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-11000_NED-4_KK-1_M-4000To11000_13TeV-sherpa/crab_ADDGravToGG_MS-11000_NED-4_KK-1_M-4000To11000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020418/0000/*.root");
+  chains["ADDGravToGG_MS-11000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-11000_NED-4_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-11000_NED-4_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020431/0000/*.root");
+  chains["ADDGravToGG_MS-3000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-3000_NED-2_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020447/0000/*.root");
+  chains["ADDGravToGG_MS-3000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3000_NED-2_KK-1_M-2000To3000_13TeV-sherpa/crab_ADDGravToGG_MS-3000_NED-2_KK-1_M-2000To3000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020504/0000/*.root");
+  chains["ADDGravToGG_MS-3000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3000_NED-2_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-3000_NED-2_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020518/0000/*.root");
+  chains["ADDGravToGG_MS-3000_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3000_NED-2_KK-4_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-3000_NED-2_KK-4_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020531/0000/*.root");
+  chains["ADDGravToGG_MS-3000_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3000_NED-2_KK-4_M-2000To3000_13TeV-sherpa/crab_ADDGravToGG_MS-3000_NED-2_KK-4_M-2000To3000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020545/0000/*.root");
+  chains["ADDGravToGG_MS-3000_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3000_NED-2_KK-4_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-3000_NED-2_KK-4_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020558/0000/*.root");
+  chains["ADDGravToGG_MS-3000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-3000_NED-4_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020610/0000/*.root");
+  chains["ADDGravToGG_MS-3000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3000_NED-4_KK-1_M-2000To3000_13TeV-sherpa/crab_ADDGravToGG_MS-3000_NED-4_KK-1_M-2000To3000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020625/0000/*.root");
+  chains["ADDGravToGG_MS-3000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3000_NED-4_KK-1_M-200To500_13TeV-sherpa/crab_ADDGravToGG_MS-3000_NED-4_KK-1_M-200To500_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020640/0000/*.root");
+  chains["ADDGravToGG_MS-3000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3000_NED-4_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-3000_NED-4_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020654/0000/*.root");
+  chains["ADDGravToGG_MS-3500_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3500_NED-2_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-3500_NED-2_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020706/0000/*.root");
+  chains["ADDGravToGG_MS-3500_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3500_NED-2_KK-1_M-2000To3500_13TeV-sherpa/crab_ADDGravToGG_MS-3500_NED-2_KK-1_M-2000To3500_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020719/0000/*.root");
+  chains["ADDGravToGG_MS-3500_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3500_NED-2_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-3500_NED-2_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020733/0000/*.root");
+  chains["ADDGravToGG_MS-3500_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/ADDGravToGG_MS-3500_NED-2_KK-4_M-2000To3500_13TeV-sherpa/crab_ADDGravToGG_MS-3500_NED-2_KK-4_M-2000To3500_13TeV-sherpa__80XMiniAODv2__MINIAODSIM/181106_181242/0000/*.root");
+  // Use old sample because the 94X sample is broken
+  chains["ADDGravToGG_MS-3500_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3500_NED-2_KK-4_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-3500_NED-2_KK-4_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/191007_020746/0000/*.root");
+  chains["ADDGravToGG_MS-3500_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3500_NED-2_KK-4_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-3500_NED-2_KK-4_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020817/0000/*.root");
+  chains["ADDGravToGG_MS-3500_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3500_NED-4_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-3500_NED-4_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020829/0000/*.root");
+  chains["ADDGravToGG_MS-3500_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3500_NED-4_KK-1_M-2000To3500_13TeV-sherpa/crab_ADDGravToGG_MS-3500_NED-4_KK-1_M-2000To3500_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020845/0000/*.root");
+  chains["ADDGravToGG_MS-3500_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3500_NED-4_KK-1_M-200To500_13TeV-sherpa/crab_ADDGravToGG_MS-3500_NED-4_KK-1_M-200To500_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020858/0000/*.root");
+  chains["ADDGravToGG_MS-3500_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-3500_NED-4_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-3500_NED-4_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020910/0000/*.root");
+  chains["ADDGravToGG_MS-4000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-4000_NED-2_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020934/0000/*.root");
+  chains["ADDGravToGG_MS-4000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4000_NED-2_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-4000_NED-2_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_020951/0000/*.root");
+  chains["ADDGravToGG_MS-4000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4000_NED-2_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-4000_NED-2_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/191007_021004/0000/*.root");
+  chains["ADDGravToGG_MS-4000_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4000_NED-2_KK-4_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-4000_NED-2_KK-4_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021034/0000/*.root");
+  chains["ADDGravToGG_MS-4000_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4000_NED-2_KK-4_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-4000_NED-2_KK-4_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021052/0000/*.root");
+  chains["ADDGravToGG_MS-4000_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4000_NED-2_KK-4_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-4000_NED-2_KK-4_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021105/0000/*.root");
+  chains["ADDGravToGG_MS-4000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021117/0000/*.root");
+  chains["ADDGravToGG_MS-4000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-4000_NED-4_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021129/0000/*.root");
+  chains["ADDGravToGG_MS-4000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4000_NED-4_KK-1_M-200To500_13TeV-sherpa/crab_ADDGravToGG_MS-4000_NED-4_KK-1_M-200To500_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021143/0000/*.root");
+  chains["ADDGravToGG_MS-4000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4000_NED-4_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-4000_NED-4_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021157/0000/*.root");
+  chains["ADDGravToGG_MS-4500_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4500_NED-2_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-4500_NED-2_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021210/0000/*.root");
+  chains["ADDGravToGG_MS-4500_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4500_NED-2_KK-1_M-2000To3000_13TeV-sherpa/crab_ADDGravToGG_MS-4500_NED-2_KK-1_M-2000To3000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021225/0000/*.root");
+  chains["ADDGravToGG_MS-4500_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4500_NED-2_KK-1_M-3000To4500_13TeV-sherpa/crab_ADDGravToGG_MS-4500_NED-2_KK-1_M-3000To4500_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021242/0000/*.root");
+  chains["ADDGravToGG_MS-4500_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4500_NED-2_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-4500_NED-2_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021310/0000/*.root");
+  chains["ADDGravToGG_MS-4500_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4500_NED-2_KK-4_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-4500_NED-2_KK-4_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021327/0000/*.root");
+  chains["ADDGravToGG_MS-4500_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4500_NED-2_KK-4_M-2000To3000_13TeV-sherpa/crab_ADDGravToGG_MS-4500_NED-2_KK-4_M-2000To3000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021355/0000/*.root");
+  chains["ADDGravToGG_MS-4500_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4500_NED-2_KK-4_M-3000To4500_13TeV-sherpa/crab_ADDGravToGG_MS-4500_NED-2_KK-4_M-3000To4500_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021407/0000/*.root");
+  chains["ADDGravToGG_MS-4500_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4500_NED-2_KK-4_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-4500_NED-2_KK-4_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021421/0000/*.root");
+  chains["ADDGravToGG_MS-4500_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4500_NED-4_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-4500_NED-4_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/191007_021437/0000/*.root");
+  chains["ADDGravToGG_MS-4500_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4500_NED-4_KK-1_M-2000To3000_13TeV-sherpa/crab_ADDGravToGG_MS-4500_NED-4_KK-1_M-2000To3000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021450/0000/*.root");
+  chains["ADDGravToGG_MS-4500_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4500_NED-4_KK-1_M-200To500_13TeV-sherpa/crab_ADDGravToGG_MS-4500_NED-4_KK-1_M-200To500_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021503/0000/*.root");
+  chains["ADDGravToGG_MS-4500_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4500_NED-4_KK-1_M-3000To4500_13TeV-sherpa/crab_ADDGravToGG_MS-4500_NED-4_KK-1_M-3000To4500_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021515/0000/*.root");
+  chains["ADDGravToGG_MS-4500_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-4500_NED-4_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-4500_NED-4_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021528/0000/*.root");
+  chains["ADDGravToGG_MS-5000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-5000_NED-2_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021542/0000/*.root");
+  chains["ADDGravToGG_MS-5000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5000_NED-2_KK-1_M-2000To3000_13TeV-sherpa/crab_ADDGravToGG_MS-5000_NED-2_KK-1_M-2000To3000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021554/0000/*.root");
+  chains["ADDGravToGG_MS-5000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5000_NED-2_KK-1_M-3000To5000_13TeV-sherpa/crab_ADDGravToGG_MS-5000_NED-2_KK-1_M-3000To5000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021607/0000/*.root");
+  chains["ADDGravToGG_MS-5000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5000_NED-2_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-5000_NED-2_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021620/0000/*.root");
+  chains["ADDGravToGG_MS-5000_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5000_NED-2_KK-4_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-5000_NED-2_KK-4_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021634/0000/*.root");
+  chains["ADDGravToGG_MS-5000_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5000_NED-2_KK-4_M-2000To3000_13TeV-sherpa/crab_ADDGravToGG_MS-5000_NED-2_KK-4_M-2000To3000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021647/0000/*.root");
+  chains["ADDGravToGG_MS-5000_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5000_NED-2_KK-4_M-3000To5000_13TeV-sherpa/crab_ADDGravToGG_MS-5000_NED-2_KK-4_M-3000To5000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021700/0000/*.root");
+  chains["ADDGravToGG_MS-5000_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5000_NED-2_KK-4_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-5000_NED-2_KK-4_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021712/0000/*.root");
+  chains["ADDGravToGG_MS-5000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-5000_NED-4_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021725/0000/*.root");
+  chains["ADDGravToGG_MS-5000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5000_NED-4_KK-1_M-2000To3000_13TeV-sherpa/crab_ADDGravToGG_MS-5000_NED-4_KK-1_M-2000To3000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021738/0000/*.root");
+  chains["ADDGravToGG_MS-5000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5000_NED-4_KK-1_M-200To500_13TeV-sherpa/crab_ADDGravToGG_MS-5000_NED-4_KK-1_M-200To500_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021752/0000/*.root");
+  chains["ADDGravToGG_MS-5000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5000_NED-4_KK-1_M-3000To5000_13TeV-sherpa/crab_ADDGravToGG_MS-5000_NED-4_KK-1_M-3000To5000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021804/0000/*.root");
+  chains["ADDGravToGG_MS-5000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5000_NED-4_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-5000_NED-4_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021817/0000/*.root");
+  chains["ADDGravToGG_MS-5500_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5500_NED-2_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-5500_NED-2_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021829/0000/*.root");
+  chains["ADDGravToGG_MS-5500_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5500_NED-2_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-5500_NED-2_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021843/0000/*.root");
+  chains["ADDGravToGG_MS-5500_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5500_NED-2_KK-1_M-4000To5500_13TeV-sherpa/crab_ADDGravToGG_MS-5500_NED-2_KK-1_M-4000To5500_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021857/0000/*.root");
+  chains["ADDGravToGG_MS-5500_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5500_NED-2_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-5500_NED-2_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021910/0000/*.root");
+  chains["ADDGravToGG_MS-5500_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5500_NED-2_KK-4_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-5500_NED-2_KK-4_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021924/0000/*.root");
+  chains["ADDGravToGG_MS-5500_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5500_NED-2_KK-4_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-5500_NED-2_KK-4_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021937/0000/*.root");
+  chains["ADDGravToGG_MS-5500_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5500_NED-2_KK-4_M-4000To5500_13TeV-sherpa/crab_ADDGravToGG_MS-5500_NED-2_KK-4_M-4000To5500_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_021950/0000/*.root");
+  chains["ADDGravToGG_MS-5500_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5500_NED-2_KK-4_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-5500_NED-2_KK-4_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022004/0000/*.root");
+  chains["ADDGravToGG_MS-5500_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5500_NED-4_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-5500_NED-4_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022027/0000/*.root");
+  chains["ADDGravToGG_MS-5500_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5500_NED-4_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-5500_NED-4_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022103/0000/*.root");
+  chains["ADDGravToGG_MS-5500_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5500_NED-4_KK-1_M-200To500_13TeV-sherpa/crab_ADDGravToGG_MS-5500_NED-4_KK-1_M-200To500_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022117/0000/*.root");
+  chains["ADDGravToGG_MS-5500_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5500_NED-4_KK-1_M-4000To5500_13TeV-sherpa/crab_ADDGravToGG_MS-5500_NED-4_KK-1_M-4000To5500_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/191007_022130/0000/*.root");
+  chains["ADDGravToGG_MS-5500_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-5500_NED-4_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-5500_NED-4_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022145/0000/*.root");
+  chains["ADDGravToGG_MS-6000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-6000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-6000_NED-2_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022157/0000/*.root");
+  chains["ADDGravToGG_MS-6000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-6000_NED-2_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-6000_NED-2_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022210/0000/*.root");
+  chains["ADDGravToGG_MS-6000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-6000_NED-2_KK-1_M-4000To6000_13TeV-sherpa/crab_ADDGravToGG_MS-6000_NED-2_KK-1_M-4000To6000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022224/0000/*.root");
+  chains["ADDGravToGG_MS-6000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-6000_NED-2_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-6000_NED-2_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022237/0000/*.root");
+  chains["ADDGravToGG_MS-6000_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-6000_NED-2_KK-4_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-6000_NED-2_KK-4_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022250/0000/*.root");
+  chains["ADDGravToGG_MS-6000_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-6000_NED-2_KK-4_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-6000_NED-2_KK-4_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022303/0000/*.root");
+  chains["ADDGravToGG_MS-6000_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-6000_NED-2_KK-4_M-4000To6000_13TeV-sherpa/crab_ADDGravToGG_MS-6000_NED-2_KK-4_M-4000To6000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022316/0000/*.root");
+  chains["ADDGravToGG_MS-6000_NED-2_KK-4"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-6000_NED-2_KK-4_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-6000_NED-2_KK-4_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022330/0000/*.root");
+  chains["ADDGravToGG_MS-6000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-6000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-6000_NED-4_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022342/0000/*.root");
+  chains["ADDGravToGG_MS-6000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-6000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-6000_NED-4_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022355/0000/*.root");
+  chains["ADDGravToGG_MS-6000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-6000_NED-4_KK-1_M-200To500_13TeV-sherpa/crab_ADDGravToGG_MS-6000_NED-4_KK-1_M-200To500_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022411/0000/*.root");
+  chains["ADDGravToGG_MS-6000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-6000_NED-4_KK-1_M-4000To6000_13TeV-sherpa/crab_ADDGravToGG_MS-6000_NED-4_KK-1_M-4000To6000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022424/0000/*.root");
+  chains["ADDGravToGG_MS-6000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-6000_NED-4_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-6000_NED-4_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022439/0000/*.root");
+  chains["ADDGravToGG_MS-7000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-7000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-7000_NED-2_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022506/0000/*.root");
+  chains["ADDGravToGG_MS-7000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-7000_NED-2_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-7000_NED-2_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022518/0000/*.root");
+  chains["ADDGravToGG_MS-7000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-7000_NED-2_KK-1_M-4000To7000_13TeV-sherpa/crab_ADDGravToGG_MS-7000_NED-2_KK-1_M-4000To7000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022531/0000/*.root");
+  chains["ADDGravToGG_MS-7000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-7000_NED-2_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-7000_NED-2_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022545/0000/*.root");
+  chains["ADDGravToGG_MS-7000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-7000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-7000_NED-4_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022558/0000/*.root");
+  chains["ADDGravToGG_MS-7000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-7000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-7000_NED-4_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022611/0000/*.root");
+  chains["ADDGravToGG_MS-7000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-7000_NED-4_KK-1_M-4000To7000_13TeV-sherpa/crab_ADDGravToGG_MS-7000_NED-4_KK-1_M-4000To7000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022640/0000/*.root");
+  chains["ADDGravToGG_MS-7000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-7000_NED-4_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-7000_NED-4_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022654/0000/*.root");
+  chains["ADDGravToGG_MS-8000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-8000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-8000_NED-2_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022708/0000/*.root");
+  chains["ADDGravToGG_MS-8000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-8000_NED-2_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-8000_NED-2_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022722/0000/*.root");
+  chains["ADDGravToGG_MS-8000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-8000_NED-2_KK-1_M-4000To8000_13TeV-sherpa/crab_ADDGravToGG_MS-8000_NED-2_KK-1_M-4000To8000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022740/0000/*.root");
+  chains["ADDGravToGG_MS-8000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-8000_NED-2_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-8000_NED-2_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022753/0000/*.root");
+  chains["ADDGravToGG_MS-8000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-8000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-8000_NED-4_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022815/0000/*.root");
+  chains["ADDGravToGG_MS-8000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-8000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-8000_NED-4_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022834/0000/*.root");
+  chains["ADDGravToGG_MS-8000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-8000_NED-4_KK-1_M-4000To8000_13TeV-sherpa/crab_ADDGravToGG_MS-8000_NED-4_KK-1_M-4000To8000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022846/0000/*.root");
+  chains["ADDGravToGG_MS-8000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-8000_NED-4_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-8000_NED-4_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022900/0000/*.root");
+  chains["ADDGravToGG_MS-9000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-9000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-9000_NED-2_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022920/0000/*.root");
+  chains["ADDGravToGG_MS-9000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-9000_NED-2_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-9000_NED-2_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022932/0000/*.root");
+  chains["ADDGravToGG_MS-9000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-9000_NED-2_KK-1_M-4000To9000_13TeV-sherpa/crab_ADDGravToGG_MS-9000_NED-2_KK-1_M-4000To9000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_022944/0000/*.root");
+  chains["ADDGravToGG_MS-9000_NED-2_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-9000_NED-2_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-9000_NED-2_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_023009/0000/*.root");
+  chains["ADDGravToGG_MS-9000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-9000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/crab_ADDGravToGG_MS-9000_NED-4_KK-1_M-1000To2000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_023024/0000/*.root");
+  chains["ADDGravToGG_MS-9000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-9000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/crab_ADDGravToGG_MS-9000_NED-4_KK-1_M-2000To4000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_023036/0000/*.root");
+  chains["ADDGravToGG_MS-9000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-9000_NED-4_KK-1_M-4000To9000_13TeV-sherpa/crab_ADDGravToGG_MS-9000_NED-4_KK-1_M-4000To9000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_023049/0000/*.root");
+  chains["ADDGravToGG_MS-9000_NED-4_KK-1"]->Add(baseDirectory + "/store/user/cawest/diphoton/6a01524/ADDGravToGG_MS-9000_NED-4_KK-1_M-500To1000_13TeV-sherpa/crab_ADDGravToGG_MS-9000_NED-4_KK-1_M-500To1000_13TeV-sherpa__Summer16MiniAODv3-v2__MINIAODSIM/191007_023102/0000/*.root");
 
 }
 
