@@ -59,7 +59,7 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
   // so that the highest bin can also range from 150 < pT < 600 GeV
   binLowEdges.push_back(150);
   binUpperEdges.push_back(600);
-  const int nBins = ptBinArray.size() + 1;
+  const int nBins = ptBinArray.size();
 
   // define vectors of desired histograms
   std::vector<TH1D*> sigmaIetaIetaEB;
