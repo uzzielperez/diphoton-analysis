@@ -31,7 +31,7 @@ int main()
   // initialize chains
   init(true);
 
-  std::vector<std::string> years = {"2017", "2018"};
+  std::vector<std::string> years = {"2016", "2017", "2018"};
   std::vector<std::string> variables = {"Photon2.pt", "Photon2.eta", "TFPhoton2.pt", "TFPhoton2.eta"};
 
   for(auto iyear : years) {
