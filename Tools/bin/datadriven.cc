@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
   std::string eta_cuts_BE("( !(abs(Photon1.scEta)<1.4442 && abs(Photon2.scEta)<1.4442) && ((abs(Photon1.scEta)<1.4442 && (abs(Photon2.scEta)>1.566&&abs(Photon2.scEta)<2.5)) || (abs(Photon2.scEta)<1.4442 && (abs(Photon1.scEta)>1.566&&abs(Photon1.scEta)<2.5))))");
   std::string basic_cuts = hlt_cut + "&&" + kinematic_cuts + "&&" + id_cuts + "&& isGood";
   std::string cut_no_Minv(basic_cuts + "&&" + eta_cuts_BB);
-  if(endcap) cut_no_Minv = basic_cuts + "&&" + eta_cuts_BB;
+  if(endcap) cut_no_Minv = basic_cuts + "&&" + eta_cuts_BE;
   std::string cut(cut_no_Minv);
   cut += "&& Diphoton.Minv < 1000";
 
