@@ -15,6 +15,7 @@
   <bin file="makeDatacards.cc" name="makeDatacards.exe"/>
   <bin file="getFakeRates.cc" name="getFakeRates.exe"/>
   <bin file="getFakePrediction.cc" name="getFakePrediction.exe"/>
+  <bin file="plot_blinded.cc" name="plot_blinded.exe"/>
   <bin file="plotSherpaGen.cc" name="plotSherpaGen.exe"/>
   <bin file="plotKFactor.cc" name="plotKFactor.exe"/>
   <bin file="plot_eta_phi.cc" name="plot_eta_phi.exe"/>
