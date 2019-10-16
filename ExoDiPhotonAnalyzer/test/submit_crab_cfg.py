@@ -10,9 +10,9 @@ diphoton_analysis = __import__("diphoton-analysis.CommonClasses.das_utils")
 submission = __import__("diphoton-analysis.CommonClasses.submit_utils")
 
 #process-2018
-do2018signalADD = True
-do2018signalRSG = True
-do2018signalHeavyHiggs = True
+do2018signalADD = False
+do2018signalRSG = False
+do2018signalHeavyHiggs = False
 do2017signalADD = False
 do2017signalRSG = False
 do2017signalHeavyHiggs = False
@@ -652,5 +652,5 @@ for ilist in DATASETS:
     print "Wrote crab configuration file " + outputfile
 
     cmd = "crab submit -c " + outputfile
-#    os.system(cmd)
+    os.system(cmd)
     print "Submitted ", ids

@@ -304,7 +304,7 @@ namespace ExoDiPhotons {
     if(sample.Contains("GluGluSpin0ToGammaGamma_W_5p6_M_1500_TuneCP2_13TeV_pythia8")) xsec =  1.406e-10;
     if(sample.Contains("GluGluSpin0ToGammaGamma_W_5p6_M_1750_TuneCP2_13TeV_pythia8")) xsec =  4.166e-11;
     if(sample.Contains("GluGluSpin0ToGammaGamma_W_5p6_M_2000_TuneCP2_13TeV_pythia8")) xsec =  1.451e-11;
-    if(sample.Contains("GluGluSpin0ToGammaGamma_W_5p6_M_2500_TuneCP2_13TeV_pythia8")) xsec = 2.652e-12;
+    if(sample.Contains("GluGluSpin0ToGammaGamma_W_5p6_M_2250_TuneCP2_13TeV_pythia8")) xsec =  5.826e-12;
     if(sample.Contains("GluGluSpin0ToGammaGamma_W_5p6_M_2500_TuneCP2_13TeV_pythia8")) xsec =  2.652e-12;
     if(sample.Contains("GluGluSpin0ToGammaGamma_W_5p6_M_3000_TuneCP2_13TeV_pythia8")) xsec =  7.361e-13;
     if(sample.Contains("GluGluSpin0ToGammaGamma_W_5p6_M_3500_TuneCP2_13TeV_pythia8")) xsec =  2.657e-13;
