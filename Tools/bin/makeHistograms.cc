@@ -31,7 +31,8 @@ int main(int argc, char *argv[])
     }
   }
 
-  init();
+  // include signal samples but not unskimmed data samples
+  init(false, true);
 
   TFile *output = new TFile(Form("datacards/Minv_histos_%s_%s.root", region.c_str(), year.c_str()), "recreate");
   output->mkdir(region.c_str());
