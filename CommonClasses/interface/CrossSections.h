@@ -421,6 +421,7 @@ namespace ExoDiPhotons {
     if(sample.Contains("ADDGravToGG_NegInt-0_LambdaT-13000_M-1000To2000_TuneCP2_13TeV-pythia8")) xsec =  1.331e-02;
     if(sample.Contains("ADDGravToGG_NegInt-0_LambdaT-13000_M-2000To4000_TuneCP2_13TeV-pythia8")) xsec =  6.594e-04;
     if(sample.Contains("ADDGravToGG_NegInt-0_LambdaT-13000_M-4000To13000_TuneCP2_13TeV-pythia8")) xsec =  7.635e-06;
+    if(sample.Contains("ADDGravToGG_NegInt-0_LambdaT-13000_M-4000To12990_TuneCP2_13TeV-pythia8")) xsec =  7.623e-06;
     if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-4000_M-500To1000_TuneCP2_13TeV-pythia8")) xsec =  1.311e-01;
     if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-4000_M-1000To2000_TuneCP2_13TeV-pythia8")) xsec =  1.903e-02;
     if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-4000_M-2000To3000_TuneCP2_13TeV-pythia8")) xsec =  5.572e-03;
@@ -477,6 +478,7 @@ namespace ExoDiPhotons {
     if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-13000_M-1000To2000_TuneCP2_13TeV-pythia8")) xsec = 1.340e-02;
     if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-13000_M-2000To4000_TuneCP2_13TeV-pythia8")) xsec =  6.859e-04;
     if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-13000_M-4000To13000_TuneCP2_13TeV-pythia8")) xsec =  1.059e-05;
+    if(sample.Contains("ADDGravToGG_NegInt-1_LambdaT-13000_M-4000To12990_TuneCP2_13TeV-pythia8")) xsec =  1.061e-05;
     // do not use weights for data
     //    if(sample.Contains("Run2015") || sample.Contains("Run2016") || sample.Contains("Run2017")) xsec = 1.0;
     if(sample.Contains("Run2015") || sample.Contains("Run2016") || sample.Contains("Run2017") || sample.Contains("Run2018")) xsec = 1.0;
