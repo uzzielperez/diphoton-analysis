@@ -92,7 +92,7 @@ void allSamples(const std::string &region, const std::string &year, TFile * outp
     if( isample.find(year) == std::string::npos && isample.find("ADD") == std::string::npos ) continue;
     // apply weights for all samples except data
     bool is2015or2016 = isample.find("2015") != std::string::npos || isample.find("2016") != std::string::npos;
-    if( isample.find("ADD") != std::string::npos
+    if( isample.find("ADDGravToGG_MS") != std::string::npos
 	|| isample.find("gg70") != std::string::npos
 	|| is2015or2016 ) {
       sampleCut += "*(HLT_DoublePhoton60>0 || HLT_ECALHT800>0)";
