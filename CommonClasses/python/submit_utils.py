@@ -119,6 +119,16 @@ def get_dataset_list(dataset_type):
         datasets.append(["/GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
         datasets.append(["/GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM"])
         datasets.append(["/GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+    if "2017_GG_pythia" in dataset_type:
+        datasets.append(["/GG_M-500To1000_Pt70_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+        datasets.append(["/GG_M-1000To2000_Pt70_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+        datasets.append(["/GG_M-2000To4000_Pt70_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+        datasets.append(["/GG_M-4000To13000_Pt70_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"])
+    if "2018_GG_pythia" in dataset_type:
+        datasets.append(["/GG_M-500To1000_Pt70_TuneCP2_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
+        datasets.append(["/GG_M-1000To2000_Pt70_TuneCP2_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
+        datasets.append(["/GG_M-2000To4000_Pt70_TuneCP2_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
+        datasets.append(["/GG_M-4000To13000_Pt70_TuneCP2_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
     if "2018_GGJets" in dataset_type:
         datasets.append(["/GGJets_M-60To200_Pt-50_13TeV-sherpa/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
         datasets.append(["/GGJets_M-200To500_Pt-50_13TeV-sherpa/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
