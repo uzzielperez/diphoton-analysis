@@ -13,7 +13,7 @@
 #include "TLegend.h"
 #include "TLine.h"
 
-bool useLogy = false;
+bool useLogy = true;
 bool drawObservedLimit = false;
 
 void limit(const std::string &directory);
@@ -64,7 +64,7 @@ double intersection(TGraph *gr, double value)
 
 int main(int argc, char *argv[])
 {
-  std::string limitDirectory = "/uscms/homes/c/cawest/diphoton/limits/CMSSW_8_1_0/src/HiggsAnalysis/CombinedLimit";
+  std::string limitDirectory = "/uscms/homes/c/cawest/diphoton/CMSSW_10_2_16/src/HiggsAnalysis/CombinedLimit";
   if(argc > 2) {
     std::cout << "Syntax: limit.exe [combine directory]" << std::endl;
     return -1;
