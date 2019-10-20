@@ -267,6 +267,10 @@ namespace ExoDiPhotons {
     if(sample.Contains("GG_M-2000To4000_Pt-70_13TeV-sherpa")) xsec = 2.315e-04;
     if(sample.Contains("GG_M-4000To8000_Pt-70_13TeV-sherpa")) xsec = 1.669e-06;
     if(sample.Contains("GG_M-8000To13000_Pt-70_13TeV-sherpa")) xsec = 5.430e-11;
+    if(sample.Contains("GG_M-500To1000_Pt70_TuneCP2_13TeV-pythia8")) xsec = 1.344e-01;
+    if(sample.Contains("GG_M-1000To2000_Pt70_TuneCP2_13TeV-pythia8")) xsec = 1.357e-02;
+    if(sample.Contains("GG_M-2000To4000_Pt70_TuneCP2_13TeV-pythia8")) xsec = 6.736e-04;
+    if(sample.Contains("GG_M-4000To13000_Pt70_TuneCP2_13TeV-pythia8")) xsec = 8.627e-06;
     // from running GenXsecAnalyzer on full sample (2017)
     if(sample.Contains("GluGluSpin0ToGammaGamma_W_0p014_M_750_TuneCP2_13TeV_pythia8")) xsec =  3.035e-11;
     if(sample.Contains("GluGluSpin0ToGammaGamma_W_0p014_M_1000_TuneCP2_13TeV_pythia8")) xsec =  5.945e-12;
