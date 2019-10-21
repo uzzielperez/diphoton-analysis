@@ -8,5 +8,7 @@
   <bin file="compare_pv.cc" name="compare_pv.exe"/>
   <bin file="compare_pv_bin.cc" name="compare_pv_bin.exe"/>
   <bin file="compare_pv_years.cc" name="compare_pv_years.exe"/>
+  <bin file="compare_denominator.cc" name="compare_denominator.exe"/>
+  <bin file="compare_numerator.cc" name="compare_numerator.exe"/>
 </environment>
 <flags CXXFLAGS="-Wall -g"/>
