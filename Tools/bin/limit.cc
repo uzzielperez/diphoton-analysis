@@ -42,7 +42,7 @@ void drawHeader(bool isPreliminary = false)
   lat->SetTextSize(0.038);
   lat->DrawLatexNDC(0.12, 0.93, cms.c_str());
   lat->SetTextFont(42);
-  lat->DrawLatexNDC(0.66, 0.93, Form("%2.1f fb^{-1} (13 TeV)", luminosity["2017"]+luminosity["2018"]));
+  lat->DrawLatexNDC(0.66, 0.93, Form("%2.1f fb^{-1} (13 TeV)", luminosity["2016"]+luminosity["2017"]+luminosity["2018"]));
 }
 
 double intersection(TGraph *gr, double value)
@@ -82,6 +82,9 @@ void limit(const std::string &directory)
   oneLimit(2, 1, directory);
   oneLimit(2, 4, directory);
   oneLimit(4, 1, directory);
+
+  oneLimit(0, 0, directory);
+  oneLimit(0, 1, directory);
 }
 
 void oneLimit(int ned, int kk, const std::string &directory)
@@ -89,8 +92,9 @@ void oneLimit(int ned, int kk, const std::string &directory)
   std::map<int, std::string> kkconvention;
   kkconvention[1] = "HLZ";
   kkconvention[4] = "Hewett-";
+  kkconvention[0] = "Hewett-";
 
-  std::vector<float> stringScales = {3000, 3500, 4000, 4500, 5000, 5500, 6000,
+  std::vector<float> stringScales = {4000, 4500, 5000, 5500, 6000,
 				     7000, 8000, 9000, 10000};
   std::vector<float> minus2Sigma, minus1Sigma, mean, plus1Sigma, plus2Sigma;
   std::vector<float> minus2SigmaError, minus1SigmaError, plus1SigmaError, plus2SigmaError;
@@ -100,7 +104,11 @@ void oneLimit(int ned, int kk, const std::string &directory)
   TFile *f;
   for(const auto& stringScale : stringScales) {
     if(ned == 2 && kk == 4 && stringScale > 6000) continue;
+    // if we are using the 2017-2018 convention, the lower-mass points are not relevant
+    if(ned == 0 && stringScale < 4000) continue;
     TString filename(Form("%s/higgsCombineADDGravToGG_NED-%d_KK-%d.AsymptoticLimits.mH%d.root", directory.c_str(), ned, kk, static_cast<int>(stringScale)));
+    // if ned == 0, we are using the Lambda_T convention
+    if(ned == 0) filename = Form("%s/higgsCombineADDGravToGG_NegInt-%d_TuneCP2_13TeV-pythia8.AsymptoticLimits.mH%d.root", directory.c_str(), kk, static_cast<int>(stringScale));
     f = TFile::Open(filename);
     if(!f->IsOpen()) {
       std::cout << "Could not open file " << filename << std::endl;
@@ -224,5 +232,6 @@ void oneLimit(int ned, int kk, const std::string &directory)
   }
 
   drawHeader();
-  c->Print(Form("plots/limits_ADDGravToGG_NED-%d_KK-%d.pdf", ned, kk));
+  if(ned == 0) c->Print(Form("plots/limits_ADDGravToGG_NegInt-%d.pdf", kk));
+  else c->Print(Form("plots/limits_ADDGravToGG_NED-%d_KK-%d.pdf", ned, kk));
 }

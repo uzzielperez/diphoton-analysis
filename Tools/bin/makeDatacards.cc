@@ -34,6 +34,8 @@ std::string datacardYear;
 // Loop over ADD samples to make datacards for each
 int main(int argc, char *argv[])
 {
+  bool usePythiaADD = true;
+
   std::string interferenceType("");
 
   positiveInterference=true;
@@ -54,40 +56,63 @@ int main(int argc, char *argv[])
     if(interferenceType == "negative") positiveInterference = false;
   }
 
-  // string scales
-  std::vector<std::string> MS = {"3000", "3500", "4000", "4500",
-                                 "5000", "5500", "6000", "7000",
-				 "8000", "9000", "10000", "11000"};
-  // number of extra dimensions
-  std::vector<std::string> NED = {"2", "4"};
-  // KK cutoff conventions
-  std::vector<std::string> KK = {"1", "4"};
 
-  useInterference = interferenceType.compare("negative") == 0 or interferenceType.compare("positive") == 0;
-  // only need to use one NED or KK convention if interference is considered
-  if(useInterference) {
-    NED.erase(NED.begin()+1);
-    KK.erase(KK.begin()+1);
-  }
+  if(usePythiaADD) {
+    // string scales
+    std::vector<std::string> MS = {"4000", "4500", "5000", "5500", "6000",
+				   "6500", "7000", "7500", "8000", "9000",
+				   "10000", "11000", "13000"};
+    // Use negative interference?
+    std::vector<std::string> negInts = {"1", "0"};
 
-  for(const auto iMS : MS) {
-    for(const auto iNED : NED) {
-      for(const auto iKK : KK) {
-        // no samples were generated with KK convention 4
-        // and four extra dimensions
-        if(strcmp(iKK.c_str(), "4")==0 && strcmp(iNED.c_str(), "4")==0) continue;
-	// Hewett- convention samples do not extend past Mgg > 6 TeV
-	if(iNED.compare("2")==0 && iKK.compare("4")==0 && std::stoi(iMS)>6000) continue;
-	std::string pointName = "ADDGravToGG_MS-";
-        pointName += iMS;
-	if(!useInterference) {
-	  pointName += "_NED-";
-	  pointName += iNED;
-	  pointName += "_KK-";
-	  pointName += iKK;
-	}
+    for(const auto& iMS : MS) {
+      for(const auto& negInt : negInts) {
+	std::string pointName = "ADDGravToGG_NegInt-";
+	pointName += negInt;
+	pointName += "_LambdaT-";
+	pointName += iMS;
+	pointName += "_TuneCP2_13TeV-pythia8";
 	makeOneDatacard(pointName, "BB", datacardYear, interferenceType);
 	makeOneDatacard(pointName, "BE", datacardYear, interferenceType);
+      }
+    }
+  }
+  else {
+    // string scales
+    std::vector<std::string> MS = {"3000", "3500", "4000", "4500",
+				   "5000", "5500", "6000", "7000",
+				   "8000", "9000", "10000", "11000"};
+    // number of extra dimensions
+    std::vector<std::string> NED = {"2", "4"};
+    // KK cutoff conventions
+    std::vector<std::string> KK = {"1", "4"};
+
+    useInterference = interferenceType.compare("negative") == 0 or interferenceType.compare("positive") == 0;
+    // only need to use one NED or KK convention if interference is considered
+    if(useInterference) {
+      NED.erase(NED.begin()+1);
+      KK.erase(KK.begin()+1);
+    }
+
+    for(const auto iMS : MS) {
+      for(const auto iNED : NED) {
+	for(const auto iKK : KK) {
+	  // no samples were generated with KK convention 4
+	  // and four extra dimensions
+	  if(strcmp(iKK.c_str(), "4")==0 && strcmp(iNED.c_str(), "4")==0) continue;
+	  // Hewett- convention samples do not extend past Mgg > 6 TeV
+	  if(iNED.compare("2")==0 && iKK.compare("4")==0 && std::stoi(iMS)>6000) continue;
+	  std::string pointName = "ADDGravToGG_MS-";
+	  pointName += iMS;
+	  if(!useInterference) {
+	    pointName += "_NED-";
+	    pointName += iNED;
+	    pointName += "_KK-";
+	  pointName += iKK;
+	  }
+	  makeOneDatacard(pointName, "BB", datacardYear, interferenceType);
+	  makeOneDatacard(pointName, "BE", datacardYear, interferenceType);
+	}
       }
     }
   }
