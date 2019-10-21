@@ -13,7 +13,7 @@ TString prettyNameADD(const TString& name);
 
 int main()
 {
-  init();
+  init(false, true);
 
   oneSignal(2, 1, false);
   oneSignal(2, 4, false);
@@ -22,6 +22,21 @@ int main()
   oneSignal(2, 1, true);
   oneSignal(2, 4, true);
   oneSignal(4, 1, true);
+
+  // use "ned" to encode year and
+  // "kk" to encode positive and negative interference
+  oneSignal(2017, 1, false);
+  oneSignal(2018, 1, false);
+
+  oneSignal(2017, 0, false);
+  oneSignal(2018, 0, false);
+
+  oneSignal(2017, 1, true);
+  oneSignal(2018, 1, true);
+
+  oneSignal(2017, 0, true);
+  oneSignal(2018, 0, true);
+
 }
 
 TString prettyNameADD(const TString& name)
@@ -37,6 +52,8 @@ TString prettyNameADD(const TString& name)
 
 void oneSignal(int ned, int kk, bool bkgSub)
 {
+  int year = ned;
+  if(ned != 2017 && ned != 2018) year = 2016;
 
   int nBins = 120;
   double xMin = 0.0;
@@ -60,10 +77,15 @@ void oneSignal(int ned, int kk, bool bkgSub)
   l->SetFillStyle(0);
   // draw SM background first
   TH1F *histSM = new TH1F("gg70", "gg70", nBins, xMin, xMax);
-  chains["gg70_2016"]->Project("gg70", "Diphoton.Minv", barrelCut);
+  chains["gg70_" + std::to_string(year)]->Project("gg70", "Diphoton.Minv", barrelCut);
   TLatex * lat = new TLatex;
   for(size_t i=0; i<stringScales.size(); i++) {
     TString sample(Form("ADDGravToGG_MS-%d_NED-%d_KK-%d", stringScales.at(i), ned, kk));
+    if(year == 2017 || year == 2018) {
+      sample = Form("ADDGravToGG_NegInt-%d_LambdaT-%d_TuneCP2_13TeV-pythia8_%d", kk, stringScales.at(i), ned);
+      if(stringScales.at(i) < 4000) continue;
+    }
+    std::cout << "Getting histogram " << sample << std::endl;
     TH1F *hist = new TH1F(sample, sample, nBins, xMin, xMax);
     chains[sample.Data()]->Project(sample, "Minv",  barrelCut);
     hist->SetTitle(";m_{#gamma#gamma} (GeV);Events / 50 GeV");
