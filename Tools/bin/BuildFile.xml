@@ -3,6 +3,7 @@
 <environment>
   <bin file="basicplots.cc" name="basicplots.exe"/>
   <bin file="datadriven.cc" name="datadriven.exe"/>
+  <bin file="draw_kfactor.cc" name="draw_kfactor.exe"/>
   <bin file="compare.cc" name="compare.exe"/>
   <bin file="compare_rereco.cc" name="compare_rereco.exe"/>
   <bin file="compareGenerators.cc" name="compareGenerators.exe"/>
