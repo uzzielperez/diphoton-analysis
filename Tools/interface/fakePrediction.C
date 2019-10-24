@@ -99,6 +99,10 @@ void fakePrediction::Loop(int year, const std::string &dataset)
   double xmin = 0.0;
   double xmax = 6000.0;
 
+  // different binning needed for data_driven.exe script
+  int nbins_limited = 40;
+  double xmax_limited = 2000.0;
+
   setTDRStyle();
   gROOT->ForceStyle();
 
@@ -293,8 +297,15 @@ void fakePrediction::Loop(int year, const std::string &dataset)
    sum[BE] = static_cast<TH1D*>(TF[BE]->Clone("gjDataDrivenBE"));
    sum[BE]->Add(FT[BE]);
    sum[BE]->Add(FF[BE]);
-   sum_copy[BB] = static_cast<TH1D*>(sum[BB]->Clone("BB_Minv"));
-   sum_copy[BE] = static_cast<TH1D*>(sum[BE]->Clone("BE_Minv"));
+   // different binning needed for data_driven.exe script in blinded region
+   sum_copy[BB] = new TH1D("BB_Minv", "BB_Minv", nbins_limited, xmin, xmax_limited);
+   sum_copy[BE] = new TH1D("BE_Minv", "BE_Minv", nbins_limited, xmin, xmax_limited);
+   for(int i = 0; i <= xmax_limited; i++) {
+     sum_copy[BB]->SetBinContent(i, sum[BB]->GetBinContent(i));
+     sum_copy[BB]->SetBinError(i, sum[BB]->GetBinError(i));
+     sum_copy[BE]->SetBinContent(i, sum[BE]->GetBinContent(i));
+     sum_copy[BE]->SetBinError(i, sum[BE]->GetBinError(i));
+   }
    sum_for_datacard[BB] = static_cast<TH1D*>(sum[BB]->Clone("gj"));
    sum_for_datacard[BE] = static_cast<TH1D*>(sum[BE]->Clone("gj"));
 
