@@ -217,6 +217,12 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& region, 
   allNuisances.push_back(fake_sample);
   allNuisances.push_back(eff);
   allNuisances.push_back(xsec_minor_bkg);
+  // add pdf uncertainties
+  std::vector<nuisance*> pdf_nuisances;
+  for(int i = 1; i < 51; i++) {
+    pdf_nuisances.push_back(new nuisance("pdf" + std::to_string(i), "shape", {"-", "1", "-", "-"}));
+    allNuisances.push_back(*(pdf_nuisances.back()));
+  }
 
   unsigned int nchannels = 1;
   unsigned int nbackgrounds = processes.size()-1;
