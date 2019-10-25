@@ -57,9 +57,9 @@ int main(int argc, char *argv[])
 void allSamples(const std::string &region, const std::string &year, TFile * output)
 {
 
-  int nBins = 120;
+  int nBins = 80;
   double xMin = 0.0;
-  double xMax = 6000.;
+  double xMax = 4000.;
 
   std::map<std::string, std::string> cuts;
   cuts["BB"] = "isGood*(Diphoton.Minv > 500 && Diphoton.deltaR > 0.45 && Photon1.pt>125 && Photon2.pt>125 && Photon1.isEB && Photon2.isEB)";
