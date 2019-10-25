@@ -157,6 +157,28 @@ void allSamples(const std::string &region, const std::string &year, TFile * outp
   histName = histNameBase + region + "Down";
   scaleDown->SetName(histName.c_str());
 
+  // create histograms for PDF uncertainties
+  const int bin_offset = 10; // MCFM output starts at 500 GeV
+  std::string pdfFile("data/pdf_uncert_LO_" + region + ".root");
+  TFile *fPDF = TFile::Open(pdfFile.c_str());
+  std::vector<std::string> variations = {"Up", "Down"};
+  for(const auto &  variation : variations) {
+    for(int i = 1; i <= 50; i++) {
+      fPDF->cd("");
+      std::string pdfHistName(region + "/" + "gg_pdf" + std::to_string(i) + variation);
+      TH1F* tmp_pdf_hist = dynamic_cast<TH1F*>(fPDF->Get(pdfHistName.c_str()));
+      // convert PDF fractional uncertainty to a variation on gg histogram
+      std::string newPdfHistName("gg_pdf" + std::to_string(i) + variation);
+      TH1F* variation = dynamic_cast<TH1F*>(histograms["gg"]->Clone(newPdfHistName.c_str()));
+      for(int i = 0; i < tmp_pdf_hist->GetNbinsX(); i++) {
+	float newValue = (1 + tmp_pdf_hist->GetBinContent(i))*histograms["gg"]->GetBinContent(i+bin_offset);
+	variation->SetBinContent(i+bin_offset, newValue);
+      }
+      output->cd(region.c_str());
+      variation->Write();
+    }
+  }
+
 }
 
 // remove year
