@@ -72,7 +72,7 @@ void oneSignal(int ned, int kk, bool bkgSub)
   }
   TCanvas *c = new TCanvas;
   c->SetLogy();
-  TLegend *l = new TLegend(0.6, 0.55, 0.9, 0.85);
+  TLegend *l = new TLegend(0.6, 0.6, 0.9, 0.9);
   l->SetBorderSize(0);
   l->SetFillStyle(0);
   // draw SM background first
@@ -92,12 +92,14 @@ void oneSignal(int ned, int kk, bool bkgSub)
     hist->SetLineColor(kBlue-4+i%4);
     hist->SetMarkerColor(kBlue-4+i%4);
     if(bkgSub) hist->Add(histSM, -1.0);
+    hist->GetYaxis()->SetRangeUser(1e-6, 2000);
     if(i==0) {
       hist->Draw();
       lat->DrawLatexNDC(0.6, 0.87, Form("N_{ED} = %d, KK = %d", ned, kk));
     }
     else hist->Draw("same");  
-    l->AddEntry(sample, Form("M_{S} = %d GeV", stringScales.at(i)), "EP");
+    if(year == 2017 || year == 2018) l->AddEntry(sample, Form("#Lambda_{T} = %d GeV", stringScales.at(i)), "EP");
+    else l->AddEntry(sample, Form("M_{S} = %d GeV", stringScales.at(i)), "EP");
   }
   l->Draw();
   
