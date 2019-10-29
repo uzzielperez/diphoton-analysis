@@ -163,7 +163,7 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& region, 
 {
   const bool scaleRegionNorm = true;
 
-  makeTable(region);
+  //  makeTable(region);
 
   std::string signalPointInt = signalPoint;
   signalPointInt += "_int";
