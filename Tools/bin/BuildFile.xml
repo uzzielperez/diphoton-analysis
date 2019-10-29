@@ -20,6 +20,7 @@
   <bin file="plotSherpaGen.cc" name="plotSherpaGen.exe"/>
   <bin file="plotKFactor.cc" name="plotKFactor.exe"/>
   <bin file="plot_eta_phi.cc" name="plot_eta_phi.exe"/>
+  <bin file="plot_pdf_uncert.cc" name="plot_pdf_uncert.exe"/>
   <bin file="skim.cc" name="skim.exe"/>
 </environment>
 <flags CXXFLAGS="-Wall -Werror -g"/>
