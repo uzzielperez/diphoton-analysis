@@ -40,15 +40,20 @@ int main(int argc, char *argv[])
 
   positiveInterference=true;
 
-  if(argc!=2 && argc!=3) {
-    std::cout << "Syntax: makeDatacards.exe [2015/2016/2017/2018] [positive/negative]\n";
+  if(argc!=2 && argc!=3 && argc!=4) {
+    std::cout << "Syntax: makeDatacards.exe [2015/2016/2017/2018] [old/new] [positive/negative]\n";
+    std::cout << "'old' and 'new' refer to old and new Sherpa ADD samples\n";
     std::cout << "If 'positive' or 'negative' are not specified,\n";
     std::cout << "linear scaling will be used for the interference term." << std::endl;
     return -1;
   }
   datacardYear = argv[1];
-  if(argc==3) {
-    interferenceType = argv[2];
+  if(argc >= 3) {
+    std::string whichADD(argv[2]);
+    if(whichADD.compare("old") == 0) usePythiaADD = false;
+  }
+  if(argc==4) {
+    interferenceType = argv[3];
     if(interferenceType.compare("negative") != 0 and interferenceType.compare("positive") != 0) {
       std::cout << "Only 'negative' and 'positive' are allowed input parameters. " << std::endl;
       return -1;
