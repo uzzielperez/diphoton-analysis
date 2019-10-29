@@ -696,6 +696,8 @@ void initADD2016(const TString & baseDirectory)
 	// no samples were generated with KK convention 4
 	// and four extra dimensions
 	if(strcmp(iKK.c_str(), "4")==0 && strcmp(iNED.c_str(), "4")==0) continue;
+	// no samples were generated with negative interference above MS = 6 TeV
+	if(iNED.compare("2")==0 && iKK.compare("4")==0 && std::stoi(iMS)>6000) continue;
 	std::string pointName = "ADDGravToGG_MS-";
 	pointName += iMS;
 	pointName += "_NED-";
@@ -707,7 +709,6 @@ void initADD2016(const TString & baseDirectory)
 	  // the 200To500 bins are only present for the NED=4 samples
 	  if(iNED.compare("2")==0 && iMgg.compare("250To500")==0) continue;
 	  // Hewett- convention samples do not extend past Mgg > 6 TeV
-	  if(iNED.compare("2")==0 && iKK.compare("4")==0 && std::stoi(iMgg)>6000) continue;
 	  std::string sampleName(pointName);
 	  sampleName += "_M-";
 	  sampleName += iMgg;
@@ -857,44 +858,19 @@ void initADD(const TString & baseDirectory)
   std::vector<std::string> negint_values = {"0", "1"};
   std::vector<int> lambdaTs = {4000, 4500, 5000, 5500, 6000,
 			       6500, 7000, 7500, 8000, 8500,
-			       9000, 10000, 11000, 12000, 13000};
-
-  // std::map<int, std::vector<std::string>> M_bins;
-  // M_bins[4000] = {"500To1000", "1000To2000", "2000To3000", "3000To4000"};
-  // M_bins[4500] = {"500To1000", "1000To2000", "2000To3000", "3000To4500"};
-  // M_bins[5000] = {"500To1000", "1000To2000", "2000To3000", "3000To5000"};
-  // M_bins[5500] = {"500To1000", "1000To2000", "2000To4000", "4000To5500"};
-  // M_bins[6000] = {"500To1000", "1000To2000", "2000To4000", "4000To6000"};
-  // M_bins[6500] = {"500To1000", "1000To2000", "2000To4000", "4000To6500"};
-  // M_bins[7000] = {"500To1000", "1000To2000", "2000To4000", "4000To7000"};
-  // M_bins[7500] = {"500To1000", "1000To2000", "2000To4000", "4000To7500"};
-  // M_bins[8000] = {"500To1000", "1000To2000", "2000To4000", "4000To8000"};
-  // M_bins[8500] = {"500To1000", "1000To2000", "2000To4000", "4000To8500"};
-  // M_bins[9000] = {"500To1000", "1000To2000", "2000To4000", "4000To9000"};
-  // M_bins[10000] = {"500To1000", "1000To2000", "2000To4000", "4000To10000"};
-  // M_bins[11000] = {"500To1000", "1000To2000", "2000To4000", "4000To11000"};
-  // M_bins[12000] = {"500To1000", "1000To2000", "2000To4000", "4000To12000"};
-  // M_bins[13000] = {"500To1000", "1000To2000", "2000To4000", "4000To13000"};
+			       9000, 10000, 11000, 13000};
 
   for(const auto& year : years) {
     for(const auto& negint_value : negint_values) {
       for(const auto& lambdaT : lambdaTs) {
-	//	for(const auto& M_bin : M_bins[lambdaT]) {
+	// there is no point with neg_int = "0" and lambdaT == 8500
+	if(negint_value.compare("0") == 0 && lambdaT == 8500 ) continue;
 	std::string pointName = "ADDGravToGG_NegInt-";
 	pointName += negint_value;
 	pointName += "_LambdaT-";
 	pointName += std::to_string(lambdaT);
-	// pointName += "_M-";
-	// std::string binName = M_bin;
-	// // last bin of 2018, LambdaT = 13000 sample has different
-	// // naming convention
-	// if(year == 2018 && lambdaT == 13000 && M_bin.compare("4000To13000") == 0) {
-	//   binName = "4000To12990";
-	// }
-	// pointName += binName;
 	pointName += "_TuneCP2_13TeV-pythia8_";
 	pointName += std::to_string(year);
-	std::cout << pointName << std::endl;
 	chains[pointName] = new TChain("diphoton/fTree");
 	lineColors[pointName] = kBlack;
 	fillStyles[pointName] = 1001;
