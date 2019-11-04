@@ -21,17 +21,19 @@ TH1F* getTH1F(TH1F *h);
 
 const float binWidth = 50; // GeV
 
-void plot_blinded();
+void plot_blinded(const std::string& years_to_plot);
 
 int main(void)
 {
-  plot_blinded();
+  plot_blinded("all");
+  plot_blinded("2016");
+  plot_blinded("2017");
+  plot_blinded("2018");
 
   return 0;
 }
 
-
-void plot_blinded()
+void plot_blinded(const std::string& years_to_plot)
 {
   const double xmin = 500.;
   setTDRStyle();
@@ -42,7 +44,11 @@ void plot_blinded()
 
   TFile *f = TFile::Open("../../HiggsAnalysis/CombinedLimit/fitDiagnosticsADDGravToGG_MS-5000_NED-4_KK-1_lowmass.root");
 
-  std::vector<int> years = {2016, 2017, 2018};
+  std::vector<int> years_all = {2016, 2017, 2018};
+  std::vector<int> years;
+  if(years_to_plot.compare("all") == 0) years = years_all;
+  else years.push_back(std::atoi(years_to_plot.c_str()));
+
   std::vector<std::string> regions = {"BB", "BE"};
   std::vector<TH1F*> histsBackground, histsData;
 
@@ -82,7 +88,7 @@ void plot_blinded()
     sumData[region]->SetMarkerStyle(kFullCircle);
     sumData[region]->GetXaxis()->SetRangeUser(xmin, 1000);    
     sumData[region]->Draw("same");
-    TLegend *leg = new TLegend(0.7, 0.6, 0.9, 0.9);
+    TLegend *leg = new TLegend(0.6, 0.6, 0.9, 0.9);
     leg->AddEntry(sumBackground[region], "Total background", "L");
     leg->AddEntry(sumData[region], "Data", "ELP");
     leg->SetBorderSize(0);
@@ -90,6 +96,12 @@ void plot_blinded()
     leg->Draw();
     TLatex *lat = new TLatex();
     lat->DrawLatexNDC(0.4, 0.8, prettyName[region].c_str());
+
+    std::string yearString = std::to_string(years.front());
+    if(years.size() > 1) {
+      yearString += "-" + std::to_string(years.back());
+    }
+    lat->DrawLatexNDC(0.4, 0.7, yearString.c_str());
 
     pad2->cd();
 
@@ -110,7 +122,14 @@ void plot_blinded()
     ratio->SetTitle(";m_{#gamma#gamma} (GeV); Ratio");
     ratio->GetXaxis()->SetRangeUser(xmin, 1000);    
     ratio->GetYaxis()->SetRangeUser(0.5, 1.5);
+    ratio->GetXaxis()->SetTitleSize(ratio->GetXaxis()->GetTitleSize()/0.7);
+    ratio->GetXaxis()->SetTitleOffset(ratio->GetXaxis()->GetTitleOffset()/0.7);
+    ratio->GetYaxis()->SetLabelSize(ratio->GetYaxis()->GetLabelSize()/0.7);
+    ratio->GetYaxis()->SetTitleSize(ratio->GetYaxis()->GetTitleSize()/0.7);
+    ratio->GetYaxis()->SetTitleOffset(ratio->GetYaxis()->GetTitleOffset()/0.7);
     ratio->Draw();
+
+
 
     TLine *line = new TLine(xmin, 1.0, ratio->GetXaxis()->GetXmax(), 1.0);
     line->SetLineColor(kRed);
@@ -119,7 +138,11 @@ void plot_blinded()
     line->Draw();
     ratio->Draw("same");
 
-    std::string histName("mgg_");
+    pad1->cd();
+    lat->DrawLatexNDC(0.4, 0.6, Form("#chi^{2} = %2.1f", chi2));
+
+
+    std::string histName("plots/mgg_");
     histName += region;
     for(auto year : years) {
       histName += "_";
@@ -147,9 +170,9 @@ TH1F* getHist(TFile *file, const int year, const std::string& type, const std::s
 
 TH1F* getTH1F(TGraphAsymmErrors *gr)
 {
-  unsigned int npoints = gr->GetN();
+  int npoints = gr->GetN();
   TH1F *hist = new TH1F(gr->GetName(), gr->GetName(), npoints, 0, npoints*binWidth);
-  for (unsigned int i = 1; i <= npoints; i++) {
+  for (int i = 1; i <= npoints; i++) {
     hist->SetBinContent(i, gr->GetY()[i-1]);
     hist->SetBinError(i, sqrt(gr->GetY()[i-1]));
   }
@@ -159,9 +182,9 @@ TH1F* getTH1F(TGraphAsymmErrors *gr)
 
 TH1F* getTH1F(TH1F *h)
 {
-  unsigned int npoints = h->GetNbinsX();
+  int npoints = h->GetNbinsX();
   TH1F *hist = new TH1F(h->GetName(), h->GetName(), npoints, 0, npoints*binWidth);
-  for (unsigned int i = 1; i <= npoints; i++) {
+  for (int i = 1; i <= npoints; i++) {
     float binContent = h->GetBinContent(i);
     hist->SetBinContent(i, binContent);
     hist->SetBinError(i, sqrt(binContent));
