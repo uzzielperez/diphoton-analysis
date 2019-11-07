@@ -866,9 +866,12 @@ void ExoDiPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>&
 
   // fill EGM ID info
   ExoDiPhotons::FillPhotonEGMidInfo(photon1Info, &(*photons[0]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
-  photon1Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[0]];
-  photon1Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[0]];
-  photon1Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[0]];
+  // photon1Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[0]];
+  // photon1Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[0]];
+  // photon1Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[0]];
+  photon1Info.passEGMLooseID  = true;
+  photon1Info.passEGMMediumID = true;
+  photon1Info.passEGMTightID  = true;
 
   // ==================
   // fill photon 2 info
@@ -883,9 +886,12 @@ void ExoDiPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>&
 
   // fill EGM ID info
   ExoDiPhotons::FillPhotonEGMidInfo(photon2Info, &(*photons[1]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
-  photon2Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[1]];
-  photon2Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[1]];
-  photon2Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[1]];
+  // photon2Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[1]];
+  // photon2Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[1]];
+  // photon2Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[1]];
+  photon2Info.passEGMLooseID  = true;
+  photon2Info.passEGMMediumID = true;
+  photon2Info.passEGMTightID  = true;
 
   //cout << "photon 1 pt = " << photon1Info.pt << "; eta = " << photon1Info.eta << "; phi = " << photon1Info.phi << endl;
   //cout << "photon 2 pt = " << photon2Info.pt << "; eta = " << photon2Info.eta << "; phi = " << photon2Info.phi << endl;
