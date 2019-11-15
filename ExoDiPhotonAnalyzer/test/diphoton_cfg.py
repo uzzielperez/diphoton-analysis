@@ -109,7 +109,7 @@ process.diphoton = cms.EDAnalyzer(
     'ExoDiPhotonAnalyzer',
     # photon tag
     photonsMiniAOD = cms.InputTag("slimmedPhotons"),
-    minPhotonPt = cms.double(75.),
+    minPhotonPt = cms.double(125.),
     # genParticle tag
     genParticlesMiniAOD = cms.InputTag("prunedGenParticles"),
     # vertex tag
