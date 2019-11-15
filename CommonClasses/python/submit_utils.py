@@ -59,6 +59,42 @@ def is_reminiaod(dataset_name):
     else:
         return False
 
+def egamma_info(dataset_name):
+    info = {}
+    # we use our own ID so these are only for comparisons with defaults
+    egm_data_dir = "RecoEgamma/PhotonIdentification/data/"
+    info['era'] = ''
+
+    if "Run2015" in dataset_name or "Run2016" in dataset_name or "Summer16MiniAODv3" in dataset_name:
+        print("Using 2016 EGM corrections")
+        info['loosePhoId'] = "cutBasedPhotonID-Spring16-V2p2-loose"
+        info['mediumPhoId'] = "cutBasedPhotonID-Spring16-V2p2-medium"
+        info['tightPhoId'] = "cutBasedPhotonID-Spring16-V2p2-tight"
+        info['effAreaChHad'] = egm_data_dir + "Spring16/effAreaPhotons_cone03_pfChargedHadrons_90percentBased.txt"
+        info['effAreaNeuHad'] = egm_data_dir + "Spring16/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased.txt"
+        info['effAreaPhoHad'] = egm_data_dir + "Spring16/effAreaPhotons_cone03_pfPhotons_90percentBased_3bins.txt"
+        info['era'] = '2016-Legacy'
+    elif "Run2017" in dataset_name or "RunIIFall17MiniAODv2" in dataset_name:
+        print("Using 2017 EGM corrections")
+        info['loosePhoId'] = "cutBasedPhotonID-Fall17-94X-V2-loose"
+        info['mediumPhoId'] = "cutBasedPhotonID-Fall17-94X-V2-medium"
+        info['tightPhoId'] = "cutBasedPhotonID-Fall17-94X-V2-tight"
+        info['effAreaChHad'] = egm_data_dir + "Fall17/effAreaPhotons_cone03_pfChargedHadrons_90percentBased_V2.txt"
+        info['effAreaNeuHad'] = egm_data_dir + "Fall17/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased_V2.txt"
+        info['effAreaPhoHad'] = egm_data_dir + "Fall17/effAreaPhotons_cone03_pfPhotons_90percentBased_V2.txt"
+        info['era'] = '2017-Nov17ReReco'
+    elif "Run2018" in dataset_name or "RunIIAutumn18MiniAOD" in dataset_name:
+        print("Using 2018 EGM corrections")
+        info['loosePhoId'] = "cutBasedPhotonID-Fall17-94X-V2-loose"
+        info['mediumPhoId'] = "cutBasedPhotonID-Fall17-94X-V2-medium"
+        info['tightPhoId'] = "cutBasedPhotonID-Fall17-94X-V2-tight"
+        info['effAreaChHad'] = egm_data_dir + "Fall17/effAreaPhotons_cone03_pfChargedHadrons_90percentBased_V2.txt"
+        info['effAreaNeuHad'] = egm_data_dir + "Fall17/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased_V2.txt"
+        info['effAreaPhoHad'] = egm_data_dir + "Fall17/effAreaPhotons_cone03_pfPhotons_90percentBased_V2.txt"
+        info['era'] = '2018-Prompt'
+
+    return info
+
 def get_dataset_list(dataset_type):
     datasets = [[]]
 

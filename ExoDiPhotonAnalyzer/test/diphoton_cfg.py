@@ -5,6 +5,8 @@ import FWCore.ParameterSet.Config as cms
 from os.path import basename
 import os
 import sys
+import importlib
+submit_utils = importlib.import_module("diphoton-analysis.CommonClasses.submit_utils")
 
 options = VarParsing ('python')
 
@@ -32,70 +34,16 @@ isMC = True
 if "Run201" in outName:
     isMC = False
 
-# to avoid processing with an incorrect global tag, don't set a valid default
-globalTag = 'notset'
+globalTag = submit_utils.get_global_tag(outName)
 
 jetLabel = "updatedPatJetsUpdatedJEC"
 # options for data
 JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
 # necessary because in re-MINIAOD the process labels are "PAT", not "RECO"
-isReMINIAOD = False
-if "Run2015" in outName:
-    globalTag = '76X_dataRun2_16Dec2015_v0'
-if "Run2016" in outName:
-#    Do not use ICHEP global tag
-#    globalTag = '80X_dataRun2_Prompt_ICHEP16JEC_v0'
-    if 'PromptReco' in outName:
-        globalTag = '80X_dataRun2_Prompt_v14'
-    elif '03Feb2017' in outName:
-        globalTag = '80X_dataRun2_2016SeptRepro_v7'
-        isReMINIAOD = True
-    elif "17Jul2018" in outName:
-        isReMINIAOD = True
-        globalTag = '94X_dataRun2_v10'
-    else:
-        globalTag = '80X_dataRun2_2016SeptRepro_v4'
-if "Run2017" in outName:
-    if "31Mar2018" in outName:
-        isReMINIAOD = True
-        globalTag = '94X_dataRun2_v11'
-    elif "09Aug2019" in outName:
-        isReMINIAOD = True
-        globalTag = '106X_dataRun2_v20'
-    else:
-        globalTag = '92X_dataRun2_Prompt_v8'
-if "Run2018" in outName:
-    if "17Sep2018" in outName:
-        globalTag = '102X_dataRun2_v11'
-    else:
-        globalTag = '102X_dataRun2_Prompt_v14'
+isReMINIAOD = submit_utils.is_reminiaod(outName)
 # override options for MC
 if isMC:
-    version = os.getenv("CMSSW_VERSION")
-    major_version = version.split('_')[1] # version number formattted as CMSSW_X_Y_Z
-    if major_version == "10":
-        globalTag = '102X_upgrade2018_realistic_v19'
-    elif major_version == "9":
-        if "Summer16MiniAODv3" in outName:
-            globalTag = '94X_mcRun2_asymptotic_v3'
-        if "RunIIFall17MiniAODv2" in outName:
-            globalTag = '94X_mc2017_realistic_v17'
-    elif major_version == "8":
-        if "Spring16" in outName:
-            globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
-        if "Summer16" in outName:
-            #globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
-            # the previous tag should only be used when to process
-            # samples intended to match data previous to the
-            # 03Feb2017 re-miniAOD
-            globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
-    elif major_version == "7":
-        globalTag = '76X_mcRun2_asymptotic_v12'
-    else:
-        print "Could not determine appropriate MC global tag from filename"
-        sys.exit()
     JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
-
 
 process = cms.Process("ExoDiPhoton")
 
@@ -147,24 +95,14 @@ updateJetCollection(
    jetCorrections = ('AK4PFchs', JEC, 'None')  # Do not forget 'L2L3Residual' on data!
 )
 
-setupEgammaPostRecoSeq(process,applyEnergyCorrections=True, applyVIDOnCorrectedEgamma=True, era='2018-Prompt')
-#setupEgammaPostRecoSeq(process, era='2018-Prompt')
-
-# we use our own ID so these are only for comparisons with defaults
-loosePhoId = "egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V2-loose"
-mediumPhoId = "egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V2-medium"
-tightPhoId = "egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V2-tight"
-effAreaChHad = "RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfChargedHadrons_90percentBased_V2.txt"
-effAreaNeuHad = "RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased_V2.txt"
-effAreaPhoHad = "RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfPhotons_90percentBased_V2.txt"
-
-if "Run2015" in outName or "Run2016" in outName or "Summer16MiniAODv3" in outName:
-    loosePhoId = "egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-loose"
-    mediumPhoId = "egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-medium"
-    tightPhoId = "egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-tight"
-    effAreaChHad = "RecoEgamma/PhotonIdentification/data/Spring16/effAreaPhotons_cone03_pfChargedHadrons_90percentBased.txt"
-    effAreaNeuHad = "RecoEgamma/PhotonIdentification/data/Spring16/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased.txt"
-    effAreaPhoHad = "RecoEgamma/PhotonIdentification/data/Spring16/effAreaPhotons_cone03_pfPhotons_90percentBased_3bins.txt"
+# summary of information needed for e/gamma corrections
+egm_info = submit_utils.egamma_info(outName)
+setupEgammaPostRecoSeq(process,
+                       applyEnergyCorrections=True,
+                       applyVIDOnCorrectedEgamma=True,
+                       runVID=True,
+                       runEnergyCorrections=True,
+                       era=egm_info['era'])
 
 # main analyzer and inputs
 process.diphoton = cms.EDAnalyzer(
@@ -185,13 +123,13 @@ process.diphoton = cms.EDAnalyzer(
     # rho tag
     rho = cms.InputTag("fixedGridRhoAll"),
     # EGM eff. areas
-    effAreaChHadFile = cms.FileInPath(effAreaChHad),
-    effAreaNeuHadFile = cms.FileInPath(effAreaNeuHad),
-    effAreaPhoFile = cms.FileInPath(effAreaPhoHad),
+    effAreaChHadFile = cms.FileInPath(egm_info['effAreaChHad']),
+    effAreaNeuHadFile = cms.FileInPath(egm_info['effAreaNeuHad']),
+    effAreaPhoFile = cms.FileInPath(egm_info['effAreaPhoHad']),
     # EGM ID decisions
-    phoLooseIdMap = cms.InputTag(loosePhoId),
-    phoMediumIdMap = cms.InputTag(mediumPhoId),
-    phoTightIdMap = cms.InputTag(tightPhoId),
+    phoLooseIdMap = cms.InputTag("egmPhotonIDs:" + egm_info['loosePhoId']),
+    phoMediumIdMap = cms.InputTag("egmPhotonIDs:" + egm_info['mediumPhoId']),
+    phoTightIdMap = cms.InputTag("egmPhotonIDs:" + egm_info['tightPhoId']),
     # gen event info
     genInfo = cms.InputTag("generator", "", "SIM"),
     # output file name
