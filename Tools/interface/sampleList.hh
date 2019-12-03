@@ -435,6 +435,7 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
   chJJ_2018->Add(baseDirectory + "/store/user/cawest/diphoton/1eb12d1/QCD_HT1500to2000_TuneCP5_13TeV-madgraphMLM-pythia8/crab_QCD_HT1500to2000_TuneCP5_13TeV-madgraphMLM-pythia8__Autumn18-v1__MINIAODSIM/191002_042239/0000/*.root");
   chJJ_2018->Add(baseDirectory + "/store/user/cawest/diphoton/1eb12d1/QCD_HT2000toInf_TuneCP5_13TeV-madgraphMLM-pythia8/crab_QCD_HT2000toInf_TuneCP5_13TeV-madgraphMLM-pythia8__Autumn18-v1__MINIAODSIM/191002_042251/0000/*.root");
 
+
   TChain *chVG_2016 = new TChain(treeType);
   chVG_2016->Add(baseDirectory + "/store/user/cawest/diphoton/daf983b/WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8__Summer16MiniAODv3_ext3-v1__MINIAODSIM/190930_035334/0000/*.root");
   chVG_2016->Add(baseDirectory + "/store/user/cawest/diphoton/daf983b/WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8__Summer16MiniAODv3_ext2-v1__MINIAODSIM/190930_035323/0000/*.root");
@@ -446,8 +447,8 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
   chVG_2017->Add(baseDirectory + "/store/user/cawest/diphoton/7f9cc51/ZGToLLG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_ZGToLLG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8__Fall17_PU2017-v3__MINIAODSIM/190930_150345/0000/*.root");
 
   TChain *chVG_2018 = new TChain(treeType);
-  chVG_2018->Add(baseDirectory + "/store/user/cawest/diphoton/7f9cc51/WGToLNuG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_WGToLNuG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8__Autumn18_ext1-v1__MINIAODSIM/190930_143113/0000/*.root");
-  chVG_2018->Add(baseDirectory + "/store/user/cawest/diphoton/7f9cc51/ZGToLLG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_ZGToLLG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8__Autumn18_ext1-v2__MINIAODSIM/190930_143136/0000/*.root");
+  chVG_2018->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/WGToLNuG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_WGToLNuG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8__Autumn18_ext1-v1__MINIAODSIM/191120_193213/0000/*.root");
+  chVG_2018->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/ZGToLLG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_ZGToLLG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8__Autumn18_ext1-v2__MINIAODSIM/191120_193251/0000/*.root");
 
   TChain *chW_2016 = new TChain(treeType);
   chW_2016->Add(baseDirectory + "/store/user/cawest/diphoton/1eb12d1/WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_WJetsToLNu_13TeV-MG-PY8__Summer16MiniAODv3-v2__MINIAODSIM/191002_045212/0000/*.root");
@@ -458,7 +459,7 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
   chW_2017->Add(baseDirectory + "/store/user/cawest/diphoton/1eb12d1/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/crab_WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8__Fall17_PU2017_ext1-v2__MINIAODSIM/191002_045616/0000/*.root");
 
   TChain *chW_2018 = new TChain(treeType);
-  chW_2018->Add(baseDirectory + "/store/user/cawest/diphoton/1eb12d1/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/crab_WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8__Autumn18-v2__MINIAODSIM/191002_042416/0000/*.root");
+  chW_2018->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/crab_WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8__Autumn18-v2__MINIAODSIM/191120_193829/0000/*.root");
 
   TChain *chDY_2016 = new TChain(treeType);
   chDY_2016->Add(baseDirectory + "/store/user/cawest/diphoton/daf983b/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8__RunIISummer16MiniAODv3-PUMoriond17_94X_mcR/190930_033409/0000/*.root");
@@ -466,7 +467,7 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
   chDY_2017->Add(baseDirectory + "/store/user/cawest/diphoton/ff27678/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8__Fall17_PU2017-v1__MINIAODSIM/190920_191152/0000/*.root");
   chDY_2017->Add(baseDirectory + "/store/user/cawest/diphoton/ff27678/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8__Fall17_PU2017_ext1-v1__MINIAODSIM/190920_191203/0000/*.root");
   TChain *chDY_2018 = new TChain(treeType);
-  chDY_2018->Add(baseDirectory + "/store/user/cawest/diphoton/02bc3c0/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8__Autumn18_ext2-v1__MINIAODSIM/190930_031643/0000/*.root");
+  chDY_2018->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8__Autumn18_ext2-v1__MINIAODSIM/191120_193335/0000/*.root");
 
   TChain *chTTG_2016 = new TChain(treeType);
   chTTG_2016->Add(baseDirectory + "/store/user/cawest/diphoton/daf983b/TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/crab_TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8__RunIISummer16MiniAODv3-PUMoriond17_94X_mcR/190930_033422/0000/*.root");
@@ -475,7 +476,7 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
   chTTG_2017->Add(baseDirectory + "/store/user/cawest/diphoton/ff27678/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/crab_TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8__Fall17_PU2017-v1__MINIAODSIM/190920_191126/0000/*.root");
   chTTG_2017->Add(baseDirectory + "/store/user/cawest/diphoton/ff27678/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/crab_TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8__Fall17_PU2017_ext1-v1__MINIAODSIM/190920_191137/0000/*.root");
   TChain *chTTG_2018 = new TChain(treeType);
-  chTTG_2018->Add(baseDirectory + "/store/user/cawest/diphoton/02bc3c0/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/crab_TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic/190930_031406/0000/*.root");
+  chTTG_2018->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/crab_TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8__Autumn18-v1__MINIAODSIM/191120_193353/0000/*.root");
 
   // sum of minor backgrounds for use in limit setting
   TChain *chOther_2016 = new TChain(treeType);
@@ -502,13 +503,14 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
   chGGGen_2017->Add(baseDirectory + "/store/user/cawest/diphoton/ff27678/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__Fall17_PU2017-v1__MINIAODSIM/190920_185901/0000/*.root");
 
   TChain *chGGGen_2018 = new TChain("diphoton/fSherpaGenTree");
-  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/ff27678/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINIAO/190920_195203/0000/*.root");
-  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/ff27678/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINIA/190920_195213/0000/*.root");
-  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/ff27678/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINI/190920_195224/0000/*.root");
-  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/ff27678/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/190920_195234/0000/*.root");
-  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/ff27678/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/crab_GGJets_M-2000To4000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/190920_195244/0000/*.root");
-  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/ff27678/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/crab_GGJets_M-4000To6000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/190920_195254/0000/*.root");
-  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/ff27678/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/190920_195304/0000/*.root");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__Autumn18-v1__MINIAODSIM/191115_223346/0000/*.root");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__Autumn18-v1__MINIAODSIM/191115_223403/0000/*.root");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__Autumn18-v1__MINIAODSIM/191115_223421/0000/*.root");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__Autumn18-v1__MINIAODSIM/191115_223438/0000/*.root");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/crab_GGJets_M-2000To4000_Pt-50_13TeV-sherpa__Autumn18-v1__MINIAODSIM/191115_223455/0000/*.root");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__Autumn18-v1__MINIAODSIM/191115_223529/0000/*.root");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/crab_GGJets_M-4000To6000_Pt-50_13TeV-sherpa__Autumn18-v1__MINIAODSIM/191115_223512/0000/*.root");
+  chGGGen_2018->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__Autumn18-v1__MINIAODSIM/191115_223548/0000/*.root");
 
   TChain *chGGGen_2016 = new TChain("diphoton/fSherpaGenTree");
   chGGGen_2016->Add(baseDirectory + "/store/user/cawest/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_20/171130_184716/0000/*.root");
