@@ -411,9 +411,12 @@ ExoDiPhotonFakeRateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventS
     
     // fill EGM ID info
     ExoDiPhotons::FillPhotonEGMidInfo(fPhotonInfo, &(*pho), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
-    fPhotonInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
-    fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
-    fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
+    // fPhotonInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
+    // fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
+    // fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
+    fPhotonInfo.passEGMLooseID  = true;
+    fPhotonInfo.passEGMMediumID = true;
+    fPhotonInfo.passEGMTightID  = true;
 
     // fill our tree
     if ( ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) ||
