@@ -174,7 +174,7 @@ def get_dataset_list(dataset_type):
         datasets.append(["/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
         datasets.append(["/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
         datasets.append(["/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
-    if "2018_GGJets" in dataset_type:
+    if "2018_GJets" in dataset_type:
         datasets.append(["/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-4cores5k_102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
         datasets.append(["/GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
         datasets.append(["/GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
