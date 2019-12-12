@@ -40,22 +40,13 @@ config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
 config.Data.publication = False
+config.Data.splitting = 'FileBased'
+config.Data.unitsPerJob = 5
 if user == "cawest":
     cmssw_base = os.environ['CMSSW_BASE']
     commit_hash = subprocess.check_output(['git', '--git-dir=' + cmssw_base + '/src/diphoton-analysis/.git',  'rev-parse', '--short', 'HEAD']).replace('\n', '')
     config.Data.outLFNDirBase = '/store/user/' + user + '/diphoton_fake/' + commit_hash
 
-if "Run2016" in taskname:
-    config.Data.splitting = 'LumiBased'
-    config.Data.unitsPerJob = 100
-    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-274421_13TeV_PromptReco_Collisions16_JSON.txt'
-if "Run2015" in taskname:
-    config.Data.splitting = 'LumiBased'
-    config.Data.unitsPerJob = 100
-    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver_v2.txt'
-else:
-    config.Data.splitting = 'FileBased'
-    config.Data.unitsPerJob = 5
 
 
 config.section_("Site")
