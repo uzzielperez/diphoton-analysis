@@ -31,48 +31,48 @@ void diphoton_chain_looper(TString run, TString dataset, int npvLow = 0, int npv
       chain->Add("root://cmseos.fnal.gov//store/user/skaplan/noreplica/FakeRate/crab3_morejets/JetHT_Run2015D.root",0);
     }
     if(run=="Run2016B" or run=="2016") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/JetHT/crab_JetHT__Run2016B-17Jul2018_ver2-v2__MINIAOD/190928_211022/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2016B-17Jul2018_ver2-v2__MINIAOD/191215_031812/0000/*.root");
     }
     if(run=="Run2016C" or run=="2016") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/JetHT/crab_JetHT__Run2016C-17Jul2018-v1__MINIAOD/190928_211035/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2016C-17Jul2018-v1__MINIAOD/191215_031829/0000/*.root");
     }
     if(run=="Run2016D" or run=="2016") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/JetHT/crab_JetHT__Run2016D-17Jul2018-v1__MINIAOD/190928_211048/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2016D-17Jul2018-v1__MINIAOD/191215_031844/0000/*.root");
     }
     if(run=="Run2016E" or run=="2016") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/JetHT/crab_JetHT__Run2016E-17Jul2018-v1__MINIAOD/190928_211104/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2016E-17Jul2018-v1__MINIAOD/191215_031901/0000/*.root");
     }
     if(run=="Run2016F" or run=="2016") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/JetHT/crab_JetHT__Run2016F-17Jul2018-v1__MINIAOD/190928_211116/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2016F-17Jul2018-v1__MINIAOD/191215_031931/0000/*.root");
     }
     if(run=="Run2016G" or run=="2016") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/JetHT/crab_JetHT__Run2016G-17Jul2018-v1__MINIAOD/190928_211130/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2016G-17Jul2018-v1__MINIAOD/191215_031946/0000/*.root");
     }
     if(run=="Run2016H" or run=="2016") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/JetHT/crab_JetHT__Run2016H-17Jul2018-v1__MINIAOD/190928_200546/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2016H-17Jul2018-v1__MINIAOD/191215_032003/0000/*.root");
     }
     if(run=="Run2017B" or run=="2017") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/JetHT/crab_JetHT__Run2017B-31Mar2018-v1__MINIAOD/190928_210439/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2017B-31Mar2018-v1__MINIAOD/191215_024050/0000/*.root");
     }
     if(run=="Run2017C" or run=="2017") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/JetHT/crab_JetHT__Run2017C-31Mar2018-v1__MINIAOD/190928_210452/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2017C-31Mar2018-v1__MINIAOD/191215_024106/0000/*.root");
     }
     if(run=="Run2017D" or run=="2017") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/JetHT/crab_JetHT__Run2017D-31Mar2018-v1__MINIAOD/190928_210509/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2017D-31Mar2018-v1__MINIAOD/191215_024123/0000/*.root");
     }
     if(run=="Run2017E" or run=="2017") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/JetHT/crab_JetHT__Run2017E-31Mar2018-v1__MINIAOD/190928_210522/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2017E-31Mar2018-v1__MINIAOD/191215_024141/0000/*.root");
     }
     if(run=="Run2017F" or run=="2017") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/JetHT/crab_JetHT__Run2017F-31Mar2018-v1__MINIAOD/190928_210535/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2017F-31Mar2018-v1__MINIAOD/191215_024158/0000/*.root");
     }
     if(run=="Run2018A" or run=="2018") {
-      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/190925_224242/0000/*.root",0);
-      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/190925_224242/0001/*.root",0);
-      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/190925_224242/0002/*.root",0);
-      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/190925_224242/0003/*.root",0);
-      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/190925_224242/0004/*.root",0);
-      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/190925_224242/0005/*.root",0);
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/191211_030324/0000/*.root",0);
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/191211_030324/0001/*.root",0);
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/191211_030324/0002/*.root",0);
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/191211_030324/0003/*.root",0);
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/191211_030324/0004/*.root",0);
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/191211_030324/0005/*.root",0);
     }
     if(run=="Run2018Aprompt" or run=="2018prompt") {
       chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018A-PromptReco-v1__MINIAOD/181130_211700/0000/*.root");
@@ -84,9 +84,9 @@ void diphoton_chain_looper(TString run, TString dataset, int npvLow = 0, int npv
       chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018A-PromptReco-v3__MINIAOD/181130_211731/0001/*.root");
     }
     if(run=="Run2018B" or run=="2018") {
-      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018B-17Sep2018-v1__MINIAOD/190925_233035/0000/*.root");
-      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018B-17Sep2018-v1__MINIAOD/190925_233035/0001/*.root");
-      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018B-17Sep2018-v1__MINIAOD/190925_233035/0002/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018B-17Sep2018-v1__MINIAOD/191211_030359/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018B-17Sep2018-v1__MINIAOD/191211_030359/0001/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018B-17Sep2018-v1__MINIAOD/191211_030359/0002/*.root");
     }
     if(run=="Run2018Bprompt" or run=="2018prompt") {
       chain->Add(ntuple_path + "/JetHT/crab_JetHT__Run2018B-PromptReco-v1__MINIAOD/181130_211747/0000/*.root");
@@ -95,9 +95,9 @@ void diphoton_chain_looper(TString run, TString dataset, int npvLow = 0, int npv
       chain->Add(ntuple_path + "/JetHT/crab_JetHT__Run2018B-PromptReco-v2__MINIAOD/181130_211801/0000/*.root");
     }
     if(run=="Run2018C" or run=="2018") {
-      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018C-17Sep2018-v1__MINIAOD/190925_233045/0000/*.root");
-      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018C-17Sep2018-v1__MINIAOD/190925_233045/0001/*.root");
-      chain->Add(ntuple_path + "JetHT/crab_JetHT__Run2018C-17Sep2018-v1__MINIAOD/190925_233045/0002/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018C-17Sep2018-v1__MINIAOD/191211_030430/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018C-17Sep2018-v1__MINIAOD/191211_030430/0001/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018C-17Sep2018-v1__MINIAOD/191211_030430/0002/*.root");
     }
     if(run=="Run2018Cprompt" or run=="2018prompt") {
       chain->Add(ntuple_path + "/JetHT/crab_JetHT__Run2018C-PromptReco-v1__MINIAOD/181130_211816/0000/*.root");
@@ -107,61 +107,61 @@ void diphoton_chain_looper(TString run, TString dataset, int npvLow = 0, int npv
       chain->Add(ntuple_path + "/JetHT/crab_JetHT__Run2018C-PromptReco-v3__MINIAOD/181130_211845/0001/*.root");
     }
     if(run=="Run2018D" or run=="2018" or run=="2018prompt") {
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/190928_230655/0000/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/190928_230655/0001/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/190928_230655/0002/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/190928_230655/0003/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/190928_230655/0004/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/190928_230655/0005/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/190928_230655/0006/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/190928_230655/0007/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/190928_230655/0008/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/191211_030535/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/191211_030535/0001/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/191211_030535/0002/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/191211_030535/0003/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/191211_030535/0004/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/191211_030535/0005/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/191211_030535/0006/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/191211_030535/0007/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/JetHT/crab_JetHT__Run2018D-PromptReco-v2__MINIAOD/191211_030535/0008/*.root");
     }
   }
   if(dataset=="doublemuon") {
     if(run=="Run2016B" or run=="2016") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/DoubleMuon/crab_DoubleMuon__Run2016B-17Jul2018_ver2-v1__MINIAOD/190928_210904/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2016B-17Jul2018_ver2-v1__MINIAOD/191215_031623/0000/*.root");
     }
     if(run=="Run2016C" or run=="2016") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/DoubleMuon/crab_DoubleMuon__Run2016C-17Jul2018-v1__MINIAOD/190928_182243/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2016C-17Jul2018-v1__MINIAOD/191215_031638/0000/*.root");
     }
     if(run=="Run2016D" or run=="2016") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/DoubleMuon/crab_DoubleMuon__Run2016D-17Jul2018-v1__MINIAOD/190928_210918/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2016D-17Jul2018-v1__MINIAOD/191215_031653/0000/*.root");
     }
     if(run=="Run2016E" or run=="2016") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/DoubleMuon/crab_DoubleMuon__Run2016E-17Jul2018-v1__MINIAOD/190928_210931/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2016E-17Jul2018-v1__MINIAOD/191215_031708/0000/*.root");
     }
     if(run=="Run2016F" or run=="2016") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/DoubleMuon/crab_DoubleMuon__Run2016F-17Jul2018-v1__MINIAOD/190928_210944/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2016F-17Jul2018-v1__MINIAOD/191215_031725/0000/*.root");
     }
     if(run=="Run2016G" or run=="2016") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/DoubleMuon/crab_DoubleMuon__Run2016G-17Jul2018-v1__MINIAOD/190928_210957/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2016G-17Jul2018-v1__MINIAOD/191215_031741/0000/*.root");
     }
     if(run=="Run2016H" or run=="2016") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/DoubleMuon/crab_DoubleMuon__Run2016H-17Jul2018-v1__MINIAOD/190928_211009/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2016H-17Jul2018-v1__MINIAOD/191215_031755/0000/*.root");
     }
     if(run=="Run2017B" or run=="2017") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/DoubleMuon/crab_DoubleMuon__Run2017B-31Mar2018-v1__MINIAOD/190928_210547/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2017B-31Mar2018-v1__MINIAOD/191215_024217/0000/*.root");
     }
     if(run=="Run2017C" or run=="2017") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/DoubleMuon/crab_DoubleMuon__Run2017C-31Mar2018-v1__MINIAOD/190928_210559/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2017C-31Mar2018-v1__MINIAOD/191215_024233/0000/*.root");
     }
     if(run=="Run2017D" or run=="2017") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/DoubleMuon/crab_DoubleMuon__Run2017D-31Mar2018-v1__MINIAOD/190928_210611/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2017D-31Mar2018-v1__MINIAOD/191215_024251/0000/*.root");
     }
     if(run=="Run2017E" or run=="2017") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/DoubleMuon/crab_DoubleMuon__Run2017E-31Mar2018-v1__MINIAOD/190928_210623/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2017E-31Mar2018-v1__MINIAOD/191215_024310/0000/*.root");
     }
     if(run=="Run2017F" or run=="2017") {
-      chain->Add(ntuple_path + "diphoton_fake/2a09e6b/DoubleMuon/crab_DoubleMuon__Run2017F-31Mar2018-v1__MINIAOD/190928_210636/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2017F-31Mar2018-v1__MINIAOD/191215_024328/0000/*.root");
     }
     if(run=="Run2018A" or run=="2018") {
-      chain->Add(ntuple_path + "DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/190926_022140/0000/*.root");
-      chain->Add(ntuple_path + "DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/190926_022140/0001/*.root");
-      chain->Add(ntuple_path + "DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/190926_022140/0002/*.root");
-      chain->Add(ntuple_path + "DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/190926_022140/0003/*.root");
-      chain->Add(ntuple_path + "DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/190926_022140/0004/*.root");
-      chain->Add(ntuple_path + "DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/190926_022140/0005/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/191211_030607/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/191211_030607/0001/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/191211_030607/0002/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/191211_030607/0003/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/191211_030607/0004/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/191211_030607/0005/*.root");
     }
     if(run=="Run2018Aprompt" or run=="2018prompt") {
       chain->Add(ntuple_path + "/DoubleMuon/crab_DoubleMuon__Run2018A-PromptReco-v1__MINIAOD/181128_204823/0000/*.root");
@@ -173,9 +173,9 @@ void diphoton_chain_looper(TString run, TString dataset, int npvLow = 0, int npv
       chain->Add(ntuple_path + "/DoubleMuon/crab_DoubleMuon__Run2018A-PromptReco-v3__MINIAOD/181128_214013/0001/*.root");
     }
     if(run=="Run2018B" or run=="2018") {
-      chain->Add(ntuple_path + "DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/190926_022153/0000/*.root");
-      chain->Add(ntuple_path + "DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/190926_022153/0001/*.root");
-      chain->Add(ntuple_path + "DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/190926_022153/0002/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/191211_030628/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/191211_030628/0001/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/191211_030628/0002/*.root");
     }
     if(run=="Run2018Bprompt" or run=="2018prompt") {
       chain->Add(ntuple_path + "/DoubleMuon/crab_DoubleMuon__Run2018B-PromptReco-v1__MINIAOD/181128_214030/0000/*.root");
@@ -184,9 +184,9 @@ void diphoton_chain_looper(TString run, TString dataset, int npvLow = 0, int npv
       chain->Add(ntuple_path + "/DoubleMuon/crab_DoubleMuon__Run2018B-PromptReco-v2__MINIAOD/181128_214045/0000/*.root");
     }
     if(run=="Run2018C" or run=="Run2018Ctest" or run=="2018") {
-      chain->Add(ntuple_path + "DoubleMuon/crab_DoubleMuon__Run2018C-17Sep2018-v1__MINIAOD/190926_022205//0000/*.root");
-      chain->Add(ntuple_path + "DoubleMuon/crab_DoubleMuon__Run2018C-17Sep2018-v1__MINIAOD/190926_022205//0001/*.root");
-      chain->Add(ntuple_path + "DoubleMuon/crab_DoubleMuon__Run2018C-17Sep2018-v1__MINIAOD/190926_022205//0002/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018C-17Sep2018-v1__MINIAOD/191211_030652/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018C-17Sep2018-v1__MINIAOD/191211_030652/0001/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018C-17Sep2018-v1__MINIAOD/191211_030652/0002/*.root");
     }
     if(run=="Run2018Cprompt" or run=="2018prompt") {
       chain->Add(ntuple_path + "/DoubleMuon/crab_DoubleMuon__Run2018C-PromptReco-v1__MINIAOD/181128_214100/0000/*.root");
@@ -196,15 +196,15 @@ void diphoton_chain_looper(TString run, TString dataset, int npvLow = 0, int npv
       chain->Add(ntuple_path + "/DoubleMuon/crab_DoubleMuon__Run2018C-PromptReco-v3__MINIAOD/181128_214629/0001/*.root");
     }
     if(run=="Run2018D" or run=="2018" or run=="2018prompt") {
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/190928_230710/0000/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/190928_230710/0001/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/190928_230710/0002/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/190928_230710/0003/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/190928_230710/0004/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/190928_230710/0005/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/190928_230710/0006/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/190928_230710/0007/*.root");
-      chain->Add(ntuple_path + "diphoton_fake/70037b0/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/190928_230710/0008/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/191211_030722/0000/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/191211_030722/0001/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/191211_030722/0002/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/191211_030722/0003/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/191211_030722/0004/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/191211_030722/0005/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/191211_030722/0006/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/191211_030722/0007/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/191211_030722/0008/*.root");
     }
   }
   chain->ls();
