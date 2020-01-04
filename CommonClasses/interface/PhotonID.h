@@ -136,7 +136,7 @@ namespace ExoDiPhotons{
       }
     } // end EE
     else {
-      return 99999.99;
+      return -99999.99;
     }
   }
   
