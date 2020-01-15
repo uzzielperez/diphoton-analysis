@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Mon Sep 30 19:49:46 2019 by ROOT version 6.12/07
+// Sun Jan 12 17:18:04 2020 by ROOT version 6.12/07
 // from TTree fTree/PhotonTree
-// found on file: root://cmseos.fnal.gov//store/user/cawest/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/190925_224242/0005/ExoDiphotonAnalyzer_5540.root
+// found on file: root://cmseos.fnal.gov//store/user/cawest/diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/191211_030628/0002/ExoDiphotonAnalyzer_2619.root
 //////////////////////////////////////////////////////////
 
 #ifndef FakeRateAnalysis_h
@@ -931,6 +931,30 @@ public :
    Double_t        Photon_chEAegmID;
    Double_t        Photon_nhEAegmID;
    Double_t        Photon_phoEAegmID;
+   Double_t        Photon_rapidity;
+   Float_t         Photon_ecalEnergyPreCorr;
+   Float_t         Photon_ecalEnergyErrPreCorr;
+   Float_t         Photon_ecalEnergyPostCorr;
+   Float_t         Photon_ecalEnergyErrPostCorr;
+   Float_t         Photon_energyScaleValue;
+   Float_t         Photon_energySigmaValue;
+   Float_t         Photon_energySmearNrSigma;
+   Float_t         Photon_energyScaleUp;
+   Float_t         Photon_energyScaleDown;
+   Float_t         Photon_energyScaleStatUp;
+   Float_t         Photon_energyScaleStatDown;
+   Float_t         Photon_energyScaleSystUp;
+   Float_t         Photon_energyScaleSystDown;
+   Float_t         Photon_energyScaleGainUp;
+   Float_t         Photon_energyScaleGainDown;
+   Float_t         Photon_energyScaleEtUp;
+   Float_t         Photon_energyScaleEtDown;
+   Float_t         Photon_energySigmaUp;
+   Float_t         Photon_energySigmaDown;
+   Float_t         Photon_energySigmaPhiUp;
+   Float_t         Photon_energySigmaPhiDown;
+   Float_t         Photon_energySigmaRhoUp;
+   Float_t         Photon_energySigmaRhoDown;
    Bool_t          Photon_passEGMLooseID;
    Bool_t          Photon_passEGMMediumID;
    Bool_t          Photon_passEGMTightID;
@@ -954,7 +978,6 @@ public :
    Bool_t          Photon_isDenominatorObj;
    Bool_t          Photon_isSaturated;
    Bool_t          Photon_isMCTruthFake;
-   Double_t        Photon_rapidity;
    std::vector<double>  *VertexCollInfo_vx;
    std::vector<double>  *VertexCollInfo_vy;
    std::vector<double>  *VertexCollInfo_vz;
@@ -1002,11 +1025,11 @@ FakeRateAnalysisBase::FakeRateAnalysisBase(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmseos.fnal.gov//store/user/cawest/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/190925_224242/0005/ExoDiphotonAnalyzer_5540.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmseos.fnal.gov//store/user/cawest/diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/191211_030628/0002/ExoDiphotonAnalyzer_2619.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("root://cmseos.fnal.gov//store/user/cawest/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/190925_224242/0005/ExoDiphotonAnalyzer_5540.root");
+         f = new TFile("root://cmseos.fnal.gov//store/user/cawest/diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/191211_030628/0002/ExoDiphotonAnalyzer_2619.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("root://cmseos.fnal.gov//store/user/cawest/JetHT/crab_JetHT__Run2018A-17Sep2018-v1__MINIAOD/190925_224242/0005/ExoDiphotonAnalyzer_5540.root:/diphoton");
+      TDirectory * dir = (TDirectory*)f->Get("root://cmseos.fnal.gov//store/user/cawest/diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/191211_030628/0002/ExoDiphotonAnalyzer_2619.root:/diphoton");
       dir->GetObject("fTree",tree);
 
    }
