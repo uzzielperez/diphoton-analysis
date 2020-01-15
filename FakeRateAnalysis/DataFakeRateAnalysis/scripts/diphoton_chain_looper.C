@@ -162,6 +162,7 @@ void diphoton_chain_looper(TString run, TString dataset, int npvLow = 0, int npv
       chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/191211_030607/0003/*.root");
       chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/191211_030607/0004/*.root");
       chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD/191211_030607/0005/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018A-17Sep2018-v2__MINIAOD_recovery/191220_180437/0000/*.root");
     }
     if(run=="Run2018Aprompt" or run=="2018prompt") {
       chain->Add(ntuple_path + "/DoubleMuon/crab_DoubleMuon__Run2018A-PromptReco-v1__MINIAOD/181128_204823/0000/*.root");
@@ -205,6 +206,7 @@ void diphoton_chain_looper(TString run, TString dataset, int npvLow = 0, int npv
       chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/191211_030722/0006/*.root");
       chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/191211_030722/0007/*.root");
       chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD/191211_030722/0008/*.root");
+      chain->Add(ntuple_path + "diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018D-PromptReco-v2__MINIAOD_recovery/191220_180002/0000/*.root");
     }
   }
   chain->ls();
