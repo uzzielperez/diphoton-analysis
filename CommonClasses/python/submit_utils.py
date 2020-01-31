@@ -59,6 +59,42 @@ def is_reminiaod(dataset_name):
     else:
         return False
 
+def egamma_info(dataset_name):
+    info = {}
+    # we use our own ID so these are only for comparisons with defaults
+    egm_data_dir = "RecoEgamma/PhotonIdentification/data/"
+    info['era'] = ''
+
+    if "Run2015" in dataset_name or "Run2016" in dataset_name or "Summer16MiniAODv3" in dataset_name:
+        print("Using 2016 EGM corrections")
+        info['loosePhoId'] = "cutBasedPhotonID-Spring16-V2p2-loose"
+        info['mediumPhoId'] = "cutBasedPhotonID-Spring16-V2p2-medium"
+        info['tightPhoId'] = "cutBasedPhotonID-Spring16-V2p2-tight"
+        info['effAreaChHad'] = egm_data_dir + "Spring16/effAreaPhotons_cone03_pfChargedHadrons_90percentBased.txt"
+        info['effAreaNeuHad'] = egm_data_dir + "Spring16/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased.txt"
+        info['effAreaPhoHad'] = egm_data_dir + "Spring16/effAreaPhotons_cone03_pfPhotons_90percentBased_3bins.txt"
+        info['era'] = '2016-Legacy'
+    elif "Run2017" in dataset_name or "RunIIFall17MiniAODv2" in dataset_name:
+        print("Using 2017 EGM corrections")
+        info['loosePhoId'] = "cutBasedPhotonID-Fall17-94X-V2-loose"
+        info['mediumPhoId'] = "cutBasedPhotonID-Fall17-94X-V2-medium"
+        info['tightPhoId'] = "cutBasedPhotonID-Fall17-94X-V2-tight"
+        info['effAreaChHad'] = egm_data_dir + "Fall17/effAreaPhotons_cone03_pfChargedHadrons_90percentBased_V2.txt"
+        info['effAreaNeuHad'] = egm_data_dir + "Fall17/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased_V2.txt"
+        info['effAreaPhoHad'] = egm_data_dir + "Fall17/effAreaPhotons_cone03_pfPhotons_90percentBased_V2.txt"
+        info['era'] = '2017-Nov17ReReco'
+    elif "Run2018" in dataset_name or "RunIIAutumn18MiniAOD" in dataset_name:
+        print("Using 2018 EGM corrections")
+        info['loosePhoId'] = "cutBasedPhotonID-Fall17-94X-V2-loose"
+        info['mediumPhoId'] = "cutBasedPhotonID-Fall17-94X-V2-medium"
+        info['tightPhoId'] = "cutBasedPhotonID-Fall17-94X-V2-tight"
+        info['effAreaChHad'] = egm_data_dir + "Fall17/effAreaPhotons_cone03_pfChargedHadrons_90percentBased_V2.txt"
+        info['effAreaNeuHad'] = egm_data_dir + "Fall17/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased_V2.txt"
+        info['effAreaPhoHad'] = egm_data_dir + "Fall17/effAreaPhotons_cone03_pfPhotons_90percentBased_V2.txt"
+        info['era'] = '2018-Prompt'
+
+    return info
+
 def get_dataset_list(dataset_type):
     datasets = [[]]
 
@@ -138,7 +174,7 @@ def get_dataset_list(dataset_type):
         datasets.append(["/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
         datasets.append(["/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
         datasets.append(["/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
-    if "2018_GGJets" in dataset_type:
+    if "2018_GJets" in dataset_type:
         datasets.append(["/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-4cores5k_102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
         datasets.append(["/GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])
         datasets.append(["/GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"])

@@ -62,8 +62,9 @@ void allSamples(const std::string &region, const std::string &year, TFile * outp
   double xMax = 6000.;
 
   std::map<std::string, std::string> cuts;
-  cuts["BB"] = "isGood*(Diphoton.Minv > 500 && Diphoton.deltaR > 0.45 && Photon1.pt>125 && Photon2.pt>125 && Photon1.isEB && Photon2.isEB)";
-  cuts["BE"] = "isGood*(Diphoton.Minv > 500 && Diphoton.deltaR > 0.45 && Photon1.pt>125 && Photon2.pt>125 && ( (Photon1.isEB && Photon2.isEE) || (Photon2.isEB &&  Photon1.isEE )))";
+  // photon Minv selection needs to come later
+  cuts["BB"] = "isGood*(Diphoton.deltaR > 0.45 && Photon1.pt>125 && Photon2.pt>125 && Photon1.isEB && Photon2.isEB)";
+  cuts["BE"] = "isGood*(Diphoton.deltaR > 0.45 && Photon1.pt>125 && Photon2.pt>125 && ( (Photon1.isEB && Photon2.isEE) || (Photon2.isEB &&  Photon1.isEE )))";
 
   std::vector<std::string> samples = getSampleList();
 
@@ -128,19 +129,52 @@ void allSamples(const std::string &region, const std::string &year, TFile * outp
       if( is2015or2016 ) sampleCut += "*" + kfactorString(region, "R1F1_125GeV_CT10");
       else sampleCut += "*" + kfactorString(region, "R1F1_125GeV_NNPDF");
     }
-    std::string baseName(getSampleBase(isample, year));
-    TH1F *hist = new TH1F(baseName.c_str(), baseName.c_str(), nBins, xMin, xMax);
-    histograms[baseName] = hist;
-    std::cout << "Making histograms for sample " << hist->GetName() << " with cut\n" << sampleCut << std::endl;
-    chains[getBase(isample)]->Project(baseName.c_str(), "Diphoton.Minv",  sampleCut.c_str());
-    // move overflow to last bin
-    int nbins = histograms[baseName]->GetNbinsX();
-    float lastBin = histograms[baseName]->GetBinContent(nbins);
-    float overflow = histograms[baseName]->GetBinContent(nbins+1);
-    histograms[baseName]->SetBinContent(nbins, lastBin + overflow);
-    histograms[baseName]->SetBinContent(nbins+1, 0.0);
-    std::cout << "Integral: " << histograms[baseName]->Integral() << std::endl;
-    output->cd(region.c_str());
+
+    std::vector<std::string> postfixes = {""};
+    std::vector<std::string> variations = {"energyScaleStat", "energyScaleSyst", "energyScaleGain", "energySigma"};
+    std::vector<std::string> directions = {"Up", "Down"};
+    std::map<std::string, std::string> reweightings;
+    reweightings[""] = "";
+    for(const auto& variation : variations) {
+      for(const auto& direction : directions) {
+	std::string postfix("_");
+	postfix += variation;
+	postfix += direction;
+	postfixes.push_back(postfix);
+	std::string reweighting = "*(Photon1.";
+	reweighting += variation + direction;
+	reweighting += "*Photon2.";
+	reweighting += variation + direction;
+	reweighting += ")";
+	reweightings[postfix] = reweighting;
+      }
+    }
+
+    for(const auto& postfix : postfixes) {
+      std::string baseName(getSampleBase(isample, year));
+      baseName += postfix;
+      TH1F *hist = new TH1F(baseName.c_str(), baseName.c_str(), nBins, xMin, xMax);
+      histograms[baseName] = hist;
+      std::string varname("Diphoton.Minv");
+      varname += reweightings[postfix];
+      std::string cut("*(");
+      cut += varname;
+      //      cut += reweightings[postfix];
+      cut += ">500)";
+      std::string fullCut(sampleCut);
+      fullCut += cut;
+      std::cout << "Making histograms for sample " << hist->GetName() << " with cut\n" << fullCut
+		<< " and variable " << varname << std::endl;
+      chains[getBase(isample)]->Project(baseName.c_str(), varname.c_str(),  fullCut.c_str());
+      // move overflow to last bin
+      int nbins = histograms[baseName]->GetNbinsX();
+      float lastBin = histograms[baseName]->GetBinContent(nbins);
+      float overflow = histograms[baseName]->GetBinContent(nbins+1);
+      histograms[baseName]->SetBinContent(nbins, lastBin + overflow);
+      histograms[baseName]->SetBinContent(nbins+1, 0.0);
+      std::cout << "Integral: " << histograms[baseName]->Integral() << std::endl;
+      output->cd(region.c_str());
+    }
   }
 
   // subtract nonresonant background

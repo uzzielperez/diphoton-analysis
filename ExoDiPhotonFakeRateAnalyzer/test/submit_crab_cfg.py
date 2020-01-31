@@ -38,7 +38,8 @@ if do2018data:
   DATASETS.append(["/JetHT/Run2018A-17Sep2018-v1/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018B-17Sep2018-v1/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018C-17Sep2018-v1/MINIAOD"])
-  DATASETS.append(["/JetHT/Run2018D-PromptReco-v1/MINIAOD"])
+# contains only runs 320413, 320416 and 320434, which are not in good run JSON
+#  DATASETS.append(["/JetHT/Run2018D-PromptReco-v1/MINIAOD"])
   DATASETS.append(["/JetHT/Run2018D-PromptReco-v2/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2018A-17Sep2018-v2/MINIAOD"])
   DATASETS.append(["/DoubleMuon/Run2018B-17Sep2018-v1/MINIAOD"])

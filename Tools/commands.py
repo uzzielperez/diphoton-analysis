@@ -18,7 +18,9 @@ for year in years:
 
 for year in years:
     arguments = str(year)
-    print("makeDatacards.exe " + arguments)
+    samples = {"old", "new"}
+    for sample in samples:
+        print("makeDatacards.exe " + arguments + " " + sample)
 
 for year in years:
     for region in regions_alternate:

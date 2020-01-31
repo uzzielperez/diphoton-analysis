@@ -65,7 +65,7 @@ double intersection(TGraph *gr, double value)
 
 int main(int argc, char *argv[])
 {
-  std::string limitDirectory = "/uscms/homes/c/cawest/diphoton/CMSSW_10_2_16/src/HiggsAnalysis/CombinedLimit";
+  std::string limitDirectory = "/uscms/homes/c/cawest/diphoton/egm_test/CMSSW_10_2_16/src/HiggsAnalysis/CombinedLimit";
   if(argc > 2) {
     std::cout << "Syntax: limit.exe [combine directory]" << std::endl;
     return -1;

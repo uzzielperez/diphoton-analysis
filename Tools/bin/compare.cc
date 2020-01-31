@@ -5,12 +5,10 @@
 
 int main(int argc, char *argv[])
 {
-  std::string data_year("");
+  std::string region, data_year;
 
-  std::string region;
-
-  if(argc!=2) {
-    std::cout << "Syntax: compare.exe [barrel/endcap]" << std::endl;
+  if(argc!=3) {
+    std::cout << "Syntax: compare.exe [barrel/endcap] [2016/2018/2018AB/2018ABC/2018D]" << std::endl;
     return -1;
   }
   else {
@@ -19,6 +17,13 @@ int main(int argc, char *argv[])
       std::cout << "Only 'barrel' and 'endcap' are allowed regions. " << std::endl;
       return -1;
     }
+    data_year = argv[2];
+    if(data_year!="2016" && data_year!="2018" && data_year!="2018AB" &&
+       data_year!="2018ABC" && data_year!="2018D") {
+      std::cout << "Only '2016', '2018', '2018AB', '2018ABC', and '2018D' are allowed data years. " << std::endl;
+      return -1;
+    }
+
   }
 
   bool endcap = (region=="endcap");
@@ -42,13 +47,14 @@ int main(int argc, char *argv[])
   init();
 
   // define samples to be used in histograms
-  sample data_2018("data", "Data (2018)", "2018", "(HLT_DoublePhoton70||HLT_ECALHT800)");
-  sample data_2017("data", "Data (2017)", "2017", std::to_string(luminosity["2018"]/luminosity["2017"]) + "*(HLT_DoublePhoton70||HLT_ECALHT800)");
+  std::string trigger(data_year.compare("2016") == 0 ? "(HLT_DoublePhoton60||HLT_ECALHT800)" : "(HLT_DoublePhoton70||HLT_ECALHT800)");
+  sample data("data", "Data (" + data_year + ")", data_year, "(HLT_DoublePhoton70||HLT_ECALHT800)");
+  sample data_2017("data", "Data (2017)", "2017", std::to_string(luminosity[data_year]/luminosity["2017"]) + "*(HLT_DoublePhoton70||HLT_ECALHT800)");
   data_2017.drawAsMC = true;
   data_2017.m_markerColor = kRed;
-  data_2018.m_markerColor = kBlue;
+  data.m_markerColor = kBlue;
   std::vector<sample> samples;
-  samples.push_back(data_2018);
+  samples.push_back(data);
   samples.push_back(data_2017);
 
   plot p0(samples, "Minv", cut, 40, 0, 2000);
@@ -60,15 +66,15 @@ int main(int argc, char *argv[])
   plot p6(samples, "abs(Diphoton.cosThetaStar)", cut, 20, 0, 1);
   plot p7(samples, "nPV", cut, 60, 0, 60);
   plot p8(samples, "Diphoton.deltaR", cut, nbins/2, 0, 5);
-  plot p9(samples, "Photon1.eta", cut, nbins/2, -5, 5);
-  plot p10(samples, "Photon2.eta", cut, nbins/2, -5, 5);
+  plot p9(samples, "Photon1.scEta", cut, nbins/2, -5, 5);
+  plot p10(samples, "Photon2.scEta", cut, nbins/2, -5, 5);
   plot p11(samples, "Photon1.phi", cut, nbins/2, -TMath::Pi(), TMath::Pi());
   plot p12(samples, "Photon2.phi", cut, nbins/2, -TMath::Pi(), TMath::Pi());
   plot p13(samples, "abs(Diphoton.deltaPhi)", cut, nbins/4, 0, TMath::Pi());
 
   std::string extraFilenameInfo(region);
   extraFilenameInfo += "_";
-  extraFilenameInfo += "compare";
+  extraFilenameInfo += "compare_" + data_year;
 
   p0.output("plots", extraFilenameInfo);
   p1.output("plots", extraFilenameInfo);
