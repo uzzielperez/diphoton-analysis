@@ -195,6 +195,16 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& region, 
   nuisance fake_sample("fake_sample", "shape", {"-", "-", "1.0", "-"});
   nuisance eff("eff", "lnN", {"1.1", "1.1", "1.05", "1.1"});
   nuisance xsec_minor_bkg("xsec_minor_bkg", "lnN", {"-", "-", "-", "1.5"});
+  // this would be used only for an overall scaling
+  // but we subdivide further
+  //  nuisance energyScale("energyScale", "shape", {"1", "1", "-", "1"});
+  // for technical reasons, exclude EGM systematic uncertainties
+  // on signal and 2016 datasets
+  std::string useEGMSyst(datacardYear.compare("2016") == 0 ? "-" : "1");
+  nuisance energyScaleStat("energyScaleStat", "shape", {"-", useEGMSyst, "-", useEGMSyst});
+  nuisance energyScaleSyst("energyScaleSyst", "shape", {"-", useEGMSyst, "-", useEGMSyst});
+  nuisance energyScaleGain("energyScaleGain", "shape", {"-", useEGMSyst, "-", useEGMSyst});
+  nuisance energySigma("energySigma", "shape", {"-", useEGMSyst, "-", useEGMSyst});
 
   std::vector<nuisance> allNuisances;
   // allNuisances.push_back(diphotonkfactorStat0);
@@ -222,6 +232,10 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& region, 
   allNuisances.push_back(fake_sample);
   allNuisances.push_back(eff);
   allNuisances.push_back(xsec_minor_bkg);
+  allNuisances.push_back(energyScaleStat);
+  allNuisances.push_back(energyScaleSyst);
+  allNuisances.push_back(energyScaleGain);
+  allNuisances.push_back(energySigma);
   // add pdf uncertainties
   std::vector<nuisance*> pdf_nuisances;
   for(int i = 1; i < 51; i++) {
