@@ -23,8 +23,8 @@
 
 // 20.3 fb^-1 were acquired in 2018 before loss of HEM15/HEM16
 // 59.97 fb^-1 are validated but only 59.28 fb^-1 available in EGamma dataset
-std::map<std::string, double> luminosity { {"2015", 2.62}, {"2016", 35.9}, {"2017", 41.527}, {"2018", 59.67}, {"2018_newjson", 14.00}, {"2018ABC_prompt", 28.04}, {"2018ABC_rereco", 28.04}};
-std::map<std::string, double> luminosityErrorFrac { {"2015", 0.023}, {"2016", 0.026}, {"2017", 0.023}, {"2018", 0.025}, {"2018_newjson", 0.025}, {"2018ABC_prompt", 0.025}, {"2018ABC_rereco", 0.025}};
+std::map<std::string, double> luminosity { {"2015", 2.62}, {"2016", 35.9}, {"2017", 41.527}, {"2018", 59.67}, {"2018_newjson", 14.00}, {"2018ABC_prompt", 28.04}, {"2018ABC_rereco", 28.04}, {"2018AB", 14.00+7.10}, {"2018ABC", 14.00+7.10+6.94}, {"2018D", 31.93}};
+std::map<std::string, double> luminosityErrorFrac { {"2015", 0.023}, {"2016", 0.026}, {"2017", 0.023}, {"2018", 0.025}, {"2018_newjson", 0.025}, {"2018ABC_prompt", 0.025}, {"2018ABC_rereco", 0.025}, {"2018AB", 0.025}, {"2018ABC", 0.025}, {"2018D", 0.025}};
 
 std::map<std::string, TChain*> chains;
 std::map<std::string, int> lineStyles;
@@ -91,8 +91,12 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
   TString treeType("diphoton/fTree");
   TString baseDirectory("root://cmseos.fnal.gov/");
 
+  TChain *chData2018AB_rereco = new TChain(treeType);
+  chData2018AB_rereco->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018A-17Sep2018-v2__MINIAOD/191115_212609/*.root");
+  chData2018AB_rereco->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018B-17Sep2018-v1__MINIAOD/191115_212444/*.root");
+
   TChain *chData2018ABC_rereco = new TChain(treeType);
-  chData2018ABC_rereco->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018A-17Sep2018-v2__MINIAOD/191115_212609/*.root");
+  chData2018ABC_rereco->Add(chData2018AB_rereco);
   chData2018ABC_rereco->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018B-17Sep2018-v1__MINIAOD/191115_212444/*.root");
   chData2018ABC_rereco->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018C-17Sep2018-v1__MINIAOD/191115_212505/*.root");
 
@@ -109,10 +113,13 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
   TChain *chData2018_newjson = new TChain(treeType);
   chData2018_newjson->Add(baseDirectory + "/store/user/cawest/diphoton/1d2157e/EGamma/crab_EGamma__Run2018A-17Sep2018-v2__MINIAOD/191107_231838/*.root");
 
+  TChain *chData2018D = new TChain(treeType);
+  chData2018D->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/191115_212527/*.root");
+
   // skimmed version of chData2018_unskimmed
   TChain *chData2018 = new TChain(treeType);
   chData2018->Add(chData2018ABC_rereco);
-  chData2018->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/191115_212527/*.root");
+  chData2018->Add(chData2018D);
 
   TChain *chData2018_prompt = new TChain(treeType);
   chData2018_prompt->Add(chData2018ABC_prompt);
@@ -548,7 +555,9 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
   chains["data_2018_prompt"] = chData2018_prompt;
   chains["data_2018"] = chData2018;
   chains["data_2018ABC_prompt"] = chData2018ABC_prompt;
-  chains["data_2018ABC_rereco"] = chData2018ABC_rereco;
+  chains["data_2018AB"] = chData2018AB_rereco;
+  chains["data_2018ABC"] = chData2018ABC_rereco;
+  chains["data_2018D"] = chData2018D;
   chains["data_jetht_2017_unskimmed"] = chDataJetHT2017_unskimmed;
   chains["data_jetht_2018_unskimmed"] = chDataJetHT2018_unskimmed;
   chains["data_2018_prompt_unskimmed"] = chData2018_prompt_unskimmed;
