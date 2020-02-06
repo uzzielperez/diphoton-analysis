@@ -135,6 +135,43 @@ namespace ExoDiPhotons {
     // from https://twiki.cern.ch/twiki/bin/view/LHCPhysics/TtbarNNLO
     if(sample.Contains("TTJets_")) xsec = 815.96 ;
     // from running GenXsecAnalyzer on full sample
+    if(sample.Contains("DYJetsToLL_M-50_HT-70to100_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8")) xsec = 8.096e+02; // +- 1.718e-02 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-100to200_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8")) xsec = 1.609e+02; // +- 4.384e-02 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-200to400_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8")) xsec = 4.858e+01; // +- 1.360e-02 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-400to600_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8")) xsec = 6.978e+00; // +- 2.120e-03 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-600to800_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8")) xsec = 1.757e+00; // +- 5.599e-04 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-800to1200_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8")) xsec = 8.098e-01; // +- 4.354e-04 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-1200to2500_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8")) xsec = 1.930e-01; // +- 2.526e-04 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-2500toInf_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8")) xsec = 3.513e-03; // +- 5.263e-06 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-40to70_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 3.105e+02; // +- 3.212e-01 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-70to100_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 1.471e+02; // +- 4.371e-02 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 1.609e+02; // +- 4.454e-02 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 4.867e+01; // +- 1.395e-02 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 6.984e+00; // +- 2.070e-03 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-600to800_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 1.744e+00; // +- 5.613e-04 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-800to1200_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 8.048e-01; // +- 4.359e-04 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-1200to2500_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 1.880e+00; // +- 1.597e-04 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-2500toInf_TuneCP5_13TeV-madgraphMLM-pythia8")) xsec = 3.476e-03; // +- 5.443e-06 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-70to100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 1.704e+02; // +- 5.046e-02 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 1.475e+02; // +- 8.438e-02 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-200to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 4.104e+01; // +- 4.009e-02 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 5.675e+00; // +- 5.273e-03 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-600to800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 1.358e+00; // +- 4.539e-04 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 6.236e-01; // +- 3.671e-04 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-1200to2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 1.512e-01; // +- 1.884e-04 pb
+    if(sample.Contains("DYJetsToLL_M-50_HT-2500toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")) xsec = 3.659e-03; // +- 5.548e-06 pb
+    if(sample.Contains("TTGamma_Dilept_ptGamma100-200_TuneCP5_13TeV-madgraph-pythia8")) xsec = 3.427e-02; // +- 6.371e-06 pb
+    if(sample.Contains("TTGamma_Dilept_ptGamma200inf_TuneCP5_13TeV-madgraph-pythia8")) xsec = 6.800e-03; // +- 1.598e-06 pb
+    if(sample.Contains("TTGamma_Hadronic_ptGamma100-200_TuneCP5_13TeV-madgraph-pythia8")) xsec = 1.256e-01; // +- 2.998e-05 pb
+    if(sample.Contains("TTGamma_Hadronic_ptGamma200inf_TuneCP5_13TeV-madgraph-pythia8")) xsec = 2.678e-02; // +- 6.561e-06 pb
+    if(sample.Contains("TTGamma_SingleLept_ptGamma100-200_TuneCP5_13TeV-madgraph-pythia8")) xsec = 1.320e-01; // +- 1.011e-05 pb
+    if(sample.Contains("TTGamma_SingleLept_ptGamma200inf_TuneCP5_13TeV-madgraph-pythia8")) xsec = 2.703e-02; // +- 2.680e-06 pb
+    if(sample.Contains("TTGamma_Dilept_ptGamma100-200_TuneCP5_PSweights_13TeV-madgraph-pythia8")) xsec = 3.428e-02; // +- 5.993e-06 pb
+    if(sample.Contains("TTGamma_Dilept_ptGamma200inf_TuneCP5_PSweights_13TeV-madgraph-pythia8")) xsec = 6.797e-03; // +- 8.939e-07 pb
+    if(sample.Contains("TTGamma_Hadronic_ptGamma100-200_TuneCP5_PSweights_13TeV-madgraph-pythia8")) xsec = 1.251e-01; // +- 2.912e-05 pb
+    if(sample.Contains("TTGamma_Hadronic_ptGamma200inf_TuneCP5_PSweights_13TeV-madgraph-pythia8")) xsec = 2.687e-02; // +- 6.644e-06 pb
+    if(sample.Contains("TTGamma_SingleLept_ptGamma100-200_TuneCP5_PSweights_13TeV-madgraph-pythia8")) xsec = 1.320e-01; // +- 9.733e-06 pb
+    if(sample.Contains("TTGamma_SingleLept_ptGamma200inf_TuneCP5_PSweights_13TeV-madgraph-pythia8")) xsec = 2.703e-02; // +- 2.555e-06 pb
     if(sample.Contains("GGGJets_13TeV-sherpa")) xsec = 1.814e-01;
     if(sample.Contains("GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8")) xsec = 1.720e+00;
     // from running GenXsecAnalyzer on full sample
