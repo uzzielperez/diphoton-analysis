@@ -24,7 +24,7 @@
 // 20.3 fb^-1 were acquired in 2018 before loss of HEM15/HEM16
 // 59.97 fb^-1 are validated but only 59.28 fb^-1 available in EGamma dataset
 std::map<std::string, double> luminosity { {"2015", 2.62}, {"2016", 35.9}, {"2017", 41.527}, {"2018", 59.67}, {"2018_newjson", 14.00}, {"2018ABC_prompt", 28.04}, {"2018ABC_rereco", 28.04}, {"2018AB", 14.00+7.10}, {"2018ABC", 14.00+7.10+6.94}, {"2018D", 31.93}};
-std::map<std::string, double> luminosityErrorFrac { {"2015", 0.023}, {"2016", 0.026}, {"2017", 0.023}, {"2018", 0.025}, {"2018_newjson", 0.025}, {"2018ABC_prompt", 0.025}, {"2018ABC_rereco", 0.025}, {"2018AB", 0.025}, {"2018ABC", 0.025}, {"2018D", 0.025}};
+std::map<std::string, double> luminosityErrorFrac { {"2015", 0.023}, {"2016", 0.025}, {"2017", 0.023}, {"2018", 0.025}, {"2018_newjson", 0.025}, {"2018ABC_prompt", 0.025}, {"2018ABC_rereco", 0.025}, {"2018AB", 0.025}, {"2018ABC", 0.025}, {"2018D", 0.025}};
 
 std::map<std::string, TChain*> chains;
 std::map<std::string, int> lineStyles;
