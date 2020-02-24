@@ -23,8 +23,8 @@
 
 // 20.3 fb^-1 were acquired in 2018 before loss of HEM15/HEM16
 // 59.97 fb^-1 are validated but only 59.28 fb^-1 available in EGamma dataset
-std::map<std::string, double> luminosity { {"2015", 2.62}, {"2016", 35.9}, {"2017", 41.527}, {"2018", 59.67}, {"2018_newjson", 14.00}, {"2018ABC_prompt", 28.04}, {"2018ABC_rereco", 28.04}, {"2018AB", 14.00+7.10}, {"2018ABC", 14.00+7.10+6.94}, {"2018D", 31.93}};
-std::map<std::string, double> luminosityErrorFrac { {"2015", 0.023}, {"2016", 0.025}, {"2017", 0.023}, {"2018", 0.025}, {"2018_newjson", 0.025}, {"2018ABC_prompt", 0.025}, {"2018ABC_rereco", 0.025}, {"2018AB", 0.025}, {"2018ABC", 0.025}, {"2018D", 0.025}};
+std::map<std::string, double> luminosity { {"2015", 2.62}, {"2016", 35.9}, {"2017", 41.527}, {"2018", 59.67}, {"2018_newjson", 14.00}, {"2018ABC_prompt", 28.04}, {"2018ABC_rereco", 28.04}, {"2018AB", 14.00+7.10}, {"2018ABC", 14.00+7.10+6.94}, {"2018CD", 6.94+31.93}, {"2018D", 31.93}};
+std::map<std::string, double> luminosityErrorFrac { {"2015", 0.023}, {"2016", 0.025}, {"2017", 0.023}, {"2018", 0.025}, {"2018_newjson", 0.025}, {"2018ABC_prompt", 0.025}, {"2018ABC_rereco", 0.025}, {"2018AB", 0.025}, {"2018ABC", 0.025}, {"2018CD", 0.025}, {"2018D", 0.025}};
 
 std::map<std::string, TChain*> chains;
 std::map<std::string, int> lineStyles;
@@ -112,6 +112,10 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
 
   TChain *chData2018_newjson = new TChain(treeType);
   chData2018_newjson->Add(baseDirectory + "/store/user/cawest/diphoton/1d2157e/EGamma/crab_EGamma__Run2018A-17Sep2018-v2__MINIAOD/191107_231838/*.root");
+
+  TChain *chData2018CD = new TChain(treeType);
+  chData2018CD->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018C-17Sep2018-v1__MINIAOD/191115_212505/*.root");
+  chData2018CD->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/191115_212527/*.root");
 
   TChain *chData2018D = new TChain(treeType);
   chData2018D->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/191115_212527/*.root");
@@ -538,10 +542,10 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
   chTTG_NLO_2018->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/crab_TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8__Autumn18-v1__MINIAODSIM/191120_193353/0000/*.root");
 
   TChain *chTTG_2018 = new TChain(treeType);
-  chTTG_2018->Add(baseDirectory + "/store/user/cawest/diphoton/b399c31/TTGamma_Hadronic_ptGamma100-200_TuneCP5_13TeV-madgraph-pythia8/crab_TTGamma_Hadronic_ptGamma100-200_TuneCP5_13TeV-madgraph-pythia8__Autumn18-v1__MINIAODSIM/200207_171510/0000/*.root/");
+  chTTG_2018->Add(baseDirectory + "/store/user/cawest/diphoton/b399c31/TTGamma_Hadronic_ptGamma100-200_TuneCP5_13TeV-madgraph-pythia8/crab_TTGamma_Hadronic_ptGamma100-200_TuneCP5_13TeV-madgraph-pythia8__Autumn18-v1__MINIAODSIM/200207_171510/0000/*.root");
   chTTG_2018->Add(baseDirectory + "/store/user/cawest/diphoton/b399c31/TTGamma_Hadronic_ptGamma200inf_TuneCP5_13TeV-madgraph-pythia8/crab_TTGamma_Hadronic_ptGamma200inf_TuneCP5_13TeV-madgraph-pythia8__Autumn18-v1__MINIAODSIM/200207_162754/0000/*.root");
   chTTG_2018->Add(baseDirectory + "/store/user/cawest/diphoton/b399c31/TTGamma_SingleLept_ptGamma100-200_TuneCP5_13TeV-madgraph-pythia8/crab_TTGamma_SingleLept_ptGamma100-200_TuneCP5_13TeV-madgraph-pythia8__Autumn18-v1__MINIAODSIM/200206_034251/0000/*.root");
-  chTTG_2018->Add(baseDirectory + "/store/user/cawest/diphoton/b399c31/TTGamma_SingleLept_ptGamma200inf_TuneCP5_13TeV-madgraph-pythia8/crab_TTGamma_SingleLept_ptGamma100-200_TuneCP5_13TeV-madgraph-pythia8__Autumn18-v1__MINIAODSIM/200207_162839/0000/*.root");
+  chTTG_2018->Add(baseDirectory + "/store/user/cawest/diphoton/b399c31/TTGamma_SingleLept_ptGamma200inf_TuneCP5_13TeV-madgraph-pythia8/crab_TTGamma_SingleLept_ptGamma200inf_TuneCP5_13TeV-madgraph-pythia8__Autumn18-v1__MINIAODSIM/200207_162839/0000/*.root");
   chTTG_2018->Add(baseDirectory + "/store/user/cawest/diphoton/b399c31/TTGamma_Dilept_ptGamma100-200_TuneCP5_13TeV-madgraph-pythia8/crab_TTGamma_Dilept_ptGamma100-200_TuneCP5_13TeV-madgraph-pythia8__Autumn18-v1__MINIAODSIM/200206_034106/0000/*.root");
   chTTG_2018->Add(baseDirectory + "/store/user/cawest/diphoton/b399c31/TTGamma_Dilept_ptGamma200inf_TuneCP5_13TeV-madgraph-pythia8/crab_TTGamma_Dilept_ptGamma200inf_TuneCP5_13TeV-madgraph-pythia8__Autumn18-v1__MINIAODSIM/200207_162720/0000/*.root");
 
@@ -633,6 +637,7 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
   chains["data_2018ABC_prompt"] = chData2018ABC_prompt;
   chains["data_2018AB"] = chData2018AB_rereco;
   chains["data_2018ABC"] = chData2018ABC_rereco;
+  chains["data_2018CD"] = chData2018CD;
   chains["data_2018D"] = chData2018D;
   chains["data_jetht_2017_unskimmed"] = chDataJetHT2017_unskimmed;
   chains["data_jetht_2018_unskimmed"] = chDataJetHT2018_unskimmed;

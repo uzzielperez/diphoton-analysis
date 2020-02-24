@@ -19,8 +19,8 @@ int main(int argc, char *argv[])
     }
     data_year = argv[2];
     if(data_year!="2016" && data_year!="2018" && data_year!="2018AB" &&
-       data_year!="2018ABC" && data_year!="2018D") {
-      std::cout << "Only '2016', '2018', '2018AB', '2018ABC', and '2018D' are allowed data years. " << std::endl;
+       data_year!="2018ABC" && data_year!="2018CD" && data_year!="2018D") {
+      std::cout << "Only '2016', '2018', '2018AB', '2018ABC', '2018CD', and '2018D' are allowed data years. " << std::endl;
       return -1;
     }
 
