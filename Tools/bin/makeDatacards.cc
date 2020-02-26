@@ -22,30 +22,38 @@ public:
   std::vector<std::string> m_contribution;
 };
 
-double getYield(const std::string& region, const std::string& sample, const int& minBin, const int& maxBin, double& yieldError, const TF1 * scaleFactor = 0);
-std::string getDiphotonYieldVariations(const std::string& region, const int& minBin, const int& maxBin, const std::string& variation);
-void makeOneDatacard(const std::string& signalPoint, const std::string& datacardYear, const std::string& interferenceType);
+double getYield(const std::string& region, const std::string& sample, const std::string& datacardYear, double& yieldError, const TF1 * scaleFactor = 0);
+std::string getDiphotonYieldVariations(const std::string& region, const std::string& variation);
+void makeOneDatacard(const std::string& signalPoint, const std::string& region, const std::string& datacardYear, const std::string& interferenceType);
 
 bool positiveInterference;
 bool useInterference;
 
+std::string datacardYear;
+
 // Loop over ADD samples to make datacards for each
 int main(int argc, char *argv[])
 {
+  bool usePythiaADD = true;
+
   std::string interferenceType("");
 
   positiveInterference=true;
 
-  if(argc!=2 && argc!=3) {
-    std::cout << "Syntax: makeDatacards.exe [2015/2016] [positive/negative]\n";
+  if(argc!=2 && argc!=3 && argc!=4) {
+    std::cout << "Syntax: makeDatacards.exe [2015/2016/2017/2018] [old/new] [positive/negative]\n";
+    std::cout << "'old' and 'new' refer to old and new Sherpa ADD samples\n";
     std::cout << "If 'positive' or 'negative' are not specified,\n";
     std::cout << "linear scaling will be used for the interference term." << std::endl;
     return -1;
   }
-  std::string datacardYear(argv[1]);
-  if(datacardYear.compare("2016") == 0) luminosity = luminosity2016;
-  if(argc==3) {
-    interferenceType = argv[2];
+  datacardYear = argv[1];
+  if(argc >= 3) {
+    std::string whichADD(argv[2]);
+    if(whichADD.compare("old") == 0) usePythiaADD = false;
+  }
+  if(argc==4) {
+    interferenceType = argv[3];
     if(interferenceType.compare("negative") != 0 and interferenceType.compare("positive") != 0) {
       std::cout << "Only 'negative' and 'positive' are allowed input parameters. " << std::endl;
       return -1;
@@ -53,42 +61,69 @@ int main(int argc, char *argv[])
     if(interferenceType == "negative") positiveInterference = false;
   }
 
-  // string scales
-  std::vector<std::string> MS = {"3000", "3500", "4000", "4500",
-                                 "5000", "5500", "6000"};
-  // number of extra dimensions
-  std::vector<std::string> NED = {"2", "4"};
-  // KK cutoff conventions
-  std::vector<std::string> KK = {"1", "4"};
 
-  useInterference = interferenceType.compare("negative") == 0 or interferenceType.compare("positive") == 0;
-  // only need to use one NED or KK convention if interference is considered
-  if(useInterference) {
-    NED.erase(NED.begin()+1);
-    KK.erase(KK.begin()+1);
+  if(usePythiaADD) {
+    // string scales
+    std::vector<std::string> MS = {"4000", "4500", "5000", "5500", "6000",
+				   "6500", "7000", "7500", "8000", "9000",
+				   "10000", "11000", "13000"};
+    // Use negative interference?
+    std::vector<std::string> negInts = {"1", "0"};
+
+    for(const auto& iMS : MS) {
+      for(const auto& negInt : negInts) {
+	std::string pointName = "ADDGravToGG_NegInt-";
+	pointName += negInt;
+	pointName += "_LambdaT-";
+	pointName += iMS;
+	pointName += "_TuneCP2_13TeV-pythia8";
+	makeOneDatacard(pointName, "BB", datacardYear, interferenceType);
+	makeOneDatacard(pointName, "BE", datacardYear, interferenceType);
+      }
+    }
   }
+  else {
+    // string scales
+    std::vector<std::string> MS = {"3000", "3500", "4000", "4500",
+				   "5000", "5500", "6000", "7000",
+				   "8000", "9000", "10000", "11000"};
+    // number of extra dimensions
+    std::vector<std::string> NED = {"2", "4"};
+    // KK cutoff conventions
+    std::vector<std::string> KK = {"1", "4"};
 
-  for(const auto iMS : MS) {
-    for(const auto iNED : NED) {
-      for(const auto iKK : KK) {
-        // no samples were generated with KK convention 4
-        // and four extra dimensions
-        if(strcmp(iKK.c_str(), "4")==0 && strcmp(iNED.c_str(), "4")==0) continue;
-	std::string pointName = "ADDGravToGG_MS-";
-        pointName += iMS;
-	if(!useInterference) {
-	  pointName += "_NED-";
-	  pointName += iNED;
-	  pointName += "_KK-";
+    useInterference = interferenceType.compare("negative") == 0 or interferenceType.compare("positive") == 0;
+    // only need to use one NED or KK convention if interference is considered
+    if(useInterference) {
+      NED.erase(NED.begin()+1);
+      KK.erase(KK.begin()+1);
+    }
+
+    for(const auto iMS : MS) {
+      for(const auto iNED : NED) {
+	for(const auto iKK : KK) {
+	  // no samples were generated with KK convention 4
+	  // and four extra dimensions
+	  if(strcmp(iKK.c_str(), "4")==0 && strcmp(iNED.c_str(), "4")==0) continue;
+	  // Hewett- convention samples do not extend past Mgg > 6 TeV
+	  if(iNED.compare("2")==0 && iKK.compare("4")==0 && std::stoi(iMS)>6000) continue;
+	  std::string pointName = "ADDGravToGG_MS-";
+	  pointName += iMS;
+	  if(!useInterference) {
+	    pointName += "_NED-";
+	    pointName += iNED;
+	    pointName += "_KK-";
 	  pointName += iKK;
+	  }
+	  makeOneDatacard(pointName, "BB", datacardYear, interferenceType);
+	  makeOneDatacard(pointName, "BE", datacardYear, interferenceType);
 	}
-	makeOneDatacard(pointName, datacardYear, interferenceType);
       }
     }
   }
 }
 
-void makeTable(const std::string& region, const std::vector<int>& binLowerLimits, const std::vector<int>& binUpperLimits)
+void makeTable(const std::string& region)
 {
   std::map<std::string, std::string> regionString;
   regionString["BB"] = "barrel-barrel";
@@ -109,7 +144,7 @@ void makeTable(const std::string& region, const std::vector<int>& binLowerLimits
     tableFile << "\\begin{center}\n";
     tableFile << "\\caption{\\label{tab:" << region << "_yield}Event yields for " << regionString[region] << ".}\n";
     tableFile << "\\begin{tabular}{l ";
-    for(unsigned int i=0; i<binLowerLimits.size(); i++) tableFile << " c";
+    tableFile << " c";
     tableFile << "}\\hline\n";
 
     tableFile << "\\end{tabular}\n";
@@ -124,61 +159,100 @@ void makeTable(const std::string& region, const std::vector<int>& binLowerLimits
   }
 }
 
-void makeOneDatacard(const std::string& signalPoint, const std::string& datacardYear, const std::string& interferenceType)
+void makeOneDatacard(const std::string& signalPoint, const std::string& region, const std::string& datacardYear, const std::string& interferenceType)
 {
-  std::vector<int> binLowerLimits = {11, 21, 31, 41, 46};
-  std::vector<int> binUpperLimits;
-  for(unsigned int i=1; i<binLowerLimits.size(); i++) {
-    // add 1 to bin index to avoid double-counting bins in integral
-    binUpperLimits.push_back(binLowerLimits.at(i)-1);
-  }
-  binUpperLimits.push_back(1001);
-  std::vector<std::string> regions = {"BB", "BE"};
-  for(auto iregion : regions) makeTable(iregion, binLowerLimits, binUpperLimits);
+  const bool scaleRegionNorm = true;
 
-  // the following line assumes fakes taken from MC
-  //  std::vector<std::string> processes = {signalPoint, "gg", "gj", "other"};
+  //  makeTable(region);
+
   std::string signalPointInt = signalPoint;
   signalPointInt += "_int";
-  std::vector<std::string> processes = {signalPoint, "gg", "gjDataDriven", "other"};
+  //  std::vector<std::string> processes = {signalPoint, "gg", "gj", "other"};
+  std::vector<std::string> processes = {signalPoint, "gg", "gj", "vg", "dy", "ttg"};
   if(useInterference) {
     // need to include a separate column for interference term
     processes.insert(processes.begin()+1, signalPointInt);
   }
 
-  for(unsigned int iBin = 0; iBin < binLowerLimits.size(); iBin++) {
-  // define nuisances with dummy values for now
-  std::string diphotonkfactorStatValue0 = getDiphotonYieldVariations("BB", binLowerLimits.at(iBin), binUpperLimits.at(iBin), "diphotonkfactorStat0");
-  nuisance diphotonkfactorStat0("diphotonkfactorStat0", "lnN", {"-", diphotonkfactorStatValue0, "-", "-"});
-  std::string diphotonkfactorStatValue1 = getDiphotonYieldVariations("BB", binLowerLimits.at(iBin), binUpperLimits.at(iBin), "diphotonkfactorStat1");
-  nuisance diphotonkfactorStat1("diphotonkfactorStat1", "lnN", {"-", diphotonkfactorStatValue1, "-", "-"});
-  std::string diphotonkfactorStatValue2 = getDiphotonYieldVariations("BB", binLowerLimits.at(iBin), binUpperLimits.at(iBin), "diphotonkfactorStat2");
-  nuisance diphotonkfactorStat2("diphotonkfactorStat2", "lnN", {"-", diphotonkfactorStatValue2, "-", "-"});
-  std::string diphotonkfactorStatValue3 = getDiphotonYieldVariations("BB", binLowerLimits.at(iBin), binUpperLimits.at(iBin), "diphotonkfactorStat3");
-  nuisance diphotonkfactorStat3("diphotonkfactorStat3", "lnN", {"-", diphotonkfactorStatValue3, "-", "-"});
-  std::string diphotonkfactorScalesValue = getDiphotonYieldVariations("BB", binLowerLimits.at(iBin), binUpperLimits.at(iBin), "diphotonkfactorScales");
-  nuisance diphotonkfactorScales("diphotonkfactorScales", "lnN", {"-", diphotonkfactorScalesValue, "-", "-"});
-  std::string lumiError = std::to_string(1 + luminosityError);
-  if(datacardYear.compare("2016") == 0) lumiError = std::to_string(1 + luminosity2016Error);
-  nuisance lumi("lumi", "lnN", {lumiError, lumiError, "-", lumiError});
-  nuisance pileup("pileup", "lnN", {"1.05", "1.05", "-", "1.05"});
-  nuisance fakes("fakes", "lnN", {"-", "-", "1.3", "-"});
-  nuisance eff("eff", "lnN", {"1.1", "1.1", "1.05", "1.05"});
-  nuisance xsec_minor_bkg("xsec_minor_bkg", "lnN", {"-", "-", "-", "1.5"});
+  bool isBB = region.compare("BB") == 0;
+  std::string diphotonkfactorStatValue0 = isBB ? getDiphotonYieldVariations(region, "kfactorStat0") : "-";
+  nuisance diphotonkfactorStat0("kfactorStat0", "shape", {"-", diphotonkfactorStatValue0, "-", "-", "-", "-"});
+  std::string diphotonkfactorStatValue1 = isBB ? getDiphotonYieldVariations(region, "kfactorStat1") : "-";
+  nuisance diphotonkfactorStat1("kfactorStat1", "shape", {"-", diphotonkfactorStatValue1, "-", "-", "-", "-"});
+  std::string diphotonkfactorStatValue2 = isBB ? getDiphotonYieldVariations(region, "kfactorStat2") : "-";
+  nuisance diphotonkfactorStat2("kfactorStat2", "shape", {"-", diphotonkfactorStatValue2, "-", "-", "-", "-"});
+  std::string diphotonkfactorStatValue3 = isBB ? getDiphotonYieldVariations(region, "kfactorStat3") : "-";
+  nuisance diphotonkfactorStat3("kfactorStat3", "shape", {"-", diphotonkfactorStatValue3, "-", "-", "-", "-"});
+  nuisance diphotonkfactorScalesBB("diphotonkfactorScalesBB", "shape", {"-", "1", "-", "-", "-", "-"});
+  nuisance diphotonkfactorScalesBB_dummy("diphotonfactorScalesBB", "shape", {"-", "-", "-", "-", "-", "-"});
+  nuisance diphotonkfactorScalesBE("diphotonkfactorScalesBE", "shape", {"-", "1", "-", "-", "-", "-"});
+  nuisance diphotonkfactorScalesBE_dummy("diphotonkfactorScalesBE", "shape", {"-", "-", "-", "-", "-", "-"});
+  nuisance diphotonNormBB("diphotonNormBB", "lnU", {"-", "1.5", "-", "-", "-", "-"});
+  nuisance diphotonNormBB_dummy("diphotonNormBB_dummy", "lnU", {"-", "-", "-", "-", "-", "-"});
+  nuisance diphotonNormBE("diphotonNormBE", "lnU", {"-", "1.5", "-", "-", "-", "-"});
+  nuisance diphotonNormBE_dummy("diphotonNormBE_dummy", "lnU", {"-", "-", "-", "-", "-", "-"});
+  std::string lumiError = std::to_string(1 + luminosityErrorFrac[datacardYear]);
+  nuisance lumi("lumi", "lnN", {lumiError, lumiError, "-", lumiError, lumiError, lumiError});
+  nuisance pileup("pileup", "lnN", {"1.05", "1.05", "-", "1.05", "-", "-"});
+  nuisance fake_sample("fake_sample", "shape", {"-", "-", "1.0", "-", "-", "-"});
+  nuisance eff("eff", "lnN", {"1.1", "1.1", "1.05", "1.1", "-", "-"});
+  //  nuisance xsec_minor_bkg("xsec_minor_bkg", "lnN", {"-", "-", "-", "1.5"});
+  nuisance xsec_vg("xsec_vg", "lnN", {"-", "-", "-", "1.5", "-", "-"});
+  nuisance xsec_dy("xsec_dy", "lnN", {"-", "-", "-", "-", "1.5", "-"});
+  nuisance xsec_ttg("xsec_ttg", "lnN", {"-", "-", "-", "-", "-", "1.5"});
+  // this would be used only for an overall scaling
+  // but we subdivide further
+  //  nuisance energyScale("energyScale", "shape", {"1", "1", "-", "1"});
+  // for technical reasons, exclude EGM systematic uncertainties
+  // on signal and 2016 datasets
+  std::string useEGMSyst(datacardYear.compare("2016") == 0 ? "-" : "1");
+  nuisance energyScaleStat("energyScaleStat", "shape", {"-", useEGMSyst, "-", useEGMSyst, useEGMSyst, useEGMSyst});
+  nuisance energyScaleSyst("energyScaleSyst", "shape", {"-", useEGMSyst, "-", useEGMSyst, useEGMSyst, useEGMSyst});
+  nuisance energyScaleGain("energyScaleGain", "shape", {"-", useEGMSyst, "-", useEGMSyst, useEGMSyst, useEGMSyst});
+  nuisance energySigma("energySigma", "shape", {"-", useEGMSyst, "-", useEGMSyst, useEGMSyst, useEGMSyst});
 
   std::vector<nuisance> allNuisances;
   allNuisances.push_back(diphotonkfactorStat0);
   allNuisances.push_back(diphotonkfactorStat1);
   allNuisances.push_back(diphotonkfactorStat2);
   allNuisances.push_back(diphotonkfactorStat3);
-  allNuisances.push_back(diphotonkfactorScales);
+  if(region.compare("BB") == 0) {
+    allNuisances.push_back(diphotonkfactorScalesBB);
+    allNuisances.push_back(diphotonkfactorScalesBE_dummy);
+    if(scaleRegionNorm) {
+      allNuisances.push_back(diphotonNormBE);
+      allNuisances.push_back(diphotonNormBB_dummy);
+    }
+  }
+  else {
+    allNuisances.push_back(diphotonkfactorScalesBB_dummy);
+    allNuisances.push_back(diphotonkfactorScalesBE);
+    if(scaleRegionNorm) {
+      allNuisances.push_back(diphotonNormBB);
+      allNuisances.push_back(diphotonNormBE_dummy);
+    }
+  }
   allNuisances.push_back(lumi);
-  allNuisances.push_back(pileup);
-  allNuisances.push_back(fakes);
+  //  allNuisances.push_back(pileup);
+  allNuisances.push_back(fake_sample);
   allNuisances.push_back(eff);
-  allNuisances.push_back(xsec_minor_bkg);
+  //  allNuisances.push_back(xsec_minor_bkg);
+  allNuisances.push_back(xsec_vg);
+  allNuisances.push_back(xsec_dy);
+  allNuisances.push_back(xsec_ttg);
+  allNuisances.push_back(energyScaleStat);
+  allNuisances.push_back(energyScaleSyst);
+  allNuisances.push_back(energyScaleGain);
+  allNuisances.push_back(energySigma);
+  // add pdf uncertainties
+  std::vector<nuisance*> pdf_nuisances;
+  for(int i = 1; i < 51; i++) {
+    pdf_nuisances.push_back(new nuisance("pdf" + std::to_string(i), "shape", {"-", "1", "-", "-", "-", "-"}));
+    pdf_nuisances.push_back(new nuisance("pdf" + std::to_string(i), "shape", {"-", "1", "-", "-", "-", "-"}));
+    allNuisances.push_back(*(pdf_nuisances.back()));
+  }
 
-  unsigned int nchannels = regions.size();
+  unsigned int nchannels = 1;
   unsigned int nbackgrounds = processes.size()-1;
 
   if(useInterference) {
@@ -198,10 +272,7 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& datacard
   }
   filename+="_";
   filename+=datacardYear;
-  filename+="_bins";
-  filename+=std::to_string(binLowerLimits.at(iBin));
-  filename+="to";
-  filename+=std::to_string(binUpperLimits.at(iBin));
+  filename+="_" + region;
   filename+=".dat";
   output.open(filename);
   if (output.is_open()) {
@@ -212,61 +283,51 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& datacard
     output << "jmax " << nbackgrounds << " number of backgrounds" << std::endl;
     output << "kmax " << allNuisances.size() << " number of nuisance parameters" << std::endl;
     output << "-------------------" << std::endl;
-    
+    output << "shapes * " << region << " datacards/Minv_histos_$CHANNEL_" << datacardYear << ".root $CHANNEL/$PROCESS $CHANNEL/$PROCESS_$SYSTEMATIC" << std::endl;
+    output << "-------------------" << std::endl;
+
     // definition of bins and rates
     output << "bin          ";
     for(unsigned int i=0; i<nchannels; i++) {
-      output << i << "   ";
+      output << region << "   ";
     }
     output << "\n";
     output << "observation  ";
-    for(auto iregion : regions) {
-      output << getYield(iregion, "data_" + datacardYear, binLowerLimits.at(iBin), binUpperLimits.at(iBin), yieldError) << " " ;
-    }
+    output << getYield(region, "data_obs", datacardYear, yieldError) << " " ;
     output << "\n";
     
     output << "-------------------" << std::endl;
     output << "bin            ";
     
-    for(unsigned iregion=0; iregion<regions.size(); iregion++) {
-      for(auto iprocess : processes) {
-	output << iregion << "    ";
-      }
+    for(auto iprocess : processes) {
+      output << region << "    ";
     }
     output << "\n";
     output << "process    ";
-    for(auto iregion : regions) {
-      for(int iprocess=0; iprocess<static_cast<int>(processes.size()); iprocess++) {
-	if(useInterference) output << iprocess-1 << "    ";
-	else output << iprocess << "    ";
-      }
+    for(int iprocess=0; iprocess<static_cast<int>(processes.size()); iprocess++) {
+      if(useInterference) output << iprocess-1 << "    ";
+      else output << iprocess << "    ";
     }
     output << "\n";
     output << "process    ";
     
-    for(auto iregion : regions) {
-      for(auto iprocess : processes) {
-	output << iprocess << "    ";
-      }
+    for(auto iprocess : processes) {
+      output << iprocess << "    ";
     }
     
     output << "\n";
     // output rates
     output << "rate        ";
-    for(auto iregion : regions) {
-      for(auto iprocess : processes) {
-	output << getYield(iregion, iprocess, binLowerLimits.at(iBin), binUpperLimits.at(iBin), yieldError) << "    ";
-      }
+    for(auto iprocess : processes) {
+      output << getYield(region, iprocess, datacardYear, yieldError) << "    ";
     }
     output << "\n-------------------" << std::endl;
     
     // output systematics
     for(auto inuisance : allNuisances) {
       output << inuisance.m_syst  << "      " << inuisance.m_distribution << "  ";
-      for(auto iregion : regions) {
-	for( auto icontrib : inuisance.m_contribution) {
-	  output << icontrib << " ";
-	}
+      for( auto icontrib : inuisance.m_contribution) {
+	output << icontrib << " ";
       }
       output << "\n";
     }
@@ -274,10 +335,9 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& datacard
   else {
     std::cout << "Could not open output file " << filename << std::endl;
   }
-  }
 }
 
-double getYield(const std::string& region, const std::string& sample, const int& minBin, const int& maxBin, double& yieldError, const TF1 * scaleFactor)
+double getYield(const std::string& region, const std::string& sample, const std::string& datacardYear, double& yieldError, const TF1 * scaleFactor)
 {
   double integral = 0.0;
 
@@ -285,17 +345,18 @@ double getYield(const std::string& region, const std::string& sample, const int&
   histName+="/";
 
   // histograms for photon fakes from data-driven method are in a different file
-  if(sample.find("gjDataDriven") != std::string::npos) {
-    TFile *inputFakes = TFile::Open("data/fakes.root");
+  if(sample.find("gj") != std::string::npos) {
+    TFile *inputFakes = TFile::Open(Form("data/fakes_%s_average.root", datacardYear.c_str()));
     histName+=sample;
+    histName+="DataDriven";
     histName+=region;
 
     TH1D *hist = static_cast<TH1D*>(inputFakes->Get(histName.c_str()));
-    integral = hist->Integral(minBin, maxBin);
+    integral = hist->Integral();
     inputFakes->Close();
   }
   else {
-    TString filename("data/Minv_histos.root");
+    TString filename(Form("datacards/Minv_histos_%s_%s.root", region.c_str(), datacardYear.c_str()));
     if(useInterference) {
       filename = "data/Minv_histos_with_interference.root";
     }
@@ -306,11 +367,7 @@ double getYield(const std::string& region, const std::string& sample, const int&
     TH1D *hist = static_cast<TH1D*>(input->Get(histName.c_str()));
     // take max to avoid negative entries arising from
     // negative weights in NLO samples
-    integral = std::max(hist->Integral(minBin, maxBin), 0.0);
-    if(sample.find("data") == std::string::npos) integral *= luminosity;
-    else {
-      std::cout << "Using bin with range " << hist->GetBinLowEdge(minBin) << " to " << hist->GetBinLowEdge(maxBin+1) << std::endl;
-    }
+    integral = hist->Integral();
     if(useInterference) {
       // in the case of negative interference, multiply inteference term by -k
       // and signal by k^2 to adjust to Hewett- convention
@@ -320,83 +377,61 @@ double getYield(const std::string& region, const std::string& sample, const int&
 	else integral *= k*k;
       }
     }
-    else {
-      // if the sample is an ADD sample, need to subtract SM background
-      if(sample.find("ADD") != std::string::npos) {
-	std::string gg70HistName(region);
-	gg70HistName+="/gg70";
-
-	TH1D *gg70 = static_cast<TH1D*>(input->Get(gg70HistName.c_str()));
-	integral -= luminosity*gg70->Integral(minBin, maxBin);
-      }
-    }
     input->Close();
   }
 
   return integral;
 }
 
-std::string getDiphotonYieldVariations(const std::string& region, const int& minBin, const int& maxBin, const std::string& variation)
+std::string getDiphotonYieldVariations(const std::string& region, const std::string& variation)
 {
+  // barrel-endcap covariance matrix not positive definite
+  if(region.compare("BE") == 0) return std::to_string(1);
+
+  TString histogramFile(Form("datacards/Minv_histos_%s_%s.root", region.c_str(), datacardYear.c_str()));
   // put dummy values here for now
-  if(variation.find("diphotonkfactorStat") != std::string::npos) {
+  if(variation.find("kfactorStat") != std::string::npos) {
     int parameter = 0;
-    if(strcmp(variation.c_str(), "diphotonkfactorStat1")==0) parameter = 1;
-    if(strcmp(variation.c_str(), "diphotonkfactorStat2")==0) parameter = 2;
-    if(strcmp(variation.c_str(), "diphotonkfactorStat3")==0) parameter = 3;
-    TFile *input = TFile::Open("data/Minv_histos.root");
+    if(strcmp(variation.c_str(), "kfactorStat1")==0) parameter = 1;
+    if(strcmp(variation.c_str(), "kfactorStat2")==0) parameter = 2;
+    if(strcmp(variation.c_str(), "kfactorStat3")==0) parameter = 3;
+    TFile *input = TFile::Open(histogramFile);
     TH1D* diphoton = static_cast<TH1D*>(input->Get(Form("%s/gg", region.c_str())));
-    TH1D* diphotonStatUp = static_cast<TH1D*>(diphoton->Clone("diphotonStatUp"));
-    TH1D* diphotonStatDown = static_cast<TH1D*>(diphoton->Clone("diphotonStatDown"));
-    TF1 *kfactorFunction = kfactor(region, "R1F1");
+    // TH1D* diphotonStatUp = static_cast<TH1D*>(diphoton->Clone(Form("%s/diphotonStat%dUp", region.c_str(), parameter)));
+    // TH1D* diphotonStatDown = static_cast<TH1D*>(diphoton->Clone(Form("%s/diphotonStat%dDown", region.c_str(), parameter)));
+    TH1D* diphotonStatUp = static_cast<TH1D*>(diphoton->Clone(Form("gg_kfactorStat%dUp", parameter)));
+    TH1D* diphotonStatDown = static_cast<TH1D*>(diphoton->Clone(Form("gg_kfactorStat%dDown", parameter)));
+    TF1 *kfactorFunction = kfactor(region, "R1F1_125GeV_NNPDF");
     TString fitFunc("pol3");
-    TString filename="data/kfactor_BB_R1F1.root";
+    TString filename="data/kfactor_" + region + "_R1F1_125GeV_NNPDF.root";
     TFile *file = TFile::Open(filename);
     TFitResult* fitResult = static_cast<TFitResult*>(file->Get(Form("TFitResult-id1-%s",fitFunc.Data())));
 
-    //    TF1 * variation(bool up, int parameter, TF1* nominal, TFitResult* fitResult)
-
     TF1 *kfactorStatUp = eigenvectorVariation(true, parameter, kfactorFunction, fitResult);
     TF1 *kfactorStatDown = eigenvectorVariation(false, parameter, kfactorFunction, fitResult);
-    diphotonStatUp->Multiply(kfactorStatUp);
-    diphotonStatDown->Multiply(kfactorStatDown);
-    // need to undo the kfactor applied by default
-    diphotonStatUp->Divide(kfactorFunction);
-    diphotonStatDown->Divide(kfactorFunction);
+    for(int i=0; i <= diphotonStatUp->GetNbinsX(); i++) {
+      float binContent = diphoton->GetBinContent(i);
+      float binCenter = diphoton->GetBinCenter(i);
+      float statUp = kfactorStatUp->Eval(binCenter)/kfactorFunction->Eval(binCenter);
+      float statDown = kfactorStatDown->Eval(binCenter)/kfactorFunction->Eval(binCenter);
+      diphotonStatUp->SetBinContent(i, binContent*statUp);
+      diphotonStatDown->SetBinContent(i, binContent*statDown);
+    }
 
-    double integralUp = diphotonStatUp->Integral(minBin, maxBin);
-    double integral = diphoton->Integral(minBin, maxBin);
-    double integralDown = diphotonStatDown->Integral(minBin, maxBin);
-
-    double averageVariation = (fabs(integralUp-integral) + fabs(integralDown-integral))/2.;
-
-    input->Close();
-    return std::to_string(1+averageVariation/integral);
-  }
-  if(strcmp(variation.c_str(), "diphotonkfactorScales")==0) {
-    TFile *input = TFile::Open("data/Minv_histos.root");
-    TH1D* diphoton = static_cast<TH1D*>(input->Get(Form("%s/gg", region.c_str())));
-    TH1D* diphotonScalesUp = static_cast<TH1D*>(diphoton->Clone("diphotonScalesUp"));
-    TH1D* diphotonScalesDown = static_cast<TH1D*>(diphoton->Clone("diphotonScalesDown"));
-    TF1 *kfactorFunctionScalesUp = kfactor(region, "R2F2");
-    TF1 *kfactorFunction = kfactor(region, "R1F1");
-    TF1 *kfactorFunctionScalesDown = kfactor(region, "R0p5F0p5");
-    diphotonScalesUp->Multiply(kfactorFunctionScalesUp);
-    diphotonScalesDown->Multiply(kfactorFunctionScalesDown);
-    // need to undo the kfactor applied by default
-    diphotonScalesUp->Divide(kfactorFunction);
-    diphotonScalesDown->Divide(kfactorFunction);
-
-    double integralUp = diphotonScalesUp->Integral(minBin, maxBin);
-    double integral = diphoton->Integral(minBin, maxBin);
-    double integralDown = diphotonScalesDown->Integral(minBin, maxBin);
-
-    double averageVariation = (fabs(integralUp-integral) + fabs(integralDown-integral))/2.;
+    TFile *statErrorFile = new TFile(Form("datacards/stat_error_%s_%s.root", region.c_str(), datacardYear.c_str()), "update");
+    bool exists = statErrorFile->cd(region.c_str());
+    if(!exists) {
+      statErrorFile->mkdir(region.c_str());
+      statErrorFile->cd(region.c_str());
+    }
+    diphotonStatUp->Write();
+    diphotonStatDown->Write();
+    statErrorFile->Write();
+    statErrorFile->Close();
 
     input->Close();
-    return std::to_string(1+averageVariation/integral);
+    return "1";
   }
-  if(strcmp(variation.c_str(), "diphotonFragmentation")==0) return "1.01";
 
   std::cout << "Systematic variation not found!" << std::endl;
   exit(-1);

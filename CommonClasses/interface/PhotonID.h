@@ -98,6 +98,12 @@ namespace ExoDiPhotons{
     else return false;
   }
 
+  bool passR9Cut(const pat::Photon* photon)
+  {
+    if(photon->full5x5_r9() > 0.8) return true;
+    else return false;
+  }
+
   // SIGMAiETAiETA
   bool passSigmaIetaIetaCut(const pat::Photon* photon, bool isSaturated) {
     double phoEta = fabs(photon->superCluster()->eta());
@@ -228,7 +234,8 @@ namespace ExoDiPhotons{
       passChargedHadronCut(photon) &&
       passSigmaIetaIetaCut(photon,isSat) &&
       passCorPhoIsoHighPtID(photon,rho) &&
-      photon->passElectronVeto()
+      photon->passElectronVeto() &&
+      passR9Cut(photon)
     ) return true;
 
     else return false;
@@ -240,7 +247,8 @@ namespace ExoDiPhotons{
     if (
       passHadTowerOverEmCut(photon) &&
       passCorPhoIsoHighPtID(photon,rho) &&
-      photon->passElectronVeto()
+      photon->passElectronVeto() &&
+      passR9Cut(photon)
     ) return true;
 
     else return false;
@@ -256,8 +264,8 @@ namespace ExoDiPhotons{
     bool failID = (
       !passHadTowerOverEmCut(photon) ||
       !passChargedHadronCut(photon) ||
-      !passSigmaIetaIetaCut(photon,isSat)
-
+      !passSigmaIetaIetaCut(photon,isSat) ||
+      !passR9Cut(photon)
     );
 
     if (isEB)

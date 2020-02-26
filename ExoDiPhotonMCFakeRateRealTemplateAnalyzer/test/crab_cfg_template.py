@@ -1,8 +1,12 @@
 ## Template file for CRAB submission. The script generate_crab_config.py 
 ## replaces the following two lines with the appropriate values
 ## Do not edit manually!
+import os
+import subprocess
+
 dataset = 'DATASETNAME'
 nevents = NEVENTS
+user = os.environ['USER']
 
 # CRAB3 task names can no longer be greater than 100 characters; need to shorten task name
 taskname = dataset[1:].replace('/','__').replace('RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2','MiniAODv2').replace('TuneCUETP8M1_13TeV-madgraphMLM-pythia8','13TeV-MG-PY8')
@@ -30,24 +34,19 @@ config.General.transferLogs = True
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'diphoton-analysis/ExoDiPhotonMCFakeRateRealTemplateAnalyzer/test/diphoton_mcFakeRate_cfg.py'
-config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFileName=out_' + datasetID + '.root']
+config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_' + datasetID + '.root']
 
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
-config.Data.outLFNDirBase = '/store/user/abuccill/DiPhotonAnalysis/RealTemplates'
 config.Data.publication = False
-if "Run2016" in taskname:
-    config.Data.splitting = 'LumiBased'
-    config.Data.unitsPerJob = 100
-    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-274421_13TeV_PromptReco_Collisions16_JSON.txt'
-if "Run2015" in taskname:
-    config.Data.splitting = 'LumiBased'
-    config.Data.unitsPerJob = 100
-    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver_v2.txt'
-else:
-    config.Data.splitting = 'FileBased'
-    config.Data.unitsPerJob = 10
+config.Data.splitting = 'FileBased'
+config.Data.unitsPerJob = 5
+if user == "cawest":
+    cmssw_base = os.environ['CMSSW_BASE']
+    commit_hash = subprocess.check_output(['git', '--git-dir=' + cmssw_base + '/src/diphoton-analysis/.git',  'rev-parse', '--short', 'HEAD']).replace('\n', '')
+    config.Data.outLFNDirBase = '/store/user/' + user + '/diphoton_fake/' + commit_hash
+
 
 
 config.section_("Site")

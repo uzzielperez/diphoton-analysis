@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Wed Feb  8 16:35:31 2017 by ROOT version 6.02/13
+// Sun Jan 12 17:18:04 2020 by ROOT version 6.12/07
 // from TTree fTree/PhotonTree
-// found on file: root://cmseos.fnal.gov//store/user/skaplan/noreplica/FakeRate/WithVertexColl/JetHT/crab_JetHT_Run2016C/161208_223835/0000/ExoDiphotonAnalyzer_90.root
+// found on file: root://cmseos.fnal.gov//store/user/cawest/diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/191211_030628/0002/ExoDiphotonAnalyzer_2619.root
 //////////////////////////////////////////////////////////
 
 #ifndef FakeRateAnalysis_h
@@ -14,9 +14,8 @@
 
 // Header file for the classes stored in the TTree if any.
 #include "vector"
-#include "vector"
 
-class FakeRateAnalysis {
+class FakeRateAnalysisBase {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
@@ -176,6 +175,7 @@ public :
    Int_t           TriggerBit_HLT_DoublePhoton40;
    Int_t           TriggerBit_HLT_DoublePhoton50;
    Int_t           TriggerBit_HLT_DoublePhoton60;
+   Int_t           TriggerBit_HLT_DoublePhoton70;
    Int_t           TriggerBit_HLT_DoublePhoton85;
    Int_t           TriggerBit_HLT_ECALHT800;
    Int_t           TriggerBit_HLT_Ele105_CaloIdVT_GsfTrkIdT;
@@ -481,6 +481,7 @@ public :
    Int_t           TriggerBit_HLT_VBF_DisplacedJet40_VVTightID_DisplacedTrack;
    Int_t           TriggerBit_HLT_VBF_DisplacedJet40_VVTightID_Hadronic;
    Int_t           TriggerBit_HLT_ZeroBias;
+   Int_t           TriggerBit_HLT_DoublePhoton33_CaloIdL;
    Int_t           TriggerPrescale_HLT_AK4PFDJet60_Eta2p1ForPPRef;
    Int_t           TriggerPrescale_HLT_AK4PFDJet80_Eta2p1ForPPRef;
    Int_t           TriggerPrescale_HLT_AK8DiPFJet250_200_TrimMass30_BTagCSV0p45;
@@ -590,6 +591,7 @@ public :
    Int_t           TriggerPrescale_HLT_DoublePhoton40;
    Int_t           TriggerPrescale_HLT_DoublePhoton50;
    Int_t           TriggerPrescale_HLT_DoublePhoton60;
+   Int_t           TriggerPrescale_HLT_DoublePhoton70;
    Int_t           TriggerPrescale_HLT_DoublePhoton85;
    Int_t           TriggerPrescale_HLT_ECALHT800;
    Int_t           TriggerPrescale_HLT_Ele105_CaloIdVT_GsfTrkIdT;
@@ -895,6 +897,7 @@ public :
    Int_t           TriggerPrescale_HLT_VBF_DisplacedJet40_VVTightID_DisplacedTrack;
    Int_t           TriggerPrescale_HLT_VBF_DisplacedJet40_VVTightID_Hadronic;
    Int_t           TriggerPrescale_HLT_ZeroBias;
+   Int_t           TriggerPrescale_HLT_DoublePhoton33_CaloIdL;
    Double_t        Photon_pt;
    Double_t        Photon_eta;
    Double_t        Photon_phi;
@@ -928,6 +931,30 @@ public :
    Double_t        Photon_chEAegmID;
    Double_t        Photon_nhEAegmID;
    Double_t        Photon_phoEAegmID;
+   Double_t        Photon_rapidity;
+   Float_t         Photon_ecalEnergyPreCorr;
+   Float_t         Photon_ecalEnergyErrPreCorr;
+   Float_t         Photon_ecalEnergyPostCorr;
+   Float_t         Photon_ecalEnergyErrPostCorr;
+   Float_t         Photon_energyScaleValue;
+   Float_t         Photon_energySigmaValue;
+   Float_t         Photon_energySmearNrSigma;
+   Float_t         Photon_energyScaleUp;
+   Float_t         Photon_energyScaleDown;
+   Float_t         Photon_energyScaleStatUp;
+   Float_t         Photon_energyScaleStatDown;
+   Float_t         Photon_energyScaleSystUp;
+   Float_t         Photon_energyScaleSystDown;
+   Float_t         Photon_energyScaleGainUp;
+   Float_t         Photon_energyScaleGainDown;
+   Float_t         Photon_energyScaleEtUp;
+   Float_t         Photon_energyScaleEtDown;
+   Float_t         Photon_energySigmaUp;
+   Float_t         Photon_energySigmaDown;
+   Float_t         Photon_energySigmaPhiUp;
+   Float_t         Photon_energySigmaPhiDown;
+   Float_t         Photon_energySigmaRhoUp;
+   Float_t         Photon_energySigmaRhoDown;
    Bool_t          Photon_passEGMLooseID;
    Bool_t          Photon_passEGMMediumID;
    Bool_t          Photon_passEGMTightID;
@@ -950,16 +977,17 @@ public :
    Bool_t          Photon_isNumeratorObjCand;
    Bool_t          Photon_isDenominatorObj;
    Bool_t          Photon_isSaturated;
-   vector<double>  *VertexCollInfo_vx;
-   vector<double>  *VertexCollInfo_vy;
-   vector<double>  *VertexCollInfo_vz;
-   vector<double>  *VertexCollInfo_vxError;
-   vector<double>  *VertexCollInfo_vyError;
-   vector<double>  *VertexCollInfo_vzError;
-   vector<double>  *VertexCollInfo_ndof;
-   vector<double>  *VertexCollInfo_d0;
-   vector<int>     *VertexCollInfo_nTracks;
-   vector<int>     *VertexCollInfo_isFake;
+   Bool_t          Photon_isMCTruthFake;
+   std::vector<double>  *VertexCollInfo_vx;
+   std::vector<double>  *VertexCollInfo_vy;
+   std::vector<double>  *VertexCollInfo_vz;
+   std::vector<double>  *VertexCollInfo_vxError;
+   std::vector<double>  *VertexCollInfo_vyError;
+   std::vector<double>  *VertexCollInfo_vzError;
+   std::vector<double>  *VertexCollInfo_ndof;
+   std::vector<double>  *VertexCollInfo_d0;
+   std::vector<int>     *VertexCollInfo_nTracks;
+   std::vector<int>     *VertexCollInfo_isFake;
 
    // List of branches
    TBranch        *b_Event;   //!
@@ -978,13 +1006,13 @@ public :
    TBranch        *b_VertexCollInfo_nTracks;   //!
    TBranch        *b_VertexCollInfo_isFake;   //!
 
-   FakeRateAnalysis(TTree *tree=0);
-   virtual ~FakeRateAnalysis();
+   FakeRateAnalysisBase(TTree *tree=0);
+   virtual ~FakeRateAnalysisBase();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual void     Loop(int iCut = 0);
+   virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
 };
@@ -992,35 +1020,35 @@ public :
 #endif
 
 #ifdef FakeRateAnalysis_cxx
-FakeRateAnalysis::FakeRateAnalysis(TTree *tree) : fChain(0) 
+FakeRateAnalysisBase::FakeRateAnalysisBase(TTree *tree) : fChain(0) 
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmseos.fnal.gov//store/user/skaplan/noreplica/FakeRate/WithVertexColl/JetHT/crab_JetHT_Run2016C/161208_223835/0000/ExoDiphotonAnalyzer_90.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmseos.fnal.gov//store/user/cawest/diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/191211_030628/0002/ExoDiphotonAnalyzer_2619.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("root://cmseos.fnal.gov//store/user/skaplan/noreplica/FakeRate/WithVertexColl/JetHT/crab_JetHT_Run2016C/161208_223835/0000/ExoDiphotonAnalyzer_90.root");
+         f = new TFile("root://cmseos.fnal.gov//store/user/cawest/diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/191211_030628/0002/ExoDiphotonAnalyzer_2619.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("root://cmseos.fnal.gov//store/user/skaplan/noreplica/FakeRate/WithVertexColl/JetHT/crab_JetHT_Run2016C/161208_223835/0000/ExoDiphotonAnalyzer_90.root:/diphoton");
+      TDirectory * dir = (TDirectory*)f->Get("root://cmseos.fnal.gov//store/user/cawest/diphoton_fake/23eed66/DoubleMuon/crab_DoubleMuon__Run2018B-17Sep2018-v1__MINIAOD/191211_030628/0002/ExoDiphotonAnalyzer_2619.root:/diphoton");
       dir->GetObject("fTree",tree);
 
    }
    Init(tree);
 }
 
-FakeRateAnalysis::~FakeRateAnalysis()
+FakeRateAnalysisBase::~FakeRateAnalysisBase()
 {
    if (!fChain) return;
    delete fChain->GetCurrentFile();
 }
 
-Int_t FakeRateAnalysis::GetEntry(Long64_t entry)
+Int_t FakeRateAnalysisBase::GetEntry(Long64_t entry)
 {
 // Read contents of entry.
    if (!fChain) return 0;
    return fChain->GetEntry(entry);
 }
-Long64_t FakeRateAnalysis::LoadTree(Long64_t entry)
+Long64_t FakeRateAnalysisBase::LoadTree(Long64_t entry)
 {
 // Set the environment to read one entry
    if (!fChain) return -5;
@@ -1033,7 +1061,7 @@ Long64_t FakeRateAnalysis::LoadTree(Long64_t entry)
    return centry;
 }
 
-void FakeRateAnalysis::Init(TTree *tree)
+void FakeRateAnalysisBase::Init(TTree *tree)
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
@@ -1078,7 +1106,7 @@ void FakeRateAnalysis::Init(TTree *tree)
    Notify();
 }
 
-Bool_t FakeRateAnalysis::Notify()
+Bool_t FakeRateAnalysisBase::Notify()
 {
    // The Notify() function is called when a new file is opened. This
    // can be either for a new TTree in a TChain or when when a new TTree
@@ -1089,14 +1117,14 @@ Bool_t FakeRateAnalysis::Notify()
    return kTRUE;
 }
 
-void FakeRateAnalysis::Show(Long64_t entry)
+void FakeRateAnalysisBase::Show(Long64_t entry)
 {
 // Print contents of entry.
 // If entry is not specified, print current entry
    if (!fChain) return;
    fChain->Show(entry);
 }
-Int_t FakeRateAnalysis::Cut(Long64_t entry)
+Int_t FakeRateAnalysisBase::Cut(Long64_t entry)
 {
 // This function may be called from Loop.
 // returns  1 if entry is accepted.

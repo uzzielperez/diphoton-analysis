@@ -1,16 +1,15 @@
+from os.path import basename
 # runtime options
 
+diphoton_analysis = __import__("diphoton-analysis.CommonClasses.submit_utils")
+
 from FWCore.ParameterSet.VarParsing import VarParsing
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+import importlib
+submit_utils = importlib.import_module("diphoton-analysis.CommonClasses.submit_utils")
 
 options = VarParsing ('python')
 
-options.register('globalTag',
-                 #'76X_mcRun2_asymptotic_v12',
-                 '80X_mcRun2_asymptotic_2016_TrancheIV_v8',
-                 VarParsing.multiplicity.singleton,
-                 VarParsing.varType.string,
-                 "Global tag to use when running"
-                 )
 options.register('nEventsSample',
                  # 999011, # number of events in GGJets_M-500To1000_Pt-50_13TeV-sherpa 2015 sample
                  999921,
@@ -18,18 +17,21 @@ options.register('nEventsSample',
                  VarParsing.varType.int,
                  "Total number of events in dataset for event weight calculation."
                  )
-options.register('outputFileName',
-                 "out_default_GGJets_M-500To1000_Pt-50_13TeV-sherpa.root",
-                 VarParsing.multiplicity.singleton,
-                 VarParsing.varType.string,
-                 "Output filename."
-                 )
 
 options.setDefault('maxEvents', 1000)
 
 options.parseArguments()
 
-print "Output file name: ", options.outputFileName
+outName = options.outputFile
+print("Default output name: " + outName)
+if "output" in outName: # if an input file name is specified, event weights can be determined
+    outName = "out_" + basename(options.inputFiles[0])
+    print("Output root file name: " + outName)
+else:
+    options.inputFiles = "file:GGJets_M-1000To2000_Pt-50_13TeV-sherpa.root"
+
+
+print "Output file name: ", outName
 print "Number of events in sample: ", options.nEventsSample
 
 import FWCore.ParameterSet.Config as cms
@@ -64,7 +66,9 @@ process.source = cms.Source(
 
 # for global tag
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
-process.GlobalTag.globaltag = options.globalTag
+globalTag = diphoton_analysis.CommonClasses.submit_utils.get_global_tag(outName)
+process.GlobalTag.globaltag = globalTag
+print("Using global tag: " + globalTag)
 
 # geometry for saturation
 process.load("Configuration.StandardSequences.GeometryDB_cff")
@@ -72,17 +76,18 @@ process.load("Configuration.StandardSequences.GeometryDB_cff")
 # for output file
 process.TFileService = cms.Service(
     "TFileService",
-    fileName = cms.string(options.outputFileName)
+    fileName = cms.string(outName)
     )
 
-# Setup VID for EGM ID
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
-# define which IDs we want to produce
-my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff']
-#add them to the VID producer
-for idmod in my_id_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+
+# summary of information needed for e/gamma corrections
+egm_info = submit_utils.egamma_info(outName)
+setupEgammaPostRecoSeq(process,
+                       applyEnergyCorrections=True,
+                       applyVIDOnCorrectedEgamma=True,
+                       runVID=True,
+                       runEnergyCorrections=True,
+                       era=egm_info['era'])
 
 ## update AK4PFchs jet collection in MiniAOD JECs
 
@@ -103,21 +108,21 @@ process.diphoton = cms.EDAnalyzer(
     # genParticle tag
     genParticlesMiniAOD = cms.InputTag("prunedGenParticles"),
     # ak4 jets
-    jetsMiniAOD = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
+    jetsMiniAOD = cms.InputTag("updatedPatJetsUpdatedJEC"),
     jetPtThreshold = cms.double(30.),
     jetEtaThreshold = cms.double(2.5),
     # rho tag
     rho = cms.InputTag("fixedGridRhoAll"),
     # EGM eff. areas
-    effAreaChHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfChargedHadrons_25ns_NULLcorrection.txt"),
-    effAreaNeuHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfNeutralHadrons_25ns_90percentBased.txt"),
-    effAreaPhoFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfPhotons_25ns_90percentBased.txt"),
+    effAreaChHadFile = cms.FileInPath(egm_info['effAreaChHad']),
+    effAreaNeuHadFile = cms.FileInPath(egm_info['effAreaNeuHad']),
+    effAreaPhoFile = cms.FileInPath(egm_info['effAreaPhoHad']),
     # EGM ID decisions
-    phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
-    phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
-    phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
+    phoLooseIdMap = cms.InputTag("egmPhotonIDs:" + egm_info['loosePhoId']),
+    phoMediumIdMap = cms.InputTag("egmPhotonIDs:" + egm_info['mediumPhoId']),
+    phoTightIdMap = cms.InputTag("egmPhotonIDs:" + egm_info['tightPhoId']),
     # out file name
-    outputFile = cms.string(options.outputFileName),
+    outputFile = cms.string(outName),
     # number of events in the sample (for calculation of event weights)
     nEventsSample = cms.uint32(options.nEventsSample),
     # gen event info
@@ -127,4 +132,4 @@ process.diphoton = cms.EDAnalyzer(
 # analyzer to print cross section
 process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
 
-process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton * process.xsec)
+process.p = cms.Path(process.egammaPostRecoSeq * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.diphoton * process.xsec)

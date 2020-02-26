@@ -44,7 +44,7 @@ namespace ExoDiPhotons
     // detector channel info
     double iEta; // filled
     double iPhi; // filled
-    
+
     // high pT ID
     double alphaHighPtID; // filled
     double kappaHighPtID; // filled
@@ -55,10 +55,38 @@ namespace ExoDiPhotons
     double nhEAegmID; // filled
     double phoEAegamID; // filled
 
+    // new kinematics variables
+    double rapidity;
+
+    // systematic variations
+    float ecalEnergyPreCorr;
+    float ecalEnergyErrPreCorr;
+    float ecalEnergyPostCorr;
+    float ecalEnergyErrPostCorr;
+    float energyScaleValue;
+    float energySigmaValue;
+    float energySmearNrSigma;
+    float energyScaleUp;
+    float energyScaleDown;
+    float energyScaleStatUp;
+    float energyScaleStatDown;
+    float energyScaleSystUp;
+    float energyScaleSystDown;
+    float energyScaleGainUp;
+    float energyScaleGainDown;
+    float energyScaleEtUp;
+    float energyScaleEtDown;
+    float energySigmaUp;
+    float energySigmaDown;
+    float energySigmaPhiUp;
+    float energySigmaPhiDown;
+    float energySigmaRhoUp;
+    float energySigmaRhoDown;
+
     bool passEGMLooseID;
     bool passEGMMediumID;
     bool passEGMTightID;
-    
+
     // fiducial flags
     bool isEB; // filled
     bool isEE; // filled
@@ -88,18 +116,21 @@ namespace ExoDiPhotons
 
     // mc truth info
     bool isMCTruthFake; // filled in analyzer
+
   };
 
-  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:hadronicOverEm:r9:r9_5x5:sigmaIetaIeta:sigmaIetaIeta5x5:sigmaEtaEta:sigmaIphiIphi:sigmaIphiIphi5x5:sigmaIetaIphi:sigmaIetaIphi5x5:maxEnergyXtal:iEta:iPhi:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:passChIsoDenom:passCorPhoIsoDenom:isFakeable:isNumeratorObjCand:isDenominatorObj:isSaturated:isMCTruthFake");
+  const std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:hadronicOverEm:r9:r9_5x5:sigmaIetaIeta:sigmaIetaIeta5x5:sigmaEtaEta:sigmaIphiIphi:sigmaIphiIphi5x5:sigmaIetaIphi:sigmaIetaIphi5x5:maxEnergyXtal:iEta:iPhi:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:rapidity/D:ecalEnergyPreCorr/F:ecalEnergyErrPreCorr:ecalEnergyPostCorr:ecalEnergyErrPostCorr:energyScaleValue:energySigmaValue:energySmearNrSigma:energyScaleUp:energyScaleDown:energyScaleStatUp:energyScaleStatDown:energyScaleSystUp:energyScaleSystDown:energyScaleGainUp:energyScaleGainDown:energyScaleEtUp:energyScaleEtDown:energySigmaUp:energySigmaDown:energySigmaPhiUp:energySigmaPhiDown:energySigmaRhoUp:energySigmaRhoDown:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:passChIsoDenom:passCorPhoIsoDenom:isFakeable:isNumeratorObjCand:isDenominatorObj:isSaturated:isMCTruthFake");
+
 
   void InitPhotonInfo(photonInfo_t &photonInfo)
   {
     // kinematics
-    photonInfo.pt    = -9999.99;
-    photonInfo.eta   = -9999.99;
-    photonInfo.phi   = -9999.99;
-    photonInfo.scEta = -9999.99;
-    photonInfo.scPhi = -9999.99;
+    photonInfo.pt       = -9999.99;
+    photonInfo.eta      = -9999.99;
+    photonInfo.phi      = -9999.99;
+    photonInfo.scEta    = -9999.99;
+    photonInfo.scPhi    = -9999.99;
+    photonInfo.rapidity = -9999.99;
 
     // isolation
     photonInfo.rho                   = -9999.99;
@@ -113,7 +144,7 @@ namespace ExoDiPhotons
     photonInfo.hadTowerOverEm        = -9999.99;
     photonInfo.hadronicOverEm        = -9999.99;
 
-    // shower shape variables 
+    // shower shape variables
     photonInfo.r9               = -9999.99;
     photonInfo.r9_5x5           = -9999.99;
     photonInfo.sigmaIetaIeta    = -9999.99;
@@ -128,7 +159,7 @@ namespace ExoDiPhotons
     // detector channel info
     photonInfo.iEta =  -9999.99;
     photonInfo.iPhi =  -9999.99;
-    
+
     // high pT ID
     photonInfo.alphaHighPtID = -9999.99;
     photonInfo.kappaHighPtID = -9999.99;
@@ -141,14 +172,14 @@ namespace ExoDiPhotons
     photonInfo.passEGMLooseID  = false;
     photonInfo.passEGMMediumID = false;
     photonInfo.passEGMTightID  = false;
-    
-    // fiducial flags 
-    photonInfo.isEB        = false;        
-    photonInfo.isEE        = false;   
-    photonInfo.isEBEtaGap  = false;   
-    photonInfo.isEBPhiGap  = false;   
-    photonInfo.isEERingGap = false; 
-    photonInfo.isEEDeeGap  = false;   
+
+    // fiducial flags
+    photonInfo.isEB        = false;
+    photonInfo.isEE        = false;
+    photonInfo.isEBEtaGap  = false;
+    photonInfo.isEBPhiGap  = false;
+    photonInfo.isEERingGap = false;
+    photonInfo.isEEDeeGap  = false;
     photonInfo.isEBEEGap   = false;
 
     // electron veto and high pT ID checks
@@ -171,19 +202,45 @@ namespace ExoDiPhotons
 
     // mc truth info
     photonInfo.isMCTruthFake = false;
+
+    // systematic variations
+    photonInfo.ecalEnergyPreCorr = -9999.99;
+    photonInfo.ecalEnergyErrPreCorr = -9999.99;
+    photonInfo.ecalEnergyPostCorr = -9999.99;
+    photonInfo.ecalEnergyErrPostCorr = -9999.99;
+    photonInfo.energyScaleValue = -9999.99;
+    photonInfo.energySigmaValue = -9999.99;
+    photonInfo.energySmearNrSigma = -9999.99;
+    photonInfo.energyScaleUp = -9999.99;
+    photonInfo.energyScaleDown = -9999.99;
+    photonInfo.energyScaleStatUp = -9999.99;
+    photonInfo.energyScaleStatDown = -9999.99;
+    photonInfo.energyScaleSystUp = -9999.99;
+    photonInfo.energyScaleSystDown = -9999.99;
+    photonInfo.energyScaleGainUp = -9999.99;
+    photonInfo.energyScaleGainDown = -9999.99;
+    photonInfo.energyScaleEtUp = -9999.99;
+    photonInfo.energyScaleEtDown = -9999.99;
+    photonInfo.energySigmaUp = -9999.99;
+    photonInfo.energySigmaDown = -9999.99;
+    photonInfo.energySigmaPhiUp = -9999.99;
+    photonInfo.energySigmaPhiDown = -9999.99;
+    photonInfo.energySigmaRhoUp = -9999.99;
+    photonInfo.energySigmaRhoDown = -9999.99;
   }
-  
+
   void FillBasicPhotonInfo(photonInfo_t &photonInfo, const pat::Photon *photon)
   {
     double photon_eta = std::abs(photon->superCluster()->eta());
-    
+
     // kinematics
     photonInfo.pt          = photon->pt();
     photonInfo.eta         = photon->eta();
     photonInfo.phi         = photon->phi();
     photonInfo.scEta       = photon->superCluster()->eta();
     photonInfo.scPhi       = photon->superCluster()->phi();
-    
+    photonInfo.rapidity    = photon->rapidity();
+
     // fiducial flags
     photonInfo.isEB        = photon_eta < 1.4442; //photon->isEB();
     photonInfo.isEE        = 1.566 < photon_eta && photon_eta < 2.5; //photon->isEE();
@@ -192,8 +249,34 @@ namespace ExoDiPhotons
     photonInfo.isEERingGap = photon->isEERingGap();
     photonInfo.isEEDeeGap  = photon->isEEDeeGap();
     photonInfo.isEBEEGap   = photon->isEBEEGap();
+
+    // systematic variations, normalized to photon energy
+    float energy = photon->energy();
+    photonInfo.ecalEnergyPreCorr = photon->userFloat("ecalEnergyPreCorr") / energy;
+    photonInfo.ecalEnergyErrPreCorr = photon->userFloat("ecalEnergyErrPreCorr") / energy;
+    photonInfo.ecalEnergyPostCorr = photon->userFloat("ecalEnergyPostCorr") / energy;
+    photonInfo.ecalEnergyErrPostCorr = photon->userFloat("ecalEnergyErrPostCorr") / energy;
+    photonInfo.energyScaleValue = photon->userFloat("energyScaleValue") / energy;
+    photonInfo.energySigmaValue = photon->userFloat("energySigmaValue") / energy;
+    photonInfo.energySmearNrSigma = photon->userFloat("energySmearNrSigma") / energy;
+    photonInfo.energyScaleUp = photon->userFloat("energyScaleUp") / energy;
+    photonInfo.energyScaleDown = photon->userFloat("energyScaleDown") / energy;
+    photonInfo.energyScaleStatUp = photon->userFloat("energyScaleStatUp") / energy;
+    photonInfo.energyScaleStatDown = photon->userFloat("energyScaleStatDown") / energy;
+    photonInfo.energyScaleSystUp = photon->userFloat("energyScaleSystUp") / energy;
+    photonInfo.energyScaleSystDown = photon->userFloat("energyScaleSystDown") / energy;
+    photonInfo.energyScaleGainUp = photon->userFloat("energyScaleGainUp") / energy;
+    photonInfo.energyScaleGainDown = photon->userFloat("energyScaleGainDown") / energy;
+    photonInfo.energyScaleEtUp = photon->userFloat("energyScaleEtUp") / energy;
+    photonInfo.energyScaleEtDown = photon->userFloat("energyScaleEtDown") / energy;
+    photonInfo.energySigmaUp = photon->userFloat("energySigmaUp") / energy;
+    photonInfo.energySigmaDown = photon->userFloat("energySigmaDown") / energy;
+    photonInfo.energySigmaPhiUp = photon->userFloat("energySigmaPhiUp") / energy;
+    photonInfo.energySigmaPhiDown = photon->userFloat("energySigmaPhiDown") / energy;
+    photonInfo.energySigmaRhoUp = photon->userFloat("energySigmaRhoUp") / energy;
+    photonInfo.energySigmaRhoDown = photon->userFloat("energySigmaRhoDown") / energy;
   }
-  
+
   void FillPhotonIDInfo(photonInfo_t &photonInfo, const pat::Photon *photon, double rho, double isSat)
   {
     // isolation
@@ -220,12 +303,12 @@ namespace ExoDiPhotons
     // detector channel info
     photonInfo.iEta             = photon->iEta();
     photonInfo.iPhi             = photon->iPhi();
-    
+
     // high pT ID
     photonInfo.alphaHighPtID    = ExoDiPhotons::phoAlphaHighPtID(photon);
     photonInfo.kappaHighPtID    = ExoDiPhotons::phoKappaHighPtID(photon);
     photonInfo.phoEAHighPtID    = ExoDiPhotons::phoEAHighPtID(photon);
-    
+
     // electron veto and high pT ID checks
     photonInfo.passElectronVeto = photon->passElectronVeto();
     photonInfo.passHTowOverE    = ExoDiPhotons::passHadTowerOverEmCut(photon);
@@ -246,7 +329,7 @@ namespace ExoDiPhotons
     double chEA  = eaCH.getEffectiveArea(std::abs(photon->superCluster()->eta()));
     double nhEA  = eaNH.getEffectiveArea(std::abs(photon->superCluster()->eta()));
     double phoEA = eaPho.getEffectiveArea(std::abs(photon->superCluster()->eta()));
-    
+
     photonInfo.chEAegmID   = chEA;
     photonInfo.nhEAegmID   = nhEA;
     photonInfo.phoEAegamID = phoEA;
@@ -264,7 +347,7 @@ namespace ExoDiPhotons
   bool comparePhotonPairsByPt(const std::pair<edm::Ptr<pat::Photon>, int> photon1, const std::pair<edm::Ptr<pat::Photon>, int> photon2) {
     return(photon1.first->pt()>=photon2.first->pt());
   }
-  
+
 } // end of namespace
 
 #endif

@@ -5,6 +5,12 @@
 #define ntupleAnalyzerBase_cxx
 
 #include "ntupleAnalyzerBase.h"
+// only for use with legacy ntuples
+//#include "ntupleAnalyzerBase2016.h"
+//#include "ntupleAnalyzerBase2017.h"
+//#include "ntupleAnalyzerBase2018.h"
+
+#include "TGraphAsymmErrors.h"
 
 // this is not defined in default MakeClass headers
 // and so it needs a definition to avoid compilation errors
@@ -17,10 +23,15 @@ class fakePrediction : public ntupleAnalyzerBase {
 
  public:
   using ntupleAnalyzerBase::ntupleAnalyzerBase;
-  void Loop();
+  void Loop(int year, const std::string&);
   void setIsMC(bool mc) { isMC = mc; };
   bool isMC;
-
+  void fakeRateInit(std::string fakeRateType);
+  double getFakeRate(double pt, int region);
+ private:
+  std::map<std::string, TGraphAsymmErrors*> m_fakeRates;
+  std::string m_fakeRateType;
+  int m_year;
 };
 
 #endif

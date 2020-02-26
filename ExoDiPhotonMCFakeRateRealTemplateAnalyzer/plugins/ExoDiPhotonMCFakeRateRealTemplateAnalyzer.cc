@@ -291,7 +291,7 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
   ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
   ExoDiPhotons::FillBeamHaloEventInfo(fEventInfo, bhs);
   
-  cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
+  //  cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;
 
   // ==============
   // GEN EVENT INFO
@@ -376,7 +376,7 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
   iEvent.getByToken(rhoToken_,rhoH);
   rho_ = *rhoH;
   
-  cout << "rho: " << rho_ << endl;
+  //  cout << "rho: " << rho_ << endl;
 
   // ======
   // EGM ID
@@ -517,12 +517,13 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
       } // end while loop through mothers
 
       // if any mother is not a photon, then don't fill the match
-      if (!is_mother_photon) cout << "Not a photon. Not filling match." << endl;
+      if (!is_mother_photon && print_photon_info) cout << "Not a photon. Not filling match." << endl;
       
       // only fill tree if every mother is a photon; in particular, the hard interatciton particle is a photon
       if (is_mother_photon) {
 	
-	cout << "Real template photon." << endl;
+	if (print_photon_info)
+	  cout << "Real template photon." << endl;
 	
 	// fill genParticle info
 	ExoDiPhotons::FillGenParticleInfo(fGenParticleInfo,photonMatch);
@@ -537,20 +538,22 @@ ExoDiPhotonMCFakeRateRealTemplateAnalyzer::analyze(const edm::Event& iEvent, con
 	
 	// fill EGM ID info
 	ExoDiPhotons::FillPhotonEGMidInfo(fPhotonInfo, &(*pho), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
-	fPhotonInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
-	fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
-	fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
+	// fPhotonInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
+	// fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
+	// fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
+	fPhotonInfo.passEGMLooseID  = true;
+	fPhotonInfo.passEGMMediumID = true;
+	fPhotonInfo.passEGMTightID  = true;
 	
 	// fill our tree
 	if ( ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) ) fTree->Fill();
       }
       
     } // end if photonMatch
-    else cout << "No photon match in dR <= " << minDeltaR << endl;
-
+    else {
+      if (print_photon_info) cout << "No photon match in dR <= " << minDeltaR << endl;
+    }
   } // end of photon loop
-
-  cout << endl;
   
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
    Handle<ExampleData> pIn;

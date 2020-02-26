@@ -33,9 +33,9 @@ int main(int argc, char *argv[])
   init();
 
   // define samples to be used in histograms
-  sample gg("gg", "#gamma#gamma (Sherpa)");
+  sample gg("gg", "#gamma#gamma (Sherpa)", "2016");
   gg.drawAsData = true; // display as if it is data
-  sample gg_aMC("gg_aMC_2015", "#gamma#gamma (aMC@NLO)");
+  sample gg_aMC("gg_aMC", "#gamma#gamma (aMC@NLO)", "2015");
   std::vector<sample> samples;
   samples.push_back(gg);
   samples.push_back(gg_aMC);

@@ -71,15 +71,31 @@ TH1D* getHists(const std::string & base, const std::string & region, const std::
   return sum;
 }
 
-TH1D* getHistsMCFM(const std::string & base, const std::string & type)
+
+TH1D* getHistsMCFM(const std::string & base, const std::string & type, const std::string & histName = "id1", const int binLow = 0, const int binHigh = 0 )
 {
   unsigned int seedBase = 1189;
   unsigned int nfiles=10;
-  if(type.find("nnlo") != std::string::npos) nfiles = 100;
+  if(type.find("nnlo") != std::string::npos) nfiles = 50;
   TH1D *sum = 0;
   for(unsigned int i=1; i<=nfiles; i++) {
     unsigned int seed = seedBase + i;
-    TString filename(Form("%s/%s_seed%d.root", base.c_str(), type.c_str(), seed));
+    // commented out 20NOV2018
+    //    TString filename(Form("%s/%s_seed%d.root", base.c_str(), type.c_str(), seed));
+    TString filename(Form("%s/%s_%d.root", base.c_str(), type.c_str(), seed));
+    // later jobs have a different format
+    if(binHigh!=0) {
+      TString jobName(Form("%s_%d_%d_%d", type.c_str(), seed, binLow, binHigh));
+      // MCFM truncates job names longer than 66 characters
+      if(jobName.Length()>66) jobName.Resize(66);
+      filename = Form("%s/%s.root", base.c_str(), jobName.Data());
+    }
+    else if(base.find("otherpdfs")!=std::string::npos) {
+      TString jobName(Form("%s_%d", type.c_str(), seed));
+      // MCFM truncates job names longer than 66 characters
+      if(jobName.Length()>66) jobName.Resize(66);
+      filename = Form("%s/%s.root", base.c_str(), jobName.Data());
+    }
     TFile *f = TFile::Open(filename);
     if(!f) continue;
     if(!f->IsOpen()) continue;
@@ -109,6 +125,54 @@ TH1D* getHistsMCFM(const std::string & base, const std::string & type)
 
   return sum;
 }
+
+TH1D* getHistsMCFMSumNNLO(const std::string & base, const std::string & type)
+{
+  TString histID("id1");
+  // need to change histogram ID if looking at barrel-endcap region
+  if(base.find("_witheta")!=std::string::npos) histID = "id15";
+
+  TH1D *nnlo_500_750 = getHistsMCFM(base, type, histID.Data(), 500, 750);
+  TH1D *nnlo_750_1000 = getHistsMCFM(base, type, histID.Data(), 750, 1000);
+  TH1D *nnlo_1000_1500 = getHistsMCFM(base, type, histID.Data(), 1000, 1500);
+  TH1D *nnlo_1500_4000 = getHistsMCFM(base, type, histID.Data(), 1500, 4000);
+
+  nnlo_500_750->ResetBit(TH1::kIsAverage);
+  nnlo_750_1000->ResetBit(TH1::kIsAverage);
+  nnlo_1000_1500->ResetBit(TH1::kIsAverage);
+  nnlo_1500_4000->ResetBit(TH1::kIsAverage);
+
+  // TH1D *nnlo_sum = static_cast<TH1D*>(nnlo_500_750->Clone());
+  // nnlo_sum->Add(nnlo_750_1000);
+  // nnlo_sum->Add(nnlo_1000_1500);
+  // nnlo_sum->Add(nnlo_1500_4000);
+
+  TH1D *nnlo_sum = static_cast<TH1D*>(nnlo_500_750->Clone());
+  for(int i=0; i<=nnlo_500_750->GetNbinsX(); i++) {
+
+    double binContent_500_750 = nnlo_500_750->GetBinContent(i);
+    double binContent_750_1000 = nnlo_750_1000->GetBinContent(i);
+    double binContent_1000_1500 = nnlo_1000_1500->GetBinContent(i);
+    double binContent_1500_4000 = nnlo_1500_4000->GetBinContent(i);
+
+    double binContent = binContent_500_750 + binContent_750_1000 + binContent_1000_1500 + binContent_1500_4000;
+
+    double binError_500_750 = nnlo_500_750->GetBinError(i);
+    double binError_750_1000 = nnlo_750_1000->GetBinError(i);
+    double binError_1000_1500 = nnlo_1000_1500->GetBinError(i);
+    double binError_1500_4000 = nnlo_1500_4000->GetBinError(i);
+
+    double binError = binError_500_750;
+    if(binContent_750_1000 > binContent_500_750) binError = binError_750_1000;
+    if(binContent_1000_1500 > binContent_750_1000) binError = binError_1000_1500;
+    if(binContent_1500_4000 > binContent_1000_1500) binError = binError_1500_4000;
+
+    nnlo_sum->SetBinContent(i, binContent);
+    nnlo_sum->SetBinError(i, binError);
+  }
+  return nnlo_sum;
+}
+
 
 // get variation (up or down by 1 sigma) for parameter
 // given the nominal function and the fitResult (from which the covariance

@@ -1,3 +1,5 @@
+#include "diphoton-analysis/Tools/interface/sampleList.hh"
+
 #include "TH1D.h"
 #include "TString.h"
 #include "TChain.h"
@@ -8,43 +10,37 @@
 
 TH1D * getHist(TChain * ch, TString histName, int nBins, double min, double max, double weight, TString cut);
 
-TString filestring(TString sample)
+int main(int argc, char *argv[])
 {
-  TString output(Form("/afs/cern.ch/user/c/cawest/links/%s/*root", sample.Data()));
-  
-  return output;
-}
+  std::string data_year("");
 
-TChain* getChain()
-{
-  TChain *ch = new TChain("diphoton/fSherpaGenTree");
-  ch->Add(filestring("GGJets_M-60To200_Pt-50_13TeV-sherpa"));
-  ch->Add(filestring("GGJets_M-200To500_Pt-50_13TeV-sherpa"));
-  ch->Add(filestring("GGJets_M-500To1000_Pt-50_13TeV-sherpa"));
-  ch->Add(filestring("GGJets_M-1000To2000_Pt-50_13TeV-sherpa"));
-  ch->Add(filestring("GGJets_M-2000To4000_Pt-50_13TeV-sherpa"));
-  ch->Add(filestring("GGJets_M-4000To6000_Pt-50_13TeV-sherpa"));
-  ch->Add(filestring("GGJets_M-6000To8000_Pt-50_13TeV-sherpa"));
+  if(argc != 2) {
+    std::cout << "Syntax: plotSherpaGen.exe [2016/2017/2018]" << std::endl;
+    return -1;
+  }
+  else {
+    data_year = argv[1];
+    if(data_year.compare("2016") !=0  && data_year.compare("2017") !=0 && data_year.compare("2018") !=0) {
+      std::cout << "Syntax: plotSherpaGen.exe [2016/2017/2018]" << std::endl;
+      return -1;
+    }
+  }
 
-  std::cout << "Events: " << ch->GetEntries() << std::endl;
 
-  return ch;
-}
-
-int main()
-{
   std::map<TString, TString> cuts, cutsNoIso;
-  cuts["BB"] = ("SherpaGenPhoton1.pt>75 && SherpaGenPhoton2.pt>75 && abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442 && SherpaGenDiphoton.Minv>230 && SherpaGenDiphoton.Minv<4000 && SherpaGenPhoton1_iso<5 && SherpaGenPhoton2_iso<5");
-  cuts["BE"] = ("SherpaGenPhoton1.pt>75 && SherpaGenPhoton2.pt>75 && !(abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442) && ((abs(SherpaGenPhoton1.eta)<1.4442 && (abs(SherpaGenPhoton2.eta)>1.56 && abs(SherpaGenPhoton2.eta)<2.5)) || (abs(SherpaGenPhoton2.eta)<1.4442 && (abs(SherpaGenPhoton1.eta)>1.56 && abs(SherpaGenPhoton1.eta)<2.5))) && SherpaGenDiphoton.Minv>320 && SherpaGenDiphoton.Minv<4000 && SherpaGenPhoton1_iso<5 && SherpaGenPhoton2_iso<5");
-  cutsNoIso["BB"] = ("SherpaGenPhoton1.pt>75 && SherpaGenPhoton2.pt>75 && abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442 && SherpaGenDiphoton.Minv>230");
-  cutsNoIso["BE"] = ("SherpaGenPhoton1.pt>75 && SherpaGenPhoton2.pt>75 && !(abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442) && ((abs(SherpaGenPhoton1.eta)<1.4442 && (abs(SherpaGenPhoton2.eta)>1.56 && abs(SherpaGenPhoton2.eta)<2.5)) || (abs(SherpaGenPhoton2.eta)<1.4442 && (abs(SherpaGenPhoton1.eta)>1.56 && abs(SherpaGenPhoton1.eta)<2.5))) && SherpaGenDiphoton.Minv>320 && SherpaGenDiphoton.Minv<4000");
+  cuts["BB"] = ("SherpaGenPhoton1.pt>125 && SherpaGenPhoton2.pt>125 && abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442 && SherpaGenDiphoton.Minv>230 && SherpaGenDiphoton.Minv<4000 && SherpaGenPhoton1_iso<5 && SherpaGenPhoton2_iso<5");
+  cuts["BE"] = ("SherpaGenPhoton1.pt>125 && SherpaGenPhoton2.pt>125 && !(abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442) && ((abs(SherpaGenPhoton1.eta)<1.4442 && (abs(SherpaGenPhoton2.eta)>1.56 && abs(SherpaGenPhoton2.eta)<2.5)) || (abs(SherpaGenPhoton2.eta)<1.4442 && (abs(SherpaGenPhoton1.eta)>1.56 && abs(SherpaGenPhoton1.eta)<2.5))) && SherpaGenDiphoton.Minv>320 && SherpaGenDiphoton.Minv<4000 && SherpaGenPhoton1_iso<5 && SherpaGenPhoton2_iso<5");
+  cutsNoIso["BB"] = ("SherpaGenPhoton1.pt>125 && SherpaGenPhoton2.pt>125 && abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442 && SherpaGenDiphoton.Minv>230");
+  cutsNoIso["BE"] = ("SherpaGenPhoton1.pt>125 && SherpaGenPhoton2.pt>125 && !(abs(SherpaGenPhoton1.eta)<1.4442 && abs(SherpaGenPhoton2.eta)<1.4442) && ((abs(SherpaGenPhoton1.eta)<1.4442 && (abs(SherpaGenPhoton2.eta)>1.56 && abs(SherpaGenPhoton2.eta)<2.5)) || (abs(SherpaGenPhoton2.eta)<1.4442 && (abs(SherpaGenPhoton1.eta)>1.56 && abs(SherpaGenPhoton1.eta)<2.5))) && SherpaGenDiphoton.Minv>320 && SherpaGenDiphoton.Minv<4000");
   double lumi=0.001; // weights gives yield per fb^-1; we want yield per pb^-1
 
-  TChain *ch = getChain();
+  init();
+  TChain *ch = chains["gg_gen_" + data_year];
 
   std::vector<TString> regions = {"BB", "BE"};
 
-  TFile *outFile = new TFile("data/sherpa.root", "recreate");
+  TString filename(Form("data/sherpa_%s.root", data_year.c_str()));
+  TFile *outFile = new TFile(filename, "recreate");
 
   for(auto iregion : regions) {
     outFile->mkdir(iregion);

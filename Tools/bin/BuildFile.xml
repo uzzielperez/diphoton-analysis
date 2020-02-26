@@ -2,17 +2,26 @@
 <use name="rootinteractive"/>
 <environment>
   <bin file="basicplots.cc" name="basicplots.exe"/>
+  <bin file="datadriven.cc" name="datadriven.exe"/>
+  <bin file="draw_kfactor.cc" name="draw_kfactor.exe"/>
+  <bin file="compare.cc" name="compare.exe"/>
+  <bin file="compare_lo_nlo.cc" name="compare_lo_nlo.exe"/>
+  <bin file="compare_rereco.cc" name="compare_rereco.exe"/>
   <bin file="compareGenerators.cc" name="compareGenerators.exe"/>
   <bin file="kfactorStatError.cc" name="kfactorStatError.exe"/>
   <bin file="kfactorScaleVariations.cc" name="kfactorScaleVariations.exe"/>
+  <bin file="limit.cc" name="limit.exe"/>
   <bin file="signal.cc" name="signal.exe"/>
   <bin file="efficiency.cc" name="efficiency.exe"/>
   <bin file="makeHistograms.cc" name="makeHistograms.exe"/>
   <bin file="makeDatacards.cc" name="makeDatacards.exe"/>
   <bin file="getFakeRates.cc" name="getFakeRates.exe"/>
   <bin file="getFakePrediction.cc" name="getFakePrediction.exe"/>
+  <bin file="plot_blinded.cc" name="plot_blinded.exe"/>
   <bin file="plotSherpaGen.cc" name="plotSherpaGen.exe"/>
   <bin file="plotKFactor.cc" name="plotKFactor.exe"/>
   <bin file="plot_eta_phi.cc" name="plot_eta_phi.exe"/>
+  <bin file="plot_pdf_uncert.cc" name="plot_pdf_uncert.exe"/>
+  <bin file="skim.cc" name="skim.exe"/>
 </environment>
 <flags CXXFLAGS="-Wall -Werror -g"/>

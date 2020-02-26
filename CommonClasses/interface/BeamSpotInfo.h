@@ -17,7 +17,7 @@ namespace ExoDiPhotons
     double sigmaZ0error;
   };
   
-  std::string beamSpotBranchDefString("x0/D:y0:z0:sigmaZ:x0error:y0error:z0error:sigmaZ0error");
+  const std::string beamSpotBranchDefString("x0/D:y0:z0:sigmaZ:x0error:y0error:z0error:sigmaZ0error");
   
   void InitBeamSpotInfo(beamSpotInfo_t &beamSpotInfo) {
     beamSpotInfo.x0           = -9999.99;

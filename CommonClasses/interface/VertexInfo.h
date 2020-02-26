@@ -35,7 +35,7 @@ namespace ExoDiPhotons
     std::vector<int> isFake;
   };
   
-  std::string vertexBranchDefString("vx/D:vy:vz:vxError:vyError:vzError:ndof:d0:nTracks/I:isFake/O");
+  const std::string vertexBranchDefString("vx/D:vy:vz:vxError:vyError:vzError:ndof:d0:nTracks/I:isFake/O");
   
   void InitVertexInfo(vertexInfo_t &vertexInfo) {
     vertexInfo.vx      = -9999.99;

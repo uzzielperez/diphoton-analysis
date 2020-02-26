@@ -4,6 +4,7 @@
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TH1.h"
+#include "TLatex.h"
 #include "TLegend.h"
 #include "TLine.h"
 #include "TPad.h"
@@ -16,7 +17,6 @@
 #include <algorithm>
 #include <iostream>
 
-TH1D* averageHist(const std::vector<TH1D*>& hists);
 void plotOneType(int histType, const TString& region, const TString& scale);
 template <typename Type> 
 void meanAndSigma(const std::vector<Type> &variables, const std::vector<Type> &errors, double &mean, double &sigma);
@@ -43,7 +43,8 @@ int main(int argc, char *argv[])
 
   std::vector<TString> scales = {"R0p5F0p5", "R1F1", "R2F2"};
   for(auto iscale : scales ) {
-    for(int iHist=1; iHist<12; iHist++) {
+    //    for(int iHist=1; iHist<12; iHist++) {
+    for(int iHist=1; iHist<2; iHist++) {
       plotOneType(iHist, region, iscale);
     }
   }
@@ -52,19 +53,19 @@ int main(int argc, char *argv[])
 void plotOneType(int histType, const TString& region, const TString& scale)
 {
   bool useMCFM = true;
+  bool usePDF4LHC = false;
 
   TString submitDir("/afs/cern.ch/user/c/cawest/work/2gsubmit/CMSSW_7_4_6/2gsubmit/JOBSUBMISSION");
-  //  TString timestamp("2016-09-05-17-43-31");
-  //  TString timestamp("2016-09-02-10-21-16");
   TString timestamp("2016-09-05-17-43-31");
 
   std::vector<TString> orders = {"BORN", "NLO", "NNLO"};
   std::vector<int> jobids;
-  std::vector<int> jobidsLO = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  std::vector<int> jobidsLO;
   std::vector<int> jobidsNLO;
   std::vector<int> jobidsNNLO;
   for(unsigned int i=1; i<=10; i++) jobidsNLO.push_back(i);
   for(unsigned int i=1; i<=50; i++) jobidsNNLO.push_back(i);
+  if(usePDF4LHC) jobidsLO.clear();
 
   std::vector<TH1D*> hists[3];
   std::vector<TH1D*> averages;
@@ -88,33 +89,58 @@ void plotOneType(int histType, const TString& region, const TString& scale)
     if(iorder==0) jobids = jobidsLO;
     else if(iorder==1) jobids=jobidsNLO;
     else jobids = jobidsNNLO;
-    averages.push_back(getHists("/afs/cern.ch/user/c/cawest/work/2gsubmit/CMSSW_7_4_6/2gsubmit/JOBSUBMISSION/2016-09-05-17-43-31",
-				region.Data(), orders.at(iorder).Data()));
-    // need to change default output of 2gNNLO
-    TString yAxisTitle(averages.back()->GetYaxis()->GetTitle());
-    yAxisTitle.ReplaceAll("fb", "pb");
-    averages.back()->GetYaxis()->SetTitle(yAxisTitle);
-    double binWidth = (averages.back()->GetXaxis()->GetXmax()-averages.back()->GetXaxis()->GetXmin())/averages.back()->GetNbinsX();
-    averages.back()->Scale(1/binWidth);
-
     if(!useMCFM) {
+      averages.push_back(getHists("/afs/cern.ch/user/c/cawest/work/2gsubmit/CMSSW_7_4_6/2gsubmit/JOBSUBMISSION/2016-09-05-17-43-31",
+				  region.Data(), orders.at(iorder).Data()));
+      // need to change default output of 2gNNLO
+      TString yAxisTitle(averages.back()->GetYaxis()->GetTitle());
+      yAxisTitle.ReplaceAll("fb", "pb");
+      averages.back()->GetYaxis()->SetTitle(yAxisTitle);
+      double binWidth = (averages.back()->GetXaxis()->GetXmax()-averages.back()->GetXaxis()->GetXmin())/averages.back()->GetNbinsX();
+      averages.back()->Scale(1/binWidth);
       if(iorder==0) averages.back()->Draw();
       else averages.back()->Draw("same");
+
+      double xsec;
+      double xsecError = 0.0;
+      xsec = crossSection(averages.back(), xsecError);
+      std::cout << "cross section (pb): " << xsec << " +/-" << xsecError << std::endl;
     }
-    
-    double xsec;
-    double xsecError = 0.0;
-    xsec = crossSection(averages.back(), xsecError);
-    std::cout << "cross section (pb): " << xsec << " +/-" << xsecError << std::endl;
   }
 
-  averages.at(0)->SetMaximum(std::max(1.2*averages.at(0)->GetMaximum(), 1.2*averages.at(2)->GetMaximum()));
-  if(histType==4 || histType==7)   averages.at(0)->SetMinimum(0.5*averages.at(2)->GetMinimum());
-  if(histType==3)   averages.at(0)->SetMinimum(1e-10);
+    if(useMCFM) {
+      if(histType==1) {
+	std::string base("/afs/cern.ch/user/c/cawest/work/CMSSW_8_0_7_patch2/mcfm_nnpdf/MCFM-8.0/Bin");
+	std::string baseNNLO("/afs/cern.ch/user/c/cawest/work/CMSSW_8_0_7_patch2/mcfm_nnpdf/MCFM-8.0/Bin");
+	if(region=="BE") {
+	  base = "/afs/cern.ch/user/c/cawest/work/CMSSW_8_0_7_patch2/mcfm_witheta_nnpdf/MCFM-8.0/Bin";
+	  baseNNLO = "/afs/cern.ch/user/c/cawest/work/CMSSW_8_0_7_patch2/mcfm_witheta_nnpdf/MCFM-8.0/Bin";
+	}
+	if(scale == "R0p5F0p5") {
+	  averages.push_back(getHistsMCFM(base, "gamgam_lo_NNPDF30_0.50_0.50_lo_NNPDF30_lo_as_0118"));
+	  averages.push_back(getHistsMCFM(base, "gamgam_nlo_NNPDF30_0.50_0.50_nlo_NNPDF30_nlo_as_0118"));
+	  averages.push_back(getHistsMCFMSumNNLO(baseNNLO, "gamgam_nnlo_NNPDF30_0.50_0.50_1.E-3_nnlo"));
+	}
+	else if(scale == "R1F1") {
+	  averages.push_back(getHistsMCFM(base, "gamgam_lo_NNPDF30_1.00_1.00_lo_NNPDF30_lo_as_0118"));
+	  averages.push_back(getHistsMCFM(base, "gamgam_nlo_NNPDF30_1.00_1.00_nlo_NNPDF30_nlo_as_0118"));
+	  averages.push_back(getHistsMCFMSumNNLO(baseNNLO, "gamgam_nnlo_NNPDF30_1.00_1.00_1.E-3_nnlo"));
+	}
+	else if(scale == "R2F2") {
+	  averages.push_back(getHistsMCFM(base, "gamgam_lo_NNPDF30_2.00_2.00_lo_NNPDF30_lo_as_0118"));
+	  averages.push_back(getHistsMCFM(base, "gamgam_nlo_NNPDF30_2.00_2.00_nlo_NNPDF30_nlo_as_0118"));
+	  averages.push_back(getHistsMCFMSumNNLO(baseNNLO, "gamgam_nnlo_NNPDF30_2.00_2.00_1.E-3_nnlo"));
+	}
+	averages.at(0)->Scale(1/20.);
+	averages.at(1)->Scale(1/20.);
+	averages.at(2)->Scale(1/20.);
+      }
+    }
+  std::cout << "averages.size(): " << averages.size() << std::endl;
   
   TH1D* sherpaHist = 0;
   if(histType < 13) {
-      TFile *sherpa = TFile::Open("data/sherpa.root");
+      TFile *sherpa = TFile::Open("data/sherpa_2018.root");
       TString histName(Form("%s/hist%d", region.Data(), histType));
       sherpaHist = static_cast<TH1D*>(sherpa->Get(histName));
       sherpaHist->SetMarkerColor(kMagenta);
@@ -132,29 +158,10 @@ void plotOneType(int histType, const TString& region, const TString& scale)
     sherpaHist = 0;
   }
 
-  if(useMCFM) {
-    if(histType==1 && region=="BB") {
-      std::string base("/afs/cern.ch/user/c/cawest/work/CMSSW_8_0_7_patch2/mcfm/MCFM-8.0/Bin");
-      if(scale == "R0p5F0p5") {
-      averages.at(0) = getHistsMCFM(base, "gamgam_lo_CT10.LH_0.50_0.50_lo_CT10_scaledown");
-      averages.at(1) = getHistsMCFM(base, "gamgam_nlo_CT10nlo_0.50_0.50_nlo_CT10_scaledown");
-      averages.at(2) = getHistsMCFM(base, "gamgam_nnlo_CT10nnl_0.50_0.50_1.E-3_nnlo_CT10_scaledown");
-      }
-      else if(scale == "R1F1") {
-	averages.at(0) = getHistsMCFM(base, "gamgam_lo_CT10.LH_1.00_1.00_lo_CT10");
-	averages.at(1) = getHistsMCFM(base, "gamgam_nlo_CT10nlo_1.00_1.00_nlo_CT10");
-	averages.at(2) = getHistsMCFM(base, "gamgam_nnlo_CT10nnl_1.00_1.00_1.E-3_nnlo_CT10");
-      }
-      else if(scale == "R2F2") {
-	averages.at(0) = getHistsMCFM(base, "gamgam_lo_CT10.LH_2.00_2.00_lo_CT10_scaleup");
-	averages.at(1) = getHistsMCFM(base, "gamgam_nlo_CT10nlo_2.00_2.00_nlo_CT10_scaleup");
-	averages.at(2) = getHistsMCFM(base, "gamgam_nnlo_CT10nnl_2.00_2.00_1.E-3_nnlo_CT10_scaleup");
-      }
-      averages.at(0)->Scale(1/20.);
-      averages.at(1)->Scale(1/20.);
-      averages.at(2)->Scale(1/20.);
-    }
-  }
+
+  averages.at(0)->SetMaximum(std::max(1.2*averages.at(0)->GetMaximum(), 1.2*averages.at(2)->GetMaximum()));
+  if(histType==4 || histType==7)   averages.at(0)->SetMinimum(0.5*averages.at(2)->GetMinimum());
+  if(histType==3)   averages.at(0)->SetMinimum(1e-10);
 
   averages.at(0)->SetMarkerColor(kBlack);
   averages.at(1)->SetMarkerColor(kBlue);
@@ -183,8 +190,17 @@ void plotOneType(int histType, const TString& region, const TString& scale)
   legend->SetFillStyle(0);
   legend->Draw();
   
+  TString scaleLabel("");
+  if(scale == "R2F2") scaleLabel = "Scales up";
+  if(scale == "R0p5F0p5") scaleLabel = "Scales down";
+  TString regionLabel("Barrel-barrel");
+  if(region == "BE") regionLabel = "Barrel-endcap";
+
+  TString label(Form("#splitline{%s}{%s}", regionLabel.Data(), scaleLabel.Data()));
   
-    
+  TLatex * lat = new TLatex;
+  lat->DrawLatexNDC(0.4, 0.8, label.Data());
+
   pad2->cd();
   gStyle->SetOptStat(0);
   TH1D *kfactorNNLOtoNLO = static_cast<TH1D*>(averages.at(2)->Clone());
@@ -228,26 +244,26 @@ void plotOneType(int histType, const TString& region, const TString& scale)
     kfactorNNLOtoSherpa->SetMarkerColor(kRed);
     if(histType==1) {
       TString func("pol3");
-      TFitResultPtr fitResult = kfactorNNLOtoSherpa->Fit(func, "vse", "", 500, 2500);
+      TFitResultPtr fitResult = kfactorNNLOtoSherpa->Fit(func, "vse", "", 500, 4000);
       fitResult->Print("v");
       TF1 *fittedFunction = kfactorNNLOtoSherpa->GetFunction(func);
       fittedFunction->Print("v");
 
-      TFitResultPtr fitResult_NLO = kfactorNLOtoSherpa->Fit(func, "vs", "", 500, 2500);
+      TFitResultPtr fitResult_NLO = kfactorNLOtoSherpa->Fit(func, "vs", "", 500, 4000);
       fitResult_NLO->Print("v");
       TF1 *fittedFunction_NLO = kfactorNLOtoSherpa->GetFunction(func);
       fittedFunction_NLO->Print("v");
       fittedFunction_NLO->SetName(func + "_NLO");
       fittedFunction_NLO->SetTitle(func + "_NLO");
 
-      TFitResultPtr fitResult_LO = kfactorLOtoSherpa->Fit(func, "vs", "", 500, 2500);
+      TFitResultPtr fitResult_LO = kfactorLOtoSherpa->Fit(func, "vs", "", 500, 4000);
       fitResult_LO->Print("v");
       TF1 *fittedFunction_LO = kfactorLOtoSherpa->GetFunction(func);
       fittedFunction_LO->Print("v");
       fittedFunction_LO->SetName(func + "_LO");
       fittedFunction_LO->SetTitle(func + "_LO");
 
-      TFile *kfactorOutput = new TFile(Form("data/kfactor_%s_%s.root", region.Data(), scale.Data()), "recreate");
+      TFile *kfactorOutput = new TFile(Form("data/kfactor_%s_%s_125GeV_NNPDF.root", region.Data(), scale.Data()), "recreate");
       fittedFunction->Write();
       fitResult->Write();
       fittedFunction_NLO->Write();
@@ -255,15 +271,15 @@ void plotOneType(int histType, const TString& region, const TString& scale)
       kfactorOutput->Close();
       delete kfactorOutput;
 
-      // TF1 *diphox_scaleup = new TF1("diphox_scaleup", "[0] + [1]*x + [2]*x*x + [3]*x*x*x + [4]*x*x*x*x", 0, 2500);
+      // TF1 *diphox_scaleup = new TF1("diphox_scaleup", "[0] + [1]*x + [2]*x*x + [3]*x*x*x + [4]*x*x*x*x", 0, 4000);
       // diphox_scaleup->SetParameters();
       // diphox_scaleup->SetLineColor(kBlack);
 
-      TF1 *diphox = new TF1("diphox", "[0] + [1]*x + [2]*x*x + [3]*x*x*x + [4]*x*x*x*x", 0, 2500);
+      TF1 *diphox = new TF1("diphox", "[0] + [1]*x + [2]*x*x + [3]*x*x*x + [4]*x*x*x*x", 0, 4000);
       diphox->SetParameters(8.90218e-01, 5.19225e-04, -1.37800e-07, 1.97496e-11, -1.04218e-15);
       diphox->SetLineColor(kBlack);
 
-      // TF1 *diphox_scaledown = new TF1("diphox_scaledown", "[0] + [1]*x + [2]*x*x + [3]*x*x*x + [4]*x*x*x*x", 0, 2500);
+      // TF1 *diphox_scaledown = new TF1("diphox_scaledown", "[0] + [1]*x + [2]*x*x + [3]*x*x*x + [4]*x*x*x*x", 0, 4000);
       // diphox_scaledown->SetParameters();
       // diphox_scaledown->SetLineColor(kBlack);
 
@@ -277,53 +293,8 @@ void plotOneType(int histType, const TString& region, const TString& scale)
     atOne->Draw();
   }
 
-  c->Print(Form("plots/%s_hist%d_%s.pdf", region.Data(), histType, scale.Data()));
+  c->Print(Form("plots/%s_hist%d_%s_125GeV_NNPDF.pdf", region.Data(), histType, scale.Data()));
 
-}
-
-TH1D* averageHist(const std::vector<TH1D*>& hists)
-{
-  if(hists.size()==0) {
-    std::cout << "Need to specify at least one histogram" << std::endl;
-    exit(-1);
-  }
-  TH1D* average = static_cast<TH1D*>(hists.at(0)->Clone());
-
-  for(int iBin=0; iBin<=hists.at(0)->GetNbinsX()+1; iBin++) {
-    std::vector<double> entries, errors;
-    for(unsigned int iHist=0; iHist<hists.size(); iHist++) {
-      entries.push_back(hists.at(iHist)->GetBinContent(iBin));
-      errors.push_back(0.05*hists.at(iHist)->GetBinError(iBin));
-    }
-    double mean = 0.0;
-    double sigma = 0.0;
-    meanAndSigma(entries, errors, mean, sigma);
-    average->SetBinContent(iBin, mean);
-    average->SetBinError(iBin, sigma);
-  }    
-  
-
-  return average;
-}
-
-template <typename Type>
-void meanAndSigma(const std::vector<Type> &variables, const std::vector<Type> &errors, double &mean, double &sigma)
-{
-
-  // calculate weighted average
-  double weightNumerator = 0.0;
-  double weightDenominator = 0.0;
-  for(unsigned int i=0; i<variables.size(); i++) {
-    if(errors.at(i) > 0.0) {
-      weightNumerator += variables.at(i)/pow(errors.at(i), 2);
-      weightDenominator += 1/pow(errors.at(i), 2);
-    }
-  }
-  if(weightDenominator==0.0) mean = sigma = 0.0;
-  else {
-    mean = weightNumerator/weightDenominator;
-    sigma = 1./sqrt(weightDenominator);
-  }
 }
 
 double crossSection(TH1D * hist, double& error)
