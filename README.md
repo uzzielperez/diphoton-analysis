@@ -26,3 +26,25 @@ git clone git@github.com:cms-exotica-diphotons/diphoton-analysis
 cd diphoton-analysis  
 scram b -j 8
 ```
+
+## For Pull Requests
+
+Make sure to get the latest changes from the master branch and work from there.
+```bash
+ 
+ git clone git@github.com:uzzielperez/diphoton-analysis.git
+ cd diphoton-analysis
+ git remote add upstream git@github.com:cms-exotica-diphotons/diphoton-analysis.git
+ git checkout master
+ git pull upstream master # pull latest from master
+ 
+ # check diff
+ git diff -U0 --color remotes/upstream/master
+ 
+ # to reset
+ git reset --hard upstream/master
+ 
+ git push origin master
+ 
+ ```
+
