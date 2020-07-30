@@ -1,15 +1,12 @@
 # runtime options
 
 from FWCore.ParameterSet.VarParsing import VarParsing
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+from os.path import basename
+import importlib
+submit_utils = importlib.import_module("diphoton-analysis.CommonClasses.submit_utils")
 
 options = VarParsing('python')
-
-options.register('globalTag',
-                 '76X_mcRun2_asymptotic_v12',
-                 VarParsing.multiplicity.singleton,
-                 VarParsing.varType.string,
-                 "Global tag to use when running."
-                 )
 
 options.register('nEventsSample',
                  5968960, # number of events in QCD_Pt_300to470_TuneCUETP8M1 sample
@@ -18,19 +15,19 @@ options.register('nEventsSample',
                  "Total number of events in dataset for event weight calculation."
                  )
 
-options.register('outputFileName',
-                 "out_default_QCD_Pt_300to470_TuneCUETP8M1.root",
-                 VarParsing.multiplicity.singleton,
-                 VarParsing.varType.string,
-                 "Output filename."
-                 )
-
 options.setDefault('maxEvents', 5000)
 
 options.parseArguments()
 
-print "Output file name: ", options.outputFileName
-print "Number of events in sample: ", options.nEventsSample
+outName = options.outputFile
+if "output" in outName: # if an input file name is specified, event weights can be determined
+    outName = "out_" + basename(options.inputFiles[0])
+    print("Output root file name: " + outName)
+else:
+    options.inputFiles = "file:GGJets_M-1000To2000_Pt-50_13TeV-sherpa.root"
+
+print("Output file name: " +  outName)
+print("Number of events in sample: " + str(options.nEventsSample))
 
 import FWCore.ParameterSet.Config as cms
 
@@ -56,7 +53,7 @@ process.source = cms.Source(
         #'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/047F51F9-8CB8-E511-89E5-28924A33B9FE.root'
         #'/store/mc/RunIIFall15MiniAODv2/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/047F51F9-8CB8-E511-89E5-28924A33B9FE.root'
         # GJets
-        'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/GJets_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/00C4C9FA-65BB-E511-AB87-50465DE43BAC.root'
+        options.inputFiles
         #GGJets
         #'root://eoscms.cern.ch//store/mc/RunIIFall15MiniAODv2/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/04B53B17-24D9-E511-B1ED-00259075D72E.root'
         #'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/GGJets_M-500To1000_Pt-50_13TeV-sherpa/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/129F0188-B9D8-E511-9897-00259073E4F6.root'
@@ -65,7 +62,7 @@ process.source = cms.Source(
 
 # for global tag
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
-process.GlobalTag.globaltag = options.globalTag
+process.GlobalTag.globaltag = submit_utils.get_global_tag(outName)
 
 # geometry for saturation
 process.load("Configuration.StandardSequences.GeometryDB_cff")
@@ -73,17 +70,8 @@ process.load("Configuration.StandardSequences.GeometryDB_cff")
 # for output file
 process.TFileService = cms.Service(
     "TFileService",
-    fileName = cms.string(options.outputFileName)
+    fileName = cms.string(outName)
     )
-
-# Setup VID for EGM ID
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
-# define which IDs we want to produce
-my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff']
-#add them to the VID producer
-for idmod in my_id_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 ## update AK4PFchs jet collection in MiniAOD JECs
 
@@ -95,6 +83,16 @@ updateJetCollection(
    labelName = 'UpdatedJEC',
    jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')  # Do not forget 'L2L3Residual' on data!
 )
+jetLabel = "updatedPatJetsUpdatedJEC"
+
+# summary of information needed for e/gamma corrections
+egm_info = submit_utils.egamma_info(outName)
+setupEgammaPostRecoSeq(process,
+                       applyEnergyCorrections=True,
+                       applyVIDOnCorrectedEgamma=True,
+                       runVID=True,
+                       runEnergyCorrections=True,
+                       era=egm_info['era'])
 
 # main analyzer and inputs
 process.diphoton = cms.EDAnalyzer(
@@ -104,21 +102,21 @@ process.diphoton = cms.EDAnalyzer(
     # genParticle tag
     genParticlesMiniAOD = cms.InputTag("prunedGenParticles"),
     # ak4 jets
-    jetsMiniAOD = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
+    jetsMiniAOD = cms.InputTag(jetLabel),
     jetPtThreshold = cms.double(30.),
     jetEtaThreshold = cms.double(2.5),
     # rho tag
     rho = cms.InputTag("fixedGridRhoAll"),
     # EGM eff. areas
-    effAreaChHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfChargedHadrons_25ns_NULLcorrection.txt"),
-    effAreaNeuHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfNeutralHadrons_25ns_90percentBased.txt"),
-    effAreaPhoFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfPhotons_25ns_90percentBased.txt"),
+    effAreaChHadFile = cms.FileInPath(egm_info['effAreaChHad']),
+    effAreaNeuHadFile = cms.FileInPath(egm_info['effAreaNeuHad']),
+    effAreaPhoFile = cms.FileInPath(egm_info['effAreaPhoHad']),
     # EGM ID decisions
-    phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
-    phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
-    phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
+    phoLooseIdMap = cms.InputTag("egmPhotonIDs", egm_info['loosePhoId']),
+    phoMediumIdMap = cms.InputTag("egmPhotonIDs", egm_info['mediumPhoId']),
+    phoTightIdMap = cms.InputTag("egmPhotonIDs", egm_info['tightPhoId']),
     # out file name
-    outputFile = cms.string(options.outputFileName),
+    outputFile = cms.string(outName),
     # number of events in the sample (for calculation of event weights)
     nEventsSample = cms.uint32(options.nEventsSample),
     # gen event info
@@ -128,4 +126,4 @@ process.diphoton = cms.EDAnalyzer(
 # analyzer to print cross section
 process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
 
-process.p = cms.Path(process.egmPhotonIDSequence * process.diphoton * process.xsec)
+process.p = cms.Path(process.egammaPostRecoSeq * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.diphoton * process.xsec)
