@@ -7,29 +7,19 @@ import subprocess
 import json
 import os
 
-def get_number_of_events(dataset):
-  """Get number of events for dataset from DAS"""
-  query = "file dataset=" + dataset + " | sum(file.nevents)"
+import importlib
+das_utils = importlib.import_module("diphoton-analysis.CommonClasses.das_utils")
+submit_utils = importlib.import_module("diphoton-analysis.CommonClasses.submit_utils")
 
-  cmd = "das_client --format=json --query='" + query + "'"
-  print "Executing: " + cmd
-  data = subprocess.check_output(cmd, shell=True)
-
-  if isinstance(data, basestring):
-    dasjson = json.loads(data)
-  else:
-    dasjson = data
-  status  = dasjson.get('status')
-  if  status == 'ok':
-    data = dasjson.get('data')
-    sumevents = 0
-    for idata in data:
-      sumevents += idata.get('result').get('value')
-    return sumevents
-
-do_2015_QCD = True
-do_2015_GJets = True
-do_2015_GGJets = True
+do_2015_QCD = False
+do_2015_GJets = False
+do_2015_GGJets = False
+do_2016_GJets = False
+do_2016_GGJets = False
+do_2017_GJets = False
+do_2017_GGJets = False
+do_2018_GJets = False
+do_2018_GGJets = True
 
 DATASETS = [[]]
 # each entry contains a list of datasets, including extensions
@@ -39,47 +29,30 @@ DATASETS = [[]]
 #                   "/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2_ext1-v1/MINIAODSIM"])
 
 if do_2015_QCD:
-  DATASETS.append(['/QCD_Pt_5to10_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_10to15_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_15to30_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_50to80_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_470to600_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_600to800_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_800to1000_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_1000to1400_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_1400to1800_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_1800to2400_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_2400to3200_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-  DATASETS.append(['/QCD_Pt_3200toInf_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
-
-if do_2015_GJets:
-  DATASETS.append(["/GJets_HT-40To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v3/MINIAODSIM"])
-  DATASETS.append(["/GJets_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM"])
-  DATASETS.append(["/GJets_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM"])
-  DATASETS.append(["/GJets_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM"])
-  DATASETS.append(["/GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM"])
-
+  DATASETS.extend(submit_utils.get_dataset_list('2015_QCD'))
 if do_2015_GGJets:
-  DATASETS.append(["/GGJets_M-60To200_Pt-50_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM"])
-  DATASETS.append(["/GGJets_M-200To500_Pt-50_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM"])
-  DATASETS.append(["/GGJets_M-500To1000_Pt-50_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM"])
-  DATASETS.append(["/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM"])
-  DATASETS.append(["/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM"])
-  DATASETS.append(["/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM"])
-  DATASETS.append(["/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM"])
-  DATASETS.append(["/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM"])
+  DATASETS.extend(submit_utils.get_dataset_list('2015_GGJets'))
+if do_2015_GJets:
+  DATASETS.extend(submit_utils.get_dataset_list('2015_GJets'))
+if do_2016_GGJets:
+  DATASETS.extend(submit_utils.get_dataset_list('2016_GGJets'))
+if do_2016_GJets:
+  DATASETS.extend(submit_utils.get_dataset_list('2016_GJets'))
+if do_2017_GGJets:
+  DATASETS.extend(submit_utils.get_dataset_list('2017_GGJets'))
+if do_2017_GJets:
+  DATASETS.extend(submit_utils.get_dataset_list('2017_GJets'))
+if do_2018_GGJets:
+  DATASETS.extend(submit_utils.get_dataset_list('2018_GGJets'))
+if do_2018_GJets:
+  DATASETS.extend(submit_utils.get_dataset_list('2018_GJets'))
 
 for ilist in DATASETS:
   nevents = 0
   print ""
   for ids in ilist:
-    nevents += get_number_of_events(ids)
-    print "running nevents is " + str(nevents)
+    nevents += das_utils.get_number_of_events(ids)
+    print("running nevents is " + str(nevents))
 
   for ids in ilist:
     cmssw_base = os.getenv("CMSSW_BASE")
@@ -94,9 +67,9 @@ for ilist in DATASETS:
     f = open(outputfile, 'w')
     f.write(s)
     f.close()
-    print "Wrote crab configuration file " + outputfile
+    print("Wrote crab configuration file " + outputfile)
 
     cmd = "crab submit -c " + outputfile
-    os.system(cmd)
+#    os.system(cmd)
     print "Submitted ", ids
 

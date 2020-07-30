@@ -500,9 +500,14 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
     
     // fill EGM ID info
     ExoDiPhotons::FillPhotonEGMidInfo(fPhotonInfo, &(*pho), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
-    fPhotonInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
-    fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
-    fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
+    // this method of retrieving EGM decisions is not currently supported
+    // fPhotonInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
+    // fPhotonInfo.passEGMMediumID = (*medium_id_decisions)[pho];
+    // fPhotonInfo.passEGMTightID  = (*tight_id_decisions)[pho];
+
+    fPhotonInfo.passEGMLooseID  = 0;
+    fPhotonInfo.passEGMMediumID = 0;
+    fPhotonInfo.passEGMTightID  = 0;
 
     // only match to "numerator" photons
     //if ( !(ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) &&
@@ -1167,9 +1172,14 @@ ExoDiPhotonMCFakeRateClosureTestAnalyzer::analyze(const edm::Event& iEvent, cons
       
       // fill EGM ID info
       ExoDiPhotons::FillPhotonEGMidInfo(fPhotonMatchInfo, &(*pho), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
-      fPhotonMatchInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
-      fPhotonMatchInfo.passEGMMediumID = (*medium_id_decisions)[pho];
-      fPhotonMatchInfo.passEGMTightID  = (*tight_id_decisions)[pho];
+      // this method of retrieving EGM decisions is not currently supported
+      // fPhotonMatchInfo.passEGMLooseID  = (*loose_id_decisions)[pho];
+      // fPhotonMatchInfo.passEGMMediumID = (*medium_id_decisions)[pho];
+      // fPhotonMatchInfo.passEGMTightID  = (*tight_id_decisions)[pho];
+
+      fPhotonMatchInfo.passEGMLooseID  = 0;
+      fPhotonMatchInfo.passEGMMediumID = 0;
+      fPhotonMatchInfo.passEGMTightID  = 0;
       
       // fill our tree
       //if ( ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) &&
