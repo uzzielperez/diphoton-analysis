@@ -1,4 +1,4 @@
-## Template file for CRAB submission. The script generate_crab_config.py 
+## Template file for CRAB submission. The script generate_crab_config.py
 ## replaces the following two lines with the appropriate values
 ## Do not edit manually!
 import os
@@ -40,6 +40,8 @@ config.Data.inputDBS = 'global'
 cmssw_base = os.environ['CMSSW_BASE']
 commit_hash = subprocess.check_output(['git', '--git-dir=' + cmssw_base + '/src/diphoton-analysis/.git',  'rev-parse', '--short', 'HEAD']).replace('\n', '')
 config.Data.outLFNDirBase = '/store/user/' + user + '/diphoton_fake/' + commit_hash
+if (user == "cuperez" or user == "ciperez"):
+    config.Data.outLFNDirBase = '/store/user/ciperez/diphoton_fake/'
 
 if "Run2018" in taskname:
     config.Data.splitting = 'LumiBased'

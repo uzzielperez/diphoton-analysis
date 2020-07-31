@@ -11,6 +11,8 @@ submit_utils = importlib.import_module("diphoton-analysis.CommonClasses.submit_u
 options = VarParsing ('python')
 options.parseArguments()
 
+process = cms.Process("ExoDiPhoton")
+
 outName = options.outputFile
 print("Default output name: " + outName)
 if "output" in outName: # if an input file name is specified, event weights can be determined
@@ -33,8 +35,6 @@ if "Run201" in outName:
 # override options for MC
 if isMC:
     JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
-
-process = cms.Process("ExoDiPhoton")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 

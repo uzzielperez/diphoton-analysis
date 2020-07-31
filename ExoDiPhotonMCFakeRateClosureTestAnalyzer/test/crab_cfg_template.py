@@ -1,5 +1,5 @@
 '''
-Template file for CRAB submission. The script generate_crab_config.py 
+Template file for CRAB submission. The script generate_crab_config.py
 replaces the following two lines with the appropriate values
 Do not edit manually!
 '''
@@ -41,6 +41,8 @@ if user == "cawest":
     cmssw_base = os.environ['CMSSW_BASE']
     commit_hash = subprocess.check_output(['git', '--git-dir=' + cmssw_base + '/src/diphoton-analysis/.git',  'rev-parse', '--short', 'HEAD']).replace('\n', '')
     config.Data.outLFNDirBase = '/store/user/' + user + '/diphoton_closure/' + commit_hash
+else if (user == "cuperez" or user == "ciperez"):
+    config.Data.outLFNDirBase = '/store/user/ciperez/diphoton_fake/'
 else:
     config.Data.outLFNDirBase = '/store/user/abuccill/DiPhotonAnalysis/FakeRateClosureTest'
 config.Data.publication = False
