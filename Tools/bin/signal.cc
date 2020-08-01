@@ -55,9 +55,9 @@ void oneSignal(int ned, int kk, bool bkgSub)
   int year = ned;
   if(ned != 2017 && ned != 2018) year = 2016;
 
-  int nBins = 120;
+  int nBins = 260;
   double xMin = 0.0;
-  double xMax = 6000.;
+  double xMax = 13000.;
 
   TString barrelCut("weightAll*isGood*(Diphoton.Minv>230 && Photon1.pt>75 && Photon2.pt>75 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442)");
   if(bkgSub) barrelCut = "weightAll*isGood*(Diphoton.Minv>500 && Photon1.pt>75 && Photon2.pt>75 && abs(Photon1.eta)<1.4442 && abs(Photon2.eta)<1.4442)";
@@ -92,7 +92,7 @@ void oneSignal(int ned, int kk, bool bkgSub)
     hist->SetLineColor(kBlue-4+i%4);
     hist->SetMarkerColor(kBlue-4+i%4);
     if(bkgSub) hist->Add(histSM, -1.0);
-    hist->GetYaxis()->SetRangeUser(1e-6, 2000);
+    hist->GetYaxis()->SetRangeUser(1e-8, 2000);
     if(i==0) {
       hist->Draw();
       lat->DrawLatexNDC(0.6, 0.87, Form("N_{ED} = %d, KK = %d", ned, kk));
