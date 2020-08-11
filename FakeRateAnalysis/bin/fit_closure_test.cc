@@ -12,11 +12,6 @@ double fakeRateUncertainty(double denominator, double fakeerror, double fakerate
   return uncert;
 }
 
-// TH1* GetHist(int ptbin, bool isEB, hist_t type)
-// {
-//   return h;
-// }
-
 int main(int argc, char *argv[])
 {
   TString sample;

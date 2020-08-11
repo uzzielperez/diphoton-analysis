@@ -29,13 +29,13 @@
 /**
  * Return background and uncertainty instead of fakerate
  *
- * This function is called from /scripts/fakeRateCalculation.C
- * From /analysis, run
- * root -l -b -q ../scripts/fakeRateCalculation.C'("mc","sieie")'
+ * This function is called from /FakeRateAnalysis/bin/fake_templates_closure.cc
+ *
+ *
  */
-std::pair<double,double> rooFitFakeRateProducer(TString sample, TString templateVariable, TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin, TString era, int pvCutLow, int pvCutHigh)
+std::pair<double,double> rooFitFakeRateProducer(TFile *realtemp_inputfile, TFile *faketemp_inputfile, TString sample, TString templateVariable, TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin, TString era, int pvCutLow, int pvCutHigh)
 {
-  bool no_template_pv_binning = true;
+  // bool no_template_pv_binning = true;
 
   std::map<TString, TString> cmssw_version;
   cmssw_version["2016"] = "76X";
@@ -85,26 +85,33 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   std::cout << "Processing: " << data_filename << std::endl;
 
   // For the Closure test the data_file name would be the closest thing to the data which is GGJets
+  //--- Temporary files ----
   cout << endl;
   std::cout << "Opening Data Template File: "  << data_filename << std::endl;
-  TFile *histojetfile = TFile::Open(data_filename);
-  TFile *histojetfile_templates;
-  if(no_template_pv_binning) histojetfile_templates = TFile::Open(data_filename_templates);
-  else histojetfile_templates = TFile::Open(data_filename);
+  TFile *histojetfile           = faketemp_inputfile;
+  TFile *histojetfile_templates = faketemp_inputfile;
+  std::cout << "Opening Real MC Template File.." << std::endl;
+  TFile *historealmcfile            = realtemp_inputfile;
+  TFile *historealmcfile_templates  = realtemp_inputfile;
+
+  // TFile *histojetfile = TFile::Open(data_filename);
+  // TFile *histojetfile_templates;
+  // if(no_template_pv_binning) histojetfile_templates = TFile::Open(data_filename_templates);
+  // else histojetfile_templates = TFile::Open(data_filename);
 
   // Real template
   // TString mc_filename(basefilename + "/diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + pvCut + "_MiniAOD_histograms" + extra + ".root");
-  TString mc_filename = basefilename + "/diphoton_fake_rate_real_templates_all_GGJets_GJets_94X_nPV0-200_MiniAOD_histograms.root";
-  cout << endl;
-  std::cout << "Opening Real MC Template File: "  << mc_filename << std::endl;
-  TFile *historealmcfile = TFile::Open(mc_filename);
+  // TString mc_filename = basefilename + "/diphoton_fake_rate_real_templates_all_GGJets_GJets_94X_nPV0-200_MiniAOD_histograms.root";
+  // cout << endl;
+  // std::cout << "Opening Real MC Template File: "  << mc_filename << std::endl;
+  // TFile *historealmcfile = TFile::Open(mc_filename);
 
   //TString mc_filename_templates(basefilename + "/diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + "_nPV0-200_MiniAOD_histograms" + extra + ".root");
-  TString mc_filename_templates = "/uscms/home/cuperez/nobackup/tribosons/FakeRate/CMSSW_10_2_18/src/diphoton_fake_rate_real_templates_all_GGJets_GJets_94X_nPV0-200_MiniAOD_histograms.root";
-  TFile *historealmcfile_templates;
-
-  if(no_template_pv_binning) historealmcfile_templates = TFile::Open(mc_filename_templates);
-  else historealmcfile = TFile::Open(mc_filename);
+  // TString mc_filename_templates = "/uscms/home/cuperez/nobackup/tribosons/FakeRate/CMSSW_10_2_18/src/diphoton_fake_rate_real_templates_all_GGJets_GJets_94X_nPV0-200_MiniAOD_histograms.root";
+  // TFile *historealmcfile_templates;
+  //
+  // if(no_template_pv_binning) historealmcfile_templates = TFile::Open(mc_filename_templates);
+  // else historealmcfile = TFile::Open(mc_filename);
 
   // -- Get Histograms
   double sidebandLow = sideband.first;

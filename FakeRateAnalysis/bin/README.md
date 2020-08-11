@@ -31,3 +31,5 @@ scram b -j 16
 python diphoton-analysis/FakeRateAnalysis/bin/fit_histos_closure.py
 fit_closure_test.exe GGJets sieie 2018 0 200
 ```
+
+### Extracting the Fake Rate 
