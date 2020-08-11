@@ -4,11 +4,18 @@
 
 #include <iostream>
 #include "TStopwatch.h"
+#include <TH1D.h>
+#include <TH1.h>
 
 double fakeRateUncertainty(double denominator, double fakeerror, double fakerate) {
   double uncert = TMath::Sqrt((fakeerror*fakeerror/denominator/denominator) + (fakerate*fakerate/denominator));
   return uncert;
 }
+
+// TH1* GetHist(int ptbin, bool isEB, hist_t type)
+// {
+//   return h;
+// }
 
 int main(int argc, char *argv[])
 {
@@ -153,12 +160,14 @@ int main(int argc, char *argv[])
   TFile *histofaketemp_file = TFile::Open(faketemp_inputfile);
 
   TString realtemp_inputfile = "diphoton_fake_rate_real_templates_all_GGJets_GJets_94X_nPV0-200_MiniAOD_histograms.root";
-  // TFile *historealtemp_file = TFile::Open(realtemp_inputfile);
+  TFile *historealtemp_file = TFile::Open(realtemp_inputfile);
+  historealtemp_file->Print();
 
   std::cout << "Fake Template source: " << faketemp_inputfile << std::endl;
   std::cout << "Real Template source: " << realtemp_inputfile << std::endl;
+  std::cout <<  ptBins << std::endl;
 
-  // debug vectors
+  //debug vectors
   std::vector<double> numVec;
   std::vector<double> denomVec;
 
@@ -182,7 +191,7 @@ int main(int argc, char *argv[])
 
       // --- Rename variables here
       // Result of Fake Rate Producer ( Rename this variable to something more meaningful )
-      std::pair<double,double> resEB = rooFitFakeRateProducer(sample,templateVariable,binName,TString("EB"),sidebandsEB.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
+      std::pair<double,double> resEB = rooFitFakeRateProducer(historealtemp_file, histofaketemp_file, sample,templateVariable,binName,TString("EB"),sidebandsEB.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
 
       //-- Get Hist
       // TString histfaketemp( templateVariable + etaBin + "_faketemplate_pt" + ptBin + postFix );
@@ -226,7 +235,7 @@ int main(int argc, char *argv[])
       if (templateVariable == "sieie")  postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
       else if (templateVariable == "chIso") postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
 
-      std::pair<double,double> resEE = rooFitFakeRateProducer(sample,templateVariable,binName,TString("EE"),sidebandsEE.at(j),i+1, era, pvCutLow, pvCutHigh);
+      std::pair<double,double> resEE = rooFitFakeRateProducer(historealtemp_file, histofaketemp_file, sample,templateVariable,binName,TString("EE"),sidebandsEE.at(j),i+1, era, pvCutLow, pvCutHigh);
       // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
 
       // record fake rate in TGraphs
@@ -276,8 +285,6 @@ int main(int argc, char *argv[])
       std::cout << " " << std::endl;
     }
   }
-
-  //
 
   std::cout << "\nEnding fakeRateCalculation()\n" << std::endl;
 
