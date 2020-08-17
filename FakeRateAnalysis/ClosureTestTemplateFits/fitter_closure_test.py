@@ -34,11 +34,14 @@ def TGraphAsymmErrorsToTH1D(g,histName):
 
 infile = TFile("fake_rate_sieie_template_fits.root","read")
 
-plotEB = infile.Get("hEBRate_chIso5To10")
+# Fake Rate for chIso5To10
+plotEB = infile.Get("hEBFakeRate")
+# plotEB = infile.Get("hEBRate_chIso5To10")
 #plotEBclone = plotorigEB.Clone()
 #plotEB = TGraphAsymmErrorsToTH1D(plotEBclone,"plotEB")
 
-plotEE = infile.Get("hEERate_chIso5To10")
+plotEE = infile.Get("hEEFakeRate")
+# plotEE = infile.Get("hEERate_chIso5To10")
 #plotEEclone = plotorigEE.Clone()
 #plotEE = TGraphAsymmErrorsToTH1D(plotEEclone,"plotEE")
 

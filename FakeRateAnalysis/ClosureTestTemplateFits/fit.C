@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <tuple>
 
 const int NPTBINS=5;
 const float PTBINS[NPTBINS+1] = { 50, 70, 90, 130, 200, 600 };
@@ -191,10 +192,18 @@ void fit(void)
 	  if(isEB) cEB->cd(ptbin+1);
 	  else     cEE->cd(ptbin+1);
 	}
+
 	hs->Draw();
 	hNum->Draw("same");
 	gPad->SetLogy(1);
 	hs->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
+
+  // auto leg = new TLegend(0.65, 0.45, 0.85, 0.65);
+  // leg->SetBorderSize(0);
+  // leg->AddEntry(hFake, oss.str().c_str(), "l");
+  // leg->AddEntry(hReal, oss.str().c_str(), "l");
+  // leg->Draw();
+
 
   // Fake Rate Part
 	double num=0.0, nume2=0.0;
@@ -281,12 +290,12 @@ void fit(void)
   hEBRatio->SetMaximum(2.0);  hEERatio->SetMaximum(2.0);
 
   // Save Plots and Histograms
-  TList *l = new TList();
-  l->Add(hEBRatio);
-  l->Add(hEERatio);
-  TFile *f = new TFile("fake_rate_sieie_template_fits.root","RECREATE");
-  l->Write("histlist", TObject::kSingleKey);
-  f->ls();
+  // TList *l = new TList();
+  // l->Add(hEBRatio);
+  // l->Add(hEERatio);
+  // TFile *f = new TFile("fake_rate_sieie_template_fits.root","RECREATE");
+  // l->Write("histlist", TObject::kSingleKey);
+  // f->ls();
 
   // Fake Rate
   c1->SaveAs("fake_rate_EBRatio.pdf");
@@ -298,6 +307,10 @@ void fit(void)
   cEE->SaveAs("fake_rate_cEE.pdf");
   cEBTruth->SaveAs("fake_rate_cEBTruth.pdf");
   cEETruth->SaveAs("fake_rate_cEETruth.pdf");
+
+  TFile file_out("fake_rate_sieie_template_fits.root", "RECREATE");
+  hEBFakeRate->Write();
+  hEEFakeRate->Write();
 
   return;
 }
