@@ -13,6 +13,15 @@
 #include <sstream>
 #include <tuple>
 
+/*
+*
+* This code fits the fake templates to the numerator for template variable sieie
+* Produces fake Rate Plots and measures Fake Rate Estimation and Underestimation
+* Needs input files from RealTemplateAnalysis/analysis/MCFakeRateAnalysis.C &
+* PhotonClosure/analysis/MCFakeRateAnalysis.C
+*
+*/
+
 const int NPTBINS=5;
 const float PTBINS[NPTBINS+1] = { 50, 70, 90, 130, 200, 600 };
 
@@ -76,7 +85,6 @@ TH1* GetHist(int ptbin, bool isEB, hist_t type)
 
   return h;
 }
-
 
 // Negative log likelihood function for the fitting routine
 void NLL(int &, double *, double &f, double *par, int)
@@ -198,12 +206,16 @@ void fit(void)
 	gPad->SetLogy(1);
 	hs->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
 
-  // auto leg = new TLegend(0.65, 0.45, 0.85, 0.65);
-  // leg->SetBorderSize(0);
-  // leg->AddEntry(hFake, oss.str().c_str(), "l");
-  // leg->AddEntry(hReal, oss.str().c_str(), "l");
-  // leg->Draw();
+  auto leg = new TLegend(0.65, 0.45, 0.85, 0.65);
+  leg->SetBorderSize(0);
+  ostringstream ssTitle;
+  ssTitle << PTBINS[ptbin] << "To" << PTBINS[ptbin+1] << "_" << (isEB ? "EB" : "EE") << "_" << (isTruth ? "Truth" : "Fake");
 
+  leg->SetHeader(ssTitle.str().c_str(),"C");
+  leg->AddEntry(hFake, "Fake", "f");
+  leg->AddEntry(hReal, "Real", "f");
+  leg->AddEntry(hNum, "Numerator", "lep");
+  leg->Draw();
 
   // Fake Rate Part
 	double num=0.0, nume2=0.0;
@@ -311,6 +323,7 @@ void fit(void)
   TFile file_out("fake_rate_sieie_template_fits.root", "RECREATE");
   hEBFakeRate->Write();
   hEEFakeRate->Write();
+
 
   return;
 }
