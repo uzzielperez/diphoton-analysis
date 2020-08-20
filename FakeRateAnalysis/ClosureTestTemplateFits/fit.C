@@ -217,15 +217,15 @@ void fit(void)
   leg->AddEntry(hNum, "Numerator", "lep");
   leg->Draw();
 
-  ostringstream ssFile;
-  ssFile << "stack_hist_" << PTBINS[ptbin] << "To" << PTBINS[ptbin+1] << " " << (isEB ? "EB" : "EE") << " " << (isTruth ? "Truth" : "Fake") << "chIso5To10.pdf";
-  if(isTruth) {
-	  if(isEB) cEBTruth->SaveAs(ssFile.str().c_str());
-	  else     cEETruth->SaveAs(ssFile.str().c_str());
-	} else {
-	  if(isEB) cEB->SaveAs(ssFile.str().c_str());
-	  else     cEE->SaveAs(ssFile.str().c_str());
-	}
+  // ostringstream ssFile;
+  // ssFile << "stack_hist_" << PTBINS[ptbin] << "To" << PTBINS[ptbin+1] << " " << (isEB ? "EB" : "EE") << " " << (isTruth ? "Truth" : "Fake") << "chIso5To10.pdf";
+  // if(isTruth) {
+	//   if(isEB) cEBTruth->SaveAs(ssFile.str().c_str());
+	//   else     cEETruth->SaveAs(ssFile.str().c_str());
+	// } else {
+	//   if(isEB) cEB->SaveAs(ssFile.str().c_str());
+	//   else     cEE->SaveAs(ssFile.str().c_str());
+	// }
 
   // Fake Rate Part
 	double num=0.0, nume2=0.0;
