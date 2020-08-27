@@ -22,6 +22,8 @@
 *
 */
 
+
+
 const int NPTBINS=5;
 const float PTBINS[NPTBINS+1] = { 50, 70, 90, 130, 200, 600 };
 
@@ -148,6 +150,9 @@ int performFit(TH1* hData, TH1* hBkg1, TH1* hBkg2, double &frac, double &frace)
 
 void fit(void)
 {
+  // To supress canvas from popping up. Speeds up plots production
+  gROOT->SetBatch();
+
   TCanvas *cEB=new TCanvas("EB","EB");
   TCanvas *cEE=new TCanvas("EE","EE");
   TCanvas *cEBTruth=new TCanvas("EBTruth","EB Truth");
@@ -166,9 +171,15 @@ void fit(void)
   int EBTruthStatus[NPTBINS], EETruthStatus[NPTBINS];
 
   // Template Fit per pT bin
-  for(int isTruth=0; isTruth<2; isTruth++) {
-    for(int isEB=0; isEB<2; isEB++) {
-      for(int ptbin=0; ptbin<NPTBINS; ptbin++) {
+  for(int isTruth=0; isTruth<2; isTruth++)
+  {
+    for(int isEB=0; isEB<2; isEB++)
+    {
+      for(int ptbin=0; ptbin<NPTBINS; ptbin++)
+      {
+
+  TCanvas *c=new TCanvas("canvas", "canvas", 1600, 500);
+  c->Divide(2,1);
 
 	TH1* hReal=GetHist(ptbin, isEB, Real);
 	TH1* hFake= isTruth ? GetHist(ptbin, isEB, Truth) : GetHist(ptbin, isEB, Fake);
@@ -193,6 +204,46 @@ void fit(void)
 	hs->Add(hFake, "HIST");
 	hs->Add(hReal, "HIST");
 
+  // Draw for each pT to see match in peaks
+  c->cd(1);
+  hs->Draw();
+  hNum->Draw("same");
+  hs->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
+
+  auto legend = new TLegend(0.55, 0.65, 0.85, 0.85);
+  legend->SetBorderSize(0);
+  legend->AddEntry(hNum, "Numerator candidates", "ep");
+  legend->AddEntry(hReal, "Real template", "f");
+  legend->AddEntry(hFake, "Fake template", "f");
+  legend->Draw();
+
+  ostringstream ssptBin;
+  ssptBin << PTBINS[ptbin] << " < p_{T} < " << PTBINS[ptbin+1] << " GeV";
+  ostringstream sschIsoSideBand;
+  sschIsoSideBand << 5 << " < Iso_{Ch} < " << 10;
+
+  TLatex *t_label = new TLatex();
+  t_label->SetTextAlign(12);
+  if (isEB) t_label->DrawLatexNDC(0.55,0.60,"ECAL barrel");
+  else t_label->DrawLatexNDC(0.55,0.60,"ECAL endcap");
+  t_label->     DrawLatexNDC(0.55,0.55, ssptBin.str().c_str());
+  t_label->     DrawLatexNDC(0.55,0.50, sschIsoSideBand.str().c_str());
+  t_label->DrawLatexNDC(0.17, 0.975, "#font[62]{CMS} #scale[0.8]{#font[52]{Preliminary}}");
+  t_label->SetTextFont(42);
+  // t_label->DrawLatexNDC(0.70, 0.975, Form("%1.1f fb^{-1} (13 TeV)", luminosity[era.Data()]));
+
+  // Draw for each pT setLog to see match in tail
+  c->cd(2);
+  hs->Draw();
+  hNum->Draw("same");
+  gPad->SetLogy(1);
+	hs->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
+
+  ostringstream ssCanvas;
+  ssCanvas <<"fakeRateTemplates_pT_"<< PTBINS[ptbin] << "To_" << PTBINS[ptbin+1] << "_" << (isEB ? "EB" : "EE") << "_" << (isTruth ? "Truth" : "Fake") << "_chIso5To10.pdf";
+  c->SaveAs(ssCanvas.str().c_str());
+
+  // Old Draw all-together
 	if(isTruth) {
 	  if(isEB) cEBTruth->cd(ptbin+1);
 	  else     cEETruth->cd(ptbin+1);
@@ -217,16 +268,6 @@ void fit(void)
   leg->AddEntry(hNum, "Numerator", "lep");
   leg->Draw();
 
-  // ostringstream ssFile;
-  // ssFile << "stack_hist_" << PTBINS[ptbin] << "To" << PTBINS[ptbin+1] << " " << (isEB ? "EB" : "EE") << " " << (isTruth ? "Truth" : "Fake") << "chIso5To10.pdf";
-  // if(isTruth) {
-	//   if(isEB) cEBTruth->SaveAs(ssFile.str().c_str());
-	//   else     cEETruth->SaveAs(ssFile.str().c_str());
-	// } else {
-	//   if(isEB) cEB->SaveAs(ssFile.str().c_str());
-	//   else     cEE->SaveAs(ssFile.str().c_str());
-	// }
-
   // Fake Rate Part
 	double num=0.0, nume2=0.0;
 	int nbins=isEB ? EBSIEIECUTBIN-1 : EESIEIECUTBIN-1;
@@ -244,6 +285,7 @@ void fit(void)
 	  if(isEB) { EBTruth[ptbin]=num/den; EBTruthE[ptbin]=error/den; EBTruthStatus[ptbin]=err; }
 	  else     { EETruth[ptbin]=num/den; EETruthE[ptbin]=error/den; EETruthStatus[ptbin]=err; }
 	}
+
       }
     }
   }
@@ -262,14 +304,24 @@ void fit(void)
   TCanvas *cEEFakeRate=new TCanvas("cEEFakeRate", "EEFakeRate");
   TH1D* hEBFakeRate=new TH1D("hEBFakeRate", "EB FakeRate", NPTBINS, PTBINS);
   TH1D* hEEFakeRate=new TH1D("hEEFakeRate", "EE FakeRate", NPTBINS, PTBINS);
+  TH1D* hEBFakeRateTruth=new TH1D("hEBFakeRateTruth", "EB FakeRateTruth", NPTBINS, PTBINS);
+  TH1D* hEEFakeRateTruth=new TH1D("hEEFakeRateTruth", "EE FakeRateTruth", NPTBINS, PTBINS);
 
   for(int i=0; i<NPTBINS; i++) {
+    // MC as data
     std::cout << "EB FakeRate " << i << ": " << EBFake[i]  << " +/- " << EBFakeE[i] << std::endl;
     hEBFakeRate->SetBinContent(i+1, EBFake[i]);
     hEBFakeRate->SetBinError(i+1, EBFakeE[i]);
     std::cout << "EE FakeRate " << i << ": " << EEFake[i]  << " +/- " << EEFakeE[i] << std::endl;
     hEEFakeRate->SetBinContent(i+1, EEFake[i]);
     hEEFakeRate->SetBinError(i+1, EEFakeE[i]);
+    // MC as Truth
+    std::cout << "EB FakeRateTruth " << i << ": " << EBTruth[i]  << " +/- " << EBTruthE[i] << std::endl;
+    hEBFakeRateTruth->SetBinContent(i+1, EBTruth[i]);
+    hEBFakeRateTruth->SetBinError(i+1, EBTruthE[i]);
+    std::cout << "EE FakeRateTruth " << i << ": " << EETruth[i]  << " +/- " << EETruthE[i] << std::endl;
+    hEEFakeRateTruth->SetBinContent(i+1, EETruth[i]);
+    hEEFakeRateTruth->SetBinError(i+1, EETruthE[i]);
   }
 
   cEBFakeRate->cd(); hEBFakeRate->Draw();
@@ -277,6 +329,61 @@ void fit(void)
 
   hEBFakeRate->SetMinimum(0);  hEEFakeRate->SetMinimum(0);
   hEBFakeRate->SetMaximum(0.2);  hEEFakeRate->SetMaximum(0.6);
+
+  // Compare Fake Rate MC as data vs MC as truth
+  TCanvas *cEBFakeRateComp=new TCanvas("cEBFakeRateComp", "EBFakeRateComp");
+  TCanvas *cEEFakeRateComp=new TCanvas("cEEFakeRateComp", "EEFakeRateComp");
+
+  // EB Fake Rate Truth Comparison
+  cEBFakeRateComp->cd();
+  hEBFakeRateTruth->SetLineColor(kOrange-5);
+  hEBFakeRateTruth->Draw();
+  hEBFakeRate->Draw("same");
+
+  hEBFakeRate->SetMinimum(0);
+  hEBFakeRate->SetMaximum(0.2);
+  hEBFakeRateTruth->SetMinimum(0);
+  hEBFakeRateTruth->SetMaximum(0.2);
+
+  ostringstream sschIsoSideBand;
+  sschIsoSideBand << 5 << " < Iso_{Ch} < " << 10;
+
+  auto legendFR_EB = new TLegend(0.55, 0.65, 0.75, 0.85);
+  legendFR_EB->SetBorderSize(0);
+  legendFR_EB->AddEntry(hEBFakeRateTruth, "MC truth yields", "ep");
+  legendFR_EB->AddEntry(hEBFakeRate, sschIsoSideBand.str().c_str(), "ep");
+  legendFR_EB->Draw();
+
+  TLatex *t_labelEB = new TLatex();
+  t_labelEB->SetTextAlign(12);
+  t_labelEB->SetTextAlign(12);
+  t_labelEB->DrawLatexNDC(0.25,0.80,"ECAL barrel");
+  t_labelEB->DrawLatexNDC(0.25,0.70, "#sigma_{i#etai#eta} templates");
+  t_labelEB->SetTextFont(42);
+
+  // EE Fake Rate Truth Comparison
+  cEEFakeRateComp->cd();
+  hEEFakeRateTruth->SetLineColor(kOrange-5);
+  hEEFakeRateTruth->Draw();
+  hEEFakeRate->Draw("same");
+
+  hEEFakeRate->SetMinimum(0);
+  hEEFakeRate->SetMaximum(0.8);
+  hEEFakeRateTruth->SetMinimum(0);
+  hEEFakeRateTruth->SetMaximum(0.8);
+
+  auto legendFR_EE = new TLegend(0.55, 0.65, 0.75, 0.85);
+  legendFR_EE->SetBorderSize(0);
+  legendFR_EE->AddEntry(hEEFakeRateTruth, "MC truth yields", "ep");
+  legendFR_EE->AddEntry(hEEFakeRate, sschIsoSideBand.str().c_str(), "ep");
+  legendFR_EE->Draw();
+
+  TLatex *t_labelEE = new TLatex();
+  t_labelEE->SetTextAlign(12);
+  t_labelEE->SetTextAlign(12);
+  t_labelEE->DrawLatexNDC(0.25,0.80,"ECAL barrel");
+  t_labelEE->DrawLatexNDC(0.25,0.70, "#sigma_{i#etai#eta} templates");
+  t_labelEE->SetTextFont(42);
 
   // Measure Fake Rate Underestimation or Overestimation
   // Ratio of the fake rate with the known MC truth as a function of pT
@@ -311,19 +418,13 @@ void fit(void)
   hEBRatio->SetMinimum(0);  hEERatio->SetMinimum(0);
   hEBRatio->SetMaximum(2.0);  hEERatio->SetMaximum(2.0);
 
-  // Save Plots and Histograms
-  // TList *l = new TList();
-  // l->Add(hEBRatio);
-  // l->Add(hEERatio);
-  // TFile *f = new TFile("fake_rate_sieie_template_fits.root","RECREATE");
-  // l->Write("histlist", TObject::kSingleKey);
-  // f->ls();
-
   // Fake Rate
   c1->SaveAs("fake_rate_EBRatio.pdf");
   c2->SaveAs("fake_rate_EERatio.pdf");
   cEBFakeRate->SaveAs("fake_rate_FakeTemplatesEB.pdf");
   cEEFakeRate->SaveAs("fake_rate_FakeTemplatesEE.pdf");
+  cEBFakeRateComp->SaveAs("fake_rate_CompTruth_FakeTemplatesEB.pdf");
+  cEEFakeRateComp->SaveAs("fake_rate_CompTruth_FakeTemplatesEE.pdf");
 
   cEB->SaveAs("fake_rate_cEB.pdf");
   cEE->SaveAs("fake_rate_cEE.pdf");
@@ -333,6 +434,8 @@ void fit(void)
   TFile file_out("fake_rate_sieie_template_fits.root", "RECREATE");
   hEBFakeRate->Write();
   hEEFakeRate->Write();
+  hEBFakeRateTruth->Write();
+  hEEFakeRateTruth->Write();
 
 
   return;
