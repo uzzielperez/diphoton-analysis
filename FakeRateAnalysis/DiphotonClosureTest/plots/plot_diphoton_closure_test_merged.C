@@ -1,6 +1,7 @@
 void plot_diphoton_closure_test_merged() {
   // set global root options
   gROOT->SetStyle("Plain");
+  gROOT->SetBatch();
   //gStyle->SetMarkerStyle(8);
   gStyle->SetPalette(1,0);
   gStyle->SetNdivisions(505);
@@ -15,14 +16,15 @@ void plot_diphoton_closure_test_merged() {
     return;
   }
   cout << "\nUsing sample: " << sample << endl;
-  
+
   TString filename = "";
   if (sample == "QCD")     filename = "../analysis/diphoton_fake_rate_diphoton_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
   if (sample == "GJets")   filename = "../analysis/diphoton_fake_rate_diphoton_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
   if (sample == "GGJets")  filename = "../analysis/diphoton_fake_rate_diphoton_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
   if (sample == "all")     filename = "../analysis/diphoton_fake_rate_diphoton_closure_test_all_samples_76X_MiniAOD_histograms.root";
+
   cout << "filename: " << filename << endl << endl;
-  
+
   TFile *f = TFile::Open(filename);
 
   // merge histograms with fake rate applied
@@ -46,7 +48,7 @@ void plot_diphoton_closure_test_merged() {
   gjets_EBEE->Add(hFT2);
   gjets_EBEE->Add(hFT3);
   gjets_EBEE->Add(ggjets_EBEE,-2);
-  
+
   // merge histograms from mc truth
   TH1D *hTF1_truth = (TH1D*) f->Get("TT_TF_mc_truth_diphoton_minv_EBEB");
   TH1D *hTF2_truth = (TH1D*) f->Get("TT_TF_mc_truth_diphoton_minv_EBEE");
@@ -81,7 +83,8 @@ void plot_diphoton_closure_test_merged() {
   gjets_EBEB->GetXaxis()->SetTitle("M_{#gamma#gamma} (GeV)");
   gjets_EBEB->GetXaxis()->SetRangeUser(0,2000);
   gjets_EBEB->GetYaxis()->SetTitle("Events / 50 GeV");
-  gjets_EBEB->GetYaxis()->SetTitleOffset(1.4);
+  gjets_EBEB->GetYaxis()->SetTitleOffset(1.3);
+  gjets_EBEB->GetXaxis()->SetTitleOffset(1);
   gPad->SetLogy();
   TLegend *l_gjets_EBEB = new TLegend(0.50,0.65,0.85,0.85);
   l_gjets_EBEB->SetBorderSize(0);
@@ -100,7 +103,9 @@ void plot_diphoton_closure_test_merged() {
   gjets_EBEE->GetXaxis()->SetTitle("M_{#gamma#gamma} (GeV)");
   gjets_EBEE->GetXaxis()->SetRangeUser(0,2000);
   gjets_EBEE->GetYaxis()->SetTitle("Events / 50 GeV");
-  gjets_EBEE->GetYaxis()->SetTitleOffset(1.4);
+  gjets_EBEE->GetYaxis()->SetTitleOffset(1.3);
+  gjets_EBEE->GetXaxis()->SetTitleOffset(1);
+
   gPad->SetLogy();
   TLegend *l_gjets_EBEE = new TLegend(0.50,0.65,0.85,0.85);
   l_gjets_EBEE->SetBorderSize(0);
@@ -124,7 +129,8 @@ void plot_diphoton_closure_test_merged() {
   ggjets_EBEB->GetXaxis()->SetTitle("M_{#gamma#gamma} (GeV)");
   ggjets_EBEB->GetXaxis()->SetRangeUser(0,2000);
   ggjets_EBEB->GetYaxis()->SetTitle("Events / 50 GeV");
-  ggjets_EBEB->GetYaxis()->SetTitleOffset(1.4);
+  ggjets_EBEB->GetYaxis()->SetTitleOffset(1.3);
+  ggjets_EBEB->GetXaxis()->SetTitleOffset(1);
   gPad->SetLogy();
   TLegend *l_ggjets_EBEB = new TLegend(0.50,0.65,0.85,0.85);
   l_ggjets_EBEB->SetBorderSize(0);
@@ -143,7 +149,7 @@ void plot_diphoton_closure_test_merged() {
   ggjets_EBEE->GetXaxis()->SetTitle("M_{#gamma#gamma} (GeV)");
   ggjets_EBEE->GetXaxis()->SetRangeUser(0,2000);
   ggjets_EBEE->GetYaxis()->SetTitle("Events / 50 GeV");
-  ggjets_EBEE->GetYaxis()->SetTitleOffset(1.4);
+  ggjets_EBEE->GetYaxis()->SetTitleOffset(1.3);
   gPad->SetLogy();
   TLegend *l_ggjets_EBEE = new TLegend(0.50,0.65,0.85,0.85);
   l_ggjets_EBEE->SetBorderSize(0);
@@ -151,5 +157,5 @@ void plot_diphoton_closure_test_merged() {
   l_ggjets_EBEE->AddEntry(ggjets_EBEE,"ggjets with fake rate","ep");
   l_ggjets_EBEE->AddEntry(ggjets_EBEE_truth,"ggjets with MC truth","ep");
   l_ggjets_EBEE->Draw();
-  c_ggjets->SaveAs("diphoton_ggjets_closure_test_"+sample+".pdf");  
+  c_ggjets->SaveAs("diphoton_ggjets_closure_test_"+sample+".pdf");
 }

@@ -1,9 +1,10 @@
 // compare MC truth kinematics against denominator with and without fake rate applied
 int plot_kinematics(TFile *f_all, TFile *f_fakes, TString name) {
-  
+
+  gROOT->SetBatch();
   TCanvas *c = new TCanvas("c","",1500,700);
   c->Divide(2,1);
-  
+
   // EB
   TH1D *h_all_EB = (TH1D *) f_all->Get("photon_"+name+"_denominator_fake_rate_weighted_EB");
   TH1D *h_fakes_EB = (TH1D *) f_fakes->Get("photon_fakes_"+name+"_EB");
@@ -22,7 +23,7 @@ int plot_kinematics(TFile *f_all, TFile *f_fakes, TString name) {
   // pad1_EB->SetGridx();
   pad1_EB->Draw();
   pad1_EB->cd();
-  
+
   h_unweighted_EB->Draw();
   h_unweighted_EB->SetMarkerColor(kBlack);
   h_unweighted_EB->SetLineColor(kBlack);
@@ -39,12 +40,12 @@ int plot_kinematics(TFile *f_all, TFile *f_fakes, TString name) {
   if (name == "phi") h_unweighted_EB->GetXaxis()->SetRangeUser(-4,4);
   if (name == "phi" || name == "eta") h_unweighted_EB->SetMinimum(0.);
   l_EB->Draw();
-  
+
   h_unweighted_EB->GetYaxis()->SetLabelSize(16);
   h_unweighted_EB->GetYaxis()->SetLabelFont(43);
   h_unweighted_EB->GetXaxis()->SetLabelSize(16);
   h_unweighted_EB->GetXaxis()->SetLabelFont(0);
-  
+
   c->cd(1);
 
   TPad *pad2_EB = new TPad("pad2_EB","", 0, 0.05, 1, 0.3);
@@ -54,7 +55,7 @@ int plot_kinematics(TFile *f_all, TFile *f_fakes, TString name) {
   pad2_EB->Draw();
   pad2_EB->cd();
   pad2_EB->SetGrid(0,1);
-  
+
   TH1D *h_ratio_EB = (TH1D*) h_all_EB->Clone("h_all_EB");
   h_ratio_EB->SetLineColor(kBlack);
   h_ratio_EB->SetMarkerColor(kBlack);
@@ -93,7 +94,7 @@ int plot_kinematics(TFile *f_all, TFile *f_fakes, TString name) {
   h_ratio_EB->GetXaxis()->SetLabelFont(43);
   h_ratio_EB->GetXaxis()->SetLabelSize(16);
 
-  
+
   // EE
   TH1D *h_all_EE = (TH1D *) f_all->Get("photon_"+name+"_denominator_fake_rate_weighted_EE");
   TH1D *h_fakes_EE = (TH1D *) f_fakes->Get("photon_fakes_"+name+"_EE");
@@ -112,7 +113,7 @@ int plot_kinematics(TFile *f_all, TFile *f_fakes, TString name) {
   // pad1_EE->SetGridx();
   pad1_EE->Draw();
   pad1_EE->cd();
-  
+
   h_unweighted_EE->Draw();
   h_unweighted_EE->SetMarkerColor(kBlack);
   h_unweighted_EE->SetLineColor(kBlack);
@@ -132,12 +133,12 @@ int plot_kinematics(TFile *f_all, TFile *f_fakes, TString name) {
   if (name == "phi") h_unweighted_EE->GetXaxis()->SetRangeUser(-4,4);
   if (name == "phi" || name == "eta") h_unweighted_EE->SetMinimum(0.);
   l_EE->Draw();
-  
+
   h_unweighted_EE->GetYaxis()->SetLabelSize(16);
   h_unweighted_EE->GetYaxis()->SetLabelFont(43);
   h_unweighted_EE->GetXaxis()->SetLabelSize(16);
   h_unweighted_EE->GetXaxis()->SetLabelFont(0);
-  
+
   c->cd(2);
 
   TPad *pad2_EE = new TPad("pad2_EE","", 0, 0.05, 1, 0.3);
@@ -147,7 +148,7 @@ int plot_kinematics(TFile *f_all, TFile *f_fakes, TString name) {
   pad2_EE->Draw();
   pad2_EE->cd();
   pad2_EE->SetGrid(0,1);
-  
+
   TH1D *h_ratio_EE = (TH1D*) h_all_EE->Clone("h_all_EE");
   h_ratio_EE->SetLineColor(kBlack);
   h_ratio_EE->SetMarkerColor(kBlack);
@@ -191,9 +192,9 @@ int plot_kinematics(TFile *f_all, TFile *f_fakes, TString name) {
 
 
   c->SaveAs("closure_test_photon_kinematics_"+name+".pdf");
-  
+
   delete c;
-  
+
   return 0;
 }
 
@@ -212,7 +213,7 @@ void plot_kinematics_with_ratio(TString sample =  "all") {
     return;
   }
   cout << "Using sample: " << sample << endl;
-  
+
   TString filename = "";
   if (sample == "QCD")    filename = "../analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
   if (sample == "GJets")  filename = "../analysis/diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
@@ -220,15 +221,17 @@ void plot_kinematics_with_ratio(TString sample =  "all") {
   if (sample == "all")    filename = "../analysis/diphoton_fake_rate_closure_test_all_samples_76X_MiniAOD_histograms.root";
   cout << "filename: " << filename << endl;
   TFile *f_closure_test = TFile::Open(filename);
-  
+
   TString filename_truth = "";
   if (sample == "QCD")    filename_truth = "../analysis/diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
   if (sample == "GJets")  filename_truth = "../analysis/diphoton_fake_rate_closure_test_matching_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
   if (sample == "GGJets") filename_truth = "../analysis/diphoton_fake_rate_closure_test_matching_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
-  if (sample == "all")    filename_truth = "../analysis/diphoton_fake_rate_closure_test_matching_all_samples_76X_MiniAOD_histograms.root";
+  //if (sample == "all")    filename_truth = "../analysis/diphoton_fake_rate_closure_test_matching_all_samples_76X_MiniAOD_histograms.root";
+  if (sample == "all")    filename_truth = "../analysis/diphoton_fake_rate_closure_test_matching_all_samples_80X_MiniAOD_histograms_test.root";
+
   cout << "filename for mc truth: " << filename_truth << endl;
   TFile *f_closure_test_matching = TFile::Open(filename_truth);
-  
+
   plot_kinematics(f_closure_test,f_closure_test_matching,"pt");
   plot_kinematics(f_closure_test,f_closure_test_matching,"eta");
   plot_kinematics(f_closure_test,f_closure_test_matching,"phi");
