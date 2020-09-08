@@ -4,8 +4,24 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void MCFakeRateClosureTestWithFakes::Loop()
+#include <iomanip>
+
+#include "diphoton-analysis/FakeRateAnalysis/interface/utilities.hh"
+
+void MCFakeRateClosureTestWithFakesBase::Loop() {};
+
+class MCFakeRateClosureTestWithFakes : public MCFakeRateClosureTestWithFakesBase {
+
+public:
+  using MCFakeRateClosureTestWithFakesBase::MCFakeRateClosureTestWithFakesBase;
+  void Loop() {};
+  void Loop(TString run, TString sample);
+};
+
+
+void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
 {
+  int year = run.Atoi();
 //   In a ROOT session, you can do:
 //      root> .L MCFakeRateClosureTestWithFakes.C
 //      root> MCFakeRateClosureTestWithFakes t
@@ -31,22 +47,14 @@ void MCFakeRateClosureTestWithFakes::Loop()
 //by  b_branchname->GetEntry(ientry); //read only this branch
   if (fChain == 0) return;
 
-  // input what sample is being run on
-  TString sample = "";
-  cout << "Enter sample being run on (QCD, GJets, GGJets, or all): ";
-  cin >> sample;
-  if (sample != "QCD" && sample != "GJets" && sample != "GGJets" && sample != "all") {
-    cout << "Invalid choice!" << endl;
-    return;
-  }
-  cout << "\nUsing sample: " << sample << endl;
+  std::cout << "\nUsing sample: " << sample << std::endl;
 
   TString filename = "";
-  if (sample == "QCD")    filename = "diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "GJets")  filename = "diphoton_fake_rate_closure_test_matching_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "GGJets") filename = "diphoton_fake_rate_closure_test_matching_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
-  if (sample == "all")    filename = "diphoton_fake_rate_closure_test_matching_all_samples_76X_MiniAOD_histograms.root";
-  cout << "\nfilename: " << filename << endl << endl;
+  if (sample == "QCD")    filename = "diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_" + cmssw_version(year) + "_MiniAOD_histograms.root";
+  if (sample == "GJets")  filename = "diphoton_fake_rate_closure_test_matching_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version(year) + "_MiniAOD_histograms.root";
+  if (sample == "GGJets") filename = "diphoton_fake_rate_closure_test_matching_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version(year) + "_MiniAOD_histograms.root";
+  if (sample == "all")    filename = "diphoton_fake_rate_closure_test_matching_all_samples_" + cmssw_version(year) + "_MiniAOD_histograms.root";
+  std::cout << "\nfilename: " << filename << std::endl << std::endl;
   
   // event counters
   int nEvents = 0;
@@ -403,7 +411,8 @@ void MCFakeRateClosureTestWithFakes::Loop()
   }
   
   Long64_t nentries = fChain->GetEntriesFast();
-  
+  std::cout << "Total entries: " << nentries << std::endl;
+
   bool printdRConInfo = false;
   
   Long64_t nbytes = 0, nb = 0;
@@ -418,7 +427,7 @@ void MCFakeRateClosureTestWithFakes::Loop()
     // fake rate object definitions
     bool is_sieie_numerator_object = Photon_isNumeratorObjCand && Photon_passChIso;
     bool is_chIso_numerator_object = Photon_isNumeratorObjCand && Photon_passSieie;
-    bool is_sieie_sideband_object = Photon_isNumeratorObjCand && (5.0 < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < 10.0);
+    //    bool is_sieie_sideband_object = Photon_isNumeratorObjCand && (5.0 < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < 10.0);
     
     // reject beam halo
     // if (Event_beamHaloIDTight2015) continue;
@@ -743,13 +752,13 @@ void MCFakeRateClosureTestWithFakes::Loop()
 	  if (Photon_passSieie) gen_photon_reco_photon_pt_diff_EB_passSieie->Fill( PhotonGenMatch_pt/Photon_pt,Event_weightAll );
 	  if (!Photon_passSieie) gen_photon_reco_photon_pt_diff_EB_failSieie->Fill( PhotonGenMatch_pt/Photon_pt,Event_weightAll );
 	  if (printdRConInfo) {
-	    cout << endl;
-	    cout << "Run: " << Event_run << ", LS: " << Event_LS << ", event number: " << Event_evnum << ", weight = " << Event_weightAll <<  endl;
-	    cout << "EB; final state (status 1); dR <= 0.1; numerator (no sieie cut)" << endl;
-	    cout << "Reco photon: pt = " << Photon_pt << "; sc_eta = " << Photon_scEta << "; eta = " << Photon_eta << "; phi = " << Photon_phi << "; sieie = " << Photon_sigmaIetaIeta5x5
-		 << "; isSaturated = " << Photon_isSaturated << "; passSieie = " << Photon_passSieie << endl;
-	    cout << "Photon gen match: pt = " << PhotonGenMatch_pt << "; eta = " << PhotonGenMatch_eta << "; phi = " << PhotonGenMatch_phi << endl;
-	    cout << "gen_pt / reco_pt: " << PhotonGenMatch_pt/Photon_pt << endl;
+	    std::cout << std::endl;
+	    std::cout << "Run: " << Event_run << ", LS: " << Event_LS << ", event number: " << Event_evnum << ", weight = " << Event_weightAll <<  std::endl;
+	    std::cout << "EB; final state (status 1); dR <= 0.1; numerator (no sieie cut)" << std::endl;
+	    std::cout << "Reco photon: pt = " << Photon_pt << "; sc_eta = " << Photon_scEta << "; eta = " << Photon_eta << "; phi = " << Photon_phi << "; sieie = " << Photon_sigmaIetaIeta5x5
+		 << "; isSaturated = " << Photon_isSaturated << "; passSieie = " << Photon_passSieie << std::endl;
+	    std::cout << "Photon gen match: pt = " << PhotonGenMatch_pt << "; eta = " << PhotonGenMatch_eta << "; phi = " << PhotonGenMatch_phi << std::endl;
+	    std::cout << "gen_pt / reco_pt: " << PhotonGenMatch_pt/Photon_pt << std::endl;
 	  }
 	  int nParticlesEB = GenMatchPt->size();
 	  double particlesSumPtEB = 0;
@@ -767,10 +776,10 @@ void MCFakeRateClosureTestWithFakes::Loop()
 	    if (add_first_element_EB) distinct_moms_EB.push_back(std::make_pair(GenMatchMotherPdgId->at(pos),GenMatchMotherPt->at(pos)));
 	    add_first_element_EB = false;
 	    if (printdRConInfo) {
-	      cout << "Particle " << pos << ": pdgId: " << GenMatchPdgId->at(pos) << "; pt: " << GenMatchPt->at(pos)
+	      std::cout << "Particle " << pos << ": pdgId: " << GenMatchPdgId->at(pos) << "; pt: " << GenMatchPt->at(pos)
 		   << "; eta: " << GenMatchEta->at(pos) << "; phi: " << GenMatchPhi->at(pos) << "; dR: " << GenMatchDeltaR->at(pos)
 		   << "; nMothers: " << GenMatchNumMothers->at(pos) << "; mother pdgId: " << GenMatchMotherPdgId->at(pos)
-		   << "; mother pt: " << GenMatchMotherPt->at(pos) << "; mother status: " << GenMatchMotherStatus->at(pos) << endl;
+		   << "; mother pt: " << GenMatchMotherPt->at(pos) << "; mother status: " << GenMatchMotherStatus->at(pos) << std::endl;
 	    }
 	    for (std::vector<std::pair<int, double> >::iterator it = distinct_moms_EB.begin(); it != distinct_moms_EB.end(); ++it) {
 	      if (it->first == GenMatchMotherPdgId->at(pos) && it->second == GenMatchMotherPt->at(pos)) {
@@ -795,16 +804,16 @@ void MCFakeRateClosureTestWithFakes::Loop()
 	    }
 	  } // end loop through final state particles in dR cone
 	  if (printdRConInfo) {
-	    cout << "nParticlesEB    : " << nParticlesEB     << "; particlesSumPtEB    : " << particlesSumPtEB     << "; particles_pt / reco_pt: " << particlesSumPtEB/Photon_pt     << endl;
-	    cout << "nPhoEB          : " << nPhoEB           << "; phoPtSumEB          : " << phoPtSumEB           << "; photons_pt / reco_pt  : " << phoPtSumEB/Photon_pt           << endl;
-	    cout << "nMatchSiblingsEB: " << nMatchSiblingsEB << "; matchSiblingsSumPtEB: " << matchSiblingsSumPtEB << "; siblings_pt / reco_pt : " << matchSiblingsSumPtEB/Photon_pt << endl;
-	    cout << "Number distinct mothers: " << distinct_moms_EB.size() << endl;
-	    cout << "Distinct mother list: ";
+	    std::cout << "nParticlesEB    : " << nParticlesEB     << "; particlesSumPtEB    : " << particlesSumPtEB     << "; particles_pt / reco_pt: " << particlesSumPtEB/Photon_pt     << std::endl;
+	    std::cout << "nPhoEB          : " << nPhoEB           << "; phoPtSumEB          : " << phoPtSumEB           << "; photons_pt / reco_pt  : " << phoPtSumEB/Photon_pt           << std::endl;
+	    std::cout << "nMatchSiblingsEB: " << nMatchSiblingsEB << "; matchSiblingsSumPtEB: " << matchSiblingsSumPtEB << "; siblings_pt / reco_pt : " << matchSiblingsSumPtEB/Photon_pt << std::endl;
+	    std::cout << "Number distinct mothers: " << distinct_moms_EB.size() << std::endl;
+	    std::cout << "Distinct mother list: ";
 	    for (std::vector<std::pair<int, double> >::iterator it = distinct_moms_EB.begin(); it != distinct_moms_EB.end(); ++it) {
-	      cout << "(" << it->first << "," << it->second << ")";
-	      if (std::next(it,1) != distinct_moms_EB.end()) cout << ", ";
+	      std::cout << "(" << it->first << "," << it->second << ")";
+	      if (std::next(it,1) != distinct_moms_EB.end()) std::cout << ", ";
 	    }
-	    cout << endl;
+	    std::cout << std::endl;
 	  }
 	  if (distinct_moms_EB.size() == 1) {
 	    sieie_one_mother_EB->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
@@ -871,13 +880,13 @@ void MCFakeRateClosureTestWithFakes::Loop()
 	  if (Photon_passSieie) gen_photon_reco_photon_pt_diff_EE_passSieie->Fill( PhotonGenMatch_pt/Photon_pt,Event_weightAll );
 	  if (!Photon_passSieie) gen_photon_reco_photon_pt_diff_EE_failSieie->Fill( PhotonGenMatch_pt/Photon_pt,Event_weightAll );
 	  if (printdRConInfo) {
-	    cout << endl;
-	    cout << "Run: " << Event_run << ", LS: " << Event_LS << ", event number: " << Event_evnum << ", weight = " << Event_weightAll <<  endl;
-	    cout << "EE; final state (status 1); dR <= 0.1; numerator (no sieie cut)" << endl;
-	    cout << "Reco photon: pt = " << Photon_pt << "; sc_eta = " << Photon_scEta << "; eta = " << Photon_eta << "; phi = " << Photon_phi << "; sieie = " << Photon_sigmaIetaIeta5x5
-		 << "; isSaturated = " << Photon_isSaturated << "; passSieie = " << Photon_passSieie << endl;
-	    cout << "Photon gen match: pt = " << PhotonGenMatch_pt << "; eta = " << PhotonGenMatch_eta << "; phi = " << PhotonGenMatch_phi << endl;
-	    cout << "gen_pt / reco_pt: " << PhotonGenMatch_pt/Photon_pt << endl;
+	    std::cout << std::endl;
+	    std::cout << "Run: " << Event_run << ", LS: " << Event_LS << ", event number: " << Event_evnum << ", weight = " << Event_weightAll <<  std::endl;
+	    std::cout << "EE; final state (status 1); dR <= 0.1; numerator (no sieie cut)" << std::endl;
+	    std::cout << "Reco photon: pt = " << Photon_pt << "; sc_eta = " << Photon_scEta << "; eta = " << Photon_eta << "; phi = " << Photon_phi << "; sieie = " << Photon_sigmaIetaIeta5x5
+		 << "; isSaturated = " << Photon_isSaturated << "; passSieie = " << Photon_passSieie << std::endl;
+	    std::cout << "Photon gen match: pt = " << PhotonGenMatch_pt << "; eta = " << PhotonGenMatch_eta << "; phi = " << PhotonGenMatch_phi << std::endl;
+	    std::cout << "gen_pt / reco_pt: " << PhotonGenMatch_pt/Photon_pt << std::endl;
 	  }
 	  int nParticlesEE = GenMatchPt->size();
 	  double particlesSumPtEE = 0;
@@ -895,10 +904,10 @@ void MCFakeRateClosureTestWithFakes::Loop()
 	    if (add_first_element_EE) distinct_moms_EE.push_back(std::make_pair(GenMatchMotherPdgId->at(pos),GenMatchMotherPt->at(pos)));
 	    add_first_element_EE = false;
 	    if (printdRConInfo) {
-	      cout << "Particle " << pos << ": pdgId: " << GenMatchPdgId->at(pos) << "; pt: " << GenMatchPt->at(pos)
+	      std::cout << "Particle " << pos << ": pdgId: " << GenMatchPdgId->at(pos) << "; pt: " << GenMatchPt->at(pos)
 		   << "; eta: " << GenMatchEta->at(pos) << "; phi: " << GenMatchPhi->at(pos) << "; dR: " << GenMatchDeltaR->at(pos)
 		   << "; nMothers: " << GenMatchNumMothers->at(pos) << "; mother pdgId: " << GenMatchMotherPdgId->at(pos)
-		   << "; mother pt: " << GenMatchMotherPt->at(pos) << "; mother status: " << GenMatchMotherStatus->at(pos) << endl;
+		   << "; mother pt: " << GenMatchMotherPt->at(pos) << "; mother status: " << GenMatchMotherStatus->at(pos) << std::endl;
 	    }
 	    for (std::vector<std::pair<int, double> >::iterator it = distinct_moms_EE.begin(); it != distinct_moms_EE.end(); ++it) {
 	      if (it->first == GenMatchMotherPdgId->at(pos) && it->second == GenMatchMotherPt->at(pos)) {
@@ -923,16 +932,16 @@ void MCFakeRateClosureTestWithFakes::Loop()
 	    }
 	  } // end loop through final state particles in dR cone
 	  if (printdRConInfo) {
-	    cout << "nParticlesEE    : " << nParticlesEE     << "; particlesSumPtEE    : " << particlesSumPtEE     << "; particles_pt / reco_pt: " << particlesSumPtEE/Photon_pt     << endl;
-	    cout << "nPhoEE          : " << nPhoEE           << "; phoPtSumEE          : " << phoPtSumEE           << "; photons_pt / reco_pt  : " << phoPtSumEE/Photon_pt           << endl;
-	    cout << "nMatchSiblingsEE: " << nMatchSiblingsEE << "; matchSiblingsSumPtEE: " << matchSiblingsSumPtEE << "; siblings_pt / reco_pt : " << matchSiblingsSumPtEE/Photon_pt << endl;
-	    cout << "Number distinct mothers: " << distinct_moms_EE.size() << endl;
-	    cout << "Distinct mother list: ";
+	    std::cout << "nParticlesEE    : " << nParticlesEE     << "; particlesSumPtEE    : " << particlesSumPtEE     << "; particles_pt / reco_pt: " << particlesSumPtEE/Photon_pt     << std::endl;
+	    std::cout << "nPhoEE          : " << nPhoEE           << "; phoPtSumEE          : " << phoPtSumEE           << "; photons_pt / reco_pt  : " << phoPtSumEE/Photon_pt           << std::endl;
+	    std::cout << "nMatchSiblingsEE: " << nMatchSiblingsEE << "; matchSiblingsSumPtEE: " << matchSiblingsSumPtEE << "; siblings_pt / reco_pt : " << matchSiblingsSumPtEE/Photon_pt << std::endl;
+	    std::cout << "Number distinct mothers: " << distinct_moms_EE.size() << std::endl;
+	    std::cout << "Distinct mother list: ";
 	    for (std::vector<std::pair<int, double> >::iterator it = distinct_moms_EE.begin(); it != distinct_moms_EE.end(); ++it) {
-	      cout << "(" << it->first << "," << it->second << ")";
-	      if (std::next(it,1) != distinct_moms_EE.end()) cout << ", ";
+	      std::cout << "(" << it->first << "," << it->second << ")";
+	      if (std::next(it,1) != distinct_moms_EE.end()) std::cout << ", ";
 	    }
-	    cout << endl;
+	    std::cout << std::endl;
 	  }
 	  if (distinct_moms_EE.size() == 1) {
 	    sieie_one_mother_EE->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
@@ -992,93 +1001,93 @@ void MCFakeRateClosureTestWithFakes::Loop()
     
   } // end loop over entries
   
-  cout << endl;
-  cout << "Not applying event or sample weights for these object numbers." << endl;
-  cout << endl;
-  cout << "Number of numerator objects (passing sipip cut): " << nEvents << endl;
-  cout << endl;
-  cout << "--------------------------------------EB------------------------------------------ " << endl;
-  cout << "Number of numerator objects              : " << nEvents_EB << endl;
-  cout << endl;
-  cout << "Number of final state photon matches     : " << nFinalStatePhotonMatch_EB << setw(2) << "(" << setprecision(2) << fixed << (nFinalStatePhotonMatch_EB*100./nEvents_EB) << "%)" << endl;
-  cout << "Number of final state non-photon matches : " << nFinalStateNonPhotonMatch_EB << setw(2) << "(" << setprecision(2) << fixed << (nFinalStateNonPhotonMatch_EB*100./nEvents_EB) << "%)" << endl;
-  cout << "Number of gen particle photon matches    : " << nGenParticlePhotonMatch_EB << setw(2) << "(" << setprecision(2) << fixed <<  (nGenParticlePhotonMatch_EB*100./nEvents_EB) << "%)" << endl;
-  cout << "Number of gen particle non-photon matches: " << nGenParticleNonPhotonMatch_EB << setw(2) << "(" << setprecision(2) << fixed << (nGenParticleNonPhotonMatch_EB*100./nEvents_EB) << "%)" << endl;
-  cout << "Number of no matches                     : " << nNoMatch_EB << setw(2) << "(" << setprecision(2) << fixed << (nNoMatch_EB*100./nEvents_EB) << "%)" << endl;
-  cout << "Sum of 5 match categories                : " << nFinalStatePhotonMatch_EB+nFinalStateNonPhotonMatch_EB+nGenParticlePhotonMatch_EB+nGenParticleNonPhotonMatch_EB+nNoMatch_EB << endl;
-  cout << endl;
-  cout << "Number of final state photon - hadron mothers                 : " << nFinalStatePhotonHadronMother_EB << endl;
-  cout << "      from quark jet                                          : " << nFinalStatePhotonHadronMother_fromQuark_EB << endl;
-  cout << "      from gluon jet                                          : " << nFinalStatePhotonHadronMother_fromGluon_EB << endl;
-  cout << "Number of final state photon - ISR from proton                : " << nFinalStatePhotonISRfromProton_EB << endl;
-  cout << "Number of final state photon - other photon radiation         : " << nFinalStateOtherPhotonRadiation_EB << endl;
-  cout << "Number of final state photon - fragmentation from gluon mother: " << nFinalStatePhotonGluonMotherPhotonFrag_EB << endl;
-  cout << "Number of final state photon - other photon fragmentation     : " << nFinalStatePhotonOtherPhotonFragmentation_EB << endl;
-  cout << "Number of final state photon - real template photon           : " << nFinalStatePhotonRealTemplate_EB << endl;
-  cout << "Number of final state photon - photon mother                  : " << nFinalStatePhotonMother_EB << endl;
-  cout << "Number of final state photon - no match                       : " << nFinalStatePhotonNoMatch_EB << endl;
-  cout << "Sum of 8 match types                                          : " << nFinalStatePhotonHadronMother_EB+nFinalStatePhotonISRfromProton_EB+nFinalStateOtherPhotonRadiation_EB+
-    nFinalStatePhotonOtherPhotonFragmentation_EB+nFinalStatePhotonGluonMotherPhotonFrag_EB+nFinalStatePhotonNoMatch_EB+nFinalStatePhotonRealTemplate_EB+nFinalStatePhotonMother_EB << endl;
-  cout << endl;
-  cout << "Number of final state non-photon - hadron mothers: " << nFinalStateNonPhotonHadronMother_EB << endl;
-  cout << "Number of final state non-photon - electron pairs: " << nFinalStateNonPhotonElectronPair_EB << endl;
-  cout << "Number of final state non-photon - no matches    : " << nFinalStateNonPhotonNoMatch_EB << endl;
-  cout << "Sum of 3 match types                             : " << nFinalStateNonPhotonHadronMother_EB+nFinalStateNonPhotonElectronPair_EB+nFinalStateNonPhotonNoMatch_EB << endl;
-  cout << endl;
-  cout << "Average number of daughters - hadron mother case     : " << nAveNumDaughtersHadronMother_EB/(double)nFinalStatePhotonHadronMother_EB << endl;
-  cout << "Average number of daughters - ISR from proton        : " << nAveNumDaughtersISRfromProton_EB/(double)nFinalStatePhotonISRfromProton_EB << endl;
-  cout << "Average number of daughters - other radiation        : " << nAveNumDaughtersOtherPhotonRadiation_EB/(double)nFinalStateOtherPhotonRadiation_EB << endl;
-  cout << "Average number of daughters - frag. from gluon mother: " << nAveNumDaughtersGluonMotherPhotonFrag_EB/(double)nFinalStatePhotonGluonMotherPhotonFrag_EB << endl;
-  cout << "Average number of daughters - other fragmentation    : " << nAveNumDaughtersOtherPhotonFragmentation_EB/(double)nFinalStatePhotonOtherPhotonFragmentation_EB << endl;
-  cout << "Average number of daughters - hard interacton photon : " << nAveNumDaughtersRealTemplatePhotons_EB/(double)nFinalStatePhotonRealTemplate_EB << endl;
-  cout << endl;
-  cout << "--------------------------------------EE------------------------------------------ " << endl;
-  cout << "Number of numerator objects              : " << nEvents_EE << endl;
-  cout << endl;
-  cout << "Number of final state photon matches     : " << nFinalStatePhotonMatch_EE << setw(2) << "(" << setprecision(2) << fixed << (nFinalStatePhotonMatch_EE*100./nEvents_EE) << "%)" << endl;
-  cout << "Number of final state non-photon matches : " << nFinalStateNonPhotonMatch_EE << setw(2) << "(" << setprecision(2) << fixed << (nFinalStateNonPhotonMatch_EE*100./nEvents_EE) << "%)" << endl;
-  cout << "Number of gen particle photon matches    : " << nGenParticlePhotonMatch_EE << setw(2) << "(" << setprecision(2) << fixed <<  (nGenParticlePhotonMatch_EE*100./nEvents_EE) << "%)" << endl;
-  cout << "Number of gen particle non-photon matches: " << nGenParticleNonPhotonMatch_EE << setw(2) << "(" << setprecision(2) << fixed << (nGenParticleNonPhotonMatch_EE*100./nEvents_EE) << "%)" << endl;
-  cout << "Number of no matches                     : " << nNoMatch_EE << setw(2) << "(" << setprecision(2) << fixed << (nNoMatch_EE*100./nEvents_EE) << "%)" << endl;
-  cout << "Sum of 5 match categories                : " << nFinalStatePhotonMatch_EE+nFinalStateNonPhotonMatch_EE+nGenParticlePhotonMatch_EE+nGenParticleNonPhotonMatch_EE+nNoMatch_EE << endl;
-  cout << endl;
-  cout << "Number of final state photon - hadron mothers                 : " << nFinalStatePhotonHadronMother_EE << endl;
-  cout << "      from quark jet                                          : " << nFinalStatePhotonHadronMother_fromQuark_EE << endl;
-  cout << "      from gluon jet                                          : " << nFinalStatePhotonHadronMother_fromGluon_EE << endl;
-  cout << "Number of final state photon - ISR from proton                : " << nFinalStatePhotonISRfromProton_EE << endl;
-  cout << "Number of final state photon - other photon radiation         : " << nFinalStateOtherPhotonRadiation_EE << endl;
-  cout << "Number of final state photon - fragmentation from gluon mother: " << nFinalStatePhotonGluonMotherPhotonFrag_EE << endl;
-  cout << "Number of final state photon - other photon fragmentation     : " << nFinalStatePhotonOtherPhotonFragmentation_EE << endl;
-  cout << "Number of final state photon - real template photon           : " << nFinalStatePhotonRealTemplate_EE << endl;
-  cout << "Number of final state photon - photon mother                  : " << nFinalStatePhotonMother_EE << endl;
-  cout << "Number of final state photon - no match                       : " << nFinalStatePhotonNoMatch_EE << endl;
-  cout << "Sum of 8 match types                                          : " << nFinalStatePhotonHadronMother_EE+nFinalStatePhotonISRfromProton_EE+nFinalStateOtherPhotonRadiation_EE+
-    nFinalStatePhotonOtherPhotonFragmentation_EE+nFinalStatePhotonGluonMotherPhotonFrag_EE+nFinalStatePhotonNoMatch_EE+nFinalStatePhotonRealTemplate_EE+nFinalStatePhotonMother_EE << endl;
-  cout << endl;
-  cout << "Number of final state non-photon - hadron mothers: " << nFinalStateNonPhotonHadronMother_EE << endl;
-  cout << "Number of final state non-photon - electron pairs: " << nFinalStateNonPhotonElectronPair_EE << endl;
-  cout << "Number of final state non-photon - no matches    : " << nFinalStateNonPhotonNoMatch_EE << endl;
-  cout << "Sum of 3 match types                             : " << nFinalStateNonPhotonHadronMother_EE+nFinalStateNonPhotonElectronPair_EE+nFinalStateNonPhotonNoMatch_EE << endl;
-  cout << endl;
-  cout << "Average number of daughters - hadron mother case     : " << nAveNumDaughtersHadronMother_EE/(double)nFinalStatePhotonHadronMother_EE << endl;
-  cout << "Average number of daughters - ISR from proton        : " << nAveNumDaughtersISRfromProton_EE/(double)nFinalStatePhotonISRfromProton_EE << endl;
-  cout << "Average number of daughters - other radiation        : " << nAveNumDaughtersOtherPhotonRadiation_EE/(double)nFinalStateOtherPhotonRadiation_EE << endl;
-  cout << "Average number of daughters - frag. from gluon mother: " << nAveNumDaughtersGluonMotherPhotonFrag_EE/(double)nFinalStatePhotonGluonMotherPhotonFrag_EE << endl;
-  cout << "Average number of daughters - other fragmentation    : " << nAveNumDaughtersOtherPhotonFragmentation_EE/(double)nFinalStatePhotonOtherPhotonFragmentation_EE << endl;
-  cout << "Average number of daughters - hard interacton photon : " << nAveNumDaughtersRealTemplatePhotons_EE/(double)nFinalStatePhotonRealTemplate_EE << endl;
-  cout << endl;
+  std::cout << std::endl;
+  std::cout << "Not applying event or sample weights for these object numbers." << std::endl;
+  std::cout << std::endl;
+  std::cout << "Number of numerator objects (passing sipip cut): " << nEvents << std::endl;
+  std::cout << std::endl;
+  std::cout << "--------------------------------------EB------------------------------------------ " << std::endl;
+  std::cout << "Number of numerator objects              : " << nEvents_EB << std::endl;
+  std::cout << std::endl;
+  std::cout << "Number of final state photon matches     : " << nFinalStatePhotonMatch_EB << std::setw(2) << "(" << std::setprecision(2) << std::fixed << (nFinalStatePhotonMatch_EB*100./nEvents_EB) << "%)" << std::endl;
+  std::cout << "Number of final state non-photon matches : " << nFinalStateNonPhotonMatch_EB << std::setw(2) << "(" << std::setprecision(2) << std::fixed << (nFinalStateNonPhotonMatch_EB*100./nEvents_EB) << "%)" << std::endl;
+  std::cout << "Number of gen particle photon matches    : " << nGenParticlePhotonMatch_EB << std::setw(2) << "(" << std::setprecision(2) << std::fixed <<  (nGenParticlePhotonMatch_EB*100./nEvents_EB) << "%)" << std::endl;
+  std::cout << "Number of gen particle non-photon matches: " << nGenParticleNonPhotonMatch_EB << std::setw(2) << "(" << std::setprecision(2) << std::fixed << (nGenParticleNonPhotonMatch_EB*100./nEvents_EB) << "%)" << std::endl;
+  std::cout << "Number of no matches                     : " << nNoMatch_EB << std::setw(2) << "(" << std::setprecision(2) << std::fixed << (nNoMatch_EB*100./nEvents_EB) << "%)" << std::endl;
+  std::cout << "Sum of 5 match categories                : " << nFinalStatePhotonMatch_EB+nFinalStateNonPhotonMatch_EB+nGenParticlePhotonMatch_EB+nGenParticleNonPhotonMatch_EB+nNoMatch_EB << std::endl;
+  std::cout << std::endl;
+  std::cout << "Number of final state photon - hadron mothers                 : " << nFinalStatePhotonHadronMother_EB << std::endl;
+  std::cout << "      from quark jet                                          : " << nFinalStatePhotonHadronMother_fromQuark_EB << std::endl;
+  std::cout << "      from gluon jet                                          : " << nFinalStatePhotonHadronMother_fromGluon_EB << std::endl;
+  std::cout << "Number of final state photon - ISR from proton                : " << nFinalStatePhotonISRfromProton_EB << std::endl;
+  std::cout << "Number of final state photon - other photon radiation         : " << nFinalStateOtherPhotonRadiation_EB << std::endl;
+  std::cout << "Number of final state photon - fragmentation from gluon mother: " << nFinalStatePhotonGluonMotherPhotonFrag_EB << std::endl;
+  std::cout << "Number of final state photon - other photon fragmentation     : " << nFinalStatePhotonOtherPhotonFragmentation_EB << std::endl;
+  std::cout << "Number of final state photon - real template photon           : " << nFinalStatePhotonRealTemplate_EB << std::endl;
+  std::cout << "Number of final state photon - photon mother                  : " << nFinalStatePhotonMother_EB << std::endl;
+  std::cout << "Number of final state photon - no match                       : " << nFinalStatePhotonNoMatch_EB << std::endl;
+  std::cout << "Sum of 8 match types                                          : " << nFinalStatePhotonHadronMother_EB+nFinalStatePhotonISRfromProton_EB+nFinalStateOtherPhotonRadiation_EB+
+    nFinalStatePhotonOtherPhotonFragmentation_EB+nFinalStatePhotonGluonMotherPhotonFrag_EB+nFinalStatePhotonNoMatch_EB+nFinalStatePhotonRealTemplate_EB+nFinalStatePhotonMother_EB << std::endl;
+  std::cout << std::endl;
+  std::cout << "Number of final state non-photon - hadron mothers: " << nFinalStateNonPhotonHadronMother_EB << std::endl;
+  std::cout << "Number of final state non-photon - electron pairs: " << nFinalStateNonPhotonElectronPair_EB << std::endl;
+  std::cout << "Number of final state non-photon - no matches    : " << nFinalStateNonPhotonNoMatch_EB << std::endl;
+  std::cout << "Sum of 3 match types                             : " << nFinalStateNonPhotonHadronMother_EB+nFinalStateNonPhotonElectronPair_EB+nFinalStateNonPhotonNoMatch_EB << std::endl;
+  std::cout << std::endl;
+  std::cout << "Average number of daughters - hadron mother case     : " << nAveNumDaughtersHadronMother_EB/(double)nFinalStatePhotonHadronMother_EB << std::endl;
+  std::cout << "Average number of daughters - ISR from proton        : " << nAveNumDaughtersISRfromProton_EB/(double)nFinalStatePhotonISRfromProton_EB << std::endl;
+  std::cout << "Average number of daughters - other radiation        : " << nAveNumDaughtersOtherPhotonRadiation_EB/(double)nFinalStateOtherPhotonRadiation_EB << std::endl;
+  std::cout << "Average number of daughters - frag. from gluon mother: " << nAveNumDaughtersGluonMotherPhotonFrag_EB/(double)nFinalStatePhotonGluonMotherPhotonFrag_EB << std::endl;
+  std::cout << "Average number of daughters - other fragmentation    : " << nAveNumDaughtersOtherPhotonFragmentation_EB/(double)nFinalStatePhotonOtherPhotonFragmentation_EB << std::endl;
+  std::cout << "Average number of daughters - hard interacton photon : " << nAveNumDaughtersRealTemplatePhotons_EB/(double)nFinalStatePhotonRealTemplate_EB << std::endl;
+  std::cout << std::endl;
+  std::cout << "--------------------------------------EE------------------------------------------ " << std::endl;
+  std::cout << "Number of numerator objects              : " << nEvents_EE << std::endl;
+  std::cout << std::endl;
+  std::cout << "Number of final state photon matches     : " << nFinalStatePhotonMatch_EE << std::setw(2) << "(" << std::setprecision(2) << std::fixed << (nFinalStatePhotonMatch_EE*100./nEvents_EE) << "%)" << std::endl;
+  std::cout << "Number of final state non-photon matches : " << nFinalStateNonPhotonMatch_EE << std::setw(2) << "(" << std::setprecision(2) << std::fixed << (nFinalStateNonPhotonMatch_EE*100./nEvents_EE) << "%)" << std::endl;
+  std::cout << "Number of gen particle photon matches    : " << nGenParticlePhotonMatch_EE << std::setw(2) << "(" << std::setprecision(2) << std::fixed <<  (nGenParticlePhotonMatch_EE*100./nEvents_EE) << "%)" << std::endl;
+  std::cout << "Number of gen particle non-photon matches: " << nGenParticleNonPhotonMatch_EE << std::setw(2) << "(" << std::setprecision(2) << std::fixed << (nGenParticleNonPhotonMatch_EE*100./nEvents_EE) << "%)" << std::endl;
+  std::cout << "Number of no matches                     : " << nNoMatch_EE << std::setw(2) << "(" << std::setprecision(2) << std::fixed << (nNoMatch_EE*100./nEvents_EE) << "%)" << std::endl;
+  std::cout << "Sum of 5 match categories                : " << nFinalStatePhotonMatch_EE+nFinalStateNonPhotonMatch_EE+nGenParticlePhotonMatch_EE+nGenParticleNonPhotonMatch_EE+nNoMatch_EE << std::endl;
+  std::cout << std::endl;
+  std::cout << "Number of final state photon - hadron mothers                 : " << nFinalStatePhotonHadronMother_EE << std::endl;
+  std::cout << "      from quark jet                                          : " << nFinalStatePhotonHadronMother_fromQuark_EE << std::endl;
+  std::cout << "      from gluon jet                                          : " << nFinalStatePhotonHadronMother_fromGluon_EE << std::endl;
+  std::cout << "Number of final state photon - ISR from proton                : " << nFinalStatePhotonISRfromProton_EE << std::endl;
+  std::cout << "Number of final state photon - other photon radiation         : " << nFinalStateOtherPhotonRadiation_EE << std::endl;
+  std::cout << "Number of final state photon - fragmentation from gluon mother: " << nFinalStatePhotonGluonMotherPhotonFrag_EE << std::endl;
+  std::cout << "Number of final state photon - other photon fragmentation     : " << nFinalStatePhotonOtherPhotonFragmentation_EE << std::endl;
+  std::cout << "Number of final state photon - real template photon           : " << nFinalStatePhotonRealTemplate_EE << std::endl;
+  std::cout << "Number of final state photon - photon mother                  : " << nFinalStatePhotonMother_EE << std::endl;
+  std::cout << "Number of final state photon - no match                       : " << nFinalStatePhotonNoMatch_EE << std::endl;
+  std::cout << "Sum of 8 match types                                          : " << nFinalStatePhotonHadronMother_EE+nFinalStatePhotonISRfromProton_EE+nFinalStateOtherPhotonRadiation_EE+
+    nFinalStatePhotonOtherPhotonFragmentation_EE+nFinalStatePhotonGluonMotherPhotonFrag_EE+nFinalStatePhotonNoMatch_EE+nFinalStatePhotonRealTemplate_EE+nFinalStatePhotonMother_EE << std::endl;
+  std::cout << std::endl;
+  std::cout << "Number of final state non-photon - hadron mothers: " << nFinalStateNonPhotonHadronMother_EE << std::endl;
+  std::cout << "Number of final state non-photon - electron pairs: " << nFinalStateNonPhotonElectronPair_EE << std::endl;
+  std::cout << "Number of final state non-photon - no matches    : " << nFinalStateNonPhotonNoMatch_EE << std::endl;
+  std::cout << "Sum of 3 match types                             : " << nFinalStateNonPhotonHadronMother_EE+nFinalStateNonPhotonElectronPair_EE+nFinalStateNonPhotonNoMatch_EE << std::endl;
+  std::cout << std::endl;
+  std::cout << "Average number of daughters - hadron mother case     : " << nAveNumDaughtersHadronMother_EE/(double)nFinalStatePhotonHadronMother_EE << std::endl;
+  std::cout << "Average number of daughters - ISR from proton        : " << nAveNumDaughtersISRfromProton_EE/(double)nFinalStatePhotonISRfromProton_EE << std::endl;
+  std::cout << "Average number of daughters - other radiation        : " << nAveNumDaughtersOtherPhotonRadiation_EE/(double)nFinalStateOtherPhotonRadiation_EE << std::endl;
+  std::cout << "Average number of daughters - frag. from gluon mother: " << nAveNumDaughtersGluonMotherPhotonFrag_EE/(double)nFinalStatePhotonGluonMotherPhotonFrag_EE << std::endl;
+  std::cout << "Average number of daughters - other fragmentation    : " << nAveNumDaughtersOtherPhotonFragmentation_EE/(double)nFinalStatePhotonOtherPhotonFragmentation_EE << std::endl;
+  std::cout << "Average number of daughters - hard interacton photon : " << nAveNumDaughtersRealTemplatePhotons_EE/(double)nFinalStatePhotonRealTemplate_EE << std::endl;
+  std::cout << std::endl;
   
-  cout << endl;
-  cout << "Fakes are all hadron mother matches passing the high pt photon ID." << endl;
-  cout << "--------------------------------------EB------------------------------------------ " << endl;
-  cout << "Number of fakes      : " << nFakesEB << endl;
-  cout << "Number of quark fakes: " << nQuarkFakesEB << endl;
-  cout << "Number of gluon fakes: " << nGluonFakesEB << endl;
-  cout << "--------------------------------------EE------------------------------------------ " << endl;
-  cout << "Number of fakes      : " << nFakesEE << endl;
-  cout << "Number of quark fakes: " << nQuarkFakesEE << endl;
-  cout << "Number of gluon fakes: " << nGluonFakesEE << endl;
-  cout << endl;
+  std::cout << std::endl;
+  std::cout << "Fakes are all hadron mother matches passing the high pt photon ID." << std::endl;
+  std::cout << "--------------------------------------EB------------------------------------------ " << std::endl;
+  std::cout << "Number of fakes      : " << nFakesEB << std::endl;
+  std::cout << "Number of quark fakes: " << nQuarkFakesEB << std::endl;
+  std::cout << "Number of gluon fakes: " << nGluonFakesEB << std::endl;
+  std::cout << "--------------------------------------EE------------------------------------------ " << std::endl;
+  std::cout << "Number of fakes      : " << nFakesEE << std::endl;
+  std::cout << "Number of quark fakes: " << nQuarkFakesEE << std::endl;
+  std::cout << "Number of gluon fakes: " << nGluonFakesEE << std::endl;
+  std::cout << std::endl;
   
   TFile file_out(filename,"RECREATE");
   
@@ -1184,54 +1193,54 @@ void MCFakeRateClosureTestWithFakes::Loop()
   // write fake distributions
   photon_fakes_sIeIe_EB->Write();
   photon_fakes_sIeIe_EE->Write();
-  cout << photon_fakes_sIeIe_EB->GetName() << "\t integral: " << photon_fakes_sIeIe_EB->Integral() << endl;
-  cout << photon_fakes_sIeIe_EE->GetName() << "\t integral: " << photon_fakes_sIeIe_EE->Integral() << endl;
+  std::cout << photon_fakes_sIeIe_EB->GetName() << "\t integral: " << photon_fakes_sIeIe_EB->Integral() << std::endl;
+  std::cout << photon_fakes_sIeIe_EE->GetName() << "\t integral: " << photon_fakes_sIeIe_EE->Integral() << std::endl;
   photon_fakes_pt_EB->Write();
   photon_fakes_pt_EE->Write();
-  cout << photon_fakes_pt_EB->GetName() << "\t integral: " << photon_fakes_pt_EB->Integral() << endl;
-  cout << photon_fakes_pt_EE->GetName() << "\t integral: " << photon_fakes_pt_EE->Integral() << endl;
+  std::cout << photon_fakes_pt_EB->GetName() << "\t integral: " << photon_fakes_pt_EB->Integral() << std::endl;
+  std::cout << photon_fakes_pt_EE->GetName() << "\t integral: " << photon_fakes_pt_EE->Integral() << std::endl;
   photon_fakes_eta_EB->Write();
   photon_fakes_eta_EE->Write();
-  cout << photon_fakes_eta_EB->GetName() << "\t integral: " << photon_fakes_eta_EB->Integral() << endl;
-  cout << photon_fakes_eta_EE->GetName() << "\t integral: " << photon_fakes_eta_EE->Integral() << endl;
+  std::cout << photon_fakes_eta_EB->GetName() << "\t integral: " << photon_fakes_eta_EB->Integral() << std::endl;
+  std::cout << photon_fakes_eta_EE->GetName() << "\t integral: " << photon_fakes_eta_EE->Integral() << std::endl;
   photon_fakes_phi_EB->Write();
   photon_fakes_phi_EE->Write();
-  cout << photon_fakes_phi_EB->GetName() << "\t integral: " << photon_fakes_phi_EB->Integral() << endl;
-  cout << photon_fakes_phi_EE->GetName() << "\t integral: " << photon_fakes_phi_EE->Integral() << endl;
+  std::cout << photon_fakes_phi_EB->GetName() << "\t integral: " << photon_fakes_phi_EB->Integral() << std::endl;
+  std::cout << photon_fakes_phi_EE->GetName() << "\t integral: " << photon_fakes_phi_EE->Integral() << std::endl;
   // write quark fake distributions
   photon_quark_fakes_sIeIe_EB->Write();
   photon_quark_fakes_sIeIe_EE->Write();
-  cout << photon_quark_fakes_sIeIe_EB->GetName() << "\t integral: " << photon_quark_fakes_sIeIe_EB->Integral() << endl;
-  cout << photon_quark_fakes_sIeIe_EE->GetName() << "\t integral: " << photon_quark_fakes_sIeIe_EE->Integral() << endl;
+  std::cout << photon_quark_fakes_sIeIe_EB->GetName() << "\t integral: " << photon_quark_fakes_sIeIe_EB->Integral() << std::endl;
+  std::cout << photon_quark_fakes_sIeIe_EE->GetName() << "\t integral: " << photon_quark_fakes_sIeIe_EE->Integral() << std::endl;
   photon_quark_fakes_pt_EB->Write();
   photon_quark_fakes_pt_EE->Write();
-  cout << photon_quark_fakes_pt_EB->GetName() << "\t integral: " << photon_quark_fakes_pt_EB->Integral() << endl;
-  cout << photon_quark_fakes_pt_EE->GetName() << "\t integral: " << photon_quark_fakes_pt_EE->Integral() << endl;
+  std::cout << photon_quark_fakes_pt_EB->GetName() << "\t integral: " << photon_quark_fakes_pt_EB->Integral() << std::endl;
+  std::cout << photon_quark_fakes_pt_EE->GetName() << "\t integral: " << photon_quark_fakes_pt_EE->Integral() << std::endl;
   photon_quark_fakes_eta_EB->Write();
   photon_quark_fakes_eta_EE->Write();
-  cout << photon_quark_fakes_eta_EB->GetName() << "\t integral: " << photon_quark_fakes_eta_EB->Integral() << endl;
-  cout << photon_quark_fakes_eta_EE->GetName() << "\t integral: " << photon_quark_fakes_eta_EE->Integral() << endl;
+  std::cout << photon_quark_fakes_eta_EB->GetName() << "\t integral: " << photon_quark_fakes_eta_EB->Integral() << std::endl;
+  std::cout << photon_quark_fakes_eta_EE->GetName() << "\t integral: " << photon_quark_fakes_eta_EE->Integral() << std::endl;
   photon_quark_fakes_phi_EB->Write();
   photon_quark_fakes_phi_EE->Write();
-  cout << photon_quark_fakes_phi_EB->GetName() << "\t integral: " << photon_quark_fakes_phi_EB->Integral() << endl;
-  cout << photon_quark_fakes_phi_EE->GetName() << "\t integral: " << photon_quark_fakes_phi_EE->Integral() << endl;
+  std::cout << photon_quark_fakes_phi_EB->GetName() << "\t integral: " << photon_quark_fakes_phi_EB->Integral() << std::endl;
+  std::cout << photon_quark_fakes_phi_EE->GetName() << "\t integral: " << photon_quark_fakes_phi_EE->Integral() << std::endl;
   // write gluon fake distributions
   photon_gluon_fakes_sIeIe_EB->Write();
   photon_gluon_fakes_sIeIe_EE->Write();
-  cout << photon_gluon_fakes_sIeIe_EB->GetName() << "\t integral: " << photon_gluon_fakes_sIeIe_EB->Integral() << endl;
-  cout << photon_gluon_fakes_sIeIe_EE->GetName() << "\t integral: " << photon_gluon_fakes_sIeIe_EE->Integral() << endl;
+  std::cout << photon_gluon_fakes_sIeIe_EB->GetName() << "\t integral: " << photon_gluon_fakes_sIeIe_EB->Integral() << std::endl;
+  std::cout << photon_gluon_fakes_sIeIe_EE->GetName() << "\t integral: " << photon_gluon_fakes_sIeIe_EE->Integral() << std::endl;
   photon_gluon_fakes_pt_EB->Write();
   photon_gluon_fakes_pt_EE->Write();
-  cout << photon_gluon_fakes_pt_EB->GetName() << "\t integral: " << photon_gluon_fakes_pt_EB->Integral() << endl;
-  cout << photon_gluon_fakes_pt_EE->GetName() << "\t integral: " << photon_gluon_fakes_pt_EE->Integral() << endl;
+  std::cout << photon_gluon_fakes_pt_EB->GetName() << "\t integral: " << photon_gluon_fakes_pt_EB->Integral() << std::endl;
+  std::cout << photon_gluon_fakes_pt_EE->GetName() << "\t integral: " << photon_gluon_fakes_pt_EE->Integral() << std::endl;
   photon_gluon_fakes_eta_EB->Write();
   photon_gluon_fakes_eta_EE->Write();
-  cout << photon_gluon_fakes_eta_EB->GetName() << "\t integral: " << photon_gluon_fakes_eta_EB->Integral() << endl;
-  cout << photon_gluon_fakes_eta_EE->GetName() << "\t integral: " << photon_gluon_fakes_eta_EE->Integral() << endl;
+  std::cout << photon_gluon_fakes_eta_EB->GetName() << "\t integral: " << photon_gluon_fakes_eta_EB->Integral() << std::endl;
+  std::cout << photon_gluon_fakes_eta_EE->GetName() << "\t integral: " << photon_gluon_fakes_eta_EE->Integral() << std::endl;
   photon_gluon_fakes_phi_EB->Write();
   photon_gluon_fakes_phi_EE->Write();
-  cout << photon_gluon_fakes_phi_EB->GetName() << "\t integral: " << photon_gluon_fakes_phi_EB->Integral() << endl;
-  cout << photon_gluon_fakes_phi_EE->GetName() << "\t integral: " << photon_gluon_fakes_phi_EE->Integral() << endl;
+  std::cout << photon_gluon_fakes_phi_EB->GetName() << "\t integral: " << photon_gluon_fakes_phi_EB->Integral() << std::endl;
+  std::cout << photon_gluon_fakes_phi_EE->GetName() << "\t integral: " << photon_gluon_fakes_phi_EE->Integral() << std::endl;
   
   // write passHighPtID histograms
   phoPtEB_passHighPtID_varbin.Write();
@@ -1243,119 +1252,119 @@ void MCFakeRateClosureTestWithFakes::Loop()
   
 
   double bin_sum_EB = 0;
-  cout << phoPtEB_passHighPtID_varbin.GetName() << "\t integral: " << phoPtEB_passHighPtID_varbin.Integral() << endl;
+  std::cout << phoPtEB_passHighPtID_varbin.GetName() << "\t integral: " << phoPtEB_passHighPtID_varbin.Integral() << std::endl;
   for (int i = 1; i < phoPtEB_passHighPtID_varbin.GetSize()-1; i++) {
-    cout << phoPtEB_passHighPtID_varbin.GetName()
+    std::cout << phoPtEB_passHighPtID_varbin.GetName()
 	 << " bin "
 	 << phoPtEB_passHighPtID_varbin.GetBin(i)
 	 << " content: "
 	 << phoPtEB_passHighPtID_varbin.GetBinContent(i)
-	 << endl;
+	 << std::endl;
     bin_sum_EB = bin_sum_EB + phoPtEB_passHighPtID_varbin.GetBinContent(i);
   }
-  cout << phoPtEB_passHighPtID_varbin.GetName() << " bin sum: " << bin_sum_EB << endl;
+  std::cout << phoPtEB_passHighPtID_varbin.GetName() << " bin sum: " << bin_sum_EB << std::endl;
   
   double bin_sum_EE = 0;
-  cout << phoPtEE_passHighPtID_varbin.GetName() << "\t integral: " << phoPtEE_passHighPtID_varbin.Integral() << endl;
+  std::cout << phoPtEE_passHighPtID_varbin.GetName() << "\t integral: " << phoPtEE_passHighPtID_varbin.Integral() << std::endl;
   for (int i = 1; i < phoPtEB_passHighPtID_varbin.GetSize()-1; i++) {  
-    cout << phoPtEE_passHighPtID_varbin.GetName()
+    std::cout << phoPtEE_passHighPtID_varbin.GetName()
 	 << " bin "
 	 << phoPtEE_passHighPtID_varbin.GetBin(i)
 	 << " content: "
 	 << phoPtEE_passHighPtID_varbin.GetBinContent(i)
-	 << endl;
+	 << std::endl;
     bin_sum_EE = bin_sum_EE + phoPtEE_passHighPtID_varbin.GetBinContent(i);
   }
-  cout << phoPtEB_passHighPtID_varbin.GetName() << " bin sum: " << bin_sum_EE << endl;
+  std::cout << phoPtEB_passHighPtID_varbin.GetName() << " bin sum: " << bin_sum_EE << std::endl;
   
   // write numerator histograms from mc truth fakes
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromFakes.begin() ; it != sIeIeNumeratorEB_fromFakes.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromFakes.begin() ; it != sIeIeNumeratorEB_fromFakes.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromFakes.begin() ; it != sIeIeNumeratorEE_fromFakes.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromFakes.begin() ; it != sIeIeNumeratorEE_fromFakes.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = chIsoNumeratorEB_fromFakes.begin() ; it != chIsoNumeratorEB_fromFakes.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = chIsoNumeratorEB_fromFakes.begin() ; it != chIsoNumeratorEB_fromFakes.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = chIsoNumeratorEE_fromFakes.begin() ; it != chIsoNumeratorEE_fromFakes.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = chIsoNumeratorEE_fromFakes.begin() ; it != chIsoNumeratorEE_fromFakes.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
   // write other sieie numerator histograms
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromReal.begin() ; it != sIeIeNumeratorEB_fromReal.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromReal.begin() ; it != sIeIeNumeratorEB_fromReal.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromReal.begin() ; it != sIeIeNumeratorEE_fromReal.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromReal.begin() ; it != sIeIeNumeratorEE_fromReal.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromPhotonHadronMother.begin() ; it != sIeIeNumeratorEB_fromPhotonHadronMother.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromPhotonHadronMother.begin() ; it != sIeIeNumeratorEB_fromPhotonHadronMother.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromPhotonHadronMother.begin() ; it != sIeIeNumeratorEE_fromPhotonHadronMother.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromPhotonHadronMother.begin() ; it != sIeIeNumeratorEE_fromPhotonHadronMother.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromPhotonISRfromProton.begin() ; it != sIeIeNumeratorEB_fromPhotonISRfromProton.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromPhotonISRfromProton.begin() ; it != sIeIeNumeratorEB_fromPhotonISRfromProton.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromPhotonISRfromProton.begin() ; it != sIeIeNumeratorEE_fromPhotonISRfromProton.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromPhotonISRfromProton.begin() ; it != sIeIeNumeratorEE_fromPhotonISRfromProton.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromOtherPhotonRadiation.begin() ; it != sIeIeNumeratorEB_fromOtherPhotonRadiation.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromOtherPhotonRadiation.begin() ; it != sIeIeNumeratorEB_fromOtherPhotonRadiation.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromOtherPhotonRadiation.begin() ; it != sIeIeNumeratorEE_fromOtherPhotonRadiation.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromOtherPhotonRadiation.begin() ; it != sIeIeNumeratorEE_fromOtherPhotonRadiation.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromGluonMotherPhotonFrag.begin() ; it != sIeIeNumeratorEB_fromGluonMotherPhotonFrag.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromGluonMotherPhotonFrag.begin() ; it != sIeIeNumeratorEB_fromGluonMotherPhotonFrag.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromGluonMotherPhotonFrag.begin() ; it != sIeIeNumeratorEE_fromGluonMotherPhotonFrag.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromGluonMotherPhotonFrag.begin() ; it != sIeIeNumeratorEE_fromGluonMotherPhotonFrag.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromOtherPhotonFragmentation.begin() ; it != sIeIeNumeratorEB_fromOtherPhotonFragmentation.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromOtherPhotonFragmentation.begin() ; it != sIeIeNumeratorEB_fromOtherPhotonFragmentation.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromOtherPhotonFragmentation.begin() ; it != sIeIeNumeratorEE_fromOtherPhotonFragmentation.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromOtherPhotonFragmentation.begin() ; it != sIeIeNumeratorEE_fromOtherPhotonFragmentation.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromNoMatch.begin() ; it != sIeIeNumeratorEB_fromNoMatch.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromNoMatch.begin() ; it != sIeIeNumeratorEB_fromNoMatch.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromNoMatch.begin() ; it != sIeIeNumeratorEE_fromNoMatch.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromNoMatch.begin() ; it != sIeIeNumeratorEE_fromNoMatch.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromNonPhotonMatch.begin() ; it != sIeIeNumeratorEB_fromNonPhotonMatch.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromNonPhotonMatch.begin() ; it != sIeIeNumeratorEB_fromNonPhotonMatch.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromNonPhotonMatch.begin() ; it != sIeIeNumeratorEE_fromNonPhotonMatch.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromNonPhotonMatch.begin() ; it != sIeIeNumeratorEE_fromNonPhotonMatch.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromGenParticleMatch.begin() ; it != sIeIeNumeratorEB_fromGenParticleMatch.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromGenParticleMatch.begin() ; it != sIeIeNumeratorEB_fromGenParticleMatch.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromGenParticleMatch.begin() ; it != sIeIeNumeratorEE_fromGenParticleMatch.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEE_fromGenParticleMatch.begin() ; it != sIeIeNumeratorEE_fromGenParticleMatch.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
   

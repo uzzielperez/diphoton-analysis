@@ -24,8 +24,8 @@
 
 
 
-const int NPTBINS=5;
-const float PTBINS[NPTBINS+1] = { 50, 70, 90, 130, 200, 600 };
+const int NPTBINS=9;
+const float PTBINS[NPTBINS+1] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
 
 enum hist_t { Real, Fake, Truth, Numerator, Denominator };
 
@@ -53,7 +53,7 @@ TH1* GetHist(int ptbin, bool isEB, hist_t type)
     rootfile=new TFile("diphoton_fake_rate_real_templates_all_GGJets_GJets_76X_MiniAOD_histograms.root");
   else if(type==Truth)
     // Output from PhotonClosure/analysis/MCFakeRateClosureTestWithFakes2.C
-    rootfile=new TFile("diphoton_fake_rate_closure_test_matching_all_samples_80X_MiniAOD_histograms_test.root");
+    rootfile=new TFile("diphoton_fake_rate_closure_test_matching_all_samples_76X_MiniAOD_histograms.root");
   else
     // Output from PhotonClosure/analysis/MCFakeRateAnalysis.C
     rootfile=new TFile("diphoton_fake_rate_closure_test_all_samples_76X_MiniAOD_histograms.root");

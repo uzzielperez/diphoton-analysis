@@ -14,7 +14,7 @@
 
 // Header file for the classes stored in the TTree if any.
 
-class DiphotonClosureTest {
+class DiphotonClosureTestBase {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
@@ -1617,8 +1617,8 @@ public :
    TBranch        *b_isFF;   //!
    TBranch        *b_nPV;   //!
 
-   DiphotonClosureTest(TTree *tree=0);
-   virtual ~DiphotonClosureTest();
+   DiphotonClosureTestBase(TTree *tree=0);
+   virtual ~DiphotonClosureTestBase();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
@@ -1626,13 +1626,13 @@ public :
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
-   virtual double   fakeRate(TString region, double pt);
+   //   virtual double   fakeRate(TString region, double pt) = 0;
 };
 
 #endif
 
 #ifdef DiphotonClosureTest_cxx
-DiphotonClosureTest::DiphotonClosureTest(TTree *tree) : fChain(0) 
+DiphotonClosureTestBase::DiphotonClosureTestBase(TTree *tree) : fChain(0)
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
@@ -1648,19 +1648,19 @@ DiphotonClosureTest::DiphotonClosureTest(TTree *tree) : fChain(0)
    Init(tree);
 }
 
-DiphotonClosureTest::~DiphotonClosureTest()
+DiphotonClosureTestBase::~DiphotonClosureTestBase()
 {
    if (!fChain) return;
    delete fChain->GetCurrentFile();
 }
 
-Int_t DiphotonClosureTest::GetEntry(Long64_t entry)
+Int_t DiphotonClosureTestBase::GetEntry(Long64_t entry)
 {
 // Read contents of entry.
    if (!fChain) return 0;
    return fChain->GetEntry(entry);
 }
-Long64_t DiphotonClosureTest::LoadTree(Long64_t entry)
+Long64_t DiphotonClosureTestBase::LoadTree(Long64_t entry)
 {
 // Set the environment to read one entry
    if (!fChain) return -5;
@@ -1673,7 +1673,7 @@ Long64_t DiphotonClosureTest::LoadTree(Long64_t entry)
    return centry;
 }
 
-void DiphotonClosureTest::Init(TTree *tree)
+void DiphotonClosureTestBase::Init(TTree *tree)
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
@@ -1723,7 +1723,7 @@ void DiphotonClosureTest::Init(TTree *tree)
    Notify();
 }
 
-Bool_t DiphotonClosureTest::Notify()
+Bool_t DiphotonClosureTestBase::Notify()
 {
    // The Notify() function is called when a new file is opened. This
    // can be either for a new TTree in a TChain or when when a new TTree
@@ -1734,14 +1734,14 @@ Bool_t DiphotonClosureTest::Notify()
    return kTRUE;
 }
 
-void DiphotonClosureTest::Show(Long64_t entry)
+void DiphotonClosureTestBase::Show(Long64_t entry)
 {
 // Print contents of entry.
 // If entry is not specified, print current entry
    if (!fChain) return;
    fChain->Show(entry);
 }
-Int_t DiphotonClosureTest::Cut(Long64_t entry)
+Int_t DiphotonClosureTestBase::Cut(Long64_t entry)
 {
 // This function may be called from Loop.
 // returns  1 if entry is accepted.
