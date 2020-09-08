@@ -83,8 +83,7 @@ void plot_diphoton_closure_test_merged() {
   gjets_EBEB->GetXaxis()->SetTitle("M_{#gamma#gamma} (GeV)");
   gjets_EBEB->GetXaxis()->SetRangeUser(0,2000);
   gjets_EBEB->GetYaxis()->SetTitle("Events / 50 GeV");
-  gjets_EBEB->GetYaxis()->SetTitleOffset(1.3);
-  gjets_EBEB->GetXaxis()->SetTitleOffset(1);
+  gjets_EBEB->GetYaxis()->SetTitleOffset(1.4);
   gPad->SetLogy();
   TLegend *l_gjets_EBEB = new TLegend(0.50,0.65,0.85,0.85);
   l_gjets_EBEB->SetBorderSize(0);
@@ -103,9 +102,7 @@ void plot_diphoton_closure_test_merged() {
   gjets_EBEE->GetXaxis()->SetTitle("M_{#gamma#gamma} (GeV)");
   gjets_EBEE->GetXaxis()->SetRangeUser(0,2000);
   gjets_EBEE->GetYaxis()->SetTitle("Events / 50 GeV");
-  gjets_EBEE->GetYaxis()->SetTitleOffset(1.3);
-  gjets_EBEE->GetXaxis()->SetTitleOffset(1);
-
+  gjets_EBEE->GetYaxis()->SetTitleOffset(1.4);
   gPad->SetLogy();
   TLegend *l_gjets_EBEE = new TLegend(0.50,0.65,0.85,0.85);
   l_gjets_EBEE->SetBorderSize(0);
@@ -129,8 +126,7 @@ void plot_diphoton_closure_test_merged() {
   ggjets_EBEB->GetXaxis()->SetTitle("M_{#gamma#gamma} (GeV)");
   ggjets_EBEB->GetXaxis()->SetRangeUser(0,2000);
   ggjets_EBEB->GetYaxis()->SetTitle("Events / 50 GeV");
-  ggjets_EBEB->GetYaxis()->SetTitleOffset(1.3);
-  ggjets_EBEB->GetXaxis()->SetTitleOffset(1);
+  ggjets_EBEB->GetYaxis()->SetTitleOffset(1.4);
   gPad->SetLogy();
   TLegend *l_ggjets_EBEB = new TLegend(0.50,0.65,0.85,0.85);
   l_ggjets_EBEB->SetBorderSize(0);
@@ -149,7 +145,7 @@ void plot_diphoton_closure_test_merged() {
   ggjets_EBEE->GetXaxis()->SetTitle("M_{#gamma#gamma} (GeV)");
   ggjets_EBEE->GetXaxis()->SetRangeUser(0,2000);
   ggjets_EBEE->GetYaxis()->SetTitle("Events / 50 GeV");
-  ggjets_EBEE->GetYaxis()->SetTitleOffset(1.3);
+  ggjets_EBEE->GetYaxis()->SetTitleOffset(1.4);
   gPad->SetLogy();
   TLegend *l_ggjets_EBEE = new TLegend(0.50,0.65,0.85,0.85);
   l_ggjets_EBEE->SetBorderSize(0);
