@@ -7,12 +7,10 @@
 #include <map>
 #include <iostream>
 
+#include "diphoton-analysis/FakeRateAnalysis/interface/utilities.hh"
+
 void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow = 0, int pvCutHigh = 500)
 {
-  std::map<int, TString> cmssw_version;
-  cmssw_version[2016] = "76X";
-  cmssw_version[2017] = "94X";
-  cmssw_version[2018] = "102X";
 
 //   In a ROOT session, you can do:
 //      root> .L MCFakeRateAnalysis.C
@@ -41,10 +39,10 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
   
   TString pv = Form("_nPV%i-%i", pvCutLow, pvCutHigh);
   TString filename = "";
-  if (sample == "DiPhotonJets") filename = "diphoton_fake_rate_real_templates_DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8_" + cmssw_version[year] + pv + "_MiniAOD_histograms.root";
-  if (sample == "GGJets")       filename = "diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version[year] + pv + "_MiniAOD_histograms.root";
-  if (sample == "GJets")        filename = "diphoton_fake_rate_real_templates_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version[year] + pv + "_MiniAOD_histograms.root";
-  if (sample == "all")          filename = "diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[year] + pv + "_MiniAOD_histograms.root";
+  if (sample == "DiPhotonJets") filename = "diphoton_fake_rate_real_templates_DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8_" + cmssw_version(year) + pv + "_MiniAOD_histograms.root";
+  if (sample == "GGJets")       filename = "diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version(year) + pv + "_MiniAOD_histograms.root";
+  if (sample == "GJets")        filename = "diphoton_fake_rate_real_templates_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version(year) + pv + "_MiniAOD_histograms.root";
+  if (sample == "all")          filename = "diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version(year) + pv + "_MiniAOD_histograms.root";
   
   std::cout << "\nOutput filename: " << filename << std::endl << std::endl;
   

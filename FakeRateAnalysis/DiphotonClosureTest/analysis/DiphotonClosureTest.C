@@ -4,8 +4,25 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void DiphotonClosureTest::Loop()
+#include "diphoton-analysis/FakeRateAnalysis/interface/utilities.hh"
+
+void DiphotonClosureTestBase::Loop() {};
+//double DiphotonClosureTestBase::fakeRate(TString region, double pt) {};
+
+class DiphotonClosureTest : public DiphotonClosureTestBase {
+
+public:
+  using DiphotonClosureTestBase::DiphotonClosureTestBase;
+  void Loop() {};
+  void Loop(TString run, TString sample);
+  double fakeRate(TString region, double pt);
+};
+
+
+void DiphotonClosureTest::Loop(TString run, TString sample)
 {
+  int year = run.Atoi();
+
 //   In a ROOT session, you can do:
 //      root> .L DiphotonClosureTest.C
 //      root> DiphotonClosureTest t
@@ -31,23 +48,15 @@ void DiphotonClosureTest::Loop()
 //by  b_branchname->GetEntry(ientry); //read only this branch
   if (fChain == 0) return;
 
-  // input what sample is being run on
-  TString sample = "";
-  cout << "Enter sample being run on (QCD, GJets, GGJets, or all): ";
-  cin >> sample;
-  if (sample != "QCD" && sample != "GJets" && sample != "GGJets" && sample != "all") {
-    cout << "Invalid choice!" << endl;
-    return;
-  }
-  cout << "\nUsing sample: " << sample << endl;
+  std::cout << "\nUsing sample: " << sample << std::endl;
   
   // output filename
   TString filename = "";
-  if (sample == "QCD")     filename = "diphoton_fake_rate_diphoton_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "GJets")   filename = "diphoton_fake_rate_diphoton_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "GGJets")  filename = "diphoton_fake_rate_diphoton_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
-  if (sample == "all")     filename = "diphoton_fake_rate_diphoton_closure_test_all_samples_76X_MiniAOD_histograms.root";
-  cout << "Output filename: " << filename << endl << endl;
+  if (sample == "QCD")     filename = "diphoton_fake_rate_diphoton_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_" + cmssw_version(year) + "_MiniAOD_histograms.root";
+  if (sample == "GJets")   filename = "diphoton_fake_rate_diphoton_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version(year) + "_MiniAOD_histograms.root";
+  if (sample == "GGJets")  filename = "diphoton_fake_rate_diphoton_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version(year) + "_MiniAOD_histograms.root";
+  if (sample == "all")     filename = "diphoton_fake_rate_diphoton_closure_test_all_samples_" + cmssw_version(year) + "_MiniAOD_histograms.root";
+  std::cout << "Output filename: " << filename << std::endl << std::endl;
 
   int nbins = 120;
   double xmin = 0.0;

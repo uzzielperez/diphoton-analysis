@@ -4,8 +4,26 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void MCFakeRateClosureTest::Loop()
+#include "diphoton-analysis/FakeRateAnalysis/interface/utilities.hh"
+
+void MCFakeRateClosureTestBase::Loop() {};
+
+class MCFakeRateClosureTest : public MCFakeRateClosureTestBase {
+
+public:
+  using MCFakeRateClosureTestBase::MCFakeRateClosureTestBase;
+  void Loop() {};
+  void Loop(TString run, TString sample);
+  double FakeRateEB(double pt);
+  double FakeRateEE(double pt);
+};
+
+
+
+void MCFakeRateClosureTest::Loop(TString run, TString sample)
 {
+  int year = run.Atoi();
+
 //   In a ROOT session, you can do:
 //      root> .L MCFakeRateClosureTest.C
 //      root> MCFakeRateClosureTest t
@@ -30,24 +48,14 @@ void MCFakeRateClosureTest::Loop()
 //    fChain->GetEntry(jentry);       //read all branches
 //by  b_branchname->GetEntry(ientry); //read only this branch
   if (fChain == 0) return;
-
-  // input what sample is being run on
-  TString sample = "";
-  cout << "Enter sample being run on (QCD, GJets, GGJets, or all): ";
-  cin >> sample;
-  if (sample != "QCD" && sample != "GJets" && sample != "GGJets" && sample != "all") {
-    cout << "Invalid choice!" << endl;
-    return;
-  }
-  cout << "\nUsing sample: " << sample << endl;
   
   // output filename
   TString filename = "";
-  if (sample == "QCD")    filename = "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "GJets")  filename = "diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "GGJets") filename = "diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
-  if (sample == "all")    filename = "diphoton_fake_rate_closure_test_all_samples_76X_MiniAOD_histograms.root";
-  cout << "Output filename: " << filename << endl << endl;
+  if (sample == "QCD")    filename = "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_" + cmssw_version(year) + "_MiniAOD_histograms.root";
+  if (sample == "GJets")  filename = "diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version(year) + "_MiniAOD_histograms.root";
+  if (sample == "GGJets") filename = "diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version(year) + "_MiniAOD_histograms.root";
+  if (sample == "all")    filename = "diphoton_fake_rate_closure_test_all_samples_" + cmssw_version(year) + "_MiniAOD_histograms.root";
+  std::cout << "Output filename: " << filename << std::endl << std::endl;
   
   // count number of numerator photons
   int nNumerator              = 0;
@@ -443,10 +451,10 @@ void MCFakeRateClosureTest::Loop()
     
   } // end loop over entries
   
-  cout << endl;
-  cout << "Number of numerator photons: " << nNumerator << endl;
-  cout << " ...passing sipip cut      : " << nNumerator_passSipipCut << endl;
-  cout << endl;
+  std::cout << std::endl;
+  std::cout << "Number of numerator photons: " << nNumerator << std::endl;
+  std::cout << " ...passing sipip cut      : " << nNumerator_passSipipCut << std::endl;
+  std::cout << std::endl;
 
   // create output file
   TFile file_out(filename,"RECREATE");
@@ -455,115 +463,115 @@ void MCFakeRateClosureTest::Loop()
   // variable binned
   phoPtEB_denominator_varbin.Write();
   phoPtEE_denominator_varbin.Write();
-  cout << phoPtEB_denominator_varbin.GetName() << "\t integral: " << phoPtEB_denominator_varbin.Integral() << endl;
-  cout << phoPtEE_denominator_varbin.GetName() << "\t integral: " << phoPtEE_denominator_varbin.Integral() << endl;
+  std::cout << phoPtEB_denominator_varbin.GetName() << "\t integral: " << phoPtEB_denominator_varbin.Integral() << std::endl;
+  std::cout << phoPtEE_denominator_varbin.GetName() << "\t integral: " << phoPtEE_denominator_varbin.Integral() << std::endl;
   // all objects
   photon_pt_denominator_EB->Write();
   photon_pt_denominator_EE->Write();
-  cout << photon_pt_denominator_EB->GetName() << "\t integral: " << photon_pt_denominator_EB->Integral() << endl;
-  cout << photon_pt_denominator_EE->GetName() << "\t integral: " << photon_pt_denominator_EE->Integral() << endl;
+  std::cout << photon_pt_denominator_EB->GetName() << "\t integral: " << photon_pt_denominator_EB->Integral() << std::endl;
+  std::cout << photon_pt_denominator_EE->GetName() << "\t integral: " << photon_pt_denominator_EE->Integral() << std::endl;
   photon_eta_denominator_EB->Write();
   photon_eta_denominator_EE->Write();
-  cout << photon_eta_denominator_EB->GetName() << "\t integral: " << photon_eta_denominator_EB->Integral() << endl;
-  cout << photon_eta_denominator_EE->GetName() << "\t integral: " << photon_eta_denominator_EE->Integral() << endl;
+  std::cout << photon_eta_denominator_EB->GetName() << "\t integral: " << photon_eta_denominator_EB->Integral() << std::endl;
+  std::cout << photon_eta_denominator_EE->GetName() << "\t integral: " << photon_eta_denominator_EE->Integral() << std::endl;
   photon_phi_denominator_EB->Write();
   photon_phi_denominator_EE->Write();
-  cout << photon_phi_denominator_EB->GetName() << "\t integral: " << photon_phi_denominator_EB->Integral() << endl;
-  cout << photon_phi_denominator_EE->GetName() << "\t integral: " << photon_phi_denominator_EE->Integral() << endl;
+  std::cout << photon_phi_denominator_EB->GetName() << "\t integral: " << photon_phi_denominator_EB->Integral() << std::endl;
+  std::cout << photon_phi_denominator_EE->GetName() << "\t integral: " << photon_phi_denominator_EE->Integral() << std::endl;
   // fake rate weighted
   photon_pt_denominator_fake_rate_weighted_EB->Write();
   photon_pt_denominator_fake_rate_weighted_EE->Write();
-  cout << photon_pt_denominator_fake_rate_weighted_EB->GetName() << "\t integral: " << photon_pt_denominator_fake_rate_weighted_EB->Integral() << endl;
-  cout << photon_pt_denominator_fake_rate_weighted_EE->GetName() << "\t integral: " << photon_pt_denominator_fake_rate_weighted_EE->Integral() << endl;
+  std::cout << photon_pt_denominator_fake_rate_weighted_EB->GetName() << "\t integral: " << photon_pt_denominator_fake_rate_weighted_EB->Integral() << std::endl;
+  std::cout << photon_pt_denominator_fake_rate_weighted_EE->GetName() << "\t integral: " << photon_pt_denominator_fake_rate_weighted_EE->Integral() << std::endl;
   photon_eta_denominator_fake_rate_weighted_EB->Write();
   photon_eta_denominator_fake_rate_weighted_EE->Write();
-  cout << photon_eta_denominator_fake_rate_weighted_EB->GetName() << "\t integral: " << photon_eta_denominator_fake_rate_weighted_EB->Integral() << endl;
-  cout << photon_eta_denominator_fake_rate_weighted_EE->GetName() << "\t integral: " << photon_eta_denominator_fake_rate_weighted_EE->Integral() << endl;
+  std::cout << photon_eta_denominator_fake_rate_weighted_EB->GetName() << "\t integral: " << photon_eta_denominator_fake_rate_weighted_EB->Integral() << std::endl;
+  std::cout << photon_eta_denominator_fake_rate_weighted_EE->GetName() << "\t integral: " << photon_eta_denominator_fake_rate_weighted_EE->Integral() << std::endl;
   photon_phi_denominator_fake_rate_weighted_EB->Write();
   photon_phi_denominator_fake_rate_weighted_EE->Write();
-  cout << photon_phi_denominator_fake_rate_weighted_EB->GetName() << "\t integral: " << photon_phi_denominator_fake_rate_weighted_EB->Integral() << endl;
-  cout << photon_phi_denominator_fake_rate_weighted_EE->GetName() << "\t integral: " << photon_phi_denominator_fake_rate_weighted_EE->Integral() << endl;
+  std::cout << photon_phi_denominator_fake_rate_weighted_EB->GetName() << "\t integral: " << photon_phi_denominator_fake_rate_weighted_EB->Integral() << std::endl;
+  std::cout << photon_phi_denominator_fake_rate_weighted_EE->GetName() << "\t integral: " << photon_phi_denominator_fake_rate_weighted_EE->Integral() << std::endl;
   
   // write sieie numerator histograms
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEB.begin() ; it != sIeIeNumeratorEB.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEB.begin() ; it != sIeIeNumeratorEB.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = sIeIeNumeratorEE.begin() ; it != sIeIeNumeratorEE.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEE.begin() ; it != sIeIeNumeratorEE.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
 
   // write chIso numerator histograms
-  for (vector<TH1D*>::iterator it = chIsoNumeratorEB.begin() ; it != chIsoNumeratorEB.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = chIsoNumeratorEB.begin() ; it != chIsoNumeratorEB.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = chIsoNumeratorEE.begin() ; it != chIsoNumeratorEE.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = chIsoNumeratorEE.begin() ; it != chIsoNumeratorEE.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
 
   // write denominator histograms
-  for (vector<TH1D*>::iterator it = denomPtEB.begin() ; it != denomPtEB.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = denomPtEB.begin() ; it != denomPtEB.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = denomPtEE.begin() ; it != denomPtEE.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = denomPtEE.begin() ; it != denomPtEE.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
 
   // write PV histograms
   //
   // photonIso
-  for (vector<TH1D*>::iterator it = photonIsoEB.begin() ; it != photonIsoEB.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = photonIsoEB.begin() ; it != photonIsoEB.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = photonIsoEB1.begin() ; it != photonIsoEB1.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = photonIsoEB1.begin() ; it != photonIsoEB1.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = photonIsoEB2.begin() ; it != photonIsoEB2.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = photonIsoEB2.begin() ; it != photonIsoEB2.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = photonIsoEE.begin() ; it != photonIsoEE.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = photonIsoEE.begin() ; it != photonIsoEE.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = photonIsoEE1.begin() ; it != photonIsoEE1.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = photonIsoEE1.begin() ; it != photonIsoEE1.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = photonIsoEE2.begin() ; it != photonIsoEE2.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = photonIsoEE2.begin() ; it != photonIsoEE2.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
   // corPhotonIso
-  for (vector<TH1D*>::iterator it = corPhotonIsoEB.begin() ; it != corPhotonIsoEB.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = corPhotonIsoEB.begin() ; it != corPhotonIsoEB.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = corPhotonIsoEB1.begin() ; it != corPhotonIsoEB1.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = corPhotonIsoEB1.begin() ; it != corPhotonIsoEB1.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = corPhotonIsoEB2.begin() ; it != corPhotonIsoEB2.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = corPhotonIsoEB2.begin() ; it != corPhotonIsoEB2.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = corPhotonIsoEE.begin() ; it != corPhotonIsoEE.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = corPhotonIsoEE.begin() ; it != corPhotonIsoEE.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = corPhotonIsoEE1.begin() ; it != corPhotonIsoEE1.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = corPhotonIsoEE1.begin() ; it != corPhotonIsoEE1.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (vector<TH1D*>::iterator it = corPhotonIsoEE2.begin() ; it != corPhotonIsoEE2.end(); ++it) {
-    cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << endl;
+  for (std::vector<TH1D*>::iterator it = corPhotonIsoEE2.begin() ; it != corPhotonIsoEE2.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
 
@@ -572,10 +580,10 @@ void MCFakeRateClosureTest::Loop()
     for (unsigned int j = 0; j < chIsoSidebands.size(); j++) {
       TH1D* tempHistEB = sIeIeFakeTemplatesEB.at(i).at(j);
       TH1D* tempHistEE = sIeIeFakeTemplatesEE.at(i).at(j);
-      cout << tempHistEB->GetName() << "\t integral: " << tempHistEB->Integral() << endl;
+      std::cout << tempHistEB->GetName() << "\t integral: " << tempHistEB->Integral() << std::endl;
       tempHistEB->Scale(1./tempHistEB->Integral());
       tempHistEB->Write();
-      cout << tempHistEE->GetName() << "\t integral: " << tempHistEE->Integral() << endl;
+      std::cout << tempHistEE->GetName() << "\t integral: " << tempHistEE->Integral() << std::endl;
       tempHistEE->Scale(1./tempHistEE->Integral());
       tempHistEE->Write();
     }
@@ -586,14 +594,14 @@ void MCFakeRateClosureTest::Loop()
     // EB
     for (unsigned int j = 0; j < sieie_EB_sidebands.size(); j++) {
       TH1D* tempHistEB = chIsoFakeTemplatesEB.at(i).at(j);
-      cout << tempHistEB->GetName() << "\t integral: " << tempHistEB->Integral() << endl;
+      std::cout << tempHistEB->GetName() << "\t integral: " << tempHistEB->Integral() << std::endl;
       tempHistEB->Scale(1./tempHistEB->Integral());
       tempHistEB->Write();
     }
     // EE
     for (unsigned int j = 0; j < sieie_EE_sidebands.size(); j++) {
       TH1D* tempHistEE = chIsoFakeTemplatesEE.at(i).at(j);
-      cout << tempHistEE->GetName() << "\t integral: " << tempHistEE->Integral() << endl;
+      std::cout << tempHistEE->GetName() << "\t integral: " << tempHistEE->Integral() << std::endl;
       tempHistEE->Scale(1./tempHistEE->Integral());
       tempHistEE->Write();
     }

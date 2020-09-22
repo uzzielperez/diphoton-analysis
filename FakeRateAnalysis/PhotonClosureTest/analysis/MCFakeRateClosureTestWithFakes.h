@@ -15,7 +15,7 @@
 // Header file for the classes stored in the TTree if any.
 #include "vector"
 
-class MCFakeRateClosureTestWithFakes {
+class MCFakeRateClosureTestWithFakesBase {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
@@ -979,18 +979,18 @@ public :
    Int_t           PhotonGenParent_pdgId;
    Int_t           PhotonGenParent_motherPdgId;
    Int_t           PhotonGenParent_grandmotherPdgId;
-   vector<double>  *GenMatchPt;
-   vector<double>  *GenMatchEta;
-   vector<double>  *GenMatchPhi;
-   vector<double>  *GenMatchPdgId;
-   vector<double>  *GenMatchDeltaR;
-   vector<double>  *GenMatchPtDiff;
-   vector<double>  *GenMatchNumMothers;
-   vector<double>  *GenMatchMotherPt;
-   vector<double>  *GenMatchMotherEta;
-   vector<double>  *GenMatchMotherPhi;
-   vector<double>  *GenMatchMotherStatus;
-   vector<double>  *GenMatchMotherPdgId;
+   std::vector<double>  *GenMatchPt;
+   std::vector<double>  *GenMatchEta;
+   std::vector<double>  *GenMatchPhi;
+   std::vector<double>  *GenMatchPdgId;
+   std::vector<double>  *GenMatchDeltaR;
+   std::vector<double>  *GenMatchPtDiff;
+   std::vector<double>  *GenMatchNumMothers;
+   std::vector<double>  *GenMatchMotherPt;
+   std::vector<double>  *GenMatchMotherEta;
+   std::vector<double>  *GenMatchMotherPhi;
+   std::vector<double>  *GenMatchMotherStatus;
+   std::vector<double>  *GenMatchMotherPdgId;
 
    // List of branches
    TBranch        *b_Event;   //!
@@ -1013,8 +1013,8 @@ public :
    TBranch        *b_GenMatchMotherStatus;   //!
    TBranch        *b_GenMatchMotherPdgId;   //!
 
-   MCFakeRateClosureTestWithFakes(TTree *tree=0);
-   virtual ~MCFakeRateClosureTestWithFakes();
+   MCFakeRateClosureTestWithFakesBase(TTree *tree=0);
+   virtual ~MCFakeRateClosureTestWithFakesBase();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
@@ -1027,7 +1027,7 @@ public :
 #endif
 
 #ifdef MCFakeRateClosureTestWithFakes_cxx
-MCFakeRateClosureTestWithFakes::MCFakeRateClosureTestWithFakes(TTree *tree) : fChain(0) 
+MCFakeRateClosureTestWithFakesBase::MCFakeRateClosureTestWithFakesBase(TTree *tree) : fChain(0)
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
@@ -1043,19 +1043,19 @@ MCFakeRateClosureTestWithFakes::MCFakeRateClosureTestWithFakes(TTree *tree) : fC
    Init(tree);
 }
 
-MCFakeRateClosureTestWithFakes::~MCFakeRateClosureTestWithFakes()
+MCFakeRateClosureTestWithFakesBase::~MCFakeRateClosureTestWithFakesBase()
 {
    if (!fChain) return;
    delete fChain->GetCurrentFile();
 }
 
-Int_t MCFakeRateClosureTestWithFakes::GetEntry(Long64_t entry)
+Int_t MCFakeRateClosureTestWithFakesBase::GetEntry(Long64_t entry)
 {
 // Read contents of entry.
    if (!fChain) return 0;
    return fChain->GetEntry(entry);
 }
-Long64_t MCFakeRateClosureTestWithFakes::LoadTree(Long64_t entry)
+Long64_t MCFakeRateClosureTestWithFakesBase::LoadTree(Long64_t entry)
 {
 // Set the environment to read one entry
    if (!fChain) return -5;
@@ -1068,7 +1068,7 @@ Long64_t MCFakeRateClosureTestWithFakes::LoadTree(Long64_t entry)
    return centry;
 }
 
-void MCFakeRateClosureTestWithFakes::Init(TTree *tree)
+void MCFakeRateClosureTestWithFakesBase::Init(TTree *tree)
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
@@ -1119,7 +1119,7 @@ void MCFakeRateClosureTestWithFakes::Init(TTree *tree)
    Notify();
 }
 
-Bool_t MCFakeRateClosureTestWithFakes::Notify()
+Bool_t MCFakeRateClosureTestWithFakesBase::Notify()
 {
    // The Notify() function is called when a new file is opened. This
    // can be either for a new TTree in a TChain or when when a new TTree
@@ -1130,14 +1130,14 @@ Bool_t MCFakeRateClosureTestWithFakes::Notify()
    return kTRUE;
 }
 
-void MCFakeRateClosureTestWithFakes::Show(Long64_t entry)
+void MCFakeRateClosureTestWithFakesBase::Show(Long64_t entry)
 {
 // Print contents of entry.
 // If entry is not specified, print current entry
    if (!fChain) return;
    fChain->Show(entry);
 }
-Int_t MCFakeRateClosureTestWithFakes::Cut(Long64_t entry)
+Int_t MCFakeRateClosureTestWithFakesBase::Cut(Long64_t entry)
 {
 // This function may be called from Loop.
 // returns  1 if entry is accepted.

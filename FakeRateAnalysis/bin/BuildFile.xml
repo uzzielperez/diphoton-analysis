@@ -10,5 +10,7 @@
   <bin file="compare_pv_years.cc" name="compare_pv_years.exe"/>
   <bin file="compare_denominator.cc" name="compare_denominator.exe"/>
   <bin file="compare_numerator.cc" name="compare_numerator.exe"/>
+  <bin file="photon_closure_test.cc" name="photon_closure_test.exe"/>
+  <bin file="diphoton_closure_test.cc" name="diphoton_closure_test.exe"/>
 </environment>
 <flags CXXFLAGS="-Wall -g"/>
