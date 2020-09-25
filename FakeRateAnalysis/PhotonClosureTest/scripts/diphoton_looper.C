@@ -13,11 +13,11 @@ using namespace std;
 
 void diphoton_looper(TString run, TString sample, bool do_fakes) {
   cout << "\nUsing sample: " << sample << endl;
-  
-  if (do_fakes) cout << "Running analysis class MCFakeRateClosureTestWithFakes.C" << endl;
-  else cout << "Running analysis class MCFakeRateClosureTest.C" << endl;
+
+  if (do_fakes) cout << "Running analysis class MCFakeRateClosureTestWithFakes.C for MC as truth" << endl;
+  else cout << "Running analysis class MCFakeRateClosureTest.C for MC as fakes" << endl;
   cout << endl;
-  
+
   // use stopwatch for timing
   TStopwatch sw;
   sw.Start();
@@ -27,16 +27,16 @@ void diphoton_looper(TString run, TString sample, bool do_fakes) {
   if (do_fakes) tree = "diphoton/fTreeFake";
   else tree = "diphoton/fTree";
   cout << "Using tree: " << tree << endl;
-  
+
   // ntuple path (change as needed)
   TString ntuple_path = "/store/user/abuccill/diphoton-analysis/fake_rate_closure_test";
-  
+
   // create tchain of all files to loop over
   TChain *chain = new TChain(tree);
 
-  if (run == "2016") {  
+  if (run == "2016") {
     if (sample == "all" || sample == "QCD") {
-      // chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_QCD_Pt_5to10_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root",0); 
+      // chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_QCD_Pt_5to10_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root",0);
       // chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_QCD_Pt_10to15_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root",0);
       // chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_QCD_Pt_15to30_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root",0);
       // chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root",0);
@@ -54,7 +54,7 @@ void diphoton_looper(TString run, TString sample, bool do_fakes) {
       chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_QCD_Pt_2400to3200_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root",0);
       chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_QCD_Pt_3200toInf_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root",0);
     }
-  
+
     if (sample == "all" || sample == "GJets") {
       chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_GJets_HT-40To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_merged.root",0);
       chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_GJets_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_merged.root",0);
@@ -138,11 +138,11 @@ I/200730_151230/0000/*.root");
 00730_151042/0000/*.root");
     }
   }
-  
+
   // list chain and entries
   chain->ls();
   cout << "Total number of entries: " << chain->GetEntries() << endl;
-  
+
   // create instance using our chain and loop over entries
   if (do_fakes) {
     MCFakeRateClosureTestWithFakes loop_fakes(chain);
@@ -152,11 +152,11 @@ I/200730_151230/0000/*.root");
     MCFakeRateClosureTest loop_all(chain);
     loop_all.Loop(run, sample);
   }
-  
+
   // stop stopwatch
   sw.Stop();
-  
-  // convert total time to minutes 
+
+  // convert total time to minutes
   std::cout << "RealTime : " << sw.RealTime() / 60.0 << " minutes" << std::endl;
   std::cout << "CPUTime  : " << sw.CpuTime()  / 60.0 << " minutes" << std::endl;
 }

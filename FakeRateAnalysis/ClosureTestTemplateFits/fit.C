@@ -22,10 +22,10 @@
 *
 */
 
-
-
-const int NPTBINS=9;
-const float PTBINS[NPTBINS+1] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
+// const int NPTBINS=9;
+// const float PTBINS[NPTBINS+1] = { 50, 70, 90, 110, 130, 150, 200, 250, 300, 600 };
+const int NPTBINS=6;
+const float PTBINS[NPTBINS+1] = { 50, 70, 90, 110, 130, 150, 600 };
 
 enum hist_t { Real, Fake, Truth, Numerator, Denominator };
 
@@ -37,35 +37,52 @@ const int NEEBINS=8;
 const double EEBINS[NEEBINS+1] = { 0., 0.016, 0.020, 0.024, 0.028, 0.032, 0.036, 0.040, 0.08 };
 const int EESIEIECUTBIN=5;
 
-// std::vector<Tstring> chIsoSidebandsVec;
-// chIsoSidebandsVec.push_back("chIso5To10");
-// // chIsoSidebandsVec.push_back("chIso6To11");
-// // chIsoSidebandsVec.push_back("chIso7To12");
-// // chIsoSidebandsVec.push_back("chIso8To13");
-// // chIsoSidebandsVec.push_back("chIso9To14");
-// chIsoSidebandsVec.push_back("chIso10To15");
-// chIsoSidebandsVec.push_back("chIso15To20");
 
 TFile* rootfile=0;
 
 // histograms used by the fitter
 TH1 *theData, *theBkg1, *theBkg2;
 
-
 using namespace std;
 
 TH1* GetHist(int ptbin, bool isEB, hist_t type, TString sideband="_chIso5To10")
 {
   rootfile=0;
+  TString run = "2017";
+  TString base = "/uscms_data/d3/cuperez/tribosons/FakeRate/CMSSW_10_2_18/src/";
   if(type==Real)
+  {
     // Output from RealTemplateAnalysis/analysis/MCFakeRateAnalysis.C
-    rootfile=new TFile("diphoton_fake_rate_real_templates_all_GGJets_GJets_76X_MiniAOD_histograms.root");
-  else if(type==Truth)
+    //rootfile=new TFile("diphoton_fake_rate_real_templates_all_GGJets_GJets_76X_MiniAOD_histograms.root");
+    // 2016
+    if (run=="2016") rootfile=new TFile(base + "diphoton_fake_rate_real_templates_all_GGJets_GJets_76X_nPV0-200_MiniAOD_histograms.root");
+    //2017
+    if (run=="2017") rootfile=new TFile(base + "diphoton_fake_rate_real_templates_all_GGJets_GJets_94X_nPV0-200_MiniAOD_histograms.root");
+    //2018
+    if (run=="2018") rootfile=new TFile(base + "diphoton_fake_rate_real_templates_all_GGJets_GJets_102X_nPV0-200_MiniAOD_histograms.root");
+  }
+  else if(type==Truth){
     // Output from PhotonClosure/analysis/MCFakeRateClosureTestWithFakes2.C
-    rootfile=new TFile("diphoton_fake_rate_closure_test_matching_all_samples_76X_MiniAOD_histograms.root");
+    //rootfile=new TFile("diphoton_fake_rate_closure_test_matching_all_samples_80X_MiniAOD_histograms_test.root");
+    // 2016
+    if (run=="2016") rootfile=new TFile(base +"diphoton_fake_rate_closure_test_matching_all_samples_76X_MiniAOD_histograms.root");
+    //2017
+    if (run=="2017") rootfile=new TFile(base + "diphoton_fake_rate_closure_test_matching_all_samples_94X_MiniAOD_histograms.root");
+    //2018
+    if (run=="2018") rootfile=new TFile(base + "diphoton_fake_rate_closure_test_matching_all_samples_102X_MiniAOD_histograms.root");
+  }
   else
+  {
     // Output from PhotonClosure/analysis/MCFakeRateAnalysis.C
-    rootfile=new TFile("diphoton_fake_rate_closure_test_all_samples_76X_MiniAOD_histograms.root");
+    //rootfile=new TFile("diphoton_fake_rate_closure_test_all_samples_76X_MiniAOD_histograms.root");
+    // 2016
+    if (run=="2016") rootfile=new TFile(base + "diphoton_fake_rate_closure_test_all_samples_76X_MiniAOD_histograms.root");
+    //2017
+    if (run=="2017") rootfile=new TFile(base + "diphoton_fake_rate_closure_test_all_samples_94X_MiniAOD_histograms.root");
+    //2018
+    if (run=="2018") rootfile=new TFile(base + "diphoton_fake_rate_closure_test_all_samples_102X_MiniAOD_histograms.root");
+  }
+
   assert(rootfile);
   rootfile->cd();
 
@@ -101,6 +118,7 @@ TH1* GetHist(int ptbin, bool isEB, hist_t type, TString sideband="_chIso5To10")
 void NLL(int &, double *, double &f, double *par, int)
 {
   double frac=par[0];
+  // std::cout << "frac: " << frac << std::endl;
   double norm1=theData->Integral()/theBkg1->Integral();
   double norm2=theData->Integral()/theBkg2->Integral();
 
@@ -136,7 +154,8 @@ int performFit(TH1* hData, TH1* hBkg1, TH1* hBkg2, double &frac, double &frace)
   for(int i=1; i<=theData->GetNbinsX(); i++) {
     ostringstream oss;
     oss << "BB" << i;
-    minuit.DefineParameter(i, oss.str().c_str(), 0, 0.1, -7.0, 7.0);
+    //minuit.DefineParameter(i, oss.str().c_str(), 0, 0.1, -7.0, 7.0);
+    minuit.DefineParameter(i, oss.str().c_str(), 0, 0.1, 0.0, 7.0);
   }
 
   minuit.SetFCN(NLL); // set the function
@@ -626,7 +645,6 @@ void fit(void)
   hEEFakeRate->Write();
   hEBFakeRateTruth->Write();
   hEEFakeRateTruth->Write();
-
 
   // Repeat For chIsoSidebands
   fitCHIsoSidebands();
