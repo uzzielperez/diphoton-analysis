@@ -22,10 +22,10 @@
 *
 */
 
-// const int NPTBINS=9;
-// const float PTBINS[NPTBINS+1] = { 50, 70, 90, 110, 130, 150, 200, 250, 300, 600 };
-const int NPTBINS=6;
-const float PTBINS[NPTBINS+1] = { 50, 70, 90, 110, 130, 150, 600 };
+const int NPTBINS=9;
+const float PTBINS[NPTBINS+1] = { 50, 70, 90, 110, 130, 150, 200, 250, 300, 600 };
+// const int NPTBINS=6;
+// const float PTBINS[NPTBINS+1] = { 50, 70, 90, 110, 130, 150, 600 };
 
 enum hist_t { Real, Fake, Truth, Numerator, Denominator };
 
@@ -45,10 +45,10 @@ TH1 *theData, *theBkg1, *theBkg2;
 
 using namespace std;
 
-TH1* GetHist(int ptbin, bool isEB, hist_t type, TString sideband="_chIso5To10")
+TH1* GetHist(int ptbin, bool isEB, hist_t type, TString run="2016", TString sideband="_chIso5To10")
 {
   rootfile=0;
-  TString run = "2017";
+  // TString run = "2016";
   TString base = "/uscms_data/d3/cuperez/tribosons/FakeRate/CMSSW_10_2_18/src/";
   if(type==Real)
   {
@@ -176,7 +176,7 @@ int performFit(TH1* hData, TH1* hBkg1, TH1* hBkg2, double &frac, double &frace)
   return err;
 }
 
-void fitCHIsoSidebands(){
+void fitCHIsoSidebands(TString run="2016"){
   // To supress canvas from popping up. Speeds up plots production
   gROOT->SetBatch();
   gStyle->SetOptStat(0);
@@ -236,10 +236,10 @@ for (unsigned int i = 0; i < chIsoSidebands.size(); i++)
 
           // std::cout << "POSTFIX" << postFix << std::endl;
 
-          TH1* hReal=GetHist(ptbin, isEB, Real);
-          TH1* hFake= isTruth ? GetHist(ptbin, isEB, Truth) : GetHist(ptbin, isEB, Fake, postFix);
-          TH1* hNum=GetHist(ptbin, isEB, Numerator);
-          TH1* hDem=GetHist(ptbin, isEB, Denominator);
+          TH1* hReal=GetHist(ptbin, isEB, Real, run);
+          TH1* hFake= isTruth ? GetHist(ptbin, isEB, Truth, run) : GetHist(ptbin, isEB, Fake, run, postFix);
+          TH1* hNum=GetHist(ptbin, isEB, Numerator, run);
+          TH1* hDem=GetHist(ptbin, isEB, Denominator, run);
 
           double frac, frace;
           int err=performFit(hNum, hReal, hFake, frac, frace);
@@ -362,13 +362,13 @@ for (unsigned int i = 0; i < chIsoSidebands.size(); i++)
   t_labelEE->SetTextFont(42);
 
   // Save Canvas for EB and EE
-  cEBFakeRateComp->SaveAs("fake_rate_CompTruth_chIsoEB.pdf");
-  cEEFakeRateComp->SaveAs("fake_rate_CompTruth_chIsoEE.pdf");
+  cEBFakeRateComp->SaveAs("fake_rate_CompTruth_chIsoEB"+run+".pdf");
+  cEEFakeRateComp->SaveAs("fake_rate_CompTruth_chIsoEE"+run+".pdf");
 
   return;
 }
 
-void fit(void)
+void fit(TString run="2016")
 {
   // To supress canvas from popping up. Speeds up plots production
   gROOT->SetBatch();
@@ -414,10 +414,10 @@ void fit(void)
   TCanvas *c=new TCanvas("canvas", "canvas", 1600, 500);
   c->Divide(2,1);
 
-	TH1* hReal=GetHist(ptbin, isEB, Real);
-	TH1* hFake= isTruth ? GetHist(ptbin, isEB, Truth) : GetHist(ptbin, isEB, Fake, "_chIso5To10");
-	TH1* hNum=GetHist(ptbin, isEB, Numerator);
-	TH1* hDem=GetHist(ptbin, isEB, Denominator);
+	TH1* hReal=GetHist(ptbin, isEB, Real, run);
+	TH1* hFake= isTruth ? GetHist(ptbin, isEB, Truth, run) : GetHist(ptbin, isEB, Fake,  run, "_chIso5To10");
+	TH1* hNum=GetHist(ptbin, isEB, Numerator, run);
+	TH1* hDem=GetHist(ptbin, isEB, Denominator, run);
 
 	double frac, frace;
 	int err=performFit(hNum, hReal, hFake, frac, frace);
@@ -474,7 +474,7 @@ void fit(void)
 	hs->GetXaxis()->SetTitle("#sigma_{i#etai#eta}");
 
   ostringstream ssCanvas;
-  ssCanvas <<"fakeRateTemplates_pT_"<< PTBINS[ptbin] << "To_" << PTBINS[ptbin+1] << "_" << (isEB ? "EB" : "EE") << "_" << (isTruth ? "Truth" : "Fake") << "_chIso5To10.pdf";
+  ssCanvas <<"fakeRateTemplates_pT_"<< PTBINS[ptbin] << "To_" << PTBINS[ptbin+1] << "_" << (isEB ? "EB" : "EE") << "_" << (isTruth ? "Truth" : "Fake") << "_chIso5To10" << run << ".pdf";
   c->SaveAs(ssCanvas.str().c_str());
 
   // Fake Rate Part
@@ -628,26 +628,26 @@ void fit(void)
   hEBRatio->SetMaximum(2.0);  hEERatio->SetMaximum(2.0);
 
   // Fake Rate
-  c1->SaveAs("fake_rate_EBRatio.pdf");
-  c2->SaveAs("fake_rate_EERatio.pdf");
-  cEBFakeRate->SaveAs("fake_rate_FakeTemplatesEB.pdf");
-  cEEFakeRate->SaveAs("fake_rate_FakeTemplatesEE.pdf");
-  cEBFakeRateComp->SaveAs("fake_rate_CompTruth_FakeTemplatesEB.pdf");
-  cEEFakeRateComp->SaveAs("fake_rate_CompTruth_FakeTemplatesEE.pdf");
+  c1->SaveAs("fake_rate_EBRatio" + run + ".pdf");
+  c2->SaveAs("fake_rate_EERatio" + run + ".pdf");
+  cEBFakeRate->SaveAs("fake_rate_FakeTemplatesEB" + run + ".pdf");
+  cEEFakeRate->SaveAs("fake_rate_FakeTemplatesEE" + run + ".pdf");
+  cEBFakeRateComp->SaveAs("fake_rate_CompTruth_FakeTemplatesEB" + run + ".pdf");
+  cEEFakeRateComp->SaveAs("fake_rate_CompTruth_FakeTemplatesEE" + run + ".pdf");
 
-  cEB->SaveAs("fake_rate_cEB.pdf");
-  cEE->SaveAs("fake_rate_cEE.pdf");
-  cEBTruth->SaveAs("fake_rate_cEBTruth.pdf");
-  cEETruth->SaveAs("fake_rate_cEETruth.pdf");
+  cEB->SaveAs("fake_rate_cEB" + run + ".pdf");
+  cEE->SaveAs("fake_rate_cEE" + run + ".pdf");
+  cEBTruth->SaveAs("fake_rate_cEBTruth" + run + ".pdf");
+  cEETruth->SaveAs("fake_rate_cEETruth" + run + ".pdf");
 
-  TFile file_out("fake_rate_sieie_template_fits.root", "RECREATE");
+  TFile file_out("fake_rate_sieie_template_fits"+run+".root", "RECREATE");
   hEBFakeRate->Write();
   hEEFakeRate->Write();
   hEBFakeRateTruth->Write();
   hEEFakeRateTruth->Write();
 
   // Repeat For chIsoSidebands
-  fitCHIsoSidebands();
+  fitCHIsoSidebands(run);
 
   return;
 }
