@@ -29,12 +29,13 @@ void diphoton_looper(TString run, TString sample, bool do_fakes) {
   cout << "Using tree: " << tree << endl;
   
   // ntuple path (change as needed)
-  TString ntuple_path = "/store/user/abuccill/diphoton-analysis/fake_rate_closure_test";
+  TString ntuple_path("root://cmseos.fnal.gov//store/user/cawest/");
   
   // create tchain of all files to loop over
   TChain *chain = new TChain(tree);
 
-  if (run == "2016") {  
+  if (run == "2016") {
+    ntuple_path = "/store/user/abuccill/diphoton-analysis/fake_rate_closure_test";
     if (sample == "all" || sample == "QCD") {
       // chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_QCD_Pt_5to10_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root",0); 
       // chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_QCD_Pt_10to15_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_merged.root",0);
