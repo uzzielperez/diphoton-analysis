@@ -76,66 +76,40 @@ void diphoton_looper(TString run, TString sample, bool do_fakes) {
   }
   if (run == "2017") {
     if (sample == "all" || sample == "GJets") {
-      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8__Fall17-v2__MINIAODSIM_resub/200904_\
-235904/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8__Fall17-v1__MINIAODSIM_resub/20090\
-5_000007/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8__Fall17-v1__MINIAODSIM_resub/20090\
-5_000330/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8__Fall17-v1__MINIAODSIM_resub/20090\
-5_000726/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8__Fall17-v2__MINIAODSIM_resub/20090\
-5_000637/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8__Fall17-v2__MINIAODSIM_resub/200904_235904/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8__Fall17-v1__MINIAODSIM_resub/200905_000007/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8__Fall17-v1__MINIAODSIM_resub/200905_000330/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8__Fall17-v1__MINIAODSIM_resub/200905_000726/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8__Fall17-v2__MINIAODSIM_resub/200905_000637/0000/*.root");
     }
     if (sample == "all" || sample == "GGJets") {
-      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM_resub/200904_23343\
-9/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM_resub/200904_232\
-918/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM_resub/200904_2\
-33026/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM_resub/200904\
-_232739/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/crab_GGJets_M-2000To4000_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v2__MINIAODSIM_resub/200904\
-_233559/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/crab_GGJets_M-4000To6000_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v2__MINIAODSIM_resub/200904\
-_233641/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM_resub/200904\
-_233321/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM_resub/2009\
-04_233735/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM_resub/200904_233439/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM_resub/200904_232918/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM_resub/200904_233026/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM_resub/200904_232739/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/crab_GGJets_M-2000To4000_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v2__MINIAODSIM_resub/200904_233559/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/crab_GGJets_M-4000To6000_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v2__MINIAODSIM_resub/200904_233641/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM_resub/200904_233321/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM_resub/200904_233735/0000/*.root");
     }
   }
   if (run == "2018") {
     if (sample == "all" || sample == "GJets") {
-      chain->Add(ntuple_path+"diphoton_closure/11c96ff/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIAutumn18MiniAOD-102X_upgrade20\
-18_realistic/200821_031620/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/11c96ff/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIAutumn18MiniAOD-4cores5k_102\
-X_upgrade2018/200821_021447/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/11c96ff/GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIAutumn18MiniAOD-102X_upgrade\
-2018_realisti/200821_023518/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/11c96ff/GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIAutumn18MiniAOD-102X_upgrade\
-2018_realisti/200821_025548/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/11c96ff/GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIAutumn18MiniAOD-102X_upgrade\
-2018_realisti/200821_033205/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/11c96ff/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic/200821_031620/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/11c96ff/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIAutumn18MiniAOD-4cores5k_102X_upgrade2018/200821_021447/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/11c96ff/GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIAutumn18MiniAOD-102X_upgrade2018_realisti/200821_023518/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/11c96ff/GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIAutumn18MiniAOD-102X_upgrade2018_realisti/200821_025548/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/11c96ff/GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIAutumn18MiniAOD-102X_upgrade2018_realisti/200821_033205/0000/*.root");
     }
     if (sample == "all" || sample == "GGJets") {
-      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINI/\
-200730_042411/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__M\
-I/200730_151230/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/crab_GGJets_M-2000To4000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN\
-/200730_151014/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN\
-/200730_151138/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/crab_GGJets_M-4000To6000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN\
-/200730_151111/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN\
-/200730_150946/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINIAO/20\
-0730_151203/0000/*.root");
-      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINIA/2\
-00730_151042/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINI/200730_042411/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MI/200730_151230/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/crab_GGJets_M-2000To4000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/200730_151014/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/200730_151138/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/crab_GGJets_M-4000To6000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/200730_151111/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MIN/200730_150946/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINIAO/200730_151203/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINIA/200730_151042/0000/*.root");
     }
   }
   
