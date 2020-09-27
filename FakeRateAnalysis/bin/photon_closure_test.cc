@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
       return -1;
     }
   }
-  bool do_fakes = fakes.compare("fakes");
+  bool do_fakes = fakes.compare("fakes") == 0;
 
   diphoton_looper(run, samples, do_fakes);
 
