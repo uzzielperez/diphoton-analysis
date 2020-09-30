@@ -15,73 +15,9 @@ const double etaMinEndcap = 1.566;
 const double etaMaxEndcap = 2.5;
 const double minvMin = 500;
 
-void fakePrediction::fakeRateInit(std::string fakeRateType)
-{
-  const std::string iso("chIso5To10");
-
-  m_fakeRateType = fakeRateType;
-
-  std::vector<std::string> datasets = {"jetht", "doublemuon"};
-  std::vector<std::string> regions = {"EB", "EE"};
-  std::vector<std::string> pvCuts = {"0-22", "23-27"};
-  if(m_year==2016) pvCuts.push_back("28-200");
-  else {
-    pvCuts.push_back("28-32");
-    pvCuts.push_back("33-37");
-    pvCuts.push_back("38-200");
-  }
-
-  for(auto region : regions) {
-    for(auto dataset : datasets) {
-      for(auto pvCut : pvCuts) {
-	TFile *f = TFile::Open(Form("../FakeRateAnalysis/fakeRatePlots_%s_%d_nPV%s.root", dataset.c_str(), m_year, pvCut.c_str()));
-	const TString graphName(Form("fakeRate%s_%s", region.c_str(), iso.c_str()));
-	TGraphAsymmErrors *gr = dynamic_cast<TGraphAsymmErrors*>(f->Get(graphName));
-	gr->Eval(1000.0);
-	std::string keyname(region + "_" + dataset + "_" + pvCut);
-	m_fakeRates[keyname] = gr;
-      }
-    }
-  }
-}
-
-// type:
-// 0 = average of doublemuon and jetht
-// 1 = doublemuon
-// 2 = jetht
-double fakePrediction::getFakeRate(double pt, int region)
-{
-  std::vector<std::string> regions = {"EB", "EE"};
-  std::string pvCut = "";
-  if(nPV >= 0 && nPV <= 22) pvCut = "0-22";
-  else if(nPV >= 23 && nPV <= 27) pvCut = "23-27";
-  else if(nPV >= 28 && nPV <=200) {
-    if(m_year == 2016) {
-      pvCut = "28-200";
-    }
-    else {
-      if(nPV >= 28 && nPV <= 32) pvCut = "28-32";
-      else if(nPV >= 33 && nPV <= 37) pvCut = "33-37";
-      else if(nPV >= 38 && nPV <= 200) pvCut = "38-200";
-    }
-  }
-  else std::cout << "Anomalous nPV: " << nPV << std::endl;
-
-  std::string keyname_doublemuon(regions[region] + "_doublemuon_" + pvCut);
-  std::string keyname_jetht(regions[region] + "_jetht_" + pvCut);
-
-  if(m_fakeRateType == "average") return 0.5*(m_fakeRates[keyname_doublemuon]->Eval(pt)+m_fakeRates[keyname_jetht]->Eval(pt));
-  else if(m_fakeRateType == "doublemuon") return m_fakeRates[keyname_doublemuon]->Eval(pt);
-  else if(m_fakeRateType == "jetht") return m_fakeRates[keyname_jetht]->Eval(pt);
-  else std::cout << "Fake rate type " << m_fakeRateType << "not supported." << std::endl;
-
-  return 0;
-}
-
 void fakePrediction::Loop(int year, const std::string &dataset)
 {
-  m_year = year;
-  fakeRateInit(dataset);
+  fakeRates fakeRate(dataset, year);
 
   std::map<int, double> ptCuts;
   ptCuts[2016] = 125.;
@@ -182,7 +118,7 @@ void fakePrediction::Loop(int year, const std::string &dataset)
 	  && TFPhoton1_r9_5x5 > 0.8 && TFPhoton2_r9_5x5 > 0.8;
 	if(pass && TFPhoton1_pt > ptMin && TFPhoton2_pt > ptMin && TFDiphoton_Minv > minvMin) {
 	  if(isBarrelBarrel(TFPhoton1_eta, TFPhoton2_eta)) {
-	    double rate = getFakeRate(TFPhoton2_pt, EB);
+	    double rate = fakeRate.getFakeRate(TFPhoton2_pt, EB, nPV);
 	    TF[BB]->Fill(TFDiphoton_Minv, weight*rate);
 	    qt[BB]->Fill(TFDiphoton_qt, weight*rate);
 	    absDeltaPhi[BB]->Fill(abs(TFDiphoton_deltaPhi), weight*rate);
@@ -197,7 +133,7 @@ void fakePrediction::Loop(int year, const std::string &dataset)
 	  }
 	  else if (isBarrelEndcap(TFPhoton1_eta, TFPhoton2_eta)) {
 	    int region = TFPhoton2_isEB ? EB : EE;
-	    double rate = getFakeRate(TFPhoton2_pt, region);
+	    double rate = fakeRate.getFakeRate(TFPhoton2_pt, region, nPV);
 	    TF[BE]->Fill(TFDiphoton_Minv, weight*rate);
 	    qt[BE]->Fill(TFDiphoton_qt, weight*rate);
 	    absDeltaPhi[BE]->Fill(abs(TFDiphoton_deltaPhi), weight*rate);
@@ -218,7 +154,7 @@ void fakePrediction::Loop(int year, const std::string &dataset)
 	  && FTPhoton1_r9_5x5 > 0.8 && FTPhoton2_r9_5x5 > 0.8;
 	if(pass && FTPhoton1_pt > ptMin && FTPhoton2_pt > ptMin && FTDiphoton_Minv > minvMin) {
 	  if(isBarrelBarrel(FTPhoton1_eta, FTPhoton2_eta)) {
-	    double rate = getFakeRate(FTPhoton1_pt, EB);
+	    double rate = fakeRate.getFakeRate(FTPhoton1_pt, EB, nPV);
 	    FT[BB]->Fill(FTDiphoton_Minv, weight*rate);
 	    qt[BB]->Fill(FTDiphoton_qt, weight*rate);
 	    absDeltaPhi[BB]->Fill(abs(FTDiphoton_deltaPhi), weight*rate);
@@ -233,7 +169,7 @@ void fakePrediction::Loop(int year, const std::string &dataset)
 	  }
 	  else if (isBarrelEndcap(FTPhoton1_eta, FTPhoton2_eta)) {
 	    int region = FTPhoton1_isEB ? EB : EE;
-	    double rate = getFakeRate(FTPhoton1_pt, region);
+	    double rate = fakeRate.getFakeRate(FTPhoton1_pt, region, nPV);
 	    FT[BE]->Fill(FTDiphoton_Minv, weight*rate);
 	    qt[BE]->Fill(FTDiphoton_qt, weight*rate);
 	    absDeltaPhi[BE]->Fill(abs(FTDiphoton_deltaPhi), weight*rate);
@@ -255,7 +191,7 @@ void fakePrediction::Loop(int year, const std::string &dataset)
 	  && FFPhoton1_r9_5x5 > 0.8 && FFPhoton2_r9_5x5 > 0.8;
 	if(pass && FFPhoton1_pt > ptMin && FFPhoton2_pt > ptMin && FFDiphoton_Minv > minvMin) {
 	  if(isBarrelBarrel(FFPhoton1_eta, FFPhoton2_eta)) {
-	    double rate = getFakeRate(FFPhoton1_pt, EB)*getFakeRate(FFPhoton2_pt, EB);
+	    double rate = fakeRate.getFakeRate(FFPhoton1_pt, EB, nPV)*fakeRate.getFakeRate(FFPhoton2_pt, EB, nPV);
 	    FF[BB]->Fill(FFDiphoton_Minv, weight*rate);
 	    qt[BB]->Fill(FFDiphoton_qt, weight*rate);
 	    absDeltaPhi[BB]->Fill(abs(FFDiphoton_deltaPhi), weight*rate);
@@ -271,7 +207,7 @@ void fakePrediction::Loop(int year, const std::string &dataset)
 	  else if (isBarrelEndcap(FFPhoton1_eta, FFPhoton2_eta)) {
 	    int region1 = FFPhoton1_isEB ? EB : EE;
 	    int region2 = FFPhoton2_isEB ? EB : EE;
-	    double rate = getFakeRate(FFPhoton1_pt, region1)*getFakeRate(FFPhoton2_pt, region2);
+	    double rate = fakeRate.getFakeRate(FFPhoton1_pt, region1, nPV)*fakeRate.getFakeRate(FFPhoton2_pt, region2, nPV);
 	    FF[BE]->Fill(FFDiphoton_Minv, weight*rate);
 	    qt[BE]->Fill(FFDiphoton_qt, weight*rate);
 	    absDeltaPhi[BE]->Fill(abs(FFDiphoton_deltaPhi), weight*rate);

@@ -4,6 +4,8 @@
 // needed to get default implementations from base class
 #define ntupleAnalyzerBase_cxx
 
+#include "diphoton-analysis/Tools/interface/fakeRates.hh"
+
 #include "ntupleAnalyzerBase.h"
 // only for use with legacy ntuples
 //#include "ntupleAnalyzerBase2016.h"
@@ -26,12 +28,8 @@ class fakePrediction : public ntupleAnalyzerBase {
   void Loop(int year, const std::string&);
   void setIsMC(bool mc) { isMC = mc; };
   bool isMC;
-  void fakeRateInit(std::string fakeRateType);
-  double getFakeRate(double pt, int region);
  private:
-  std::map<std::string, TGraphAsymmErrors*> m_fakeRates;
-  std::string m_fakeRateType;
-  int m_year;
+  std::map<int, fakeRates> m_fakeRates;
 };
 
 #endif
