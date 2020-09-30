@@ -6,9 +6,10 @@ int main(int argc, char *argv[])
 {
   int data_year, nPVLow, nPVHigh;
   std::string samples;
+  bool isClosureTest = false;
 
-  if(argc!=5) {
-    std::cout << "Syntax: real_templates.exe [2015/2016/2017/2018] [DiPhotonJets/GGJets/GJets/all] [PV_low] [PV_high]" << std::endl;
+  if(argc!=6) {
+    std::cout << "Syntax: real_templates.exe [2015/2016/2017/2018] [DiPhotonJets/GGJets/GJets/all] [PV_low] [PV_high] [isClosureTest(true/false)]" << std::endl;
     return -1;
   }
   else {
@@ -25,9 +26,15 @@ int main(int argc, char *argv[])
     }
     nPVLow = std::atoi(argv[3]);
     nPVHigh = std::atoi(argv[4]);
+    isClosureTest = std::atoi(argv[5]);
+    if (isClosureTest != true and isClosureTest != false){
+      std::cout << "Only 'true' or 'false' allowed for isClosureTest boolean value.";
+      return -1;
+    }
+
   }
 
-  diphoton_looper(data_year, samples, nPVLow, nPVHigh);
+  diphoton_looper(data_year, samples, nPVLow, nPVHigh, isClosureTest);
 
   return 0;
 }

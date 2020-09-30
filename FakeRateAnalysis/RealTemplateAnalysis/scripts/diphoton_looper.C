@@ -7,9 +7,9 @@
 #include <map>
 #include <string>
 
-void diphoton_looper(int year, const std::string & sample, int nPVLow, int nPVHigh) {
+void diphoton_looper(int year, const std::string & sample, int nPVLow, int nPVHigh, bool isClosureTest=false) {
   TString old_ntuple_path =  "root://cmseos.fnal.gov//store/user/abuccill/diphoton-analysis/fake_rate_real_templates";
-  
+
   // use stopwatch to time
   TStopwatch sw;
   sw.Start();
@@ -19,7 +19,7 @@ void diphoton_looper(int year, const std::string & sample, int nPVLow, int nPVHi
 
   // create tchain of all files to loop over
   TChain *chain = new TChain("diphoton/fTree");
-  
+
   // wildcard not supported when using xrootd
   // added ",0" to print correct number of entries, not entries=1234567890
   if (sample == "all" || sample == "GGJets") {
@@ -33,7 +33,7 @@ void diphoton_looper(int year, const std::string & sample, int nPVLow, int nPVHi
   if (year==2016 && sample == "DiPhotonJets") {
     chain->Add(old_ntuple_path+"/diphoton_fake_rate_real_templates_DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8_76X_MiniAOD_merged.root",0);
   }
-  
+
   // list chain and entries
   chain->ls();
   std::cout << "Total number of entries: " << chain->GetEntries() << std::endl;

@@ -154,7 +154,7 @@ def LoopOverPtbinsPlots(isEB):
         postFix = ("endcap", "barrel")[isEB]
         t_label = TLatex()
         t_label.SetTextAlign(12)
-        t_label.DrawLatexNDC(0.60,0.50,"ECAL %s"%(postFix));
+        t_label.DrawLatexNDC(0.60,0.50,"ECAL %s %s"%(postFix, era));
         # t_label.DrawLatexNDC(0.25,0.70, "#sigma_{i#etai#eta} templates");
         t_label.DrawLatexNDC(0.60,0.45, "pT "+str(PTBINS[ptbin]) + "-" + str(PTBINS[ptbin+1])+ " GeV");
         t_label.SetTextFont(42);
