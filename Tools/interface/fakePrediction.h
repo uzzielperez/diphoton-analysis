@@ -4,7 +4,7 @@
 // needed to get default implementations from base class
 #define ntupleAnalyzerBase_cxx
 
-#include "diphoton-analysis/Tools/interface/fakeRates.h"
+#include "diphoton-analysis/Tools/interface/fakeRates.hh"
 
 #include "ntupleAnalyzerBase.h"
 // only for use with legacy ntuples
