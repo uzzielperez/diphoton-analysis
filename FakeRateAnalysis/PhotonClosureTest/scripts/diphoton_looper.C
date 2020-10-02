@@ -76,6 +76,28 @@ void diphoton_looper(TString run, TString sample, bool do_fakes) {
     }
   }
   if (run == "2017") {
+    if (sample == "all" || sample == "QCD") {
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_50to80_TuneCP5_13TeV_pythia8/crab_QCD_Pt_50to80_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM/201002_034131/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_50to80_TuneCP5_13TeV_pythia8/crab_QCD_Pt_50to80_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14_ext1-v2__MINIAODSIM/201002_034115/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_80to120_TuneCP5_13TeV_pythia8/crab_QCD_Pt_80to120_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14_ext1-v2__MINIAODSIM/201002_034149/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_170to300_TuneCP5_13TeV_pythia8/crab_QCD_Pt_170to300_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM/201002_034256/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_170to300_TuneCP5_13TeV_pythia8/crab_QCD_Pt_170to300_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14_ext1-v2__MINIAODSIM/201002_034241/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_300to470_TuneCP5_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM/201002_034332/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_300to470_TuneCP5_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14_ext1-v3__MINIAODSIM/201002_034315/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_470to600_TuneCP5_13TeV_pythia8/crab_QCD_Pt_470to600_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM/201002_034406/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_470to600_TuneCP5_13TeV_pythia8/crab_QCD_Pt_470to600_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14_ext1-v3__MINIAODSIM/201002_034350/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_600to800_TuneCP5_13TeV_pythia8/crab_QCD_Pt_600to800_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM/201002_034443/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_600to800_TuneCP5_13TeV_pythia8/crab_QCD_Pt_600to800_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14_ext1-v2__MINIAODSIM/201002_034426/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_800to1000_TuneCP5_13TeV_pythia8/crab_QCD_Pt_800to1000_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM/201002_034517/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_800to1000_TuneCP5_13TeV_pythia8/crab_QCD_Pt_800to1000_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14_ext1-v2__MINIAODSIM/201002_034501/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_1000to1400_TuneCP5_13TeV_pythia8/crab_QCD_Pt_1000to1400_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14_ext1-v2__MINIAODSIM/201002_034535/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_1400to1800_TuneCP5_13TeV_pythia8/crab_QCD_Pt_1400to1800_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM/201002_034609/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/3104b1c/QCD_Pt_1400to1800_TuneCP5_13TeV_pythia8/crab_QCD_Pt_1400to1800_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14_ext1-v3__MINIAODSIM/201002_033825/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_1800to2400_TuneCP5_13TeV_pythia8/crab_QCD_Pt_1800to2400_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM/201002_034626/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8/crab_QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM/201002_034642/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_3200toInf_TuneCP5_13TeV_pythia8/crab_QCD_Pt_3200toInf_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM/201002_034717/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_3200toInf_TuneCP5_13TeV_pythia8/crab_QCD_Pt_3200toInf_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14_ext1-v1__MINIAODSIM/201002_034700/0000/*.root");
+    }
     if (sample == "all" || sample == "GJets") {
       chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8__Fall17-v2__MINIAODSIM_resub/200904_235904/0000/*.root");
       chain->Add(ntuple_path+"diphoton_closure/2c8bbea/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8__Fall17-v1__MINIAODSIM_resub/200905_000007/0000/*.root");
@@ -95,6 +117,24 @@ void diphoton_looper(TString run, TString sample, bool do_fakes) {
     }
   }
   if (run == "2018") {
+    if (sample == "all" || sample == "QCD") {
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_50to80_TuneCP5_13TeV_pythia8/crab_QCD_Pt_50to80_TuneCP5_13TeV_pythia8__Autumn18-v1__MINIAODSIM/201002_034749/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_80to120_TuneCP5_13TeV_pythia8/crab_QCD_Pt_80to120_TuneCP5_13TeV_pythia8__Autumn18-v1__MINIAODSIM/201002_034807/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_120to170_TuneCP5_13TeV_pythia8/crab_QCD_Pt_120to170_TuneCP5_13TeV_pythia8__Autumn18-v1__MINIAODSIM/201002_034826/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_170to300_TuneCP5_13TeV_pythia8/crab_QCD_Pt_170to300_TuneCP5_13TeV_pythia8__Autumn18-v1__MINIAODSIM/201002_034843/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_300to470_TuneCP5_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCP5_13TeV_pythia8__Autumn18-v1__MINIAODSIM/201002_034900/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_470to600_TuneCP5_13TeV_pythia8/crab_QCD_Pt_470to600_TuneCP5_13TeV_pythia8__Autumn18_ext1-v2__MINIAODSIM/201002_034919/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_600to800_TuneCP5_13TeV_pythia8/crab_QCD_Pt_600to800_TuneCP5_13TeV_pythia8__Autumn18-v1__MINIAODSIM/201002_034951/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_800to1000_TuneCP5_13TeV_pythia8/crab_QCD_Pt_800to1000_TuneCP5_13TeV_pythia8__Autumn18_ext1-v2__MINIAODSIM/201002_035008/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_1000to1400_TuneCP5_13TeV_pythia8/crab_QCD_Pt_1000to1400_TuneCP5_13TeV_pythia8__Autumn18-v1__MINIAODSIM/201002_035026/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_1400to1800_TuneCP5_13TeV_pythia8/crab_QCD_Pt_1400to1800_TuneCP5_13TeV_pythia8__Autumn18_ext1-v2__MINIAODSIM/201002_035043/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_1800to2400_TuneCP5_13TeV_pythia8/crab_QCD_Pt_1800to2400_TuneCP5_13TeV_pythia8__Autumn18-v1__MINIAODSIM/201002_035134/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_1800to2400_TuneCP5_13TeV_pythia8/crab_QCD_Pt_1800to2400_TuneCP5_13TeV_pythia8__Autumn18_ext1-v2__MINIAODSIM/201002_035116/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8/crab_QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8__Autumn18-v1__MINIAODSIM/201002_035207/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8/crab_QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8__Autumn18_ext1-v2__MINIAODSIM/201002_035151/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_3200toInf_TuneCP5_13TeV_pythia8/crab_QCD_Pt_3200toInf_TuneCP5_13TeV_pythia8__Autumn18-v1__MINIAODSIM/201002_035243/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_3200toInf_TuneCP5_13TeV_pythia8/crab_QCD_Pt_3200toInf_TuneCP5_13TeV_pythia8__Autumn18_ext2-v2__MINIAODSIM/201002_035226/0000/*.root");
+    }
     if (sample == "all" || sample == "GJets") {
       chain->Add(ntuple_path+"diphoton_closure/11c96ff/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic/200821_031620/0000/*.root");
       chain->Add(ntuple_path+"diphoton_closure/11c96ff/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIAutumn18MiniAOD-4cores5k_102X_upgrade2018/200821_021447/0000/*.root");
