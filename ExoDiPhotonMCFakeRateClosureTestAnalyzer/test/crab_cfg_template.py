@@ -14,6 +14,8 @@ user = os.environ['USER']
 taskname = dataset[1:].replace('/','__').replace('RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2','MiniAODv2').replace('TuneCUETP8M1_13TeV-madgraphMLM-pythia8','13TeV-MG-PY8')
 taskname = taskname.replace('RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2','MiniAODv2')
 taskname = taskname.replace('RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016','80XMiniAODv1')
+taskname = taskname.replace('RunIIFall17MiniAODv2-PU2017_12Apr2018','Fall17')
+taskname = taskname.replace('RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15', 'Autumn18')
 taskname = taskname.replace(':','___')
 if(len(taskname)>100): taskname = taskname[0:99]
 
@@ -33,6 +35,7 @@ config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'diphoton-analysis/ExoDiPhotonMCFakeRateClosureTestAnalyzer/test/diphoton_mcFakeRateClosureTest_cfg.py'
 config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_' + datasetID + '.root']
+config.JobType.allowUndistributedCMSSW = True
 
 config.section_("Data")
 config.Data.inputDataset = dataset
