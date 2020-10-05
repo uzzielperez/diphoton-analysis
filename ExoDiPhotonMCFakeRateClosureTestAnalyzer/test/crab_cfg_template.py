@@ -14,9 +14,8 @@ user = os.environ['USER']
 taskname = dataset[1:].replace('/','__').replace('RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2','MiniAODv2').replace('TuneCUETP8M1_13TeV-madgraphMLM-pythia8','13TeV-MG-PY8')
 taskname = taskname.replace('RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2','MiniAODv2')
 taskname = taskname.replace('RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016','80XMiniAODv1')
+taskname = taskname.replace('RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3', 'Summer16MiniAODv3')
 taskname = taskname.replace('RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14','Fall17')
-
-
 taskname = taskname.replace('RunIIFall17MiniAODv2-PU2017_12Apr2018','Fall17')
 taskname = taskname.replace('RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15', 'Autumn18')
 taskname = taskname.replace(':','___')
@@ -29,7 +28,7 @@ from WMCore.Configuration import Configuration
 config = Configuration()
 
 config.section_("General")
-config.General.requestName = taskname + '_resub'
+config.General.requestName = taskname
 config.General.workArea = 'out_crab_closure'
 config.General.transferOutputs = True
 config.General.transferLogs = True
