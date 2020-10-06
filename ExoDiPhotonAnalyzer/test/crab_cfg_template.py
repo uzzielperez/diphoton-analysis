@@ -74,7 +74,7 @@ elif "Run2015" in taskname:
     config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/Reprocessing/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver_v2.txt'
 else:
     config.Data.splitting = 'FileBased'
-    config.Data.unitsPerJob = 5
+    config.Data.unitsPerJob = 2
 
 config.section_("Site")
 config.Site.storageSite = 'T3_US_FNALLPC'

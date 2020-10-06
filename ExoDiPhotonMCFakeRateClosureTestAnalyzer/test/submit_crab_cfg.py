@@ -14,12 +14,15 @@ submit_utils = importlib.import_module("diphoton-analysis.CommonClasses.submit_u
 do_2015_QCD = False
 do_2015_GJets = False
 do_2015_GGJets = False
+do_2016_QCD = False
 do_2016_GJets = False
 do_2016_GGJets = False
+do_2017_QCD = False
 do_2017_GJets = False
 do_2017_GGJets = False
+do_2018_QCD = False
 do_2018_GJets = False
-do_2018_GGJets = True
+do_2018_GGJets = False
 
 DATASETS = [[]]
 # each entry contains a list of datasets, including extensions
@@ -38,14 +41,20 @@ if do_2016_GGJets:
   DATASETS.extend(submit_utils.get_dataset_list('2016_GGJets'))
 if do_2016_GJets:
   DATASETS.extend(submit_utils.get_dataset_list('2016_GJets'))
+if do_2016_QCD:
+  DATASETS.extend(submit_utils.get_dataset_list('2016_QCD'))
 if do_2017_GGJets:
   DATASETS.extend(submit_utils.get_dataset_list('2017_GGJets'))
 if do_2017_GJets:
   DATASETS.extend(submit_utils.get_dataset_list('2017_GJets'))
+if do_2017_QCD:
+  DATASETS.extend(submit_utils.get_dataset_list('2017_QCD'))
 if do_2018_GGJets:
   DATASETS.extend(submit_utils.get_dataset_list('2018_GGJets'))
 if do_2018_GJets:
   DATASETS.extend(submit_utils.get_dataset_list('2018_GJets'))
+if do_2018_QCD:
+  DATASETS.extend(submit_utils.get_dataset_list('2018_QCD'))
 
 for ilist in DATASETS:
   nevents = 0
@@ -70,6 +79,6 @@ for ilist in DATASETS:
     print("Wrote crab configuration file " + outputfile)
 
     cmd = "crab submit -c " + outputfile
-#    os.system(cmd)
+    os.system(cmd)
     print "Submitted ", ids
 

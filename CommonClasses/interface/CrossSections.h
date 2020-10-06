@@ -120,6 +120,22 @@ namespace ExoDiPhotons {
     if(sample.Contains("QCD_Pt_1800to2400_TuneCUETP8M1")) xsec = 0.114943;
     if(sample.Contains("QCD_Pt_2400to3200_TuneCUETP8M1")) xsec = 0.00682981;
     if(sample.Contains("QCD_Pt_3200toInf_TuneCUETP8M1")) xsec = 0.000165445;
+    // cross sections from xsdb
+    if(sample.Contains("QCD_Pt_15to30_TuneCP5_13TeV_pythia8")) xsec = 1246000000.0;
+    if(sample.Contains("QCD_Pt_30to50_TuneCP5_13TeV_pythia8")) xsec = 106900000.0;
+    if(sample.Contains("QCD_Pt_50to80_TuneCP5_13TeV_pythia8")) xsec = 15710000.0;
+    if(sample.Contains("QCD_Pt_80to120_TuneCP5_13TeV_pythia8")) xsec = 2336000.0;
+    if(sample.Contains("QCD_Pt_120to170_TuneCP5_13TeV_pythia8")) xsec = 407300.0;
+    if(sample.Contains("QCD_Pt_170to300_TuneCP5_13TeV_pythia8")) xsec = 103500.0;
+    if(sample.Contains("QCD_Pt_300to470_TuneCP5_13TeV_pythia8")) xsec = 6830.0;
+    if(sample.Contains("QCD_Pt_470to600_TuneCP5_13TeV_pythia8")) xsec = 552.1;
+    if(sample.Contains("QCD_Pt_600to800_TuneCP5_13TeV_pythia8")) xsec = 156.5;
+    if(sample.Contains("QCD_Pt_800to1000_TuneCP5_13TeV_pythia8")) xsec = 26.28;
+    if(sample.Contains("QCD_Pt_1000to1400_TuneCP5_13TeV_pythia8")) xsec = 7.47;
+    if(sample.Contains("QCD_Pt_1400to1800_TuneCP5_13TeV_pythia8")) xsec = 0.6484;
+    if(sample.Contains("QCD_Pt_1800to2400_TuneCP5_13TeV_pythia8")) xsec = 0.08743;
+    if(sample.Contains("QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8")) xsec = 0.005236;
+    if(sample.Contains("QCD_Pt_3200toInf_TuneCP5_13TeV_pythia8")) xsec = 0.0001357;
     // cross sections from https://twiki.cern.ch/twiki/bin/viewauth/CMS/SummaryTable1G25ns
     if(sample.Contains("WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")) xsec = 405.271;
     if(sample.Contains("WGToLNuG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8")) xsec = 1.916e+02; // +/- 2.954e-01
