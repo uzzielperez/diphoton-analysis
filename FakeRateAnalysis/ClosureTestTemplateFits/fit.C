@@ -49,7 +49,7 @@ TH1* GetHist(int ptbin, bool isEB, hist_t type, TString run="2016", TString side
 {
   rootfile=0;
   // TString run = "2016";
-  TString base = "/uscms_data/d3/cuperez/tribosons/FakeRate/CMSSW_10_2_18/src/";
+  TString base = "/uscms_data/d3/cuperez/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/";
   if(type==Real)
   {
     // Output from RealTemplateAnalysis/analysis/MCFakeRateAnalysis.C
