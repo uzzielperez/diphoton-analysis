@@ -148,6 +148,7 @@ int main(int argc, char *argv[])
     bkgvsptEE->GetXaxis()->SetTitle("p_{T} (GeV)");
     bkgVsPtEEVec.push_back(bkgvsptEE);
   }
+
   TString pvCut = "";
   if(pvCutLow!=0 || pvCutHigh!=2000) pvCut = Form("_nPV%i-%i", pvCutLow, pvCutHigh);
   TFile outfile("fakeRatePlots_" + sample + "_" + era + pvCut + ".root","recreate");
