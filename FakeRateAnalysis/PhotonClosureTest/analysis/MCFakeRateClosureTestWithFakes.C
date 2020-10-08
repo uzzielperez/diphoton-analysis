@@ -30,7 +30,7 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
 //      root> t.Show(16);     // Read and show values of entry 16
 //      root> t.Loop();       // Loop on all entries
 //
-  
+
 //     This is the loop skeleton where:
 //    jentry is the global entry number in the chain
 //    ientry is the entry number in the current Tree
@@ -55,12 +55,12 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   if (sample == "GGJets") filename = "diphoton_fake_rate_closure_test_matching_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version(year) + "_MiniAOD_histograms.root";
   if (sample == "all")    filename = "diphoton_fake_rate_closure_test_matching_all_samples_" + cmssw_version(year) + "_MiniAOD_histograms.root";
   std::cout << "\nfilename: " << filename << std::endl << std::endl;
-  
+
   // event counters
   int nEvents = 0;
   int nEvents_EB = 0;
   int nEvents_EE = 0;
-  
+
   // match category counters
   // EB
   int nNoMatch_EB = 0;
@@ -74,7 +74,7 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   int nFinalStateNonPhotonMatch_EE = 0;
   int nGenParticlePhotonMatch_EE = 0;
   int nGenParticleNonPhotonMatch_EE = 0;
-  
+
   // final state photon type counters
   // EB
   int nFinalStatePhotonNoMatch_EB = 0;
@@ -98,7 +98,7 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   int nFinalStatePhotonOtherPhotonFragmentation_EE = 0;
   int nFinalStatePhotonRealTemplate_EE = 0;
   int nFinalStatePhotonMother_EE = 0;
-  
+
   // final state non-photon type counters
   // EB
   int nFinalStateNonPhotonNoMatch_EB = 0;
@@ -124,7 +124,7 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   int nAveNumDaughtersGluonMotherPhotonFrag_EE = 0;
   int nAveNumDaughtersOtherPhotonFragmentation_EE = 0;
   int nAveNumDaughtersRealTemplatePhotons_EE = 0;
-  
+
   // fake counters
   int nFakesEB = 0;
   int nFakesEE = 0;
@@ -132,11 +132,11 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   int nQuarkFakesEE = 0;
   int nGluonFakesEB = 0;
   int nGluonFakesEE = 0;
-  
+
   // define number of bin edges
-  const int nBins = 10;  
+  const int nBins = 10;
   double ptBinArray[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
-  
+
   // pt spectrum of passHighPtID objects
   TH1D phoPtEB_passHighPtID_varbin("phoPtEB_passHighPtID_varbin","",nBins-1,ptBinArray);
   TH1D phoPtEE_passHighPtID_varbin("phoPtEE_passHighPtID_varbin","",nBins-1,ptBinArray);
@@ -150,10 +150,10 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   TH1D phoPtEE_gluon_passHighPtID_varbin("phoPtEE_gluon_passHighPtID_varbin","",nBins-1,ptBinArray);
   phoPtEB_gluon_passHighPtID_varbin.Sumw2();
   phoPtEE_gluon_passHighPtID_varbin.Sumw2();
-  
+
   // distributions of fakes
-  TH1D *photon_fakes_sIeIe_EB = new TH1D("photon_fakes_sIeIe_EB","",200,0,0.1);
-  TH1D *photon_fakes_sIeIe_EE = new TH1D("photon_fakes_sIeIe_EE","",100,0,0.1);
+  TH1D *photon_fakes_sIeIe_EB = new TH1D("photon_fakes_sIeIe_EB","",50,0,0.1);
+  TH1D *photon_fakes_sIeIe_EE = new TH1D("photon_fakes_sIeIe_EE","",25,0,0.1);
   photon_fakes_sIeIe_EB->Sumw2();
   photon_fakes_sIeIe_EE->Sumw2();
   TH1D *photon_fakes_pt_EB = new TH1D("photon_fakes_pt_EB","",200,0,2000);
@@ -169,8 +169,8 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   photon_fakes_phi_EB->Sumw2();
   photon_fakes_phi_EE->Sumw2();
   // distributions of quark fakes
-  TH1D *photon_quark_fakes_sIeIe_EB = new TH1D("photon_quark_fakes_sIeIe_EB","",200,0,0.1);
-  TH1D *photon_quark_fakes_sIeIe_EE = new TH1D("photon_quark_fakes_sIeIe_EE","",100,0,0.1);
+  TH1D *photon_quark_fakes_sIeIe_EB = new TH1D("photon_quark_fakes_sIeIe_EB","",50,0,0.1);
+  TH1D *photon_quark_fakes_sIeIe_EE = new TH1D("photon_quark_fakes_sIeIe_EE","",25,0,0.1);
   photon_quark_fakes_sIeIe_EB->Sumw2();
   photon_quark_fakes_sIeIe_EE->Sumw2();
   TH1D *photon_quark_fakes_pt_EB = new TH1D("photon_quark_fakes_pt_EB","",200,0,2000);
@@ -186,8 +186,8 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   photon_quark_fakes_phi_EB->Sumw2();
   photon_quark_fakes_phi_EE->Sumw2();
   // distributions of gluon fakes
-  TH1D *photon_gluon_fakes_sIeIe_EB = new TH1D("photon_gluon_fakes_sIeIe_EB","",200,0,0.1);
-  TH1D *photon_gluon_fakes_sIeIe_EE = new TH1D("photon_gluon_fakes_sIeIe_EE","",100,0,0.1);
+  TH1D *photon_gluon_fakes_sIeIe_EB = new TH1D("photon_gluon_fakes_sIeIe_EB","",50,0,0.1);
+  TH1D *photon_gluon_fakes_sIeIe_EE = new TH1D("photon_gluon_fakes_sIeIe_EE","",25,0,0.1);
   photon_gluon_fakes_sIeIe_EB->Sumw2();
   photon_gluon_fakes_sIeIe_EE->Sumw2();
   TH1D *photon_gluon_fakes_pt_EB = new TH1D("photon_gluon_fakes_pt_EB","",200,0,2000);
@@ -202,35 +202,35 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   TH1D *photon_gluon_fakes_phi_EE = new TH1D("photon_gluon_fakes_phi_EE","",100,-5,5);
   photon_gluon_fakes_phi_EB->Sumw2();
   photon_gluon_fakes_phi_EE->Sumw2();
-  
+
   // histograms for analysis of particles in dR cone cut (currently 0.1) giving rise to fake hardron mothers
   TH2D* eta_vs_phi_all_fakes = new TH2D("eta_vs_phi_all_fakes","",70,-3.5,3.5,80,-4,4);
   // EB
   TH1D *pt_all_fakes_EB = new TH1D("pt_all_fakes_EB","",200,0,1500.);
-  TH1D *sieie_all_fakes_EB = new TH1D("sieie_all_fakes_EB","",200,0,0.1);
-  TH1D *sieie_one_mother_EB = new TH1D("sieie_one_mother_EB","",200,0,0.1);
-  TH1D *sieie_two_mothers_EB = new TH1D("sieie_two_mothers_EB","",200,0,0.1);
-  TH1D *sieie_three_or_more_mothers_EB = new TH1D("sieie_three_or_more_mothers_EB","",200,0,0.1);
-  TH1D *sieie_single_pion_mother_EB = new TH1D("sieie_single_pion_mother_EB","",200,0,0.1);
-  TH1D *sieie_single_eta_mother_EB = new TH1D("sieie_single_eta_mother_EB","",200,0,0.1);
-  TH1D *sieie_all_fakes_EB_pt_50To150 = new TH1D("sieie_all_fakes_EB_pt_50To150","",200,0,0.1);
-  TH1D *sieie_one_mother_EB_pt_50To150 = new TH1D("sieie_one_mother_EB_pt_50To150","",200,0,0.1);
-  TH1D *sieie_two_mothers_EB_pt_50To150 = new TH1D("sieie_two_mothers_EB_pt_50To150","",200,0,0.1);
-  TH1D *sieie_three_or_more_mothers_EB_pt_50To150 = new TH1D("sieie_three_or_more_mothers_EB_pt_50To150","",200,0,0.1);
-  TH1D *sieie_single_pion_mother_EB_pt_50To150 = new TH1D("sieie_single_pion_mother_EB_pt_50To150","",200,0,0.1);
-  TH1D *sieie_single_eta_mother_EB_pt_50To150 = new TH1D("sieie_single_eta_mother_EB_pt_50To150","",200,0,0.1);
-  TH1D *sieie_all_fakes_EB_pt_150To300 = new TH1D("sieie_all_fakes_EB_pt_150To300","",200,0,0.1);
-  TH1D *sieie_one_mother_EB_pt_150To300 = new TH1D("sieie_one_mother_EB_pt_150To300","",200,0,0.1);
-  TH1D *sieie_two_mothers_EB_pt_150To300 = new TH1D("sieie_two_mothers_EB_pt_150To300","",200,0,0.1);
-  TH1D *sieie_three_or_more_mothers_EB_pt_150To300 = new TH1D("sieie_three_or_more_mothers_EB_pt_150To300","",200,0,0.1);
-  TH1D *sieie_single_pion_mother_EB_pt_150To300 = new TH1D("sieie_single_pion_mother_EB_pt_150To300","",200,0,0.1);
-  TH1D *sieie_single_eta_mother_EB_pt_150To300 = new TH1D("sieie_single_eta_mother_EB_pt_150To300","",200,0,0.1);
-  TH1D *sieie_all_fakes_EB_pt_300ToInf = new TH1D("sieie_all_fakes_EB_pt_300ToInf","",200,0,0.1);
-  TH1D *sieie_one_mother_EB_pt_300ToInf = new TH1D("sieie_one_mother_EB_pt_300ToInf","",200,0,0.1);
-  TH1D *sieie_two_mothers_EB_pt_300ToInf = new TH1D("sieie_two_mothers_EB_pt_300ToInf","",200,0,0.1);
-  TH1D *sieie_three_or_more_mothers_EB_pt_300ToInf = new TH1D("sieie_three_or_more_mothers_EB_pt_300ToInf","",200,0,0.1);
-  TH1D *sieie_single_pion_mother_EB_pt_300ToInf = new TH1D("sieie_single_pion_mother_EB_pt_300ToInf","",200,0,0.1);
-  TH1D *sieie_single_eta_mother_EB_pt_300ToInf = new TH1D("sieie_single_eta_mother_EB_pt_300ToInf","",200,0,0.1);
+  TH1D *sieie_all_fakes_EB = new TH1D("sieie_all_fakes_EB","",50,0,0.1);
+  TH1D *sieie_one_mother_EB = new TH1D("sieie_one_mother_EB","",50,0,0.1);
+  TH1D *sieie_two_mothers_EB = new TH1D("sieie_two_mothers_EB","",50,0,0.1);
+  TH1D *sieie_three_or_more_mothers_EB = new TH1D("sieie_three_or_more_mothers_EB","",50,0,0.1);
+  TH1D *sieie_single_pion_mother_EB = new TH1D("sieie_single_pion_mother_EB","",50,0,0.1);
+  TH1D *sieie_single_eta_mother_EB = new TH1D("sieie_single_eta_mother_EB","",50,0,0.1);
+  TH1D *sieie_all_fakes_EB_pt_50To150 = new TH1D("sieie_all_fakes_EB_pt_50To150","",50,0,0.1);
+  TH1D *sieie_one_mother_EB_pt_50To150 = new TH1D("sieie_one_mother_EB_pt_50To150","",50,0,0.1);
+  TH1D *sieie_two_mothers_EB_pt_50To150 = new TH1D("sieie_two_mothers_EB_pt_50To150","",50,0,0.1);
+  TH1D *sieie_three_or_more_mothers_EB_pt_50To150 = new TH1D("sieie_three_or_more_mothers_EB_pt_50To150","",50,0,0.1);
+  TH1D *sieie_single_pion_mother_EB_pt_50To150 = new TH1D("sieie_single_pion_mother_EB_pt_50To150","",50,0,0.1);
+  TH1D *sieie_single_eta_mother_EB_pt_50To150 = new TH1D("sieie_single_eta_mother_EB_pt_50To150","",50,0,0.1);
+  TH1D *sieie_all_fakes_EB_pt_150To300 = new TH1D("sieie_all_fakes_EB_pt_150To300","",50,0,0.1);
+  TH1D *sieie_one_mother_EB_pt_150To300 = new TH1D("sieie_one_mother_EB_pt_150To300","",50,0,0.1);
+  TH1D *sieie_two_mothers_EB_pt_150To300 = new TH1D("sieie_two_mothers_EB_pt_150To300","",50,0,0.1);
+  TH1D *sieie_three_or_more_mothers_EB_pt_150To300 = new TH1D("sieie_three_or_more_mothers_EB_pt_150To300","",50,0,0.1);
+  TH1D *sieie_single_pion_mother_EB_pt_150To300 = new TH1D("sieie_single_pion_mother_EB_pt_150To300","",50,0,0.1);
+  TH1D *sieie_single_eta_mother_EB_pt_150To300 = new TH1D("sieie_single_eta_mother_EB_pt_150To300","",50,0,0.1);
+  TH1D *sieie_all_fakes_EB_pt_300ToInf = new TH1D("sieie_all_fakes_EB_pt_300ToInf","",50,0,0.1);
+  TH1D *sieie_one_mother_EB_pt_300ToInf = new TH1D("sieie_one_mother_EB_pt_300ToInf","",50,0,0.1);
+  TH1D *sieie_two_mothers_EB_pt_300ToInf = new TH1D("sieie_two_mothers_EB_pt_300ToInf","",50,0,0.1);
+  TH1D *sieie_three_or_more_mothers_EB_pt_300ToInf = new TH1D("sieie_three_or_more_mothers_EB_pt_300ToInf","",50,0,0.1);
+  TH1D *sieie_single_pion_mother_EB_pt_300ToInf = new TH1D("sieie_single_pion_mother_EB_pt_300ToInf","",50,0,0.1);
+  TH1D *sieie_single_eta_mother_EB_pt_300ToInf = new TH1D("sieie_single_eta_mother_EB_pt_300ToInf","",50,0,0.1);
   // pass
   TH1D *gen_photon_reco_photon_pt_diff_EB_passSieie = new TH1D("gen_photon_reco_photon_pt_diff_EB_passSieie","",250,0,5.);
   TH1D *gen_siblings_reco_photon_pt_diff_EB_passSieie = new TH1D("gen_siblings_reco_photon_pt_diff_EB_passSieie","",250,0,5.);
@@ -255,34 +255,34 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   TH1D *n_three_or_more_mothers_EB_failSieie = new TH1D("n_three_or_more_mothers_EB_failSieie","",10,0.,10.);
   // EE
   TH1D *pt_all_fakes_EE = new TH1D("pt_all_fakes_EE","",200,0,1500.);
-  TH1D *sieie_all_fakes_EE = new TH1D("sieie_all_fakes_EE","",100,0,0.1);
-  TH1D *sieie_one_mother_EE = new TH1D("sieie_one_mother_EE","",100,0,0.1);
-  TH1D *sieie_two_mothers_EE = new TH1D("sieie_two_mothers_EE","",100,0,0.1);
-  TH1D *sieie_three_or_more_mothers_EE = new TH1D("sieie_three_or_more_mothers_EE","",100,0,0.1);
-  TH1D *sieie_single_pion_mother_EE = new TH1D("sieie_single_pion_mother_EE","",100,0,0.1);
-  TH1D *sieie_single_eta_mother_EE = new TH1D("sieie_single_eta_mother_EE","",100,0,0.1);
-  TH1D *sieie_all_fakes_EE_pt_50To150 = new TH1D("sieie_all_fakes_EE_pt_50To150","",100,0,0.1);
-  TH1D *sieie_one_mother_EE_pt_50To150 = new TH1D("sieie_one_mother_EE_pt_50To150","",100,0,0.1);
-  TH1D *sieie_two_mothers_EE_pt_50To150 = new TH1D("sieie_two_mothers_EE_pt_50To150","",100,0,0.1);
-  TH1D *sieie_three_or_more_mothers_EE_pt_50To150 = new TH1D("sieie_three_or_more_mothers_EE_pt_50To150","",100,0,0.1);
-  TH1D *sieie_single_pion_mother_EE_pt_50To150 = new TH1D("sieie_single_pion_mother_EE_pt_50To150","",100,0,0.1);
-  TH1D *sieie_single_eta_mother_EE_pt_50To150 = new TH1D("sieie_single_eta_mother_EE_pt_50To150","",100,0,0.1);
-  TH1D *sieie_all_fakes_EE_pt_150To300 = new TH1D("sieie_all_fakes_EE_pt_150To300","",100,0,0.1);
-  TH1D *sieie_one_mother_EE_pt_150To300 = new TH1D("sieie_one_mother_EE_pt_150To300","",100,0,0.1);
-  TH1D *sieie_two_mothers_EE_pt_150To300 = new TH1D("sieie_two_mothers_EE_pt_150To300","",100,0,0.1);
-  TH1D *sieie_three_or_more_mothers_EE_pt_150To300 = new TH1D("sieie_three_or_more_mothers_EE_pt_150To300","",100,0,0.1);
-  TH1D *sieie_single_pion_mother_EE_pt_150To300 = new TH1D("sieie_single_pion_mother_EE_pt_150To300","",100,0,0.1);
-  TH1D *sieie_single_eta_mother_EE_pt_150To300 = new TH1D("sieie_single_eta_mother_EE_pt_150To300","",100,0,0.1);
-  TH1D *sieie_all_fakes_EE_pt_300ToInf = new TH1D("sieie_all_fakes_EE_pt_300ToInf","",100,0,0.1);
-  TH1D *sieie_one_mother_EE_pt_300ToInf = new TH1D("sieie_one_mother_EE_pt_300ToInf","",100,0,0.1);
-  TH1D *sieie_two_mothers_EE_pt_300ToInf = new TH1D("sieie_two_mothers_EE_pt_300ToInf","",100,0,0.1);
-  TH1D *sieie_three_or_more_mothers_EE_pt_300ToInf = new TH1D("sieie_three_or_more_mothers_EE_pt_300ToInf","",100,0,0.1);
-  TH1D *sieie_single_pion_mother_EE_pt_300ToInf = new TH1D("sieie_single_pion_mother_EE_pt_300ToInf","",100,0,0.1);
-  TH1D *sieie_single_eta_mother_EE_pt_300ToInf = new TH1D("sieie_single_eta_mother_EE_pt_300ToInf","",100,0,0.1);
+  TH1D *sieie_all_fakes_EE = new TH1D("sieie_all_fakes_EE","",25,0,0.1);
+  TH1D *sieie_one_mother_EE = new TH1D("sieie_one_mother_EE","",25,0,0.1);
+  TH1D *sieie_two_mothers_EE = new TH1D("sieie_two_mothers_EE","",25,0,0.1);
+  TH1D *sieie_three_or_more_mothers_EE = new TH1D("sieie_three_or_more_mothers_EE","",25,0,0.1);
+  TH1D *sieie_single_pion_mother_EE = new TH1D("sieie_single_pion_mother_EE","",25,0,0.1);
+  TH1D *sieie_single_eta_mother_EE = new TH1D("sieie_single_eta_mother_EE","",25,0,0.1);
+  TH1D *sieie_all_fakes_EE_pt_50To150 = new TH1D("sieie_all_fakes_EE_pt_50To150","",25,0,0.1);
+  TH1D *sieie_one_mother_EE_pt_50To150 = new TH1D("sieie_one_mother_EE_pt_50To150","",25,0,0.1);
+  TH1D *sieie_two_mothers_EE_pt_50To150 = new TH1D("sieie_two_mothers_EE_pt_50To150","",25,0,0.1);
+  TH1D *sieie_three_or_more_mothers_EE_pt_50To150 = new TH1D("sieie_three_or_more_mothers_EE_pt_50To150","",25,0,0.1);
+  TH1D *sieie_single_pion_mother_EE_pt_50To150 = new TH1D("sieie_single_pion_mother_EE_pt_50To150","",25,0,0.1);
+  TH1D *sieie_single_eta_mother_EE_pt_50To150 = new TH1D("sieie_single_eta_mother_EE_pt_50To150","",25,0,0.1);
+  TH1D *sieie_all_fakes_EE_pt_150To300 = new TH1D("sieie_all_fakes_EE_pt_150To300","",25,0,0.1);
+  TH1D *sieie_one_mother_EE_pt_150To300 = new TH1D("sieie_one_mother_EE_pt_150To300","",25,0,0.1);
+  TH1D *sieie_two_mothers_EE_pt_150To300 = new TH1D("sieie_two_mothers_EE_pt_150To300","",25,0,0.1);
+  TH1D *sieie_three_or_more_mothers_EE_pt_150To300 = new TH1D("sieie_three_or_more_mothers_EE_pt_150To300","",25,0,0.1);
+  TH1D *sieie_single_pion_mother_EE_pt_150To300 = new TH1D("sieie_single_pion_mother_EE_pt_150To300","",25,0,0.1);
+  TH1D *sieie_single_eta_mother_EE_pt_150To300 = new TH1D("sieie_single_eta_mother_EE_pt_150To300","",25,0,0.1);
+  TH1D *sieie_all_fakes_EE_pt_300ToInf = new TH1D("sieie_all_fakes_EE_pt_300ToInf","",25,0,0.1);
+  TH1D *sieie_one_mother_EE_pt_300ToInf = new TH1D("sieie_one_mother_EE_pt_300ToInf","",25,0,0.1);
+  TH1D *sieie_two_mothers_EE_pt_300ToInf = new TH1D("sieie_two_mothers_EE_pt_300ToInf","",25,0,0.1);
+  TH1D *sieie_three_or_more_mothers_EE_pt_300ToInf = new TH1D("sieie_three_or_more_mothers_EE_pt_300ToInf","",25,0,0.1);
+  TH1D *sieie_single_pion_mother_EE_pt_300ToInf = new TH1D("sieie_single_pion_mother_EE_pt_300ToInf","",25,0,0.1);
+  TH1D *sieie_single_eta_mother_EE_pt_300ToInf = new TH1D("sieie_single_eta_mother_EE_pt_300ToInf","",25,0,0.1);
   // pass
   TH1D *gen_photon_reco_photon_pt_diff_EE_passSieie = new TH1D("gen_photon_reco_photon_pt_diff_EE_passSieie","",250,0,5.);
   TH1D *gen_siblings_reco_photon_pt_diff_EE_passSieie = new TH1D("gen_siblings_reco_photon_pt_diff_EE_passSieie","",250,0,5.);
-  TH1D *gen_particles_reco_photon_pt_diff_EE_passSieie = new TH1D("gen_particles_reco_photon_pt_diff_EE_passSieie","",250,0,5.);  
+  TH1D *gen_particles_reco_photon_pt_diff_EE_passSieie = new TH1D("gen_particles_reco_photon_pt_diff_EE_passSieie","",250,0,5.);
   TH1D *n_particles_dR_cone_EE_passSieie = new TH1D("n_particles_dR_cone_EE_passSieie","",20,0.,20.);
   TH1D *n_distinct_mothers_dR_cone_EE_passSieie = new TH1D("n_distinct_mothers_dR_cone_EE_passSieie","",20,0.,20.);
   TH1D *n_single_pion_mothers_EE_passSieie = new TH1D("n_single_pion_mothers_EE_passSieie","",10,0.,10.);
@@ -293,7 +293,7 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   // fail
   TH1D *gen_photon_reco_photon_pt_diff_EE_failSieie = new TH1D("gen_photon_reco_photon_pt_diff_EE_failSieie","",250,0,5.);
   TH1D *gen_siblings_reco_photon_pt_diff_EE_failSieie = new TH1D("gen_siblings_reco_photon_pt_diff_EE_failSieie","",250,0,5.);
-  TH1D *gen_particles_reco_photon_pt_diff_EE_failSieie = new TH1D("gen_particles_reco_photon_pt_diff_EE_failSieie","",250,0,5.);  
+  TH1D *gen_particles_reco_photon_pt_diff_EE_failSieie = new TH1D("gen_particles_reco_photon_pt_diff_EE_failSieie","",250,0,5.);
   TH1D *n_particles_dR_cone_EE_failSieie = new TH1D("n_particles_dR_cone_EE_failSieie","",20,0.,20.);
   TH1D *n_distinct_mothers_dR_cone_EE_failSieie = new TH1D("n_distinct_mothers_dR_cone_EE_failSieie","",20,0.,20.);
   TH1D *n_single_pion_mothers_EE_failSieie = new TH1D("n_single_pion_mothers_EE_failSieie","",10,0.,10.);
@@ -301,7 +301,7 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   TH1D *n_single_other_mothers_EE_failSieie = new TH1D("n_single_other_mothers_EE_failSieie","",10,0.,10.);
   TH1D *n_two_mothers_EE_failSieie = new TH1D("n_two_mothers_EE_failSieie","",10,0.,10.);
   TH1D *n_three_or_more_mothers_EE_failSieie = new TH1D("n_three_or_more_mothers_EE_failSieie","",10,0.,10.);
-  
+
   // numerator histograms from mc truth fakes
   std::vector<TH1D*> sIeIeNumeratorEB_fromFakes;
   std::vector<TH1D*> sIeIeNumeratorEE_fromFakes;
@@ -326,95 +326,95 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   std::vector<TH1D*> sIeIeNumeratorEE_fromNonPhotonMatch;
   std::vector<TH1D*> sIeIeNumeratorEB_fromGenParticleMatch;
   std::vector<TH1D*> sIeIeNumeratorEE_fromGenParticleMatch;
-  
+
   // loop over bins increments and create histograms
   for (int i = 0; i < nBins-1; i++) {
     double binLowEdge = ptBinArray[i];
-    double binUpperEdge = ptBinArray[i+1];  
-    
-    TH1D *hEB_sieie_numerator_fakes = new TH1D(Form("sieieEB_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+    double binUpperEdge = ptBinArray[i+1];
+
+    TH1D *hEB_sieie_numerator_fakes = new TH1D(Form("sieieEB_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",50,0.,0.1);
     hEB_sieie_numerator_fakes->Sumw2();
     sIeIeNumeratorEB_fromFakes.push_back(hEB_sieie_numerator_fakes);
-    TH1D *hEE_sieie_numerator_fakes = new TH1D(Form("sieieEE_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
+    TH1D *hEE_sieie_numerator_fakes = new TH1D(Form("sieieEE_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",25,0.,0.1);
     hEE_sieie_numerator_fakes->Sumw2();
     sIeIeNumeratorEE_fromFakes.push_back(hEE_sieie_numerator_fakes);
-    
-    TH1D *hEB_chIso_numerator_fakes = new TH1D(Form("chIsoEB_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEB",100,0.,50.);
+
+    TH1D *hEB_chIso_numerator_fakes = new TH1D(Form("chIsoEB_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEB",50,0.,50.);
     hEB_chIso_numerator_fakes->Sumw2();
     chIsoNumeratorEB_fromFakes.push_back(hEB_chIso_numerator_fakes);
-    TH1D *hEE_chIso_numerator_fakes = new TH1D(Form("chIsoEE_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEE",100,0.,50.);
+    TH1D *hEE_chIso_numerator_fakes = new TH1D(Form("chIsoEE_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEE",50,0.,50.);
     hEE_chIso_numerator_fakes->Sumw2();
     chIsoNumeratorEE_fromFakes.push_back(hEE_chIso_numerator_fakes);
-    
-    TH1D *hEB_numerator_real = new TH1D(Form("sieieEB_numerator_real_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+
+    TH1D *hEB_numerator_real = new TH1D(Form("sieieEB_numerator_real_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",50,0.,0.1);
     hEB_numerator_real->Sumw2();
     sIeIeNumeratorEB_fromReal.push_back(hEB_numerator_real);
-    TH1D *hEE_numerator_real = new TH1D(Form("sieieEE_numerator_real_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
+    TH1D *hEE_numerator_real = new TH1D(Form("sieieEE_numerator_real_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",25,0.,0.1);
     hEE_numerator_real->Sumw2();
     sIeIeNumeratorEE_fromReal.push_back(hEE_numerator_real);
 
-    TH1D *hEB_numerator_photonHadronMother = new TH1D(Form("sieieEB_numerator_photonHadronMother_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+    TH1D *hEB_numerator_photonHadronMother = new TH1D(Form("sieieEB_numerator_photonHadronMother_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",50,0.,0.1);
     hEB_numerator_photonHadronMother->Sumw2();
     sIeIeNumeratorEB_fromPhotonHadronMother.push_back(hEB_numerator_photonHadronMother);
-    TH1D *hEE_numerator_photonHadronMother = new TH1D(Form("sieieEE_numerator_photonHadronMother_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
+    TH1D *hEE_numerator_photonHadronMother = new TH1D(Form("sieieEE_numerator_photonHadronMother_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",25,0.,0.1);
     hEE_numerator_photonHadronMother->Sumw2();
     sIeIeNumeratorEE_fromPhotonHadronMother.push_back(hEE_numerator_photonHadronMother);
-    
-    TH1D *hEB_numerator_photonISRfromProton = new TH1D(Form("sieieEB_numerator_photonISRfromProton_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+
+    TH1D *hEB_numerator_photonISRfromProton = new TH1D(Form("sieieEB_numerator_photonISRfromProton_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",50,0.,0.1);
     hEB_numerator_photonISRfromProton->Sumw2();
     sIeIeNumeratorEB_fromPhotonISRfromProton.push_back(hEB_numerator_photonISRfromProton);
-    TH1D *hEE_numerator_photonISRfromProton = new TH1D(Form("sieieEE_numerator_photonISRfromProton_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
+    TH1D *hEE_numerator_photonISRfromProton = new TH1D(Form("sieieEE_numerator_photonISRfromProton_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",25,0.,0.1);
     hEE_numerator_photonISRfromProton->Sumw2();
     sIeIeNumeratorEE_fromPhotonISRfromProton.push_back(hEE_numerator_photonISRfromProton);
 
-    TH1D *hEB_numerator_otherPhotonRadiation = new TH1D(Form("sieieEB_numerator_otherPhotonRadiation_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+    TH1D *hEB_numerator_otherPhotonRadiation = new TH1D(Form("sieieEB_numerator_otherPhotonRadiation_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",50,0.,0.1);
     hEB_numerator_otherPhotonRadiation->Sumw2();
     sIeIeNumeratorEB_fromOtherPhotonRadiation.push_back(hEB_numerator_otherPhotonRadiation);
-    TH1D *hEE_numerator_otherPhotonRadiation = new TH1D(Form("sieieEE_numerator_otherPhotonRadiation_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
+    TH1D *hEE_numerator_otherPhotonRadiation = new TH1D(Form("sieieEE_numerator_otherPhotonRadiation_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",25,0.,0.1);
     hEE_numerator_otherPhotonRadiation->Sumw2();
     sIeIeNumeratorEE_fromOtherPhotonRadiation.push_back(hEE_numerator_otherPhotonRadiation);
-    
-    TH1D *hEB_numerator_gluonMotherPhotonFrag = new TH1D(Form("sieieEB_numerator_gluonMotherPhotonFrag_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+
+    TH1D *hEB_numerator_gluonMotherPhotonFrag = new TH1D(Form("sieieEB_numerator_gluonMotherPhotonFrag_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",50,0.,0.1);
     hEB_numerator_gluonMotherPhotonFrag->Sumw2();
     sIeIeNumeratorEB_fromGluonMotherPhotonFrag.push_back(hEB_numerator_gluonMotherPhotonFrag);
-    TH1D *hEE_numerator_gluonMotherPhotonFrag = new TH1D(Form("sieieEE_numerator_gluonMotherPhotonFrag_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
+    TH1D *hEE_numerator_gluonMotherPhotonFrag = new TH1D(Form("sieieEE_numerator_gluonMotherPhotonFrag_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",25,0.,0.1);
     hEE_numerator_gluonMotherPhotonFrag->Sumw2();
     sIeIeNumeratorEE_fromGluonMotherPhotonFrag.push_back(hEE_numerator_gluonMotherPhotonFrag);
-    
-    TH1D *hEB_numerator_otherPhotonFragmentation = new TH1D(Form("sieieEB_numerator_otherPhotonFragmentation_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+
+    TH1D *hEB_numerator_otherPhotonFragmentation = new TH1D(Form("sieieEB_numerator_otherPhotonFragmentation_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",50,0.,0.1);
     hEB_numerator_otherPhotonFragmentation->Sumw2();
     sIeIeNumeratorEB_fromOtherPhotonFragmentation.push_back(hEB_numerator_otherPhotonFragmentation);
-    TH1D *hEE_numerator_otherPhotonFragmentation = new TH1D(Form("sieieEE_numerator_otherPhotonFragmentation_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
+    TH1D *hEE_numerator_otherPhotonFragmentation = new TH1D(Form("sieieEE_numerator_otherPhotonFragmentation_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",25,0.,0.1);
     hEE_numerator_otherPhotonFragmentation->Sumw2();
     sIeIeNumeratorEE_fromOtherPhotonFragmentation.push_back(hEE_numerator_otherPhotonFragmentation);
-    
-    TH1D *hEB_numerator_noMatch = new TH1D(Form("sieieEB_numerator_noMatch_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+
+    TH1D *hEB_numerator_noMatch = new TH1D(Form("sieieEB_numerator_noMatch_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",50,0.,0.1);
     hEB_numerator_noMatch->Sumw2();
     sIeIeNumeratorEB_fromNoMatch.push_back(hEB_numerator_noMatch);
-    TH1D *hEE_numerator_noMatch = new TH1D(Form("sieieEE_numerator_noMatch_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
+    TH1D *hEE_numerator_noMatch = new TH1D(Form("sieieEE_numerator_noMatch_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",25,0.,0.1);
     hEE_numerator_noMatch->Sumw2();
     sIeIeNumeratorEE_fromNoMatch.push_back(hEE_numerator_noMatch);
-    
-    TH1D *hEB_numerator_nonPhotonMatch = new TH1D(Form("sieieEB_numerator_nonPhotonMatch_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+
+    TH1D *hEB_numerator_nonPhotonMatch = new TH1D(Form("sieieEB_numerator_nonPhotonMatch_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",50,0.,0.1);
     hEB_numerator_nonPhotonMatch->Sumw2();
     sIeIeNumeratorEB_fromNonPhotonMatch.push_back(hEB_numerator_nonPhotonMatch);
-    TH1D *hEE_numerator_nonPhotonMatch = new TH1D(Form("sieieEE_numerator_nonPhotonMatch_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
+    TH1D *hEE_numerator_nonPhotonMatch = new TH1D(Form("sieieEE_numerator_nonPhotonMatch_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",25,0.,0.1);
     hEE_numerator_nonPhotonMatch->Sumw2();
     sIeIeNumeratorEE_fromNonPhotonMatch.push_back(hEE_numerator_nonPhotonMatch);
-    
-    TH1D *hEB_numerator_genParticleMatch = new TH1D(Form("sieieEB_numerator_genParticleMatch_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+
+    TH1D *hEB_numerator_genParticleMatch = new TH1D(Form("sieieEB_numerator_genParticleMatch_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEB",50,0.,0.1);
     hEB_numerator_genParticleMatch->Sumw2();
     sIeIeNumeratorEB_fromGenParticleMatch.push_back(hEB_numerator_genParticleMatch);
-    TH1D *hEE_numerator_genParticleMatch = new TH1D(Form("sieieEE_numerator_genParticleMatch_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
+    TH1D *hEE_numerator_genParticleMatch = new TH1D(Form("sieieEE_numerator_genParticleMatch_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",25,0.,0.1);
     hEE_numerator_genParticleMatch->Sumw2();
     sIeIeNumeratorEE_fromGenParticleMatch.push_back(hEE_numerator_genParticleMatch);
   }
-  
+
   Long64_t nentries = fChain->GetEntriesFast();
   std::cout << "Total entries: " << nentries << std::endl;
 
   bool printdRConInfo = false;
-  
+
   Long64_t nbytes = 0, nb = 0;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
@@ -423,19 +423,19 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
     // if (Cut(ientry) < 0) continue;
     if (jentry % 100000 == 0)
       std::cout << "Number of entries looped over: " << jentry << std::endl;
-    
+
     // fake rate object definitions
     bool is_sieie_numerator_object = Photon_isNumeratorObjCand && Photon_passChIso;
     bool is_chIso_numerator_object = Photon_isNumeratorObjCand && Photon_passSieie;
     //    bool is_sieie_sideband_object = Photon_isNumeratorObjCand && (5.0 < Photon_chargedHadIso03) && (Photon_chargedHadIso03 < 10.0);
-    
+
     // reject beam halo
     // if (Event_beamHaloIDTight2015) continue;
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
 
     // photon pt cut (already applied in the analyzer)
     if (Photon_pt < 50.) continue;
-    
+
     // reals - photons passing real template selection
     bool reals = PhotonGenMatch_matchCategory == 1 && PhotonGenMatch_matchType == 8;
     // fakes - final state hadron mother matches
@@ -445,8 +445,8 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
     bool fromGluon = PhotonGenParent_pdgId == 21;
     bool quark_fakes = fakes && fromQuark;
     bool gluon_fakes = fakes && fromGluon;
-    
-    // photonHadronMother -- photon hadron mothers 
+
+    // photonHadronMother -- photon hadron mothers
     bool photonHadronMother = PhotonGenMatch_matchCategory == 1 && PhotonGenMatch_matchType == 1;
     // photonISRfromProton -- photon ISR from proton
     bool photonISRfromProton = PhotonGenMatch_matchCategory == 1 && PhotonGenMatch_matchType == 2;
@@ -462,14 +462,14 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
     bool nonPhotonMatch = PhotonGenMatch_matchCategory == 2;
     // genParticleMatch -- gen particle matches
     bool genParticleMatch = PhotonGenMatch_matchCategory == 3 || PhotonGenMatch_matchCategory == 4;
-    
+
     // apply event weights to counting of objects
     double event_counting_weight = Event_weightAll;
-    
+
     // count number of numberator objects
     if (is_sieie_numerator_object)
       nEvents+=event_counting_weight;
-    
+
     // EB
     if (fabs(Photon_scEta) < 1.4442) {
       // count numerator objects before passing sieie cut
@@ -664,11 +664,11 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
 	} // end gen particle non-photon matches
       } // end if sieie numerator object
     } // end EE
-    
+
     // loop over bin edges
     for (int i = 0; i < nBins-1; i++) {
       double binLowEdge = ptBinArray[i];
-      double binUpperEdge = ptBinArray[i+1];  
+      double binUpperEdge = ptBinArray[i+1];
       // pt cut
       if (binLowEdge < Photon_pt && Photon_pt < binUpperEdge) {
 	// fill chIso numerator histograms
@@ -998,9 +998,9 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
 	}
       } // end EE
     } // end is sieie numberator object
-    
+
   } // end loop over entries
-  
+
   std::cout << std::endl;
   std::cout << "Not applying event or sample weights for these object numbers." << std::endl;
   std::cout << std::endl;
@@ -1076,7 +1076,7 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   std::cout << "Average number of daughters - other fragmentation    : " << nAveNumDaughtersOtherPhotonFragmentation_EE/(double)nFinalStatePhotonOtherPhotonFragmentation_EE << std::endl;
   std::cout << "Average number of daughters - hard interacton photon : " << nAveNumDaughtersRealTemplatePhotons_EE/(double)nFinalStatePhotonRealTemplate_EE << std::endl;
   std::cout << std::endl;
-  
+
   std::cout << std::endl;
   std::cout << "Fakes are all hadron mother matches passing the high pt photon ID." << std::endl;
   std::cout << "--------------------------------------EB------------------------------------------ " << std::endl;
@@ -1088,9 +1088,9 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   std::cout << "Number of quark fakes: " << nQuarkFakesEE << std::endl;
   std::cout << "Number of gluon fakes: " << nGluonFakesEE << std::endl;
   std::cout << std::endl;
-  
+
   TFile file_out(filename,"RECREATE");
-  
+
   // wirte histograms for analysis of particles in dR cone cut
   eta_vs_phi_all_fakes->Write();
   // EB
@@ -1189,7 +1189,7 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   n_single_other_mothers_EE_failSieie->Write();
   n_two_mothers_EE_failSieie->Write();
   n_three_or_more_mothers_EE_failSieie->Write();
-  
+
   // write fake distributions
   photon_fakes_sIeIe_EB->Write();
   photon_fakes_sIeIe_EE->Write();
@@ -1241,7 +1241,7 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   photon_gluon_fakes_phi_EE->Write();
   std::cout << photon_gluon_fakes_phi_EB->GetName() << "\t integral: " << photon_gluon_fakes_phi_EB->Integral() << std::endl;
   std::cout << photon_gluon_fakes_phi_EE->GetName() << "\t integral: " << photon_gluon_fakes_phi_EE->Integral() << std::endl;
-  
+
   // write passHighPtID histograms
   phoPtEB_passHighPtID_varbin.Write();
   phoPtEE_passHighPtID_varbin.Write();
@@ -1249,7 +1249,7 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   phoPtEE_quark_passHighPtID_varbin.Write();
   phoPtEB_gluon_passHighPtID_varbin.Write();
   phoPtEE_gluon_passHighPtID_varbin.Write();
-  
+
 
   double bin_sum_EB = 0;
   std::cout << phoPtEB_passHighPtID_varbin.GetName() << "\t integral: " << phoPtEB_passHighPtID_varbin.Integral() << std::endl;
@@ -1263,10 +1263,10 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
     bin_sum_EB = bin_sum_EB + phoPtEB_passHighPtID_varbin.GetBinContent(i);
   }
   std::cout << phoPtEB_passHighPtID_varbin.GetName() << " bin sum: " << bin_sum_EB << std::endl;
-  
+
   double bin_sum_EE = 0;
   std::cout << phoPtEE_passHighPtID_varbin.GetName() << "\t integral: " << phoPtEE_passHighPtID_varbin.Integral() << std::endl;
-  for (int i = 1; i < phoPtEB_passHighPtID_varbin.GetSize()-1; i++) {  
+  for (int i = 1; i < phoPtEB_passHighPtID_varbin.GetSize()-1; i++) {
     std::cout << phoPtEE_passHighPtID_varbin.GetName()
 	 << " bin "
 	 << phoPtEE_passHighPtID_varbin.GetBin(i)
@@ -1276,7 +1276,7 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
     bin_sum_EE = bin_sum_EE + phoPtEE_passHighPtID_varbin.GetBinContent(i);
   }
   std::cout << phoPtEB_passHighPtID_varbin.GetName() << " bin sum: " << bin_sum_EE << std::endl;
-  
+
   // write numerator histograms from mc truth fakes
   for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEB_fromFakes.begin() ; it != sIeIeNumeratorEB_fromFakes.end(); ++it) {
     std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
@@ -1367,7 +1367,7 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
     std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  
+
   file_out.ls();
   file_out.Close();
 

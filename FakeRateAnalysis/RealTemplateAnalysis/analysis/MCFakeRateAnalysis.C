@@ -9,9 +9,9 @@
 
 #include "diphoton-analysis/FakeRateAnalysis/interface/utilities.hh"
 
-void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow = 0, int pvCutHigh = 500)
+void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow = 0, int pvCutHigh = 500, bool closure_test=false)
 {
-
+  if (closure_test) std::cout << "Doing Closure Test" << std::endl;
 //   In a ROOT session, you can do:
 //      root> .L MCFakeRateAnalysis.C
 //      root> MCFakeRateAnalysis t
@@ -36,16 +36,20 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
 //    fChain->GetEntry(jentry);       //read all branches
 //by  b_branchname->GetEntry(ientry); //read only this branch
   if (fChain == 0) return;
-  
+
+  int nbinsSieieEB = 200;
+  int nbinsSieieEE = 100;
+  int nbinsChIso   = 100;
+
   TString pv = Form("_nPV%i-%i", pvCutLow, pvCutHigh);
   TString filename = "";
   if (sample == "DiPhotonJets") filename = "diphoton_fake_rate_real_templates_DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8_" + cmssw_version(year) + pv + "_MiniAOD_histograms.root";
   if (sample == "GGJets")       filename = "diphoton_fake_rate_real_templates_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version(year) + pv + "_MiniAOD_histograms.root";
   if (sample == "GJets")        filename = "diphoton_fake_rate_real_templates_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version(year) + pv + "_MiniAOD_histograms.root";
   if (sample == "all")          filename = "diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version(year) + pv + "_MiniAOD_histograms.root";
-  
+
   std::cout << "\nOutput filename: " << filename << std::endl << std::endl;
-  
+
   // define our pT bin increments
   std::vector<int> ptBinArray({ 50, 70, 90, 110, 130, 150, 200, 250, 300, 600});
 
@@ -68,45 +72,51 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
   std::vector<TH1D*> sigmaIetaIetaEE2;
   std::vector<TH1D*> chIsoEB;
   std::vector<TH1D*> chIsoEE;
-  
+
   // loop over bins increments and create histograms
   for (int i = 0; i < nBins; i++) {
     int binLowEdge = binLowEdges[i];
     int binUpperEdge = binUpperEdges[i];
-    
-    TH1D *hEB = new TH1D(Form("sieieEB_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEB",200,0.,0.1);
+
+    if (closure_test){
+      nbinsSieieEB = 50;
+      nbinsSieieEE = 25;
+      nbinsChIso   = 50;
+    }
+
+    TH1D *hEB = new TH1D(Form("sieieEB_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEB",nbinsSieieEB,0.,0.1);
     hEB->Sumw2();
     sigmaIetaIetaEB.push_back(hEB);
-    
-    TH1D *hEB1 = new TH1D(Form("sieieEB1_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEB1",200,0.,0.1);
+
+    TH1D *hEB1 = new TH1D(Form("sieieEB1_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEB1",nbinsSieieEB,0.,0.1);
     hEB1->Sumw2();
     sigmaIetaIetaEB1.push_back(hEB1);
-    
-    TH1D *hEB2 = new TH1D(Form("sieieEB2_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEB2",200,0.,0.1);
+
+    TH1D *hEB2 = new TH1D(Form("sieieEB2_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEB2",nbinsSieieEB,0.,0.1);
     hEB2->Sumw2();
     sigmaIetaIetaEB2.push_back(hEB2);
-    
-    TH1D *hEE = new TH1D(Form("sieieEE_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEE",100,0.,0.1);
+
+    TH1D *hEE = new TH1D(Form("sieieEE_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEE",nbinsSieieEE,0.,0.1);
     hEE->Sumw2();
     sigmaIetaIetaEE.push_back(hEE);
-    
-    TH1D *hEE1 = new TH1D(Form("sieieEE1_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEE1",100,0.,0.1);
+
+    TH1D *hEE1 = new TH1D(Form("sieieEE1_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEE1",nbinsSieieEE,0.,0.1);
     hEE1->Sumw2();
     sigmaIetaIetaEE1.push_back(hEE1);
-    
-    TH1D *hEE2 = new TH1D(Form("sieieEE2_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEE2",100,0.,0.1);
+
+    TH1D *hEE2 = new TH1D(Form("sieieEE2_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEE2",nbinsSieieEE,0.,0.1);
     hEE2->Sumw2();
     sigmaIetaIetaEE2.push_back(hEE2);
 
-    TH1D *hEB_chIso = new TH1D(Form("chIsoEB_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"chIsoEB",100,0.,50.);
+    TH1D *hEB_chIso = new TH1D(Form("chIsoEB_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"chIsoEB",nbinsChIso,0.,50.);
     hEB_chIso->Sumw2();
     chIsoEB.push_back(hEB_chIso);
-    
-    TH1D *hEE_chIso = new TH1D(Form("chIsoEE_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"chIsoEE",100,0.,50.);
+
+    TH1D *hEE_chIso = new TH1D(Form("chIsoEE_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"chIsoEE",nbinsChIso,0.,50.);
     hEE_chIso->Sumw2();
     chIsoEE.push_back(hEE_chIso);
   }
-  
+
   TH1D* jetPhoDrEB_realtemplate = new TH1D("jetPhoDrEB_realtemplate","jetPhoDrEB_realtemplate",200,0.,1.);
   TH1D* jetPhoDrEE_realtemplate = new TH1D("jetPhoDrEE_realtemplate","jetPhoDrEE_realtemplate",200,0.,1.);
 
@@ -126,7 +136,7 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
     // fake rate object definitions
     bool is_sieie_numerator_object = Photon_isNumeratorObjCand && Photon_passChIso;
     bool is_chIso_numerator_object = Photon_isNumeratorObjCand && Photon_passSieie;
-    
+
     // reject beam halo
     //if (Event_beamHaloIDTight2015) continue;
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
@@ -154,9 +164,9 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
 
     // bool PFJet80Fired = TriggerBit_HLT_PFJet80_v4 == 1;
     // bool PFJet400Fired = TriggerBit_HLT_PFJet400_v4 == 1;
-    
+
     // if (!PFJet400Fired) continue;
-    
+
     /*
     TLorentzVector photon;
     TLorentzVector leadingJet;
@@ -165,7 +175,7 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
 
     double photonLeadingJetDr = -1.;
     bool matched = false;
-    
+
     if (Jet_nJets >= 2){
 
       photon.SetPtEtaPhiM(Photon_pt,Photon_scEta,Photon_scPhi,0.);
@@ -186,7 +196,7 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
       matched = matchedToSecondLeadingJet;
 
     }
-    
+
     if (matched) continue;
     */
 
@@ -224,11 +234,11 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
 	}
       } // end pt cut
     } // end loop over pt bin increments
-    
+
   } // end loop over entries
-  
+
   TFile file_out(filename,"RECREATE");
-  
+
   // normalize histograms and write to file
   std::vector<std::vector<TH1D*>> hists_to_normalize = {chIsoEB, sigmaIetaIetaEB, sigmaIetaIetaEB1, sigmaIetaIetaEB2, // EB
 							chIsoEE, sigmaIetaIetaEE, sigmaIetaIetaEE1, sigmaIetaIetaEE2}; // EE
@@ -240,13 +250,13 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
       it->Write();
     }
   }
-  
+
   jetPhoDrEB_realtemplate->Write();
   jetPhoDrEE_realtemplate->Write();
-  
+
   npv->Write();
 
   file_out.ls();
   file_out.Close();
-  
+
 } // end of Loop()

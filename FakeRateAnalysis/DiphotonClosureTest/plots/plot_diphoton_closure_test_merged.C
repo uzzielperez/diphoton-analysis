@@ -1,28 +1,37 @@
-void plot_diphoton_closure_test_merged() {
+void plot_diphoton_closure_test_merged(TString sample="all", TString era="2016") {
   // set global root options
   gROOT->SetStyle("Plain");
+  gROOT->SetBatch();
   //gStyle->SetMarkerStyle(8);
   gStyle->SetPalette(1,0);
   gStyle->SetNdivisions(505);
   gStyle->SetOptStat(0);
 
   // input what sample to plot
-  TString sample = "";
-  cout << "Enter sample to plot (QCD, GJets, GGJets, or all): ";
-  cin >> sample;
-  if (sample != "QCD" && sample != "GJets" && sample != "GGJets" && sample != "all") {
-    cout << "Invalid choice!" << endl;
-    return;
-  }
+  // TString sample = "";
+  // cout << "Enter sample to plot (QCD, GJets, GGJets, or all): ";
+  // cin >> sample;
+  // if (sample != "QCD" && sample != "GJets" && sample != "GGJets" && sample != "all") {
+  //   cout << "Invalid choice!" << endl;
+  //   return;
+  // }
   cout << "\nUsing sample: " << sample << endl;
-  
+
+  std::map<TString, TString> cmssw_version;
+  cmssw_version["2016"] = "76X";
+  cmssw_version["2017"] = "94X";
+  cmssw_version["2018"] = "102X";
+
+  TString templatesBase = "/uscms/home/cuperez/nobackup/tribosons/FakeRate/CMSSW_10_2_18/src/";
+
   TString filename = "";
-  if (sample == "QCD")     filename = "../analysis/diphoton_fake_rate_diphoton_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "GJets")   filename = "../analysis/diphoton_fake_rate_diphoton_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "GGJets")  filename = "../analysis/diphoton_fake_rate_diphoton_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
-  if (sample == "all")     filename = "../analysis/diphoton_fake_rate_diphoton_closure_test_all_samples_76X_MiniAOD_histograms.root";
+  if (sample == "QCD")     filename = templatesBase + "diphoton_fake_rate_diphoton_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  if (sample == "GJets")   filename = templatesBase + "diphoton_fake_rate_diphoton_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  if (sample == "GGJets")  filename = templatesBase + "diphoton_fake_rate_diphoton_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  if (sample == "all")     filename = templatesBase + "diphoton_fake_rate_diphoton_closure_test_all_samples_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+
   cout << "filename: " << filename << endl << endl;
-  
+
   TFile *f = TFile::Open(filename);
 
   // merge histograms with fake rate applied
@@ -46,7 +55,7 @@ void plot_diphoton_closure_test_merged() {
   gjets_EBEE->Add(hFT2);
   gjets_EBEE->Add(hFT3);
   gjets_EBEE->Add(ggjets_EBEE,-2);
-  
+
   // merge histograms from mc truth
   TH1D *hTF1_truth = (TH1D*) f->Get("TT_TF_mc_truth_diphoton_minv_EBEB");
   TH1D *hTF2_truth = (TH1D*) f->Get("TT_TF_mc_truth_diphoton_minv_EBEE");
@@ -108,7 +117,7 @@ void plot_diphoton_closure_test_merged() {
   l_gjets_EBEE->AddEntry(gjets_EBEE,"gjets with fake rate","ep");
   l_gjets_EBEE->AddEntry(gjets_EBEE_truth,"gjets with MC truth","ep");
   l_gjets_EBEE->Draw();
-  c_gjets->SaveAs("diphoton_gjets_closure_test_"+sample+".pdf");
+  c_gjets->SaveAs("diphoton_gjets_closure_test_"+sample+"_"+era+".pdf");
 
   // dijet
   TCanvas *c_ggjets = new TCanvas("c_ggjets","",1500,900);
@@ -151,5 +160,5 @@ void plot_diphoton_closure_test_merged() {
   l_ggjets_EBEE->AddEntry(ggjets_EBEE,"ggjets with fake rate","ep");
   l_ggjets_EBEE->AddEntry(ggjets_EBEE_truth,"ggjets with MC truth","ep");
   l_ggjets_EBEE->Draw();
-  c_ggjets->SaveAs("diphoton_ggjets_closure_test_"+sample+".pdf");  
+  c_ggjets->SaveAs("diphoton_ggjets_closure_test_"+sample+"_"+era+".pdf");
 }

@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
   std::string samples, run, fakes;
 
   if(argc != 4) {
-    std::cout << "Syntax: closure_test.exe [2016/2017/2018] [QCD/GJets/GGJets/all] [fakes/all]" << std::endl;
+    std::cout << "Syntax: photon_closure_test.exe [2016/2017/2018] [QCD/GJets/GGJets/all] [fakes/truth]" << std::endl;
     return -1;
   }
   else {
@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
       return -1;
     }
     samples = argv[2];
-    if(samples.compare("QCD") != 0 
+    if(samples.compare("QCD") != 0
        and samples.compare("GJets") != 0
        and samples.compare("GGJets") != 0
        and samples.compare("QCD") != 0
@@ -28,13 +28,14 @@ int main(int argc, char *argv[])
       return -1;
     }
     fakes = argv[3];
-    if(fakes.compare("fakes") != 0 
-       and fakes.compare("all") != 0) {
-      std::cout << "Only 'fakes' and 'all' are allowed parameters. " << std::endl;
+    if(fakes.compare("fakes") != 0
+       and fakes.compare("truth") != 0) {
+      std::cout << "Only 'fakes' and 'truth' are allowed parameters. " << std::endl;
       return -1;
     }
   }
-  bool do_fakes = fakes.compare("fakes") == 0;
+  bool do_fakes = fakes.compare("fakes");
+  std::cout << "Doing MC as " << fakes << std::endl;
 
   diphoton_looper(run, samples, do_fakes);
 
