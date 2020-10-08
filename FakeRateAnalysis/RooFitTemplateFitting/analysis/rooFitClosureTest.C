@@ -82,6 +82,7 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   if (sample == "QCD")    data_filename = "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "GJets")  data_filename = "diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "GGJets") data_filename = "diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version[era] + "_MiniAOD_histograms.root";
+  if (sample == "alltruth") data_filename = "diphoton_fake_rate_closure_test_matching_all_samples_"+ cmssw_version[era] +"_MiniAOD_histograms.root";
   TFile *histojetfile = TFile::Open(data_filename);
   TFile *histojetfile_templates;
   histojetfile_templates = TFile::Open(data_filename);
@@ -271,7 +272,6 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   xframeClone->GetYaxis()->SetTitleOffset(1.2);
 
   gPad->SetLogy();
-
   canvas->Print( TString("plots/fakeRatePlot_") + sample + "_" + era + "_" +  etaBin + TString("_pT") + ptBin + postFix + TString(".pdf") );
 
   // change to TH1D just so we can change the name

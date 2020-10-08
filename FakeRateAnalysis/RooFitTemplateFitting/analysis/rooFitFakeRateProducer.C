@@ -1,3 +1,4 @@
+
 #include "diphoton-analysis/Tools/interface/sampleList.hh"
 
 #include "TROOT.h"
@@ -54,10 +55,10 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   gROOT->SetBatch();
   gSystem->Load("libRooFit");
   gSystem->AddIncludePath("-I$ROOFITSYS/include");
-  
+
   using namespace RooFit;
   using namespace std;
-  
+
   cout << endl;
   cout << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" << endl;
 
@@ -66,14 +67,14 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
 
   cout << "Starting rooFitFakeRateProducer" << endl;
   cout << "Using " << sample << ", " << templateVariable << ", " << etaBin << ", pt " << ptBin << ", " << sideband.first << " < sideband < " << sideband.second << endl;
-  
+
   // for real templates (same for data and mc)
   TString extra("");
   // if(era.Contains("2016")) {
   //   if(sample == "jetht") extra = "_JetHT";
   //   if(sample == "doublemuon") extra = "_DoubleMuon";
   // }
-  
+
   // for numerator, fake templates, and denominator (choose data or mc)
   TString basefilename("root://cmseos.fnal.gov//store/user/cawest/fake_rate/");
   TString data_filename = "";
@@ -104,7 +105,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   TFile *historealmcfile_templates;
   if(no_template_pv_binning) historealmcfile_templates = TFile::Open(mc_filename_templates);
   else historealmcfile = TFile::Open(mc_filename);
-  
+
   double sidebandLow = sideband.first;
   double sidebandHigh = sideband.second;
   TString postFix = "";
@@ -112,7 +113,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
     postFix = TString::Format("_chIso%dTo%d",(int)sidebandLow,(int)sidebandHigh);
   else if (templateVariable == "chIso")
     postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
-  
+
   // get histograms
   TString histName( templateVariable + etaBin + TString("_faketemplate_pt") + ptBin + postFix );
   std::cout << "Getting " << histName << std::endl;
@@ -136,7 +137,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
     if (hrealTemplate->GetBinContent(bincount) == 0.)
       hrealTemplate->SetBinContent(bincount,1.e-6);
   }
-  
+
   int ndataentries = hData->Integral();
 
   float templateVariableMin, templateVariableMax;
@@ -148,15 +149,15 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
     templateVariableMin = 0.;
     templateVariableMax = 50.;
   }
-  
+
   TString templateVariableTitle = "";
   if (templateVariable == "sieie")
     templateVariableTitle = "#sigma_{i#etai#eta}";
   else if (templateVariable == "chIso")
     templateVariableTitle = "Iso_{Ch}";
-  
+
   RooRealVar template_fit_variable("template_fit_variable",templateVariableTitle.Data(),templateVariableMin,templateVariableMax);
-  
+
   double template_fit_variable_cut;
   if (templateVariable == "sieie") {
     // using cuts for unsaturated photons
@@ -169,35 +170,35 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
 
   RooDataHist faketemplate("faketemplate","fake template",template_fit_variable,hfakeTemplate);
   RooHistPdf fakepdf("fakepdf","test hist fake pdf",template_fit_variable,faketemplate);
-  
+
   RooDataHist realtemplate("realtemplate","real template",template_fit_variable,hrealTemplate);
   RooHistPdf realpdf("realpdf","test hist real pdf",template_fit_variable,realtemplate);
-  
+
   RooDataHist data("data","data to be fitted to",template_fit_variable,hData);
-  
+
   // RooRealVar fsig("fsig","signal fraction",0.1,0,1);
-  
+
   RooRealVar signum("signum","signum",0,ndataentries);
   RooRealVar fakenum("fakenum","fakenum",0,ndataentries);
-  
+
   RooExtendPdf extpdfsig("Signal","extpdfsig",realpdf,signum,"sigrange");
   RooExtendPdf extpdffake("Background","extpdffake",fakepdf,fakenum,"sigrange");
-  
+
   RooAddPdf model("model","sig + background",RooArgList(extpdfsig,extpdffake));
-  
+
   model.fitTo(data,RooFit::Minos(),SumW2Error(kTRUE),PrintEvalErrors(-1));
 
   TH1D* fitHist = (TH1D*) model.createHistogram("template_fit_variable",hData->GetNbinsX());
-  
+
   double fitres = hData->Chi2Test(fitHist,"CHI2/NDF");
   cout << "CHI2 FIT RES = " << fitres << endl;
 
   TCanvas *canvas = new TCanvas("canvas","Fit Result",1600,600);
   canvas->Divide(2,1);
-  
+
   RooPlot *xframe = template_fit_variable.frame();
   xframe->SetTitle("");
-  
+
   data.plotOn(xframe);
   model.plotOn(xframe);
   model.plotOn(xframe,Components(extpdfsig),LineColor(2),LineStyle(2));
@@ -205,7 +206,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   data.plotOn(xframe);
 
   canvas->cd(1);
-  
+
   if (templateVariable == "sieie") {
     etaBin.Contains("EB") ? xframe->GetXaxis()->SetRangeUser(0.,0.03) : xframe->GetXaxis()->SetRangeUser(0.,0.08);
   }
@@ -220,13 +221,13 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
 
   TString label_pt_bin = ptBin;
   label_pt_bin.ReplaceAll("To"," < p_{T} < ");
-  
+
   TString sideband_string;
   if (templateVariable == "sieie")
     sideband_string = TString::Format("%d < Iso_{Ch} < %d GeV",(int)sidebandLow,(int)sidebandHigh);
   else if (templateVariable == "chIso")
     sideband_string = TString::Format("%.4f < #sigma_{i#etai#eta} < %.3f",sidebandLow,sidebandHigh);
-  
+
   TLatex *t_label = new TLatex();
   t_label->SetTextAlign(12);
   if (etaBin == "EB") t_label->DrawLatexNDC(0.55,0.60,"ECAL barrel");
@@ -237,7 +238,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   t_label->SetTextFont(42);
   t_label->DrawLatexNDC(0.70, 0.975, Form("%1.1f fb^{-1} (13 TeV)", luminosity[era.Data()]));
   //  t_label->     DrawLatexNDC(0.55,0.45,TString::Format("#chi^{2}/ndf = %6.1f",fitres));
-  
+
   TObject *objdata = nullptr;
   TObject *objmodel = nullptr;
   TObject *objsignal = nullptr;
@@ -262,12 +263,12 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   legend->AddEntry(objfake," Fake template","l");
   legend->AddEntry(objmodel," Combined fit","l");
   legend->Draw("same");
-    
+
   canvas->cd(2);
 
   RooPlot *xframeClone = (RooPlot*)xframe->emptyClone("xframeClone");
   xframeClone->SetTitle("");
-  
+
   xframeClone->Draw();
   xframe->Draw("same");
 
@@ -283,11 +284,11 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   xframeClone->GetYaxis()->SetTitle("#gamma Candidates / ( 0.0005 )");
   //  xframeClone->GetYaxis()->SetTitle(xframe->GetYaxis()->GetTitle());
   xframeClone->GetYaxis()->SetTitleOffset(1.2);
-  
+
   gPad->SetLogy();
 
   canvas->Print( TString("plots/fakeRatePlot_") + sample + "_" + era + "_" +  etaBin + TString("_pT") + ptBin + postFix + TString(".pdf") );
-  
+
   // change to TH1D just so we can change the name
   TH1D *hobjdata = nullptr;
   TH1D *hobjmodel = nullptr;
@@ -306,7 +307,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   hobjmodel-> SetName( TString("sigplusbkgfit") + etaBin + TString("_pt") + ptBin + postFix );
   hobjsignal->SetName( TString("signalfit")     + etaBin + TString("_pt") + ptBin + postFix );
   hobjfake->  SetName( TString("bkgfit")        + etaBin + TString("_pt") + ptBin + postFix );
-  
+
   TFile outfile("fakeRatePlots_" + sample + "_" + era + pvCut + ".root","update");
   outfile.cd();
   hobjdata->Write();
@@ -348,7 +349,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   cout << "Here: " << fakerate << " " << fakerateerror << endl;
   cout << "Ending rooFitFakeRateProducer" << endl;
   cout << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" << endl;
-  
+
   return std::make_pair(fakevalue,fakeerrormax);
 
   histojetfile->cd();
@@ -356,5 +357,5 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
 
   historealmcfile->cd();
   historealmcfile->Close();
-  
+
 } // end of rooFitFakeRateProducer()

@@ -29,13 +29,13 @@ int main(int argc, char *argv[])
   std::cout << "\nStarting closure_test_rooFit()\n" << std::endl;
 
   if(argc < 3) {
-    std::cout << "Syntax: closure_test_rooFit.exe [2015/2016/2017/2018] [DiPhotonJets/GGJets/GJets/all] [PV_low] [PV_high]" << std::endl;
+    std::cout << "Syntax: closure_test_rooFit.exe [DiPhotonJets/GGJets/GJets/all/alltruth] [sieie/chIso] [2016/2017/2018] [PV_low] [PV_high]" << std::endl;
     return -1;
   }
   else {
     sample = argv[1];
-    if (sample != "all" && sample != "GGJets" && sample != "GJets" && sample != "QCD") {
-      std::cout << "Choose sample: QCD, GJets, GGJets or all\n" << std::endl;
+    if (sample != "all" && sample != "GGJets" && sample != "GJets" && sample != "QCD" && sample !="alltruth") {
+      std::cout << "Choose sample: QCD, GJets, GGJets, all, or alltruth\n" << std::endl;
       return -1;
     }
 
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
   // array of pt bin edges
   std::vector<int> ptBinArray({ 50, 70, 90, 110, 130, 150});
   // With higher statistics in JetHT sample, additional bins can be used
-  if(sample=="all") {
+  if(sample=="all" || sample=="alltruth") {
     ptBinArray.push_back(200);
     ptBinArray.push_back(250);
     ptBinArray.push_back(300);
@@ -168,6 +168,7 @@ int main(int argc, char *argv[])
   if (sample == "QCD")    input_filename = "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";
   if (sample == "GJets")  input_filename = "diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";
   if (sample == "GGJets") input_filename = "diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  if (sample == "alltruth")   input_filename = "diphoton_fake_rate_closure_test_matching_all_samples_"+ cmssw_version[era] +"_MiniAOD_histograms.root";
   TFile *infile = TFile::Open(input_filename,"read");
 
   // debug vectors
@@ -191,6 +192,7 @@ int main(int argc, char *argv[])
       else if (templateVariable == "chIso")
 	postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
 
+      // Return pair: (fakevalue, fakerrormax) for ptBin, sideband
       std::pair<double,double> resEB = rooFitClosureTest(sample,templateVariable,binName,TString("EB"),sidebandsEB.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
 
       // record fake rate in TGraphs
