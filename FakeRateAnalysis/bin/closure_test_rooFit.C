@@ -165,11 +165,11 @@ int main(int argc, char *argv[])
   //TString basefilename("root://cmseos.fnal.gov//store/user/cawest/fake_rate/");
   TString basefilename("/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/");
 
-  if (sample == "all")        input_filename = "diphoton_fake_rate_closure_test_all_samples_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  if (sample == "all" || sample == "alltruth")        input_filename = "diphoton_fake_rate_closure_test_all_samples_"+cmssw_version[era]+"_MiniAOD_histograms.root";
   if (sample == "QCD")    input_filename = "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";
   if (sample == "GJets")  input_filename = "diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";
   if (sample == "GGJets") input_filename = "diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_"+cmssw_version[era]+"_MiniAOD_histograms.root";
-  if (sample == "alltruth")   input_filename = "diphoton_fake_rate_closure_test_matching_all_samples_"+ cmssw_version[era] +"_MiniAOD_histograms.root";
+  // if (sample == "alltruth")   input_filename = "diphoton_fake_rate_closure_test_matching_all_samples_"+ cmssw_version[era] +"_MiniAOD_histograms.root";
   TFile *infile = TFile::Open(input_filename,"read");
 
   // debug vectors

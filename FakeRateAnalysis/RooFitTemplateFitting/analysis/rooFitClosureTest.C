@@ -76,16 +76,24 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   TString basefilename("/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/");
   TString data_filename = "";
   TString pvCut = "";
+  TString input_filename = "";
 
   // MC as fakes (fake-enriched samples) or Truth
-  if (sample == "all")    data_filename = "diphoton_fake_rate_closure_test_all_samples_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "QCD")    data_filename = "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "GJets")  data_filename = "diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "GGJets") data_filename = "diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version[era] + "_MiniAOD_histograms.root";
-  if (sample == "alltruth") data_filename = "diphoton_fake_rate_closure_test_matching_all_samples_"+ cmssw_version[era] +"_MiniAOD_histograms.root";
+  if (sample == "all")    data_filename = "diphoton_fake_rate_closure_test_all_samples_" + cmssw_version[era] + "_MiniAOD_histograms.root";
+  if (sample == "alltruth"){
+    data_filename = "diphoton_fake_rate_closure_test_matching_all_samples_"+ cmssw_version[era] +"_MiniAOD_histograms.root";
+    input_filename = "diphoton_fake_rate_closure_test_all_samples_" + cmssw_version[era] + "_MiniAOD_histograms.root";
+    std::cout << "Using numerator file: " << input_filename << std::endl;
+  }
+
   TFile *histojetfile = TFile::Open(data_filename);
   TFile *histojetfile_templates;
   histojetfile_templates = TFile::Open(data_filename);
+
+
 
   // Real Templates
   TString mc_filename(basefilename + "diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + "_nPV0-200_MiniAOD_histograms.root");
@@ -100,18 +108,47 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   else if (templateVariable == "chIso")
     postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
 
-  // get histograms
-  TString histName( templateVariable + etaBin + TString("_faketemplate_pt") + ptBin + postFix );
+  // ---get histograms
+  // Fake Templates
+  TString temp;
+  TString histName;
+
+  if (sample == "alltruth"){
+     temp = "_numerator_fakes_pt";
+     histName = templateVariable + etaBin + temp + ptBin ;
+  }
+  else{
+    temp = "_faketemplate_pt";
+    histName = templateVariable + etaBin + temp + ptBin + postFix ;
+  }
+
+
   std::cout << "Getting " << histName << std::endl;
   histojetfile->Print();
   TH1D *hfakeTemplate = (TH1D*) histojetfile_templates->Get(histName);
   hfakeTemplate->Print();
+
+  // Real Templates
   TH1D *hrealTemplate = (TH1D*) historealmcfile->Get( templateVariable + etaBin + TString("_realtemplate_pt") + ptBin );
   hrealTemplate->Print();
-  TH1D *hData         = (TH1D*) histojetfile->Get( templateVariable + etaBin + TString("_numerator_pt") + ptBin);
+
+  // Numerator
+  TH1D *hData;
+  TH1D *hdenom;
+  if (sample == "alltruth") {
+    TFile *inputFile = TFile::Open(input_filename);
+    hData = (TH1D*) inputFile->Get( templateVariable + etaBin + TString("_numerator_pt") + ptBin);
+    hdenom   = (TH1D*) inputFile->Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );
+  }
+  else{
+    hData = (TH1D*) histojetfile->Get( templateVariable + etaBin + TString("_numerator_pt") + ptBin);
+    hdenom   = (TH1D*) histojetfile->Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );
+  }
   hData->Print();
-  TH1D *hdenom        = (TH1D*) histojetfile->Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );
   hdenom->Print();
+  // Denominator
+
+
 
   // avoiding 0 entries in the histograms
   // fake and real mc histos are the most critical
