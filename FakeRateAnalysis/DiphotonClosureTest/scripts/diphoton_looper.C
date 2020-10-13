@@ -8,20 +8,20 @@
 
 #include "diphoton-analysis/FakeRateAnalysis/DiphotonClosureTest/analysis/DiphotonClosureTest.C"
 
-void diphoton_looper(TString run, TString sample)
+void diphoton_looper(TString run="2016", TString sample="all")
 {
   std::cout << "\nUsing sample: " << sample << std::endl;
-  
+
   // use stopwatch for timing
   TStopwatch sw;
   sw.Start();
 
   // select tree
   TString tree = "diphoton/fTree";
-  
+
   // ntuple path (change as needed)
   TString ntuple_path("root://cmseos.fnal.gov//store/user/cawest/");
-  
+
   // create tchain of all files to loop over
   TChain *chain = new TChain(tree);
 
@@ -143,7 +143,7 @@ void diphoton_looper(TString run, TString sample)
       chain->Add(ntuple_path+"diphoton_closure/11c96ff/GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIAutumn18MiniAOD-102X_upgrade2018_realisti/200821_025548/0000/*.root");
       chain->Add(ntuple_path+"diphoton_closure/11c96ff/GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/crab_GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIAutumn18MiniAOD-102X_upgrade2018_realisti/200821_033205/0000/*.root");
     }
-  
+
     if (sample == "all" || sample == "GGJets") {
       chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINI/200730_042411/0000/*.root");
       chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MI/200730_151230/0000/*.root");
@@ -155,19 +155,19 @@ void diphoton_looper(TString run, TString sample)
       chain->Add(ntuple_path+"diphoton_closure/27a1c52/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1__MINIA/200730_151042/0000/*.root");
     }
   }
-  
+
   // list chain and entries
   chain->ls();
   std::cout << "Total number of entries: " << chain->GetEntries() << std::endl;
-  
+
   // create instance using our chain and loop over entries
   DiphotonClosureTest loop(chain);
   loop.Loop(run, sample);
-  
+
   // stop stopwatch
   sw.Stop();
-  
-  // convert total time to minutes 
+
+  // convert total time to minutes
   std::cout << "RealTime : " << sw.RealTime() / 60.0 << " minutes" << std::endl;
   std::cout << "CPUTime  : " << sw.CpuTime()  / 60.0 << " minutes" << std::endl;
 }
