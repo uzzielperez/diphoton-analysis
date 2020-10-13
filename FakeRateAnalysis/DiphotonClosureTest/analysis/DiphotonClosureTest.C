@@ -49,7 +49,7 @@ void DiphotonClosureTest::Loop(TString run, TString sample)
   if (fChain == 0) return;
 
   std::cout << "\nUsing sample: " << sample << std::endl;
-  
+
   // output filename
   TString filename = "";
   if (sample == "QCD")     filename = "diphoton_fake_rate_diphoton_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_" + cmssw_version(year) + "_MiniAOD_histograms.root";
@@ -61,10 +61,10 @@ void DiphotonClosureTest::Loop(TString run, TString sample)
   int nbins = 120;
   double xmin = 0.0;
   double xmax = 6000.0;
-  
+
   enum diphotonRegions {EBEB = 0, EBEE, EEEB, EEEE};
   const TString regions[4] = {"EBEB", "EBEE", "EEEB", "EEEE"};
-  
+
   TH1D *good_TF_mc_truth_diphoton_minv[4], *TT_TF_mc_truth_diphoton_minv[4], *TF_diphoton_minv[4], *TF_diphoton_minv_with_fake_rate[4];
   TH1D *good_FT_mc_truth_diphoton_minv[4], *TT_FT_mc_truth_diphoton_minv[4], *FT_diphoton_minv[4], *FT_diphoton_minv_with_fake_rate[4];
   TH1D *good_FF_mc_truth_diphoton_minv[4], *TT_FF_mc_truth_diphoton_minv[4], *FF_diphoton_minv[4], *FF_diphoton_minv_with_fake_rate[4];
@@ -86,9 +86,9 @@ void DiphotonClosureTest::Loop(TString run, TString sample)
     FF_diphoton_minv[iregion] = new TH1D("FF_diphoton_minv_"+regions[iregion],"", nbins, xmin, xmax);
     FF_diphoton_minv_with_fake_rate[iregion] = new TH1D("FF_diphoton_minv_with_fake_rate_"+regions[iregion],"", nbins, xmin, xmax);
   }
-  
+
   Long64_t nentries = fChain->GetEntriesFast();
-  
+
   Long64_t nbytes = 0, nb = 0;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
@@ -97,7 +97,7 @@ void DiphotonClosureTest::Loop(TString run, TString sample)
     // if (Cut(ientry) < 0) continue;
     if (jentry % 100000 == 0)
       std::cout << "Number of entries looped over: " << jentry << std::endl;
-    
+
     if (isGood) {
       bool pass_sipip_Good = Photon1_sigmaIphiIphi5x5 > 0.009 && Photon2_sigmaIphiIphi5x5 > 0.009;
       bool pass_pt_Good = Photon1_pt > 50. && Photon2_pt > 50.;
@@ -125,7 +125,7 @@ void DiphotonClosureTest::Loop(TString run, TString sample)
 	}
       }
     }
-    
+
     if (isTT) {
       bool pass_sipip_TT = TTPhoton1_sigmaIphiIphi5x5 > 0.009 && TTPhoton2_sigmaIphiIphi5x5 > 0.009;
       bool pass_pt_TT = TTPhoton1_pt > 50. && TTPhoton2_pt > 50.;
@@ -153,7 +153,7 @@ void DiphotonClosureTest::Loop(TString run, TString sample)
 	}
       }
     }
-    
+
     if (isTF) {
       bool pass_sipip_TF = TFPhoton1_sigmaIphiIphi5x5 > 0.009 && TFPhoton2_sigmaIphiIphi5x5 > 0.009;
       bool pass_pt_TF = TFPhoton1_pt > 50. && TFPhoton2_pt > 50.;
@@ -177,7 +177,7 @@ void DiphotonClosureTest::Loop(TString run, TString sample)
 	}
       }
     }
-    
+
     if (isFT) {
       bool pass_sipip_FT = FTPhoton1_sigmaIphiIphi5x5 > 0.009 && FTPhoton2_sigmaIphiIphi5x5 > 0.009;
       bool pass_pt_FT = FTPhoton1_pt > 50. && FTPhoton2_pt > 50.;
@@ -201,7 +201,7 @@ void DiphotonClosureTest::Loop(TString run, TString sample)
 	}
       }
     }
-    
+
     if (isFF) {
       bool pass_sipip_FF = FFPhoton1_sigmaIphiIphi5x5 > 0.009 && FFPhoton2_sigmaIphiIphi5x5 > 0.009;
       bool pass_pt_FF = FFPhoton1_pt > 50. && FFPhoton2_pt > 50.;
@@ -225,11 +225,11 @@ void DiphotonClosureTest::Loop(TString run, TString sample)
 	}
       }
     }
-    
+
   } // end for loop over entries
 
   TFile file_out(filename,"RECREATE");
-  
+
   for (int iregion = 0; iregion < 4; iregion++) {
     // TF
     good_TF_mc_truth_diphoton_minv[iregion]->Write();
@@ -250,24 +250,24 @@ void DiphotonClosureTest::Loop(TString run, TString sample)
 
   file_out.ls();
   file_out.Close();
-  
+
 } // end Loop()
 
 double DiphotonClosureTest::fakeRate(TString region, double pt) {
-  
+
   if (region == "EB") {
     double p0 = 0.00940635641577;
     double p1 = 3996.18607386369558;
     double p2 = 2.60232765149014;
     return p0+p1/std::pow(pt,p2);
   }
-  
+
   else if (region == "EE") {
     double p0 = -0.20515293829008;
     double p1 = 1.78530881946727;
     double p2 = 0.28786073480443;
     return p0+p1/std::pow(pt,p2);
   }
-  
+
   else return 0.0;
 }
