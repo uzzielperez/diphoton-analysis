@@ -26,7 +26,15 @@ fakeRates::fakeRates(std::string fakeRateType, int year) : m_year(year)
   const std::string iso("chIso5To10");
 
   m_fakeRateType = fakeRateType;
+  bool isClosureTest = (fakeRateType=="all") ? true : false;
 
+  const char *cmssw_base = getenv("CMSSW_BASE");
+  if(cmssw_base==NULL) {
+    std::cout << "Please issue cmsenv before running" << std::endl;
+    exit(-1);
+  }
+
+  if (!isClosureTest){
   std::vector<std::string> datasets = {"jetht", "doublemuon"};
   std::vector<std::string> regions = {"EB", "EE"};
   std::vector<std::string> pvCuts = {"0-22", "23-27"};
@@ -35,12 +43,6 @@ fakeRates::fakeRates(std::string fakeRateType, int year) : m_year(year)
     pvCuts.push_back("28-32");
     pvCuts.push_back("33-37");
     pvCuts.push_back("38-200");
-  }
-
-  const char *cmssw_base = getenv("CMSSW_BASE");
-  if(cmssw_base==NULL) {
-    std::cout << "Please issue cmsenv before running" << std::endl;
-    exit(-1);
   }
 
   for(auto region : regions) {
@@ -53,6 +55,21 @@ fakeRates::fakeRates(std::string fakeRateType, int year) : m_year(year)
 	std::string keyname(region + "_" + dataset + "_" + pvCut);
         m_fakeRates[keyname] = gr;
       }
+    }
+  }
+}
+
+else{
+  std::cout << "Closure Test" << std::endl;
+  std::vector<std::string> regions = {"EB", "EE"};
+
+    for (auto region : regions){
+      TFile *f = TFile::Open(Form("%s/src/fakeRatePlots_all_%d_nPV0-200.root", cmssw_base, year));
+      const TString graphName(Form("fakeRate%s_%s", region.c_str(), iso.c_str()));
+      TGraphAsymmErrors *gr = dynamic_cast<TGraphAsymmErrors*>(f->Get(graphName));
+      gr->Eval(1000.0);
+      std::string keyname(region + "_" + "all_0-200" );
+      m_fakeRatesClosureTest[keyname] = gr;
     }
   }
 }
@@ -92,25 +109,18 @@ double fakeRates::getFakeRate(double pt, int region, int nPV)
 
 double fakeRates::getFakeRateClosureTest(double pt, std::string region, int year)
 {
-  // std::string keyname_MCasFake(regions[region] + "_all_" + pvCut);
-  // std::string keyname_MCasTruth(regions[region] + "_alltruth_" + pvCut);
+  // std::vector<std::string> regions = {"EB", "EE"};
 
-  const std::string iso("chIso5To10");
+  std::string keyname_all(region + "_all_0-200");
+  // std::string keyname_alltruth(regions[region] + "_alltruth_0-200");
+  return m_fakeRatesClosureTest[keyname_all]->Eval(pt);
 
-  const char *cmssw_base = getenv("CMSSW_BASE");
-  if(cmssw_base==NULL) {
-    std::cout << "Please issue cmsenv before running" << std::endl;
-    exit(-1);
-  }
+  // if(m_fakeRateType == "average") return 0.5*(m_fakeRatesClosureTest[keyname_all]->Eval(pt)+m_fakeRatesClosureTest[keyname_alltruth]->Eval(pt));
+  // else if(m_fakeRateType == "all") return m_fakeRatesClosureTest[keyname_all]->Eval(pt);
+  // else if(m_fakeRateType == "alltruth") return m_fakeRatesClosureTest[keyname_alltruth]->Eval(pt);
+  // else std::cout << "Fake rate type " << m_fakeRateType << "not supported." << std::endl;
 
-  TFile *f = TFile::Open(Form("%s/src/fakeRatePlots_all_%d_nPV0-200.root", cmssw_base, year));
-  const TString graphName(Form("fakeRate%s_%s", region.c_str(), iso.c_str()));
-  TGraphAsymmErrors *gr = dynamic_cast<TGraphAsymmErrors*>(f->Get(graphName));
-  gr->Eval(1000.0);
-  std::string keyname(region + "_" + "all_0-200" );
-  m_fakeRatesClosureTest[keyname] = gr;
-
-  return m_fakeRatesClosureTest[keyname]->Eval(pt);
+  return 0;
 }
 
 #endif // fakeRates_hh

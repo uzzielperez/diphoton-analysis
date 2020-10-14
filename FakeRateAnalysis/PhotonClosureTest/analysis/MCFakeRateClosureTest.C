@@ -20,6 +20,8 @@ public:
   double FakeRateEB(double pt);
   double FakeRateEE(double pt);
   int m_year;
+  // std::unique_ptr<fakeRatesClosureTest> m_fakeRate;
+  // std::unique_ptr<float> m_fakeRate;
   std::unique_ptr<fakeRates> m_fakeRate;
 };
 
@@ -27,7 +29,10 @@ public:
 void MCFakeRateClosureTest::Loop(TString run, TString sample)
 {
   m_year = run.Atoi();
-  m_fakeRate = std::make_unique<fakeRates>("average", m_year);
+  // m_fakeRate = std::make_unique<fakeRates>("average", m_year);
+  // m_fakeRatesClosureTest = std::make_unique<fakeRatesClosureTest>("all", m_year,);
+  // m_fakeRate = std::make_unique<float>();
+  m_fakeRate = std::make_unique<fakeRates>("all", m_year);
 
 //   In a ROOT session, you can do:
 //      root> .L MCFakeRateClosureTest.C
