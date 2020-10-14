@@ -5,6 +5,9 @@
 #include <TCanvas.h>
 
 #include "diphoton-analysis/FakeRateAnalysis/interface/utilities.hh"
+#include "diphoton-analysis/Tools/interface/fakeRates.hh"
+
+#include <memory>
 
 void MCFakeRateClosureTestBase::Loop() {};
 
@@ -16,13 +19,15 @@ public:
   void Loop(TString run, TString sample);
   double FakeRateEB(double pt);
   double FakeRateEE(double pt);
+  int m_year;
+  std::unique_ptr<fakeRates> m_fakeRate;
 };
-
 
 
 void MCFakeRateClosureTest::Loop(TString run, TString sample)
 {
-  int year = run.Atoi();
+  m_year = run.Atoi();
+  m_fakeRate = std::make_unique<fakeRates>("average", m_year);
 
 //   In a ROOT session, you can do:
 //      root> .L MCFakeRateClosureTest.C
@@ -51,10 +56,10 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
 
   // output filename
   TString filename = "";
-  if (sample == "QCD")    filename = "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_" + cmssw_version(year) + "_MiniAOD_histograms.root";
-  if (sample == "GJets")  filename = "diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version(year) + "_MiniAOD_histograms.root";
-  if (sample == "GGJets") filename = "diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version(year) + "_MiniAOD_histograms.root";
-  if (sample == "all")    filename = "diphoton_fake_rate_closure_test_all_samples_" + cmssw_version(year) + "_MiniAOD_histograms.root";
+  if (sample == "QCD")    filename = "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_" + cmssw_version(m_year) + "_MiniAOD_histograms.root";
+  if (sample == "GJets")  filename = "diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version(m_year) + "_MiniAOD_histograms.root";
+  if (sample == "GGJets") filename = "diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version(m_year) + "_MiniAOD_histograms.root";
+  if (sample == "all")    filename = "diphoton_fake_rate_closure_test_all_samples_" + cmssw_version(m_year) + "_MiniAOD_histograms.root";
   std::cout << "Output filename: " << filename << std::endl << std::endl;
 
   // count number of numerator photons
@@ -68,6 +73,7 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
   // vector of chIso sidebands
   std::vector< std::pair<double,double> > chIsoSidebands;
   typedef std::vector< std::pair<double,double> >::const_iterator chIsoIt;
+  // chIsoSidebands.push_back( std::make_pair(0.,5.) );
   chIsoSidebands.push_back( std::make_pair(5.,10.) );
   chIsoSidebands.push_back( std::make_pair(6.,11.) );
   chIsoSidebands.push_back( std::make_pair(7.,12.) );
@@ -617,24 +623,20 @@ double MCFakeRateClosureTest::FakeRateEB(double pt) {
   double p0 = 0.00401543257042;
   double p1 = 85.57002275698491;
   double p2 = 1.71203116120994;
+  // add getFakeRate method from Chris (2016, 2017, 2018)
+  if (m_year == 2016 or m_year == 2017 or m_year == 2018){
+    return m_fakeRate->getFakeRateClosureTest(pt, "EB", m_year);
+  }
   return p0+p1/std::pow(pt,p2);
 }
 
 double MCFakeRateClosureTest::FakeRateEE(double pt) {
-  // if (pt < 135.0) {
-  //   double p0 = 0.03690596612126;
-  //   double p1 = 0.00008030430975;
-  //   double p2 = 0.00000940893255;
-  //   return p0+p1*(pt-135)+p2*std::pow(pt-135,2);
-  // }
-  // else if (pt >= 135.0) {
-  //   double p0 = 0.02606488430528; // yint
-  //   double p1 = 0.00008030430975; // slope
-  //   return p0+p1*pt; // pol1
-  // }
-  // else return 0;
   double p0 = -0.15299002741780;
   double p1 = 0.63378808277185;
   double p2 = 0.21130650931470;
+  // add getFakeRate method from Chris (2016, 2017, 2018)
+  if (m_year == 2016 or m_year == 2017 or m_year == 2018){
+    return m_fakeRate->getFakeRateClosureTest(pt, "EE", m_year);
+  }
   return p0+p1/std::pow(pt,p2);
 }

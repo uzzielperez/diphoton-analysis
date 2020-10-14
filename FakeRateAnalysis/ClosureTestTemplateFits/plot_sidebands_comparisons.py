@@ -29,7 +29,7 @@ cmssw_version = {
   "2017": "94X",
   "2018": "102X"
 }
-base = "/uscms_data/d3/cuperez/tribosons/FakeRate/CMSSW_10_2_18/src/";
+base = "/uscms_data/d3/cuperez/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/";
 
 if era == "dummy":
     PTBINS = [ 50, 70, 90, 130, 200, 600 ];

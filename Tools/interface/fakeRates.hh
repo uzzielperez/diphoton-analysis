@@ -11,11 +11,13 @@
 class fakeRates {
   int m_year;
   std::map<std::string, TGraphAsymmErrors*> m_fakeRates;
+  std::map<std::string, TGraphAsymmErrors*> m_fakeRatesClosureTest;
   std::string m_fakeRateType;
 
  public:
   fakeRates(std::string fakeRateType, int year);
   double getFakeRate(double pt, int region, int nPV);
+  double getFakeRateClosureTest(double pt, std::string region, int year);
 
 };
 
@@ -87,4 +89,28 @@ double fakeRates::getFakeRate(double pt, int region, int nPV)
 
   return 0;
 }
+
+double fakeRates::getFakeRateClosureTest(double pt, std::string region, int year)
+{
+  // std::string keyname_MCasFake(regions[region] + "_all_" + pvCut);
+  // std::string keyname_MCasTruth(regions[region] + "_alltruth_" + pvCut);
+
+  const std::string iso("chIso5To10");
+
+  const char *cmssw_base = getenv("CMSSW_BASE");
+  if(cmssw_base==NULL) {
+    std::cout << "Please issue cmsenv before running" << std::endl;
+    exit(-1);
+  }
+
+  TFile *f = TFile::Open(Form("%s/src/fakeRatePlots_all_%d_nPV0-200.root", cmssw_base, year));
+  const TString graphName(Form("fakeRate%s_%s", region.c_str(), iso.c_str()));
+  TGraphAsymmErrors *gr = dynamic_cast<TGraphAsymmErrors*>(f->Get(graphName));
+  gr->Eval(1000.0);
+  std::string keyname(region + "_" + "all_0-200" );
+  m_fakeRatesClosureTest[keyname] = gr;
+
+  return m_fakeRatesClosureTest[keyname]->Eval(pt);
+}
+
 #endif // fakeRates_hh

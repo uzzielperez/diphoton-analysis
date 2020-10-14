@@ -2,8 +2,17 @@ print "importing ROOT..."
 from ROOT import *
 import numpy as np
 print "done."
+import argparse
+
+# Command Line Options
+parser = argparse.ArgumentParser(description='plots templates')
+parser.add_argument('-e', '--era', help='dummy, 2016, 2017, 2018', default='dummy', type=str)
+args = parser.parse_args()
 
 gROOT.SetBatch()
+
+era = args.era
+base = "/uscms_data/d3/cuperez/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/";
 
 def TGraphAsymmErrorsToTH1D(g,histName):
     numPoints = g.GetN()
@@ -32,18 +41,18 @@ def TGraphAsymmErrorsToTH1D(g,histName):
         h.SetBinError(i+1,binErrors[i])
     return h
 
-infile = TFile("fake_rate_sieie_template_fits.root","read")
+if era == "dummy":
+    infile = TFile("fake_rate_sieie_template_fits.root","read")
+    plotEB = infile.Get("hEBFakeRate")
+    plotEE = infile.Get("hEEFakeRate")
 
-# Fake Rate for chIso5To10
-plotEB = infile.Get("hEBFakeRate")
-# plotEB = infile.Get("hEBRate_chIso5To10")
-#plotEBclone = plotorigEB.Clone()
-#plotEB = TGraphAsymmErrorsToTH1D(plotEBclone,"plotEB")
+else:
+    infile = TFile("%s/fakeRatePlots_all_%s_nPV0-200.root"%(base,era),"read")
+    plotEB = infile.Get("fakeRateEB_chIso5To10")
+    plotEB = TGraphAsymmErrorsToTH1D(plotEB,"plotEB")
+    plotEE = infile.Get("fakeRateEE_chIso5To10")
+    plotEE = TGraphAsymmErrorsToTH1D(plotEE,"plotEE")
 
-plotEE = infile.Get("hEEFakeRate")
-# plotEE = infile.Get("hEERate_chIso5To10")
-#plotEEclone = plotorigEE.Clone()
-#plotEE = TGraphAsymmErrorsToTH1D(plotEEclone,"plotEE")
 
 EBfunc = TF1("EBfunc","[0]+[1]/(x^[2])",0.,600.)
 EBfunc.SetParameter(0,0.1)
@@ -115,12 +124,9 @@ c = TCanvas("c","",1200,800)
 c.cd()
 plotEB.Draw()
 plotEB.GetYaxis().SetRangeUser(0.,0.2);
-c.SaveAs("closure_test_fake_rate_fit_chIso5To10_EB.pdf")
+c.SaveAs("closure_test_fake_rate_fit_chIso5To10_EB%s.pdf"%(era))
 
 #c.Clear()
 plotEE.Draw()
 plotEE.GetYaxis().SetRangeUser(0.,0.6);
-c.SaveAs("closure_test_fake_rate_fit_chIso5To10_EE.pdf")
-
-
-# raw_input("enter to quit: ")
+c.SaveAs("closure_test_fake_rate_fit_chIso5To10_EE%s.pdf"%(era))

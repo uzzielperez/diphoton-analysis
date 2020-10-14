@@ -219,7 +219,7 @@ void plot_kinematics_with_ratio(TString sample =  "all", TString era= "2016") {
   cmssw_version["2017"] = "94X";
   cmssw_version["2018"] = "102X";
 
-  TString base = "/uscms/home/cuperez/nobackup/tribosons/FakeRate/CMSSW_10_2_18/src/";
+  TString base = "/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/";
 
   TString filename = "";
   if (sample == "QCD")    filename = base + "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";

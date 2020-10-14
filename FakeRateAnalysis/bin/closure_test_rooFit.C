@@ -1,13 +1,13 @@
 /**
  * Produces fake rate plot as a function of pT
  *
- * This function calls /analysis/rooFitFakeRateProducer.C
+ * This function calls /analysis/rooFitClosureTest.C
  * From /analysis, run
  * root -l -b -q ../scripts/fakeRateCalculation.C'("mc","sieie", era)'
  * where year = 2016 or 2017
  */
 
-#include "diphoton-analysis/FakeRateAnalysis/RooFitTemplateFitting/analysis/rooFitFakeRateProducer.C"
+#include "diphoton-analysis/FakeRateAnalysis/RooFitTemplateFitting/analysis/rooFitClosureTest.C"
 
 double fakeRateUncertainty(double denominator, double fakeerror, double fakerate) {
   double uncert = TMath::Sqrt((fakeerror*fakeerror/denominator/denominator) + (fakerate*fakerate/denominator));
@@ -26,16 +26,16 @@ int main(int argc, char *argv[])
   TStopwatch sw;
   sw.Start();
 
-  std::cout << "\nStarting fakeRateCalculation()\n" << std::endl;
+  std::cout << "\nStarting closure_test_rooFit()\n" << std::endl;
 
   if(argc < 3) {
-    std::cout << "Syntax: fakeRateCalculation.exe [2015/2016/2017/2018] [DiPhotonJets/GGJets/GJets/all] [PV_low] [PV_high]" << std::endl;
+    std::cout << "Syntax: closure_test_rooFit.exe [DiPhotonJets/GGJets/GJets/all/alltruth] [sieie/chIso] [2016/2017/2018] [PV_low] [PV_high]" << std::endl;
     return -1;
   }
   else {
     sample = argv[1];
-    if (sample != "jetht" && sample != "doublemuon" && sample != "mc" && sample != "mc_QCD" && sample != "mc_GJets" && sample != "mc_GGJets") {
-      std::cout << "Choose sample: jetht, doublemuon, mc, mc_QCD, mc_GJets, or mc_GGJets\n" << std::endl;
+    if (sample != "all" && sample != "GGJets" && sample != "GJets" && sample != "QCD" && sample !="alltruth") {
+      std::cout << "Choose sample: QCD, GJets, GGJets, all, or alltruth\n" << std::endl;
       return -1;
     }
 
@@ -47,8 +47,8 @@ int main(int argc, char *argv[])
     std::cout << "Using template variable: " << templateVariable << std::endl;
 
     era = argv[3];
-    if (!era.Contains("2015") && !era.Contains("2016") && !era.Contains("2017") && !era.Contains("2018")) {
-      std::cout << "Only years 2015, 2016, 2017 and 2018 are supported" << std::endl;
+    if (!era.Contains("2016") && !era.Contains("2017") && !era.Contains("2018")) {
+      std::cout << "Only years 2016, 2017 and 2018 are supported" << std::endl;
       return -1;
     }
     if(argc>3) pvCutLow = std::atoi(argv[4]);
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
   // array of pt bin edges
   std::vector<int> ptBinArray({ 50, 70, 90, 110, 130, 150});
   // With higher statistics in JetHT sample, additional bins can be used
-  if(sample=="jetht") {
+  if(sample=="all" || sample=="alltruth") {
     ptBinArray.push_back(200);
     ptBinArray.push_back(250);
     ptBinArray.push_back(300);
@@ -148,22 +148,28 @@ int main(int argc, char *argv[])
     bkgvsptEE->GetXaxis()->SetTitle("p_{T} (GeV)");
     bkgVsPtEEVec.push_back(bkgvsptEE);
   }
+
   TString pvCut = "";
   if(pvCutLow!=0 || pvCutHigh!=2000) pvCut = Form("_nPV%i-%i", pvCutLow, pvCutHigh);
   TFile outfile("fakeRatePlots_" + sample + "_" + era + pvCut + ".root","recreate");
-  outfile.Close(); // create the file so it can be updated in the rooFitFakeRateProducer, we don't need it open here too
+  outfile.Close(); // create the file so it can be updated in the rooFitClosureTest, we don't need it open here too
+
+  std::map<TString, TString> cmssw_version;
+  cmssw_version["2016"] = "76X";
+  cmssw_version["2017"] = "94X";
+  cmssw_version["2018"] = "102X";
 
   TString input_filename;
   //  if (sample == "data")      input_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
   //  if (sample == "data")      input_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_UNKNOWN_newDenomDef.root";
-  TString basefilename("root://cmseos.fnal.gov//store/user/cawest/fake_rate/");
-  if (sample == "jetht" or sample == "doublemuon") {
-    input_filename = basefilename + sample + "_fakerate_" + era + pvCut + "_newDenomDef.root";
-  }
-  if (sample == "mc")        input_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_all_samples_76X_MiniAOD_histograms.root";
-  if (sample == "mc_QCD")    input_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "mc_GJets")  input_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_76X_MiniAOD_histograms.root";
-  if (sample == "mc_GGJets") input_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_76X_MiniAOD_histograms.root";
+  //TString basefilename("root://cmseos.fnal.gov//store/user/cawest/fake_rate/");
+  TString basefilename("/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/");
+
+  if (sample == "all" || sample == "alltruth")        input_filename = "diphoton_fake_rate_closure_test_all_samples_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  if (sample == "QCD")    input_filename = "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  if (sample == "GJets")  input_filename = "diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  if (sample == "GGJets") input_filename = "diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  // if (sample == "alltruth")   input_filename = "diphoton_fake_rate_closure_test_matching_all_samples_"+ cmssw_version[era] +"_MiniAOD_histograms.root";
   TFile *infile = TFile::Open(input_filename,"read");
 
   // debug vectors
@@ -187,7 +193,8 @@ int main(int argc, char *argv[])
       else if (templateVariable == "chIso")
 	postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
 
-      std::pair<double,double> resEB = rooFitFakeRateProducer(sample,templateVariable,binName,TString("EB"),sidebandsEB.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
+      // Return pair: (fakevalue, fakerrormax) for ptBin, sideband
+      std::pair<double,double> resEB = rooFitClosureTest(sample,templateVariable,binName,TString("EB"),sidebandsEB.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
 
       // record fake rate in TGraphs
       TString histNameEB = TString::Format("PtEB_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
@@ -226,7 +233,7 @@ int main(int argc, char *argv[])
       else if (templateVariable == "chIso")
 	postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
 
-      std::pair<double,double> resEE = rooFitFakeRateProducer(sample,templateVariable,binName,TString("EE"),sidebandsEE.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
+      std::pair<double,double> resEE = rooFitClosureTest(sample,templateVariable,binName,TString("EE"),sidebandsEE.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
 
       // record fake rate in TGraphs
       TString histNameEE = TString::Format("PtEE_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
@@ -362,7 +369,7 @@ int main(int argc, char *argv[])
 
   outfile2.Close();
 
-  std::cout << "\nEnding fakeRateCalculation()\n" << std::endl;
+  std::cout << "\nEnding closure_test_rooFit()\n" << std::endl;
 
   // stop stopwatch
   sw.Stop();

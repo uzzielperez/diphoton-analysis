@@ -1,4 +1,3 @@
-
 #include "diphoton-analysis/Tools/interface/sampleList.hh"
 
 #include "TROOT.h"
@@ -34,9 +33,9 @@
  * From /analysis, run
  * root -l -b -q ../scripts/fakeRateCalculation.C'("mc","sieie")'
  */
-std::pair<double,double> rooFitFakeRateProducer(TString sample, TString templateVariable, TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin, TString era, int pvCutLow, int pvCutHigh)
+std::pair<double,double> rooFitClosureTest(TString sample, TString templateVariable, TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin, TString era, int pvCutLow, int pvCutHigh)
 {
-  bool no_template_pv_binning = true;
+  //bool no_template_pv_binning = true;
 
   std::map<TString, TString> cmssw_version;
   cmssw_version["2016"] = "76X";
@@ -65,46 +64,40 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   setTDRStyle();
   gROOT->ForceStyle();
 
-  cout << "Starting rooFitFakeRateProducer" << endl;
+  cout << "Starting rooFitClosureTest" << endl;
   cout << "Using " << sample << ", " << templateVariable << ", " << etaBin << ", pt " << ptBin << ", " << sideband.first << " < sideband < " << sideband.second << endl;
 
   // for real templates (same for data and mc)
   TString extra("");
-  // if(era.Contains("2016")) {
-  //   if(sample == "jetht") extra = "_JetHT";
-  //   if(sample == "doublemuon") extra = "_DoubleMuon";
-  // }
 
   // for numerator, fake templates, and denominator (choose data or mc)
-  TString basefilename("root://cmseos.fnal.gov//store/user/cawest/fake_rate/");
+  //TString basefilename("root://cmseos.fnal.gov//store/user/cawest/fake_rate/");
+  TString basefilename("/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/");
   TString data_filename = "";
-  TString data_filename_templates = "";
   TString pvCut = "";
-  //  if (sample == "data")      data_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
-  //  if (sample == "data")      data_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_UNKNOWN_newDenomDef.root";
-  if (sample == "jetht" or sample == "doublemuon") {
-    TString matching;
-    bool useJetMatching = false;
-    if(sample == "jetht" and useJetMatching) matching = "_matchedtoLeadingJet";
-    if(pvCutLow!=0 || pvCutHigh!=2000) pvCut = Form("_nPV%i-%i", pvCutLow, pvCutHigh);
-    TFile outfile("fakeRatePlots_" + sample + "_" + era + pvCut + ".root","recreate");
-    data_filename = basefilename +  sample + "_fakerate_" + era + matching + pvCut + "_newDenomDef.root";
-    data_filename_templates = basefilename +  sample + "_fakerate_" + era + matching + "_nPV0-200_newDenomDef.root";
+  TString input_filename = "";
+
+  // MC as fakes (fake-enriched samples) or Truth
+  if (sample == "QCD")    data_filename = "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";
+  if (sample == "GJets")  data_filename = "diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";
+  if (sample == "GGJets") data_filename = "diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version[era] + "_MiniAOD_histograms.root";
+  if (sample == "all")    data_filename = "diphoton_fake_rate_closure_test_all_samples_" + cmssw_version[era] + "_MiniAOD_histograms.root";
+  if (sample == "alltruth"){
+    data_filename = "diphoton_fake_rate_closure_test_matching_all_samples_"+ cmssw_version[era] +"_MiniAOD_histograms.root";
+    input_filename = "diphoton_fake_rate_closure_test_all_samples_" + cmssw_version[era] + "_MiniAOD_histograms.root";
+    std::cout << "Using numerator file: " << input_filename << std::endl;
   }
-  if (sample == "mc")        data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_all_samples_" + cmssw_version[era] + "_MiniAOD_histograms.root";
-  if (sample == "mc_QCD")    data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";
-  if (sample == "mc_GJets")  data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";
-  if (sample == "mc_GGJets") data_filename = "../../PhotonClosureTest/analysis/diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version[era] + "_MiniAOD_histograms.root";
+
   TFile *histojetfile = TFile::Open(data_filename);
   TFile *histojetfile_templates;
-  if(no_template_pv_binning) histojetfile_templates = TFile::Open(data_filename_templates);
-  else histojetfile_templates = TFile::Open(data_filename);
-  TString mc_filename(basefilename + "/diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + pvCut + "_MiniAOD_histograms" + extra + ".root");
-  TFile *historealmcfile = TFile::Open(mc_filename);
-  TString mc_filename_templates(basefilename + "/diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + "_nPV0-200_MiniAOD_histograms" + extra + ".root");
-  TFile *historealmcfile_templates;
-  if(no_template_pv_binning) historealmcfile_templates = TFile::Open(mc_filename_templates);
-  else historealmcfile = TFile::Open(mc_filename);
+  histojetfile_templates = TFile::Open(data_filename);
+
+
+
+  // Real Templates
+  TString mc_filename(basefilename + "diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + "_nPV0-200_MiniAOD_histograms.root");
+  TFile *historealmcfile;
+  historealmcfile = TFile::Open(mc_filename);
 
   double sidebandLow = sideband.first;
   double sidebandHigh = sideband.second;
@@ -114,18 +107,47 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   else if (templateVariable == "chIso")
     postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
 
-  // get histograms
-  TString histName( templateVariable + etaBin + TString("_faketemplate_pt") + ptBin + postFix );
+  // ---get histograms
+  // Fake Templates
+  TString temp;
+  TString histName;
+
+  if (sample == "alltruth"){
+     temp = "_numerator_fakes_pt";
+     histName = templateVariable + etaBin + temp + ptBin ;
+  }
+  else{
+    temp = "_faketemplate_pt";
+    histName = templateVariable + etaBin + temp + ptBin + postFix ;
+  }
+
+
   std::cout << "Getting " << histName << std::endl;
   histojetfile->Print();
   TH1D *hfakeTemplate = (TH1D*) histojetfile_templates->Get(histName);
   hfakeTemplate->Print();
-  TH1D *hrealTemplate = (TH1D*) historealmcfile_templates->Get( templateVariable + etaBin + TString("_realtemplate_pt") + ptBin );
+
+  // Real Templates
+  TH1D *hrealTemplate = (TH1D*) historealmcfile->Get( templateVariable + etaBin + TString("_realtemplate_pt") + ptBin );
   hrealTemplate->Print();
-  TH1D *hData         = (TH1D*) histojetfile->Get( templateVariable + etaBin + TString("_numerator_pt") + ptBin);
+
+  // Numerator
+  TH1D *hData;
+  TH1D *hdenom;
+  if (sample == "alltruth") {
+    TFile *inputFile = TFile::Open(input_filename);
+    hData = (TH1D*) inputFile->Get( templateVariable + etaBin + TString("_numerator_pt") + ptBin);
+    hdenom   = (TH1D*) inputFile->Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );
+  }
+  else{
+    hData = (TH1D*) histojetfile->Get( templateVariable + etaBin + TString("_numerator_pt") + ptBin);
+    hdenom   = (TH1D*) histojetfile->Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );
+  }
   hData->Print();
-  TH1D *hdenom        = (TH1D*) histojetfile->Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );
   hdenom->Print();
+  // Denominator
+
+
 
   // avoiding 0 entries in the histograms
   // fake and real mc histos are the most critical
@@ -286,7 +308,6 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   xframeClone->GetYaxis()->SetTitleOffset(1.2);
 
   gPad->SetLogy();
-
   canvas->Print( TString("plots/fakeRatePlot_") + sample + "_" + era + "_" +  etaBin + TString("_pT") + ptBin + postFix + TString(".pdf") );
 
   // change to TH1D just so we can change the name
@@ -347,7 +368,7 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   float fakerateerror = TMath::Sqrt((fakeerrormax*fakeerrormax/denominator/denominator) + (fakerate*fakerate/denominator));
 
   cout << "Here: " << fakerate << " " << fakerateerror << endl;
-  cout << "Ending rooFitFakeRateProducer" << endl;
+  cout << "Ending rooFitClosureTest" << endl;
   cout << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" << endl;
 
   return std::make_pair(fakevalue,fakeerrormax);
@@ -358,4 +379,4 @@ std::pair<double,double> rooFitFakeRateProducer(TString sample, TString template
   historealmcfile->cd();
   historealmcfile->Close();
 
-} // end of rooFitFakeRateProducer()
+} // end of rooFitClosureTest()
