@@ -1,4 +1,3 @@
-
 #include "diphoton-analysis/Tools/interface/sampleList.hh"
 
 #include "TROOT.h"
