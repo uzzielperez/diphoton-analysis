@@ -73,6 +73,7 @@ int main(int argc, char *argv[])
   // make vector of chIso sidebands
   std::vector< std::pair<double,double> > chIsoSidebands;
   typedef std::vector< std::pair<double,double> >::const_iterator chIsoIt;
+  // chIsoSidebands.push_back( std::make_pair(0.,5.) );
   chIsoSidebands.push_back( std::make_pair(5.,10.) );
   chIsoSidebands.push_back( std::make_pair(6.,11.) );
   chIsoSidebands.push_back( std::make_pair(7.,12.) );

@@ -219,7 +219,8 @@ void plot_kinematics_with_ratio(TString sample =  "all", TString era= "2016") {
   cmssw_version["2017"] = "94X";
   cmssw_version["2018"] = "102X";
 
-  TString base = "/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/";
+  TString base = "/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/reweighted/";
+  TString basetruth = "/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/";
 
   TString filename = "";
   if (sample == "QCD")    filename = base + "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";
@@ -231,11 +232,11 @@ void plot_kinematics_with_ratio(TString sample =  "all", TString era= "2016") {
   TFile *f_closure_test = TFile::Open(filename);
 
   TString filename_truth = "";
-  if (sample == "QCD")    filename_truth = base + "diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";
-  if (sample == "GJets")  filename_truth = base + "diphoton_fake_rate_closure_test_matching_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";
-  if (sample == "GGJets") filename_truth = base + "diphoton_fake_rate_closure_test_matching_GGJets_M-all_Pt-50_13TeV-sherpa_"+cmssw_version[era]+"_MiniAOD_histograms.root";
-  //if (sample == "all")    filename_truth base + = "diphoton_fake_rate_closure_test_matching_all_samples_"+cmssw_version[era]+"_MiniAOD_histograms.root";
-  if (sample == "all")    filename_truth = base + "diphoton_fake_rate_closure_test_matching_all_samples_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  if (sample == "QCD")    filename_truth = basetruth + "diphoton_fake_rate_closure_test_matching_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  if (sample == "GJets")  filename_truth = basetruth + "diphoton_fake_rate_closure_test_matching_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  if (sample == "GGJets") filename_truth = basetruth + "diphoton_fake_rate_closure_test_matching_GGJets_M-all_Pt-50_13TeV-sherpa_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  //if (sample == "all")    filename_truth basetruth + = "diphoton_fake_rate_closure_test_matching_all_samples_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  if (sample == "all")    filename_truth = basetruth + "diphoton_fake_rate_closure_test_matching_all_samples_"+cmssw_version[era]+"_MiniAOD_histograms.root";
 
   cout << "filename for mc truth: " << filename_truth << endl;
   TFile *f_closure_test_matching = TFile::Open(filename_truth);
