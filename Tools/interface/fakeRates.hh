@@ -48,10 +48,9 @@ fakeRates::fakeRates(std::string fakeRateType, int year) : m_year(year)
   for(auto region : regions) {
     for(auto dataset : datasets) {
       for(auto pvCut : pvCuts) {
-        TFile *f = TFile::Open(Form("%s/diphoton-analysis/FakeRateAnalysis/fakeRatePlots_%s_%d_nPV%s.root", cmssw_base, dataset.c_str(), m_year, pvCut.c_str()));
+        TFile *f = TFile::Open(Form("%s/src/diphoton-analysis/FakeRateAnalysis/fakeRatePlots_%s_%d_nPV%s.root", cmssw_base, dataset.c_str(), m_year, pvCut.c_str()));
         const TString graphName(Form("fakeRate%s_%s", region.c_str(), iso.c_str()));
         TGraphAsymmErrors *gr = dynamic_cast<TGraphAsymmErrors*>(f->Get(graphName));
-        gr->Eval(1000.0);
 	std::string keyname(region + "_" + dataset + "_" + pvCut);
         m_fakeRates[keyname] = gr;
       }
@@ -67,7 +66,6 @@ else{
       TFile *f = TFile::Open(Form("%s/src/fakeRatePlots_all_%d_nPV0-200.root", cmssw_base, year));
       const TString graphName(Form("fakeRate%s_%s", region.c_str(), iso.c_str()));
       TGraphAsymmErrors *gr = dynamic_cast<TGraphAsymmErrors*>(f->Get(graphName));
-      gr->Eval(1000.0);
       std::string keyname(region + "_" + "all_0-200" );
       m_fakeRatesClosureTest[keyname] = gr;
     }
@@ -99,9 +97,17 @@ double fakeRates::getFakeRate(double pt, int region, int nPV)
   std::string keyname_doublemuon(regions[region] + "_doublemuon_" + pvCut);
   std::string keyname_jetht(regions[region] + "_jetht_" + pvCut);
 
-  if(m_fakeRateType == "average") return 0.5*(m_fakeRates[keyname_doublemuon]->Eval(pt)+m_fakeRates[keyname_jetht]->Eval(pt));
-  else if(m_fakeRateType == "doublemuon") return m_fakeRates[keyname_doublemuon]->Eval(pt);
-  else if(m_fakeRateType == "jetht") return m_fakeRates[keyname_jetht]->Eval(pt);
+  int nmax_doublemuon = m_fakeRates[keyname_doublemuon]->GetN()-1;
+  double pt_max_doublemuon = m_fakeRates[keyname_doublemuon]->GetX()[nmax_doublemuon];
+  int nmax_jetht = m_fakeRates[keyname_jetht]->GetN()-1;
+  double pt_max_jetht = m_fakeRates[keyname_jetht]->GetX()[nmax_jetht];
+
+  double pt_doublemuon = (pt > pt_max_doublemuon) ? pt_max_doublemuon : pt;
+  double pt_jetht = (pt > pt_max_jetht) ? pt_max_jetht : pt;
+
+  if(m_fakeRateType == "average") return 0.5*(m_fakeRates[keyname_doublemuon]->Eval(pt_doublemuon)+m_fakeRates[keyname_jetht]->Eval(pt_jetht));
+  else if(m_fakeRateType == "doublemuon") return m_fakeRates[keyname_doublemuon]->Eval(pt_doublemuon);
+  else if(m_fakeRateType == "jetht") return m_fakeRates[keyname_jetht]->Eval(pt_jetht);
   else std::cout << "Fake rate type " << m_fakeRateType << "not supported." << std::endl;
 
   return 0;
@@ -109,18 +115,15 @@ double fakeRates::getFakeRate(double pt, int region, int nPV)
 
 double fakeRates::getFakeRateClosureTest(double pt, std::string region, int year)
 {
-  // std::vector<std::string> regions = {"EB", "EE"};
 
   std::string keyname_all(region + "_all_0-200");
-  // std::string keyname_alltruth(regions[region] + "_alltruth_0-200");
-  return m_fakeRatesClosureTest[keyname_all]->Eval(pt);
+  int nmax = m_fakeRatesClosureTest[keyname_all]->GetN()-1;
+  double pt_max = m_fakeRatesClosureTest[keyname_all]->GetX()[nmax];
+  double pt_closure = (pt > pt_max) ? pt_max : pt;
+  double fakeRate = m_fakeRatesClosureTest[keyname_all]->Eval(pt_closure);
+  std::cout << "FakeRate for pt: " << pt << "is " << fakeRate << std::endl;
+  return fakeRate;
 
-  // if(m_fakeRateType == "average") return 0.5*(m_fakeRatesClosureTest[keyname_all]->Eval(pt)+m_fakeRatesClosureTest[keyname_alltruth]->Eval(pt));
-  // else if(m_fakeRateType == "all") return m_fakeRatesClosureTest[keyname_all]->Eval(pt);
-  // else if(m_fakeRateType == "alltruth") return m_fakeRatesClosureTest[keyname_alltruth]->Eval(pt);
-  // else std::cout << "Fake rate type " << m_fakeRateType << "not supported." << std::endl;
-
-  return 0;
 }
 
 #endif // fakeRates_hh

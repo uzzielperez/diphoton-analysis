@@ -19,8 +19,8 @@ void add_grPlus(int year, std::string region="EE"){
   const std::string iso("chIso5To10");
   // const TString graphName(Form("fakeRate%s_%s", region.c_str(), iso.c_str()));
 
-  auto grTruth = dynamic_cast<TGraphAsymmErrors*>(fFake->Get(graphNamer(region, iso)));
-  auto grFake = dynamic_cast<TGraphAsymmErrors*>(fTruth->Get(graphNamer(region, iso)));
+  auto grTruth = dynamic_cast<TGraphAsymmErrors*>(fTruth->Get(graphNamer(region, iso)));
+  auto grFake = dynamic_cast<TGraphAsymmErrors*>(fFake->Get(graphNamer(region, iso)));
 
   grTruth->SetLineColor(kOrange);
   grFake->SetLineColor(kRed);
@@ -28,11 +28,11 @@ void add_grPlus(int year, std::string region="EE"){
   mg->Add(grFake); grFake->SetTitle("chIso5To10")  ; //grFake->SetLineWidth(3);
 
 
-  // auto grFake1 = dynamic_cast<TGraphAsymmErrors*>(fFake->Get(graphNamer(region, "chIso10To15")));
+  auto grFake1 = dynamic_cast<TGraphAsymmErrors*>(fFake->Get(graphNamer(region, "chIso10To15")));
   auto grFake2 = dynamic_cast<TGraphAsymmErrors*>(fFake->Get(graphNamer(region, "chIso15To20")));
-  // grFake1->SetLineColor(kBlue);
+  grFake1->SetLineColor(kBlue);
   grFake2->SetLineColor(kBlack);
-  // mg->Add(grFake1); grFake1->SetTitle("chIso10To15");
+  mg->Add(grFake1); grFake1->SetTitle("chIso10To15");
   mg->Add(grFake2); grFake2->SetTitle("chIso15To20");
 
   mg->SetTitle(Form("Closure Test %s %s", std::to_string(year).c_str(), region.c_str()));
