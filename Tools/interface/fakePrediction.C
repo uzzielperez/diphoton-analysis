@@ -43,7 +43,7 @@ void fakePrediction::Loop(int year, const std::string &dataset)
   gROOT->ForceStyle();
 
   const char *cmssw_base = getenv("CMSSW_BASE");
-  if(cmssw_base==NULL) {
+  if(cmssw_base==nullptr) {
     std::cout << "Please issue cmsenv before running" << std::endl;
     exit(-1);
   }
@@ -77,7 +77,7 @@ void fakePrediction::Loop(int year, const std::string &dataset)
     phi2[region] = new TH1D((regions[region] + "_phi2").c_str(), (regions[region] + "_phi2").c_str(), 50, -TMath::Pi(), TMath::Pi());
   }
 
-  if (fChain == 0) return;
+  if (fChain == nullptr) return;
 
 
    Long64_t nentries = fChain->GetEntries();

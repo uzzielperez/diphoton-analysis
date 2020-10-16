@@ -29,7 +29,7 @@ fakeRates::fakeRates(std::string fakeRateType, int year) : m_year(year)
   bool isClosureTest = (fakeRateType=="all") ? true : false;
 
   const char *cmssw_base = getenv("CMSSW_BASE");
-  if(cmssw_base==NULL) {
+  if(cmssw_base==nullptr) {
     std::cout << "Please issue cmsenv before running" << std::endl;
     exit(-1);
   }

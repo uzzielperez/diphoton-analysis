@@ -15,7 +15,7 @@
 
 #include <string>
 #include <map>
-#include <stdlib.h> // getenv()
+#include <cstdlib> // getenv()
 
 #include "diphoton-analysis/Tools/interface/tdrstyle.hh"
 
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
   gROOT->ForceStyle();
 
   const char *cmssw_base = getenv("CMSSW_BASE");
-  if(cmssw_base==NULL) {
+  if(cmssw_base==nullptr) {
     std::cout << "Please issue cmsenv before running" << std::endl;
     return -1;
   }
@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
       graph->SetTitle(";Photon p_{T} (GeV);Fake rate");
       graph->GetYaxis()->SetTitleOffset(1.5); // times the standard value
       graph->SetMinimum(0.0);
-      if(regions[iRegion].compare("EB") == 0) graph->SetMaximum(0.25);
+      if(regions[iRegion] == "EB") graph->SetMaximum(0.25);
       else graph->SetMaximum(0.6);
       graph->Draw("AP");
 

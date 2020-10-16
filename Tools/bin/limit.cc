@@ -252,7 +252,7 @@ void oneLimit(int ned, int kk, const std::string &directory)
   if( ned!=-1 ) {
     const std::string convention(kkconvention(ned, kk));
     lat->DrawLatexNDC(0.2, 0.8, Form("%s", convention.c_str()));
-    if( convention.compare("HLZ") == 0) lat->DrawLatexNDC(0.2, 0.7, Form("N_{ED} = %d", ned));
+    if( convention == "HLZ") lat->DrawLatexNDC(0.2, 0.7, Form("N_{ED} = %d", ned));
   }
 
   drawHeader();

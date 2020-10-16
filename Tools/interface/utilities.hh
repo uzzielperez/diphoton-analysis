@@ -18,7 +18,7 @@ TF1* kfactor(const std::string & region, const std::string & scales)
   fitFuncs["BB"] = "pol3";
   fitFuncs["BE"] = "pol3";
   const char *cmssw_base = getenv("CMSSW_BASE");
-  if(cmssw_base==NULL) {
+  if(cmssw_base==nullptr) {
     std::cout << "Please issue cmsenv before running" << std::endl;
     exit(-1);
   }
@@ -49,15 +49,15 @@ TH1D* getHists(const std::string & base, const std::string & region, const std::
 {
   unsigned int nfiles=10;
   if(type.find("NNLO") != std::string::npos) nfiles = 50;
-  TH1D *sum = 0;
+  TH1D *sum = nullptr;
   for(unsigned int i=1; i<=nfiles; i++) {
     TString filename(Form("%s/%s_%s_R1F1_Mass0p23To2TeV_13TeV/Job%d/bin/ReRoot.root", base.c_str(), region.c_str(), type.c_str(), i));
     TFile *f = TFile::Open(filename);
     TH1D *tempHist = static_cast<TH1D*>(f->Get("hist1"));
     if(tempHist==nullptr) continue;
-    if(sum == 0) {
+    if(sum == nullptr) {
       sum = static_cast<TH1D*>(tempHist->Clone());
-      sum->SetDirectory(0);
+      sum->SetDirectory(nullptr);
       sum->SetBit(TH1::kIsAverage);
     }
     else {
@@ -77,7 +77,7 @@ TH1D* getHistsMCFM(const std::string & base, const std::string & type, const std
   unsigned int seedBase = 1189;
   unsigned int nfiles=10;
   if(type.find("nnlo") != std::string::npos) nfiles = 50;
-  TH1D *sum = 0;
+  TH1D *sum = nullptr;
   for(unsigned int i=1; i<=nfiles; i++) {
     unsigned int seed = seedBase + i;
     // commented out 20NOV2018
@@ -105,7 +105,7 @@ TH1D* getHistsMCFM(const std::string & base, const std::string & type, const std
     std::cout << histID << std::endl;
     TH1D *tempHist = static_cast<TH1D*>(f->Get(histID));
     if(tempHist==nullptr) continue;
-    if(sum == 0) {
+    if(sum == nullptr) {
       sum = static_cast<TH1D*>(f->Get(histID));
       sum->SetBit(TH1::kIsAverage);
     }

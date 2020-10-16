@@ -12,9 +12,9 @@
 #include <string>
 #include <iostream>
 #include <map>
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
+#include <cstdio>
+#include <cstring>
+#include <cerrno>
 #include <sys/stat.h>
 
 #include <linux/limits.h>
@@ -779,7 +779,7 @@ void initADD2016(const TString & baseDirectory)
 	// and four extra dimensions
 	if(strcmp(iKK.c_str(), "4")==0 && strcmp(iNED.c_str(), "4")==0) continue;
 	// no samples were generated with negative interference above MS = 6 TeV
-	if(iNED.compare("2")==0 && iKK.compare("4")==0 && std::stoi(iMS)>6000) continue;
+	if(iNED=="2" && iKK=="4" && std::stoi(iMS)>6000) continue;
 	std::string pointName = "ADDGravToGG_MS-";
 	pointName += iMS;
 	pointName += "_NED-";
@@ -789,7 +789,7 @@ void initADD2016(const TString & baseDirectory)
 	chains[pointName] = new TChain("diphoton/fTree");
 	for(std::string iMgg : MggBins[iMS] ) {
 	  // the 200To500 bins are only present for the NED=4 samples
-	  if(iNED.compare("2")==0 && iMgg.compare("250To500")==0) continue;
+	  if(iNED=="2" && iMgg=="250To500") continue;
 	  // Hewett- convention samples do not extend past Mgg > 6 TeV
 	  std::string sampleName(pointName);
 	  sampleName += "_M-";
@@ -946,7 +946,7 @@ void initADD(const TString & baseDirectory)
     for(const auto& negint_value : negint_values) {
       for(const auto& lambdaT : lambdaTs) {
 	// there is no point with neg_int = "0" and lambdaT == 8500
-	if(negint_value.compare("0") == 0 && lambdaT == 8500 ) continue;
+	if(negint_value == "0" && lambdaT == 8500 ) continue;
 	std::string pointName = "ADDGravToGG_NegInt-";
 	pointName += negint_value;
 	pointName += "_LambdaT-";

@@ -20,8 +20,8 @@ int main(int argc, char *argv[])
       return -1;
     }
     data_year = argv[2];
-    if(data_year.compare("2015") !=0 && data_year.compare("2016") != 0 && data_year.compare("2017") != 0
-       && data_year.compare("2018") != 0 && data_year.compare("2017_2018") && data_year.compare("2018_newjson") != 0  ) {
+    if(data_year !="2015" && data_year != "2016" && data_year != "2017"
+       && data_year != "2018" && data_year.compare("2017_2018") && data_year != "2018_newjson"  ) {
       std::cout << "Only '2015', '2016', '2017', '2018', and '2017_2018' are allowed years, plus '2018_newjson' for the data from the latest JSON." << std::endl;
       return -1;
     }
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
   bool endcap = (region=="endcap");
 
   std::string kfactor;
-  if(data_year.compare("2015") == 0 or data_year.compare("2016") == 0 ) {
+  if(data_year == "2015" or data_year == "2016" ) {
     kfactor = endcap ? kfactorString("BE", "R1F1_125GeV_CT10") : kfactorString("BB", "R1F1_125GeV_CT10");
   }
   else {
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 
   std::string pt_cut("125");
   std::string hlt_cut("HLT_DoublePhoton70 > 0");
-  if(data_year.compare("2016") == 0) hlt_cut = "HLT_DoublePhoton60 > 0";
+  if(data_year == "2016") hlt_cut = "HLT_DoublePhoton60 > 0";
   std::string minv_cut("Diphoton.Minv > 500");
   std::string kinematic_cuts("Photon1.pt>" + pt_cut + " && Photon2.pt>" + pt_cut + "&&" + minv_cut);
   std::string id_cuts("Photon1.r9_5x5 > 0.8 && Photon2.r9_5x5 > 0.8");
@@ -56,14 +56,14 @@ int main(int argc, char *argv[])
   init();
 
   std::string trigger("(HLT_DoublePhoton70 || HLT_ECALHT800)");
-  if(data_year.compare("2016") == 0) trigger = "(HLT_DoublePhoton60 || HLT_ECALHT800)";
+  if(data_year == "2016") trigger = "(HLT_DoublePhoton60 || HLT_ECALHT800)";
   // define samples to be used in histograms
   sample data("data", "Data", data_year, trigger);
   data.isData = true;
   sample gg("gg", "#gamma#gamma", data_year, kfactor);
   sample gj("gj", "#gamma + jets", data_year);
-  if(region.compare("barrel") == 0) gj.isDataDrivenBarrel = true;
-  if(region.compare("endcap") == 0) gj.isDataDrivenEndcap = true;
+  if(region == "barrel") gj.isDataDrivenBarrel = true;
+  if(region == "endcap") gj.isDataDrivenEndcap = true;
   sample vg("vg", "V#gamma", data_year);
   sample w("w", "W", data_year);
   sample dy("dy", "DY", data_year);

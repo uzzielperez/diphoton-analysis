@@ -37,8 +37,8 @@ void plot_pdf_uncert()
     for(const auto& variation : variations) {
       std::string histName(region + "/errors" + variation);
       hists[histName] = dynamic_cast<TH1F*>(f->Get(histName.c_str()));
-      hists[histName]->SetDirectory(0);
-      if(region.compare("BB") == 0) hists[histName]->SetLineColor(kBlack);
+      hists[histName]->SetDirectory(nullptr);
+      if(region == "BB") hists[histName]->SetLineColor(kBlack);
       else hists[histName]->SetLineColor(kRed);
 
       if(hists.size() == 1 ) {
