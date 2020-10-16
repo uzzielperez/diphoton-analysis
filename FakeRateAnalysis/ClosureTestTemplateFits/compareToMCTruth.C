@@ -86,6 +86,9 @@ void add_gr(int year, std::string region="EE"){
   //c1->BuildLegend();
   p1->BuildLegend(0.6,0.68,0.8,0.88);
   mg->GetHistogram()->GetXaxis()->SetRangeUser(0.,2.5);
+  double ymax = 0.3;
+  // if (region == "EE") double ymax = 0.7;
+  if (region == "EB") mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,ymax);
   gPad->Modified();
   gPad->Update();
 
