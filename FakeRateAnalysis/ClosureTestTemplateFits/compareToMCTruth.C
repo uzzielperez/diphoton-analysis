@@ -3,6 +3,11 @@ TString graphNamer(std::string region, std::string iso){
   return graphName;
 }
 
+double fakeRateRatioUncertainty(double erra, double errb, double a, double b) {
+  double uncert = TMath::Sqrt((erra*erra/(a*a)) + (errb*errb/(b*b)));
+  return uncert;
+}
+
 void add_grPlus(int year, std::string region="EE"){
   auto c1 = new TCanvas("c1","c1",200,10,700,500);
   auto mg = new TMultiGraph();
@@ -73,8 +78,8 @@ void add_gr(int year, std::string region="EE"){
   const std::string iso("chIso5To10");
   // const TString graphName(Form("fakeRate%s_%s", region.c_str(), iso.c_str()));
 
-  auto grTruth = dynamic_cast<TGraphAsymmErrors*>(fFake->Get(graphNamer(region, iso)));
-  auto grFake = dynamic_cast<TGraphAsymmErrors*>(fTruth->Get(graphNamer(region, iso)));
+  auto grTruth = dynamic_cast<TGraphAsymmErrors*>(fTruth->Get(graphNamer(region, iso)));
+  auto grFake = dynamic_cast<TGraphAsymmErrors*>(fFake->Get(graphNamer(region, iso)));
 
   grTruth->SetLineColor(kOrange);
   grFake->SetLineColor(kRed);
@@ -82,6 +87,7 @@ void add_gr(int year, std::string region="EE"){
   mg->Add(grFake); grFake->SetTitle("chIso5To10")  ; //grFake->SetLineWidth(3);
 
   mg->SetTitle(Form("Closure Test %s %s", std::to_string(year).c_str(), region.c_str()));
+
   mg->Draw("apl");
   //c1->BuildLegend();
   p1->BuildLegend(0.6,0.68,0.8,0.88);
@@ -105,13 +111,31 @@ void add_gr(int year, std::string region="EE"){
     double ptBinSize = ptHigh - ptLow;
     TString binName = TString::Format("%iTo%i",ptBinArray[i],ptBinArray[i+1]);
 
-    double x = (ptLow+ptHigh)/2;
-    //double x = ptBinArray[i];
-    double y = grFake->Eval(x)/grTruth->Eval(x);
+    double pt = (ptLow+ptHigh)/2;
+    double y = grFake->Eval(pt)/grTruth->Eval(pt);
 
-    std::cout << binName << ": " << x << ": " << y << std::endl;
-    r->SetPoint(i, x, y);
-    //r->SetPointError(i, );
+    // error
+    double errFakeY = grFake->GetErrorY(y);
+    double errTruthY = grTruth->GetErrorY(y);
+    double errY = fakeRateRatioUncertainty(errFakeY, errTruthY, grFake->Eval(pt), grTruth->Eval(pt));
+
+    double errFakeX = grFake->GetErrorX(pt);
+    double errTruthX = grTruth->GetErrorX(pt);
+    double errX = fakeRateRatioUncertainty(errFakeX, errTruthX, pt, pt);
+
+    r->SetPoint(i, pt, y);
+    r->SetPointError(i, errX, errX, errY, errY);
+
+    std::cout << binName << ": " << pt << ": "
+              << "fakeRate Truth:" << grTruth->Eval(pt) << ": "
+              << "fakeRate Fake:" << grFake->Eval(pt) << ": "
+              << "fakeRate Ratio:" << y << ": "
+              << "gRFake errY" << grFake->GetErrorY(y) << ": "
+              << "gRTruth errY" << grTruth->GetErrorY(y) << ": "
+              << "gRFake errX" << grFake->GetErrorX(pt) << ": "
+              << "gRTruth errX" << grTruth->GetErrorX(pt)
+              << std::endl;
+
   }
   r->GetHistogram()->GetXaxis()->SetTitle("pT (GeV)");
   r->GetHistogram()->GetYaxis()->SetTitle("Fake/Truth");
