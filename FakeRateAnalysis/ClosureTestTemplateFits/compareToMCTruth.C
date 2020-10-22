@@ -73,8 +73,8 @@ void add_gr(int year, std::string region="EE"){
   const std::string iso("chIso5To10");
   // const TString graphName(Form("fakeRate%s_%s", region.c_str(), iso.c_str()));
 
-  auto grTruth = dynamic_cast<TGraphAsymmErrors*>(fFake->Get(graphNamer(region, iso)));
-  auto grFake = dynamic_cast<TGraphAsymmErrors*>(fTruth->Get(graphNamer(region, iso)));
+  auto grTruth = dynamic_cast<TGraphAsymmErrors*>(fTruth->Get(graphNamer(region, iso)));
+  auto grFake = dynamic_cast<TGraphAsymmErrors*>(fFake->Get(graphNamer(region, iso)));
 
   grTruth->SetLineColor(kOrange);
   grFake->SetLineColor(kRed);
