@@ -44,7 +44,7 @@ void add_grPlus(int year, std::string region="EE"){
   mg->Draw("apl");
   //c1->BuildLegend();
   c1->BuildLegend(0.6,0.68,0.8,0.88);
-  c1->SaveAs(Form("closureTest_MCTruth_comparisons%s_%sPlus.pdf", region.c_str(), std::to_string(year).c_str()));
+  c1->SaveAs(Form("DebugclosureTest_MCTruth_comparisons%s_%sPlus.pdf", region.c_str(), std::to_string(year).c_str()));
   return 0;
 }
 
@@ -149,7 +149,7 @@ void add_gr(int year, std::string region="EE"){
   r->GetYaxis()->SetLabelSize(0.075);
   r->Draw("AL");
 
-  c1->SaveAs(Form("closureTest_MCTruth_comparisons%s_%s.pdf", region.c_str(), std::to_string(year).c_str()));
+  c1->SaveAs(Form("DebugclosureTest_MCTruth_comparisons%s_%s.pdf", region.c_str(), std::to_string(year).c_str()));
 
   return 0;
 
