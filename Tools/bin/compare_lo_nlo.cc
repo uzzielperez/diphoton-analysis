@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
   init();
 
   // define samples to be used in histograms
-  std::string trigger(data_year.compare("2016") == 0 ? "(HLT_DoublePhoton60||HLT_ECALHT800)" : "(HLT_DoublePhoton70||HLT_ECALHT800)");
+  std::string trigger(data_year == "2016" ? "(HLT_DoublePhoton60||HLT_ECALHT800)" : "(HLT_DoublePhoton70||HLT_ECALHT800)");
   sample test(process + "_nlo", process, data_year, trigger);
   sample reference(process, process, data_year, trigger);
   reference.drawAsMC = true;

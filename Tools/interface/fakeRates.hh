@@ -29,7 +29,7 @@ fakeRates::fakeRates(std::string fakeRateType, int year) : m_year(year)
   bool isClosureTest = (fakeRateType=="all") ? true : false;
 
   const char *cmssw_base = getenv("CMSSW_BASE");
-  if(cmssw_base==NULL) {
+  if(cmssw_base==nullptr) {
     std::cout << "Please issue cmsenv before running" << std::endl;
     exit(-1);
   }
@@ -117,6 +117,7 @@ double fakeRates::getFakeRateClosureTest(double pt, std::string region, int year
 {
 
   std::string keyname_all(region + "_all_0-200");
+
   int nmax = m_fakeRatesClosureTest[keyname_all]->GetN()-1;
   double pt_max = m_fakeRatesClosureTest[keyname_all]->GetX()[nmax];
   double pt_closure = (pt > pt_max) ? pt_max : pt;

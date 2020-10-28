@@ -46,7 +46,7 @@ void plot_blinded(const std::string& years_to_plot)
 
   std::vector<int> years_all = {2016, 2017, 2018};
   std::vector<int> years;
-  if(years_to_plot.compare("all") == 0) years = years_all;
+  if(years_to_plot == "all") years = years_all;
   else years.push_back(std::atoi(years_to_plot.c_str()));
 
   std::vector<std::string> regions = {"BB", "BE"};
@@ -158,7 +158,7 @@ TH1F* getHist(TFile *file, const int year, const std::string& type, const std::s
   std::string channel = type + "/" + region + "_" + std::to_string(year);
   std::string fullHistName = channel + "/" + histName;
   TH1F *hist;
-  if(histName.compare("data") == 0) {
+  if(histName == "data") {
     hist = getTH1F(dynamic_cast<TGraphAsymmErrors*>(file->Get(fullHistName.c_str())));
   }
   else {

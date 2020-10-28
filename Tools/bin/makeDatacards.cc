@@ -22,7 +22,7 @@ public:
   std::vector<std::string> m_contribution;
 };
 
-double getYield(const std::string& region, const std::string& sample, const std::string& datacardYear, double& yieldError, const TF1 * scaleFactor = 0);
+double getYield(const std::string& region, const std::string& sample, const std::string& datacardYear, double& yieldError, const TF1 * scaleFactor = nullptr);
 std::string getDiphotonYieldVariations(const std::string& region, const std::string& variation);
 void makeOneDatacard(const std::string& signalPoint, const std::string& region, const std::string& datacardYear, const std::string& interferenceType);
 
@@ -50,11 +50,11 @@ int main(int argc, char *argv[])
   datacardYear = argv[1];
   if(argc >= 3) {
     std::string whichADD(argv[2]);
-    if(whichADD.compare("old") == 0) usePythiaADD = false;
+    if(whichADD == "old") usePythiaADD = false;
   }
   if(argc==4) {
     interferenceType = argv[3];
-    if(interferenceType.compare("negative") != 0 and interferenceType.compare("positive") != 0) {
+    if(interferenceType != "negative" and interferenceType != "positive") {
       std::cout << "Only 'negative' and 'positive' are allowed input parameters. " << std::endl;
       return -1;
     }
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
     // KK cutoff conventions
     std::vector<std::string> KK = {"1", "4"};
 
-    useInterference = interferenceType.compare("negative") == 0 or interferenceType.compare("positive") == 0;
+    useInterference = interferenceType == "negative" or interferenceType == "positive";
     // only need to use one NED or KK convention if interference is considered
     if(useInterference) {
       NED.erase(NED.begin()+1);
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
 	  // and four extra dimensions
 	  if(strcmp(iKK.c_str(), "4")==0 && strcmp(iNED.c_str(), "4")==0) continue;
 	  // Hewett- convention samples do not extend past Mgg > 6 TeV
-	  if(iNED.compare("2")==0 && iKK.compare("4")==0 && std::stoi(iMS)>6000) continue;
+	  if(iNED=="2" && iKK=="4" && std::stoi(iMS)>6000) continue;
 	  std::string pointName = "ADDGravToGG_MS-";
 	  pointName += iMS;
 	  if(!useInterference) {
@@ -174,7 +174,7 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& region, 
     processes.insert(processes.begin()+1, signalPointInt);
   }
 
-  bool isBB = region.compare("BB") == 0;
+  bool isBB = region == "BB";
   std::string diphotonkfactorStatValue0 = isBB ? getDiphotonYieldVariations(region, "kfactorStat0") : "-";
   nuisance diphotonkfactorStat0("kfactorStat0", "shape", {"-", diphotonkfactorStatValue0, "-", "-", "-", "-"});
   std::string diphotonkfactorStatValue1 = isBB ? getDiphotonYieldVariations(region, "kfactorStat1") : "-";
@@ -205,7 +205,7 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& region, 
   //  nuisance energyScale("energyScale", "shape", {"1", "1", "-", "1"});
   // for technical reasons, exclude EGM systematic uncertainties
   // on signal and 2016 datasets
-  std::string useEGMSyst(datacardYear.compare("2016") == 0 ? "-" : "1");
+  std::string useEGMSyst(datacardYear == "2016" ? "-" : "1");
   nuisance energyScaleStat("energyScaleStat", "shape", {"-", useEGMSyst, "-", useEGMSyst, useEGMSyst, useEGMSyst});
   nuisance energyScaleSyst("energyScaleSyst", "shape", {"-", useEGMSyst, "-", useEGMSyst, useEGMSyst, useEGMSyst});
   nuisance energyScaleGain("energyScaleGain", "shape", {"-", useEGMSyst, "-", useEGMSyst, useEGMSyst, useEGMSyst});
@@ -216,7 +216,7 @@ void makeOneDatacard(const std::string& signalPoint, const std::string& region, 
   allNuisances.push_back(diphotonkfactorStat1);
   allNuisances.push_back(diphotonkfactorStat2);
   allNuisances.push_back(diphotonkfactorStat3);
-  if(region.compare("BB") == 0) {
+  if(region == "BB") {
     allNuisances.push_back(diphotonkfactorScalesBB);
     allNuisances.push_back(diphotonkfactorScalesBE_dummy);
     if(scaleRegionNorm) {
@@ -386,7 +386,7 @@ double getYield(const std::string& region, const std::string& sample, const std:
 std::string getDiphotonYieldVariations(const std::string& region, const std::string& variation)
 {
   // barrel-endcap covariance matrix not positive definite
-  if(region.compare("BE") == 0) return std::to_string(1);
+  if(region == "BE") return std::to_string(1);
 
   TString histogramFile(Form("datacards/Minv_histos_%s_%s.root", region.c_str(), datacardYear.c_str()));
   // put dummy values here for now

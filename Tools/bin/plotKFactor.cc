@@ -138,7 +138,7 @@ void plotOneType(int histType, const TString& region, const TString& scale)
     }
   std::cout << "averages.size(): " << averages.size() << std::endl;
   
-  TH1D* sherpaHist = 0;
+  TH1D* sherpaHist = nullptr;
   if(histType < 13) {
       TFile *sherpa = TFile::Open("data/sherpa_2018.root");
       TString histName(Form("%s/hist%d", region.Data(), histType));
@@ -155,7 +155,7 @@ void plotOneType(int histType, const TString& region, const TString& scale)
       std::cout << "cross section (pb): " << xsec << " +/-" << xsecError << std::endl;
     }
   else {
-    sherpaHist = 0;
+    sherpaHist = nullptr;
   }
 
 

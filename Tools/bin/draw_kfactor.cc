@@ -62,7 +62,7 @@ void draw_kfactor(const std::string& region)
       kfactors.back()->GetXaxis()->SetNdivisions(505);
     }
     else  kfactors.back()->Draw("same");
-    if(iorder.compare("R1F1") != 0 ) {
+    if(iorder != "R1F1" ) {
       kfactors.back()->SetLineStyle(kDashed);
       kfactors.back()->SetTitle(";m_{#gamma#gamma} (GeV);MCFM/Sherpa");
       kfactors_NLO.back()->SetLineStyle(kDashed);

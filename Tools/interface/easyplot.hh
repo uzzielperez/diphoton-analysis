@@ -80,7 +80,7 @@ sample::sample() {}
 TChain* sample::chain()
 {
   // use 2018 MC samples for "2018_newjson"
-  if (m_year.compare("2018_newjson") == 0 && !isData) return chains[m_name + "_2018"];
+  if (m_year == "2018_newjson" && !isData) return chains[m_name + "_2018"];
   else return chains[m_name + "_" + m_year];
 }
 
@@ -221,7 +221,7 @@ void plot::output(const std::string& outputDirectory, const std::string& extraSt
       histNameDD["Photon2.scEta"] = "scEta2";
       histNameDD["Photon2.phi"] = "phi2";
       TString filename(Form("data/fakes_%s_average.root", isample.year().c_str()));
-      TFile *g = TFile::Open(Form(filename));
+      TFile *g = TFile::Open(filename);
       if(isample.isDataDrivenBarrel) g->GetObject(Form("BB/BB_%s", histNameDD[m_variable].c_str()), hists.back());
       else g->GetObject(Form("BE/BE_%s", histNameDD[m_variable].c_str()), hists.back());
       hists.back()->SetTitle("Data-driven #gammaj+jj");

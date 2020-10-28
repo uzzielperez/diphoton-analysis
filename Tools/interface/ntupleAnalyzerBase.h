@@ -1867,7 +1867,7 @@ public :
    TBranch        *b_isFF;   //!
    TBranch        *b_nPV;   //!
 
-   ntupleAnalyzerBase(TTree *tree=0);
+   ntupleAnalyzerBase(TTree *tree=nullptr);
    virtual ~ntupleAnalyzerBase();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
@@ -1881,11 +1881,11 @@ public :
 #endif
 
 #ifdef ntupleAnalyzerBase_cxx
-ntupleAnalyzerBase::ntupleAnalyzerBase(TTree *tree) : fChain(0) 
+ntupleAnalyzerBase::ntupleAnalyzerBase(TTree *tree) : fChain(nullptr) 
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
-   if (tree == 0) {
+   if (tree == nullptr) {
       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/eos/uscms/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/191115_212527/Run2018D_v2_0.root");
       if (!f || !f->IsOpen()) {
          f = new TFile("/eos/uscms/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/191115_212527/Run2018D_v2_0.root");

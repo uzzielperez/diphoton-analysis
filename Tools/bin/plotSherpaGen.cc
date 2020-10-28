@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
   }
   else {
     data_year = argv[1];
-    if(data_year.compare("2016") !=0  && data_year.compare("2017") !=0 && data_year.compare("2018") !=0) {
+    if(data_year !="2016"  && data_year !="2017" && data_year !="2018") {
       std::cout << "Syntax: plotSherpaGen.exe [2016/2017/2018]" << std::endl;
       return -1;
     }

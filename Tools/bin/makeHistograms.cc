@@ -86,7 +86,7 @@ void allSamples(const std::string &region, const std::string &year, TFile * outp
   for(auto isample : samples) {
     std::string sampleCut = cuts[region];
     // skip the Sherpa GEN trees
-    if( isample.compare("ggGen") == 0) continue;
+    if( isample == "ggGen") continue;
     if( isample.find("unskimmed") != std::string::npos ) continue;
     // use data-driven prediction instead
     if( isample.find("gj") != std::string::npos ) continue;
@@ -245,18 +245,18 @@ std::string getSampleBase(const std::string & sampleName, const std::string & ye
   }
   // "data_obs" is always the name of the data observation histogram
   std::string data("data_" + year);
-  if( sampleName.compare(data) == 0) newString = "data_obs";
+  if( sampleName == data) newString = "data_obs";
   return newString;
 }
 
 // ignore variations to get dataset name
 std::string getBase(const std::string & sampleName)
 {
-  if(sampleName.compare("gg_R2F2_2016") == 0 ) return "gg_2016";
-  if(sampleName.compare("gg_R0p5F0p5_2016") == 0 ) return "gg_2016";
-  if(sampleName.compare("gg_R2F2_2017") == 0 ) return "gg_2017";
-  if(sampleName.compare("gg_R0p5F0p5_2017") == 0 ) return "gg_2017";
-  if(sampleName.compare("gg_R2F2_2018") == 0 ) return "gg_2018";
-  if(sampleName.compare("gg_R0p5F0p5_2018") == 0 ) return "gg_2018";
+  if(sampleName == "gg_R2F2_2016" ) return "gg_2016";
+  if(sampleName == "gg_R0p5F0p5_2016" ) return "gg_2016";
+  if(sampleName == "gg_R2F2_2017" ) return "gg_2017";
+  if(sampleName == "gg_R0p5F0p5_2017" ) return "gg_2017";
+  if(sampleName == "gg_R2F2_2018" ) return "gg_2018";
+  if(sampleName == "gg_R0p5F0p5_2018" ) return "gg_2018";
   return sampleName;
 }
