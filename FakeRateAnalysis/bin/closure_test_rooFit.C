@@ -161,15 +161,20 @@ int main(int argc, char *argv[])
   cmssw_version["2018"] = "102X";
 
   TString input_filename;
+  TString numerator_inputfile; // for alltruth the numerator has a different file source
   //  if (sample == "data")      input_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_vanilla.root";
   //  if (sample == "data")      input_filename = "../../DataFakeRateAnalysis/analysis/jetht_fakerate_UNKNOWN_newDenomDef.root";
   //TString basefilename("root://cmseos.fnal.gov//store/user/cawest/fake_rate/");
   TString basefilename("/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/");
 
-  if (sample == "all" || sample == "alltruth")        input_filename = "diphoton_fake_rate_closure_test_all_samples_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  if (sample == "all" ) input_filename = "diphoton_fake_rate_closure_test_all_samples_"+cmssw_version[era]+"_MiniAOD_histograms.root";
   if (sample == "QCD")    input_filename = "diphoton_fake_rate_closure_test_QCD_Pt_all_TuneCUETP8M1_13TeV_pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";
   if (sample == "GJets")  input_filename = "diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_"+cmssw_version[era]+"_MiniAOD_histograms.root";
   if (sample == "GGJets") input_filename = "diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  if (sample == "alltruth"){
+    numerator_inputfile  = "diphoton_fake_rate_closure_test_matching_all_samples_"+ cmssw_version[era] +"_MiniAOD_histograms.root";
+    input_filename  = "diphoton_fake_rate_closure_test_all_samples_"+cmssw_version[era]+"_MiniAOD_histograms.root";
+  }
   // if (sample == "alltruth")   input_filename = "diphoton_fake_rate_closure_test_matching_all_samples_"+ cmssw_version[era] +"_MiniAOD_histograms.root";
   TFile *infile = TFile::Open(input_filename,"read");
 
@@ -194,26 +199,42 @@ int main(int argc, char *argv[])
       else if (templateVariable == "chIso")
 	postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
 
+    // record fake rate in TGraphs
+    TString histNameEB = TString::Format("PtEB_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
+    TH1D* histEB = static_cast<TH1D*>(infile->Get(histNameEB));
+
       // Return pair: (fakevalue, fakerrormax) for ptBin, sideband
       std::pair<double,double> resEB = rooFitClosureTest(sample,templateVariable,binName,TString("EB"),sidebandsEB.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
-
-      // record fake rate in TGraphs
-      TString histNameEB = TString::Format("PtEB_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
-      TH1D* histEB = static_cast<TH1D*>(infile->Get(histNameEB));
-
+      double numEB = resEB.first;
+      double errFakeEB = resEB.second;
       double denomEB = histEB->Integral();
       double graphX_EB = histEB->GetMean();
-      double graphY_EB = resEB.first/denomEB; // i.e. the fake rate in the EB
+
+      // If MC as truth
+      if (sample == "alltruth"){
+        TFile *numinfile = TFile::Open(numerator_inputfile, "read");
+        TH1D* hphoton_fakes_pt_EB_num = static_cast<TH1D*>(numinfile->Get("photon_fakes_pt_EB"));
+        TH1D* hphoton_fakes_pt_EB_den = static_cast<TH1D*>(infile->Get("photon_pt_denominator_fake_rate_weighted_EB"));
+        int numBin1 = hphoton_fakes_pt_EB_num->GetXaxis()->FindBin(ptBinArray[i]);
+        int denBin1 = hphoton_fakes_pt_EB_den->GetXaxis()->FindBin(ptBinArray[i]);
+        int numBin2 = hphoton_fakes_pt_EB_num->GetXaxis()->FindBin(ptBinArray[i+1]);
+        int denBin2 = hphoton_fakes_pt_EB_den->GetXaxis()->FindBin(ptBinArray[i+1]);
+        numEB = hphoton_fakes_pt_EB_num->Integral(numBin1, numBin2);
+        denomEB = hphoton_fakes_pt_EB_den->Integral(denBin1, denBin2);
+        // errFakeEB = hphoton_fakes_pt_EB_num->GetBinError(numBin1);
+      }
+
+      double graphY_EB = numEB/denomEB; // i.e. the fake rate in the EB
       double eXLow_EB = graphX_EB - ptLow;
       double eXHigh_EB = ptHigh - graphX_EB;
-      double ey_EB = fakeRateUncertainty(denomEB,resEB.second,graphY_EB);
+      double ey_EB = fakeRateUncertainty(denomEB,errFakeEB,graphY_EB);
 
       fakeRatesEB.at(j)->SetPoint(i,graphX_EB,graphY_EB);
       fakeRatesEB.at(j)->SetPointError(i,eXLow_EB,eXHigh_EB,ey_EB,ey_EB);
 
       // record background fit result
-      bkgVsPtEBVec.at(j)->SetPoint(i,graphX_EB,resEB.first/ptBinSize);
-      bkgVsPtEBVec.at(j)->SetPointError(i,eXLow_EB,eXHigh_EB,resEB.second/ptBinSize,resEB.second/ptBinSize);
+      bkgVsPtEBVec.at(j)->SetPoint(i,graphX_EB,numEB/ptBinSize);
+      bkgVsPtEBVec.at(j)->SetPointError(i,eXLow_EB,eXHigh_EB,errFakeEB/ptBinSize,errFakeEB/ptBinSize);
     } // end loop over pT bins
   } // end loop over sidebands
 
@@ -234,18 +255,36 @@ int main(int argc, char *argv[])
       else if (templateVariable == "chIso")
 	postFix = TString::Format("_sieie%.4fTo%.4f",sidebandLow,sidebandHigh);
 
-      std::pair<double,double> resEE = rooFitClosureTest(sample,templateVariable,binName,TString("EE"),sidebandsEE.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
-
       // record fake rate in TGraphs
       TString histNameEE = TString::Format("PtEE_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
       TH1D* histEE = static_cast<TH1D*>(infile->Get(histNameEE));
 
+      std::pair<double,double> resEE = rooFitClosureTest(sample,templateVariable,binName,TString("EE"),sidebandsEE.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
+      double numEE = resEE.first; // defaults to fit results for MC as fake
+      double errFakeEE = resEE.second;
       double denomEE = histEE->Integral();
       double graphX_EE = histEE->GetMean();
-      double graphY_EE = resEE.first/denomEE; // i.e. the fake rate in the EE
+
+      if (sample == "alltruth"){ // overwrite numEE for MC as truth
+        TFile *numinfile = TFile::Open(numerator_inputfile,"read");
+        TH1D* hphoton_fakes_pt_EE_num = static_cast<TH1D*>(numinfile->Get("photon_fakes_pt_EE"));
+        TH1D* hphoton_fakes_pt_EE_den = static_cast<TH1D*>(infile->Get("photon_pt_denominator_fake_rate_weighted_EE"));
+        int numBin1 = hphoton_fakes_pt_EE_num->GetXaxis()->FindBin(ptBinArray[i]);
+        int denBin1 = hphoton_fakes_pt_EE_den->GetXaxis()->FindBin(ptBinArray[i]);
+        int numBin2 = hphoton_fakes_pt_EE_num->GetXaxis()->FindBin(ptBinArray[i+1]);
+        int denBin2 = hphoton_fakes_pt_EE_den->GetXaxis()->FindBin(ptBinArray[i+1]);
+        numEE = hphoton_fakes_pt_EE_num->Integral(numBin1, numBin2);
+        denomEE = hphoton_fakes_pt_EE_den->Integral(denBin1, denBin2);
+
+        // another Idea I could try tomorrow is instead of getting num and denominator is to get the fake rate from the plot-kinematics code.
+        // Divide the MC Truth with the photon_pt_denominator_EE  (test this hypothesis tomorrow)
+      }
+
+
+      double graphY_EE = numEE/denomEE; // i.e. the fake rate in the EE
       double eXLow_EE = graphX_EE - ptLow;
       double eXHigh_EE = ptHigh - graphX_EE;
-      double ey_EE = fakeRateUncertainty(denomEE,resEE.second,graphY_EE);
+      double ey_EE = fakeRateUncertainty(denomEE,errFakeEE,graphY_EE);
 
       fakeRatesEE.at(j)->SetPoint(i,graphX_EE,graphY_EE);
       fakeRatesEE.at(j)->SetPointError(i,eXLow_EE,eXHigh_EE,ey_EE,ey_EE);
@@ -253,14 +292,14 @@ int main(int argc, char *argv[])
       // fill debug vectors
       if (templateVariable == "sieie") {
 	if (sidebandLow == 9.) {
-	  numVec.push_back(resEE.first);
+	  numVec.push_back(numEE);
 	  denomVec.push_back(denomEE);
 	}
       }
 
       // record background fit result
-      bkgVsPtEEVec.at(j)->SetPoint(i,graphX_EE,resEE.first/ptBinSize);
-      bkgVsPtEEVec.at(j)->SetPointError(i,eXLow_EE,eXHigh_EE,resEE.second/ptBinSize,resEE.second/ptBinSize);
+      bkgVsPtEEVec.at(j)->SetPoint(i,graphX_EE,numEE/ptBinSize);
+      bkgVsPtEEVec.at(j)->SetPointError(i,eXLow_EE,eXHigh_EE,errFakeEE/ptBinSize,errFakeEE/ptBinSize);
     } // end loop over pT bins
   } // end loop over sidebands
 
