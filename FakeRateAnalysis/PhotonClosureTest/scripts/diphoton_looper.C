@@ -75,6 +75,22 @@ void diphoton_looper(TString run, TString sample, bool do_fakes) {
       chain->Add("root://cmsxrootd.fnal.gov/"+ntuple_path+"/diphoton_fake_rate_closure_test_GGJets_M-8000To13000_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root",0);
     }
   }
+  if (run == "2016_94X") {
+    if (sample == "all" || sample == "QCD") {
+    }
+    if (sample == "all" || sample == "GJets") {
+    }
+    if (sample == "all" || sample == "GGJets") {
+      chain->Add(ntuple_path+"diphoton_closure/20eed6b/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/201110_043802/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/20eed6b/GGJets_M-200To500_Pt-50_13TeV-sherpa/crab_GGJets_M-200To500_Pt-50_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/201110_043816/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/20eed6b/GGJets_M-500To1000_Pt-50_13TeV-sherpa/crab_GGJets_M-500To1000_Pt-50_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/201110_043830/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/20eed6b/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/crab_GGJets_M-1000To2000_Pt-50_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/201110_043844/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/20eed6b/GGJets_M-2000To4000_Pt-50_13TeV-sherpa/crab_GGJets_M-2000To4000_Pt-50_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/201110_043858/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/20eed6b/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/crab_GGJets_M-4000To6000_Pt-50_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/201110_043913/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/20eed6b/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/crab_GGJets_M-6000To8000_Pt-50_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/201110_043926/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/20eed6b/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/201110_043940/0000/*.root");
+    }
+  }
   if (run == "2017") {
     if (sample == "all" || sample == "QCD") {
       chain->Add(ntuple_path+"diphoton_closure/dc44792/QCD_Pt_50to80_TuneCP5_13TeV_pythia8/crab_QCD_Pt_50to80_TuneCP5_13TeV_pythia8__Fall17_94X_mc2017_realistic_v14-v1__MINIAODSIM/201002_034131/0000/*.root");
