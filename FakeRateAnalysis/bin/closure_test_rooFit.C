@@ -214,7 +214,7 @@ int main(int argc, char *argv[])
       if (sample == "alltruth"){
         TFile *numinfile = TFile::Open(numerator_inputfile, "read");
         TH1D* hphoton_fakes_pt_EB_num = static_cast<TH1D*>(numinfile->Get("photon_fakes_pt_EB"));
-        TH1D* hphoton_fakes_pt_EB_den = static_cast<TH1D*>(infile->Get("photon_pt_denominator_fake_rate_weighted_EB"));
+        TH1D* hphoton_fakes_pt_EB_den = static_cast<TH1D*>(infile->Get("photon_pt_denominator_EB"));
         int numBin1 = hphoton_fakes_pt_EB_num->GetXaxis()->FindBin(ptBinArray[i]);
         int denBin1 = hphoton_fakes_pt_EB_den->GetXaxis()->FindBin(ptBinArray[i]);
         int numBin2 = hphoton_fakes_pt_EB_num->GetXaxis()->FindBin(ptBinArray[i+1]);
@@ -268,7 +268,7 @@ int main(int argc, char *argv[])
       if (sample == "alltruth"){ // overwrite numEE for MC as truth
         TFile *numinfile = TFile::Open(numerator_inputfile,"read");
         TH1D* hphoton_fakes_pt_EE_num = static_cast<TH1D*>(numinfile->Get("photon_fakes_pt_EE"));
-        TH1D* hphoton_fakes_pt_EE_den = static_cast<TH1D*>(infile->Get("photon_pt_denominator_fake_rate_weighted_EE"));
+        TH1D* hphoton_fakes_pt_EE_den = static_cast<TH1D*>(infile->Get("photon_pt_denominator_EE"));
         int numBin1 = hphoton_fakes_pt_EE_num->GetXaxis()->FindBin(ptBinArray[i]);
         int denBin1 = hphoton_fakes_pt_EE_den->GetXaxis()->FindBin(ptBinArray[i]);
         int numBin2 = hphoton_fakes_pt_EE_num->GetXaxis()->FindBin(ptBinArray[i+1]);

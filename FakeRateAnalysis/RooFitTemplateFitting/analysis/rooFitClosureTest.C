@@ -88,11 +88,10 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
     std::cout << "Using numerator file: " << input_filename << std::endl;
   }
 
+  // Fake Templates
   TFile *histojetfile = TFile::Open(data_filename);
   TFile *histojetfile_templates;
   histojetfile_templates = TFile::Open(data_filename);
-
-
 
   // Real Templates
   TString mc_filename(basefilename + "diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + "_nPV0-200_MiniAOD_histograms.root");
@@ -111,7 +110,6 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   // Fake Templates
   TString temp;
   TString histName;
-
   if (sample == "alltruth"){
      temp = "_numerator_fakes_pt";
      histName = templateVariable + etaBin + temp + ptBin ;
@@ -120,8 +118,6 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
     temp = "_faketemplate_pt";
     histName = templateVariable + etaBin + temp + ptBin + postFix ;
   }
-
-
   std::cout << "Getting " << histName << std::endl;
   histojetfile->Print();
   TH1D *hfakeTemplate = (TH1D*) histojetfile_templates->Get(histName);
@@ -130,11 +126,11 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   // Real Templates
   TH1D *hrealTemplate = (TH1D*) historealmcfile->Get( templateVariable + etaBin + TString("_realtemplate_pt") + ptBin );
   hrealTemplate->Print();
-
   // Numerator
-  TH1D *hData;
+  TH1D *hData;  // the one to fit to
   TH1D *hdenom;
   if (sample == "alltruth") {
+    // Check if these
     TFile *inputFile = TFile::Open(input_filename);
     hData = (TH1D*) inputFile->Get( templateVariable + etaBin + TString("_numerator_pt") + ptBin);
     hdenom   = (TH1D*) inputFile->Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );

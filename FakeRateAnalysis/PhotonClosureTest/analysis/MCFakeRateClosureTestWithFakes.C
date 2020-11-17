@@ -135,7 +135,7 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
 
   // define number of bin edges
   const int nBins = 10;
-  double ptBinArray[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
+  const double ptBinArray[nBins] = { 50., 70., 90., 110., 130., 150., 200., 250., 300., 600. };
 
   // pt spectrum of passHighPtID objects
   TH1D phoPtEB_passHighPtID_varbin("phoPtEB_passHighPtID_varbin","",nBins-1,ptBinArray);
@@ -474,11 +474,11 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
     if (fabs(Photon_scEta) < 1.4442) {
       // count numerator objects before passing sieie cut
       if (is_sieie_numerator_object) {
-	nEvents_EB+=event_counting_weight;
-	if (Photon_passHighPtID) {
-	  if (fakes) {
+	       nEvents_EB+=event_counting_weight;
+	        if (Photon_passHighPtID) {
+	           if (fakes) {
 	    nFakesEB++;
-	    phoPtEB_passHighPtID_varbin.Fill(Photon_pt,Event_weightAll);
+	    phoPtEB_passHighPtID_varbin.Fill(Photon_pt,Event_weightAll); // numerator
 	    photon_fakes_sIeIe_EB->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	    photon_fakes_pt_EB->Fill(Photon_pt,Event_weightAll);
 	    photon_fakes_eta_EB->Fill(Photon_eta,Event_weightAll);
