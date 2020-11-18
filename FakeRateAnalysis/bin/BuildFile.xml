@@ -13,5 +13,6 @@
   <bin file="photon_closure_test.cc" name="photon_closure_test.exe"/>
   <bin file="diphoton_closure_test.cc" name="diphoton_closure_test.exe"/>
   <bin file="closure_test_rooFit.C" name="closure_test_rooFit.exe"/>
+  <bin file="closure_test_rooFit_EEdebug.C" name="closure_test_rooFit_EEdebug.exe"/>
 </environment>
 <flags CXXFLAGS="-Wall -g"/>
