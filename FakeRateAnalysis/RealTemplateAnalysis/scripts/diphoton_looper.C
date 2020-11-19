@@ -9,6 +9,7 @@
 
 void diphoton_looper(int year, const std::string & sample, int nPVLow, int nPVHigh, bool isClosureTest=false) {
   TString old_ntuple_path =  "root://cmseos.fnal.gov//store/user/abuccill/diphoton-analysis/fake_rate_real_templates";
+  if (isClosureTest) std::cout << "Running Closure Test settings" << std::endl;
 
   // use stopwatch to time
   TStopwatch sw;
@@ -42,7 +43,7 @@ void diphoton_looper(int year, const std::string & sample, int nPVLow, int nPVHi
   MCFakeRateAnalysis loop(chain);
 
   // loop over all entries of our tree
-  loop.Loop(year, sample, nPVLow, nPVHigh);
+  loop.Loop(year, sample, nPVLow, nPVHigh, isClosureTest);
 
   // stop stopwatch
   sw.Stop();
