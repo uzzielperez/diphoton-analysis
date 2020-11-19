@@ -63,4 +63,4 @@ else:
 
 config.section_("Site")
 config.Site.storageSite = 'T3_US_FNALLPC'
-config.Site.blacklist = ['T1_RU_JINR']
+config.Site.blacklist = []
