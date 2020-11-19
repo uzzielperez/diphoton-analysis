@@ -82,6 +82,7 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
       nbinsSieieEB = 50;
       nbinsSieieEE = 25;
       nbinsChIso   = 50;
+      std::cout << "Using closure test binning: " << "EB: " << nbinsSieieEB << "; EE: " << nbinsSieieEE << "; ChIso: " << nbinsChIso << std::endl;
     }
 
     TH1D *hEB = new TH1D(Form("sieieEB_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEB",nbinsSieieEB,0.,0.1);

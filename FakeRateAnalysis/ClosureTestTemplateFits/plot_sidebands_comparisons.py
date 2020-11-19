@@ -100,7 +100,7 @@ def GetHist(ptbin, isEB, type, chIsosideband=None):
   print histname
   return h, histname
 
-def LoopOverPtbinsPlots(isEB):
+def CompareFakeTemp(isEB):
     # EB Templates
     for ptbin in range(len(PTBINS)-1):
         c = ROOT.TCanvas()
@@ -165,7 +165,83 @@ def LoopOverPtbinsPlots(isEB):
         c.Draw()
         c.SaveAs("comp_fake_templates_pT"+str(PTBINS[ptbin]) + "To" + str(PTBINS[ptbin+1])+postFix)
 
+def CompareFakeTemp(isEB):
+    # EB Templates
+    for ptbin in range(len(PTBINS)-1):
+        c = ROOT.TCanvas()
+
+        hNumerator, NumLabel = GetHist(ptbin, isEB, "Numerator")
+        hMCTruth, MCTruthlabel = GetHist(ptbin, isEB, "Truth")
+        hFake_chIso_5To10, Fakelabel_chIso_5To10 = GetHist(ptbin, isEB, "Fake", "5To10")
+        hFake_chIso_10To15, Fakelabel_chIso_10To15 = GetHist(ptbin, isEB, "Fake", "10To15")
+
+        #hMCTruth.SetMaximum(3 * hMCTruth.GetMaximum())
+        hMCTruth.SetLineColor(kOrange-5)
+        hMCTruth.Scale(1/hMCTruth.Integral())
+        hFake_chIso_5To10.SetLineColor(kBlack)
+        hFake_chIso_5To10.Scale(1/hFake_chIso_5To10.Integral())
+        hFake_chIso_10To15.SetLineColor(kRed)
+        hFake_chIso_10To15.Scale(1/hFake_chIso_10To15.Integral())
+
+        hReal, Reallabel = GetHist(ptbin, isEB, "Real")
+        hReal.SetLineColor(kGreen)
+        hReal.Scale(1/hReal.Integral())
+
+        hMaxList = []
+        hMaxList.append(hMCTruth.GetMaximum())
+        hMaxList.append(hFake_chIso_5To10.GetMaximum())
+        hMaxList.append(hFake_chIso_10To15.GetMaximum())
+        hMaxList.append(hReal.GetMaximum())
+        if max(hMaxList)==hMaxList[0]:
+            hDrawFirst = hMCTruth
+        elif max(hMaxList)==hMaxList[1]:
+            hDrawFirst = hFake_chIso_5To10
+        elif max(hMaxList)==hMaxList[2]:
+            hDrawFirst = hFake_chIso_10To15
+        elif max(hMaxList)==hMaxList[3]:
+            hDrawFirst = hReal
+
+        xMax = (0.08, 0.03)[isEB]
+        hDrawFirst.GetXaxis().SetTitleOffset(1)
+        hDrawFirst.GetXaxis().SetRangeUser(0, xMax)
+        hDrawFirst.GetXaxis().SetTitle("#sigma_{i#etai#eta}")
+        hDrawFirst.Draw("same,hist")
+        hMCTruth.Draw("same,hist")
+        hFake_chIso_5To10.Draw("same, hist")
+        hMCTruth.Draw("same,hist")
+        hFake_chIso_10To15.Draw("same, hist")
+        hReal.Draw("same, hist")
+
+        leg = TLegend(0.55, 0.65, 0.75, 0.85)
+        leg.SetBorderSize(0)
+        leg.SetFillColor(0)
+        leg.SetFillStyle(0)
+        leg.SetTextFont(42)
+        leg.SetTextSize(0.035)
+        leg.AddEntry(hMCTruth, "MC Truth", "l")
+        leg.AddEntry(hFake_chIso_5To10, "5 < Iso_{Ch} < 10", "l")
+        leg.AddEntry(hFake_chIso_10To15, "10 < Iso_{Ch} < 15", "l")
+        leg.AddEntry(hReal, "Real", "l")
+        leg.Draw()
+
+        ##
+        postFix = ("endcap", "barrel")[isEB]
+        t_label = TLatex()
+        t_label.SetTextAlign(12)
+        t_label.DrawLatexNDC(0.60,0.50,"ECAL %s %s"%(postFix, era));
+        # t_label.DrawLatexNDC(0.25,0.70, "#sigma_{i#etai#eta} templates");
+        t_label.DrawLatexNDC(0.60,0.45, "pT "+str(PTBINS[ptbin]) + "-" + str(PTBINS[ptbin+1])+ " GeV");
+        t_label.SetTextFont(42);
+
+        ##
+        postFix = ("EE%s.pdf" %(era), "EB%s.pdf" %(era))[isEB]
+
+        c.Draw()
+        c.SaveAs("templates_pT"+str(PTBINS[ptbin]) + "To" + str(PTBINS[ptbin+1])+postFix)
+
+
+
 # main
 
-LoopOverPtbinsPlots(True)
-LoopOverPtbinsPlots(False)
+CompareFakeTemp(True)
+CompareFakeTemp(False)
