@@ -26,7 +26,7 @@ void diphoton_looper(TString run="2016", TString sample="all")
   TChain *chain = new TChain(tree);
 
   // currently using legacy samples for 2016
-  if (run == "2016") {
+  if (run == "2016_76X") {
     ntuple_path = "root://cmseos.fnal.gov//store/user/abuccill/diphoton-analysis/fake_rate_diphoton_closure_test";
 
     if (sample == "all" || sample == "QCD") {
@@ -69,10 +69,45 @@ void diphoton_looper(TString run="2016", TString sample="all")
     }
   }
 
-  if (run == "2016_94X") {
+  if (run == "2016") {
     if (sample == "all" || sample == "QCD") {
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201113_135631/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_50to80_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_50to80_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201113_135646/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3-v1__MINIAODSIM/201113_135704/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3_ext2-v2__MINIAODSIM/201113_135720/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3-v1__MINIAODSIM/201113_135739/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3_ext1-v2__MINIAODSIM/201113_135756/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201113_135814/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3_ext1-v2__MINIAODSIM/201113_135829/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201113_135845/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3_ext1-v2__MINIAODSIM/201113_135859/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_470to600_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_470to600_TuneCUETP8M1_13TeV_pythia8__RunIISummer16MiniAODv3-PUMoriond17_backup_94X_mcRun2_as/201113_135929/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_470to600_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_470to600_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201113_135915/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_600to800_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_600to800_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201116_201722/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_600to800_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_600to800_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3_ext1-v2__MINIAODSIM/201113_135957/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_800to1000_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_800to1000_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201113_140013/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_800to1000_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_800to1000_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3_ext1-v2__MINIAODSIM/201113_140028/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_1000to1400_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_1000to1400_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3-v1__MINIAODSIM/201113_140043/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_1000to1400_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_1000to1400_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3_ext1-v2__MINIAODSIM/201113_140056/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_1400to1800_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_1400to1800_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201113_140110/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_1400to1800_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_1400to1800_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3_ext1-v2__MINIAODSIM/201113_140123/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_1800to2400_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_1800to2400_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201113_140140/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_1800to2400_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_1800to2400_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3_ext1-v2__MINIAODSIM/201113_140156/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_2400to3200_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_2400to3200_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201113_140214/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_2400to3200_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_2400to3200_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3_ext1-v2__MINIAODSIM/201113_140229/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/QCD_Pt_3200toInf_TuneCUETP8M1_13TeV_pythia8/crab_QCD_Pt_3200toInf_TuneCUETP8M1_13TeV_pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201113_140248/0000/*.root");
     }
     if (sample == "all" || sample == "GJets") {
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/GJets_HT-40To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_GJets_HT-40To100_13TeV-MG-PY8__Summer16MiniAODv3-v2__MINIAODSIM/201113_135402/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/GJets_HT-40To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_GJets_HT-40To100_13TeV-MG-PY8__Summer16MiniAODv3_ext1-v2__MINIAODSIM/201113_135417/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/GJets_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_GJets_HT-100To200_13TeV-MG-PY8__Summer16MiniAODv3-v2__MINIAODSIM/201113_135432/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/GJets_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_GJets_HT-100To200_13TeV-MG-PY8__Summer16MiniAODv3_ext1-v2__MINIAODSIM/201113_135447/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/GJets_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_GJets_HT-200To400_13TeV-MG-PY8__Summer16MiniAODv3-v2__MINIAODSIM/201113_135504/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/GJets_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_GJets_HT-200To400_13TeV-MG-PY8__Summer16MiniAODv3_ext1-v2__MINIAODSIM/201113_135518/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/GJets_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_GJets_HT-400To600_13TeV-MG-PY8__Summer16MiniAODv3-v2__MINIAODSIM/201113_135532/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/GJets_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_GJets_HT-400To600_13TeV-MG-PY8__Summer16MiniAODv3_ext1-v2__MINIAODSIM/201113_135544/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_GJets_HT-600ToInf_13TeV-MG-PY8__Summer16MiniAODv3-v2__MINIAODSIM/201113_135559/0000/*.root");
+      chain->Add(ntuple_path+"diphoton_closure/c6e4e6b/GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_GJets_HT-600ToInf_13TeV-MG-PY8__Summer16MiniAODv3_ext1-v2__MINIAODSIM/201113_135615/0000/*.root");
     }
     if (sample == "all" || sample == "GGJets") {
       chain->Add(ntuple_path+"diphoton_closure/20eed6b/GGJets_M-60To200_Pt-50_13TeV-sherpa/crab_GGJets_M-60To200_Pt-50_13TeV-sherpa__Summer16MiniAODv3-v1__MINIAODSIM/201110_043802/0000/*.root");
