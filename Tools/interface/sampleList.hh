@@ -99,16 +99,6 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
   chData2018ABC_rereco->Add(chData2018AB_rereco);
   chData2018ABC_rereco->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018C-17Sep2018-v1__MINIAOD/191115_212505/*.root");
 
-  TChain *chData2018ABC_prompt = new TChain(treeType);
-  chData2018ABC_prompt->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/181128_144406/*.root");
-  chData2018ABC_prompt->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v2__MINIAOD/181128_144424/*.root");
-  chData2018ABC_prompt->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v3__MINIAOD/181128_144442/*.root");
-  chData2018ABC_prompt->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018B-PromptReco-v1__MINIAOD/181128_144502/*.root");
-  chData2018ABC_prompt->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018B-PromptReco-v2__MINIAOD/181128_144518/*.root");
-  chData2018ABC_prompt->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018C-PromptReco-v1__MINIAOD/181128_144536/*.root");
-  chData2018ABC_prompt->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018C-PromptReco-v2__MINIAOD/181128_144555/*.root");
-  chData2018ABC_prompt->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018C-PromptReco-v3__MINIAOD/181128_144612/*.root");
-
   TChain *chData2018_newjson = new TChain(treeType);
   chData2018_newjson->Add(baseDirectory + "/store/user/cawest/diphoton/1d2157e/EGamma/crab_EGamma__Run2018A-17Sep2018-v2__MINIAOD/191107_231838/*.root");
 
@@ -123,10 +113,6 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
   TChain *chData2018 = new TChain(treeType);
   chData2018->Add(chData2018ABC_rereco);
   chData2018->Add(chData2018D);
-
-  TChain *chData2018_prompt = new TChain(treeType);
-  chData2018_prompt->Add(chData2018ABC_prompt);
-  chData2018_prompt->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/*.root");
 
   TChain *chData2018ABC_rereco_unskimmed = new TChain(treeType);
   if(includeUnskimmed) {
@@ -143,25 +129,6 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
     chData2018ABC_rereco_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018C-17Sep2018-v1__MINIAOD/191115_212505/0001/*.root");
     chData2018ABC_rereco_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018C-17Sep2018-v1__MINIAOD/191115_212505/0002/*.root");
   }
-  TChain *chData2018ABC_prompt_unskimmed = new TChain(treeType);
-  if(includeUnskimmed) {
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/181128_144406/0000/*.root");
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/181128_144406/0001/*.root");
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/181128_144406/0002/*.root");
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v1__MINIAOD/181128_144406/0003/*.root");
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v2__MINIAOD/181128_144424/0000/*.root");
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v3__MINIAOD/181128_144442/0000/*.root");
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018A-PromptReco-v3__MINIAOD/181128_144442/0001/*.root");
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018B-PromptReco-v1__MINIAOD/181128_144502/0000/*.root");
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018B-PromptReco-v1__MINIAOD/181128_144502/0001/*.root");
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018B-PromptReco-v1__MINIAOD/181128_144502/0002/*.root");
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018B-PromptReco-v2__MINIAOD/181128_144518/0000/*.root");
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018C-PromptReco-v1__MINIAOD/181128_144536/0000/*.root");
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018C-PromptReco-v2__MINIAOD/181128_144555/0000/*.root");
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018C-PromptReco-v2__MINIAOD/181128_144555/0001/*.root");
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018C-PromptReco-v3__MINIAOD/181128_144612/0000/*.root");
-    chData2018ABC_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018C-PromptReco-v3__MINIAOD/181128_144612/0001/*.root");
-  }
 
   TChain *chData2018_unskimmed = new TChain(treeType);
   if(includeUnskimmed) {
@@ -175,21 +142,6 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
     chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/191115_212527/0006/*.root");
     chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/191115_212527/0007/*.root");
     chData2018_unskimmed->Add(baseDirectory + "/store/user/cawest/diphoton/969aff9/EGamma/crab_EGamma__Run2018D-22Jan2019-v2__MINIAOD/191115_212527/0008/*.root");
-  }
-
-  TChain *chData2018_prompt_unskimmed = new TChain(treeType);
-  if(includeUnskimmed) {
-    chData2018_prompt_unskimmed->Add(chData2018ABC_prompt_unskimmed);
-    chData2018_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0000/*.root");
-    chData2018_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0001/*.root");
-    chData2018_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0002/*.root");
-    chData2018_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0003/*.root");
-    chData2018_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0004/*.root");
-    chData2018_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0005/*.root");
-    chData2018_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0006/*.root");
-    chData2018_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0007/*.root");
-    chData2018_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0008/*.root");
-    chData2018_prompt_unskimmed->Add(baseDirectory + "/store/user/cawest/EGamma/crab_EGamma__Run2018D-PromptReco-v2__MINIAOD/181129_223519/0009/*.root");
   }
 
   TChain *chDataJetHT2018_unskimmed = new TChain(treeType);
@@ -651,16 +603,13 @@ void init(bool includeUnskimmed = false, bool includeSignal = false)
   chains["data_2016_unskimmed"] = chData2016_unskimmed;
   chains["data_2017"] = chData2017;
   chains["data_2017_unskimmed"] = chData2017_unskimmed;
-  chains["data_2018_prompt"] = chData2018_prompt;
   chains["data_2018"] = chData2018;
-  chains["data_2018ABC_prompt"] = chData2018ABC_prompt;
   chains["data_2018AB"] = chData2018AB_rereco;
   chains["data_2018ABC"] = chData2018ABC_rereco;
   chains["data_2018CD"] = chData2018CD;
   chains["data_2018D"] = chData2018D;
   chains["data_jetht_2017_unskimmed"] = chDataJetHT2017_unskimmed;
   chains["data_jetht_2018_unskimmed"] = chDataJetHT2018_unskimmed;
-  chains["data_2018_prompt_unskimmed"] = chData2018_prompt_unskimmed;
   chains["data_2018_unskimmed"] = chData2018_unskimmed;
   chains["data_2018_newjson"] = chData2018_newjson;
   chains["data_2017_2018"] = chData2017_2018;
