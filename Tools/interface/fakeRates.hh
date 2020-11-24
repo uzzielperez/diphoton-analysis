@@ -115,21 +115,16 @@ double fakeRates::getFakeRate(double pt, int region, int nPV)
 
 double fakeRates::getFakeRateClosureTest(double pt, std::string region, int year)
 {
-  // std::vector<std::string> regions = {"EB", "EE"};
 
   std::string keyname_all(region + "_all_0-200");
-  // std::string keyname_alltruth(regions[region] + "_alltruth_0-200");
+
   int nmax = m_fakeRatesClosureTest[keyname_all]->GetN()-1;
   double pt_max = m_fakeRatesClosureTest[keyname_all]->GetX()[nmax];
   double pt_closure = (pt > pt_max) ? pt_max : pt;
-  return m_fakeRatesClosureTest[keyname_all]->Eval(pt_closure);
+  double fakeRate = m_fakeRatesClosureTest[keyname_all]->Eval(pt_closure);
+  std::cout << "FakeRate for pt: " << pt << "is " << fakeRate << std::endl;
+  return fakeRate;
 
-  // if(m_fakeRateType == "average") return 0.5*(m_fakeRatesClosureTest[keyname_all]->Eval(pt)+m_fakeRatesClosureTest[keyname_alltruth]->Eval(pt));
-  // else if(m_fakeRateType == "all") return m_fakeRatesClosureTest[keyname_all]->Eval(pt);
-  // else if(m_fakeRateType == "alltruth") return m_fakeRatesClosureTest[keyname_alltruth]->Eval(pt);
-  // else std::cout << "Fake rate type " << m_fakeRateType << "not supported." << std::endl;
-
-  return 0;
 }
 
 #endif // fakeRates_hh
