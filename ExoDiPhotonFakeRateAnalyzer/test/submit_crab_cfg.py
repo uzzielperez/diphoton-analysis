@@ -7,6 +7,7 @@ import subprocess
 import json
 import os
 diphoton_analysis = __import__("diphoton-analysis.CommonClasses.das_utils")
+submission = __import__("diphoton-analysis.CommonClasses.submit_utils")
 
 do2018data = False
 do2018dataprompt = False
@@ -18,6 +19,7 @@ do2017mc = False
 do2017mcv1 = False
 do2016mc = False
 dospring2016ggmc = False
+dosummer2016ggmc = False
 do2016ggmc = False
 do2015data = False
 do2015mc = False
@@ -170,7 +172,7 @@ if dospring2016ggmc:
   DATASETS.append(["/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"])
   DATASETS.append(["/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"])
 
-if do2016ggmc:
+if dosummer2016ggmc:
   DATASETS.append(["/GGJets_M-60To200_Pt-50_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM"])
   DATASETS.append(["/GGJets_M-200To500_Pt-50_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM"])
   DATASETS.append(["/GGJets_M-500To1000_Pt-50_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM"])
@@ -179,6 +181,9 @@ if do2016ggmc:
   DATASETS.append(["/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM"])
   DATASETS.append(["/GGJets_M-6000To8000_Pt-50_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM"])
   DATASETS.append(["/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM"])
+
+if do2016ggmc:
+  DATASETS.extend(submission.CommonClasses.submit_utils.get_dataset_list("2016_GGJets"))
 
 if do2016mc:
 #  DATASETS.append(["/GGGJets_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM"])

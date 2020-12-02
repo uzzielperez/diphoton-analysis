@@ -16,6 +16,7 @@ do2018signalHeavyHiggs = False
 do2017signalADD = False
 do2017signalRSG = False
 do2017signalHeavyHiggs = False
+do2016signalRSG = False
 # Data
 do2018data = False
 do2018datarereco = False
@@ -73,6 +74,9 @@ if do2017signalRSG:
     DATASETS.extend(submission.CommonClasses.submit_utils.get_dataset_list("2017_RSG"))
 if do2017signalHeavyHiggs:
     DATASETS.extend(submission.CommonClasses.submit_utils.get_dataset_list("2017_HeavyHiggs"))
+
+if do2016signalRSG:
+    DATASETS.extend(submission.CommonClasses.submit_utils.get_dataset_list("2016_RSG"))
 
 if do2018datarereco:
   DATASETS.append(["/EGamma/Run2018A-17Sep2018-v2/MINIAOD"])
