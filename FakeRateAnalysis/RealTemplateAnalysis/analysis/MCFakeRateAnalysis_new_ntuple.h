@@ -1,19 +1,18 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Mon Feb  6 17:17:18 2017 by ROOT version 6.02/13
+// Wed Nov 25 22:51:54 2020 by ROOT version 6.12/07
 // from TTree fTree/PhotonTree
-// found on file: root://cmsxrootd.fnal.gov//store/user/abuccill/diphoton-analysis/fake_rate_real_templates/diphoton_fake_rate_real_templates_GGJets_M-4000To6000_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root
+// found on file: root://cmseos.fnal.gov//store/user/cawest/diphoton_fake/20eed6b/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v/201110_050449/0000/out_GGJets_M-8000To13000_Pt-50_13TeV-sherpa_RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1_numEvent1000_9.root
 //////////////////////////////////////////////////////////
 
-#ifndef MCFakeRateAnalysis_h
-#define MCFakeRateAnalysis_h
+#ifndef MCFakeRateAnalysis_new_ntuple_h
+#define MCFakeRateAnalysis_new_ntuple_h
 
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
 
 // Header file for the classes stored in the TTree if any.
-#include "vector"
 #include "vector"
 
 class MCFakeRateAnalysis {
@@ -176,6 +175,7 @@ public :
    Int_t           TriggerBit_HLT_DoublePhoton40;
    Int_t           TriggerBit_HLT_DoublePhoton50;
    Int_t           TriggerBit_HLT_DoublePhoton60;
+   Int_t           TriggerBit_HLT_DoublePhoton70;
    Int_t           TriggerBit_HLT_DoublePhoton85;
    Int_t           TriggerBit_HLT_ECALHT800;
    Int_t           TriggerBit_HLT_Ele105_CaloIdVT_GsfTrkIdT;
@@ -481,6 +481,7 @@ public :
    Int_t           TriggerBit_HLT_VBF_DisplacedJet40_VVTightID_DisplacedTrack;
    Int_t           TriggerBit_HLT_VBF_DisplacedJet40_VVTightID_Hadronic;
    Int_t           TriggerBit_HLT_ZeroBias;
+   Int_t           TriggerBit_HLT_DoublePhoton33_CaloIdL;
    Int_t           TriggerPrescale_HLT_AK4PFDJet60_Eta2p1ForPPRef;
    Int_t           TriggerPrescale_HLT_AK4PFDJet80_Eta2p1ForPPRef;
    Int_t           TriggerPrescale_HLT_AK8DiPFJet250_200_TrimMass30_BTagCSV0p45;
@@ -590,6 +591,7 @@ public :
    Int_t           TriggerPrescale_HLT_DoublePhoton40;
    Int_t           TriggerPrescale_HLT_DoublePhoton50;
    Int_t           TriggerPrescale_HLT_DoublePhoton60;
+   Int_t           TriggerPrescale_HLT_DoublePhoton70;
    Int_t           TriggerPrescale_HLT_DoublePhoton85;
    Int_t           TriggerPrescale_HLT_ECALHT800;
    Int_t           TriggerPrescale_HLT_Ele105_CaloIdVT_GsfTrkIdT;
@@ -895,6 +897,7 @@ public :
    Int_t           TriggerPrescale_HLT_VBF_DisplacedJet40_VVTightID_DisplacedTrack;
    Int_t           TriggerPrescale_HLT_VBF_DisplacedJet40_VVTightID_Hadronic;
    Int_t           TriggerPrescale_HLT_ZeroBias;
+   Int_t           TriggerPrescale_HLT_DoublePhoton33_CaloIdL;
    Double_t        Photon_pt;
    Double_t        Photon_eta;
    Double_t        Photon_phi;
@@ -928,6 +931,30 @@ public :
    Double_t        Photon_chEAegmID;
    Double_t        Photon_nhEAegmID;
    Double_t        Photon_phoEAegmID;
+   Double_t        Photon_rapidity;
+   Float_t         Photon_ecalEnergyPreCorr;
+   Float_t         Photon_ecalEnergyErrPreCorr;
+   Float_t         Photon_ecalEnergyPostCorr;
+   Float_t         Photon_ecalEnergyErrPostCorr;
+   Float_t         Photon_energyScaleValue;
+   Float_t         Photon_energySigmaValue;
+   Float_t         Photon_energySmearNrSigma;
+   Float_t         Photon_energyScaleUp;
+   Float_t         Photon_energyScaleDown;
+   Float_t         Photon_energyScaleStatUp;
+   Float_t         Photon_energyScaleStatDown;
+   Float_t         Photon_energyScaleSystUp;
+   Float_t         Photon_energyScaleSystDown;
+   Float_t         Photon_energyScaleGainUp;
+   Float_t         Photon_energyScaleGainDown;
+   Float_t         Photon_energyScaleEtUp;
+   Float_t         Photon_energyScaleEtDown;
+   Float_t         Photon_energySigmaUp;
+   Float_t         Photon_energySigmaDown;
+   Float_t         Photon_energySigmaPhiUp;
+   Float_t         Photon_energySigmaPhiDown;
+   Float_t         Photon_energySigmaRhoUp;
+   Float_t         Photon_energySigmaRhoDown;
    Bool_t          Photon_passEGMLooseID;
    Bool_t          Photon_passEGMMediumID;
    Bool_t          Photon_passEGMTightID;
@@ -950,6 +977,7 @@ public :
    Bool_t          Photon_isNumeratorObjCand;
    Bool_t          Photon_isDenominatorObj;
    Bool_t          Photon_isSaturated;
+   Bool_t          Photon_isMCTruthFake;
    Double_t        PhotonGenMatch_pt;
    Double_t        PhotonGenMatch_eta;
    Double_t        PhotonGenMatch_phi;
@@ -1008,16 +1036,16 @@ public :
 #endif
 
 #ifdef MCFakeRateAnalysis_cxx
-MCFakeRateAnalysis::MCFakeRateAnalysis(TTree *tree) : fChain(0)
+MCFakeRateAnalysis::MCFakeRateAnalysis(TTree *tree) : fChain(0) 
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmsxrootd.fnal.gov//store/user/abuccill/diphoton-analysis/fake_rate_real_templates/diphoton_fake_rate_real_templates_GGJets_M-4000To6000_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmseos.fnal.gov//store/user/cawest/diphoton_fake/20eed6b/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v/201110_050449/0000/out_GGJets_M-8000To13000_Pt-50_13TeV-sherpa_RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1_numEvent1000_9.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("root://cmsxrootd.fnal.gov//store/user/abuccill/diphoton-analysis/fake_rate_real_templates/diphoton_fake_rate_real_templates_GGJets_M-4000To6000_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root");
+         f = new TFile("root://cmseos.fnal.gov//store/user/cawest/diphoton_fake/20eed6b/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v/201110_050449/0000/out_GGJets_M-8000To13000_Pt-50_13TeV-sherpa_RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1_numEvent1000_9.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("root://cmsxrootd.fnal.gov//store/user/abuccill/diphoton-analysis/fake_rate_real_templates/diphoton_fake_rate_real_templates_GGJets_M-4000To6000_Pt-50_13TeV-sherpa_76X_MiniAOD_merged.root:/diphoton");
+      TDirectory * dir = (TDirectory*)f->Get("root://cmseos.fnal.gov//store/user/cawest/diphoton_fake/20eed6b/GGJets_M-8000To13000_Pt-50_13TeV-sherpa/crab_GGJets_M-8000To13000_Pt-50_13TeV-sherpa__RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v/201110_050449/0000/out_GGJets_M-8000To13000_Pt-50_13TeV-sherpa_RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1_numEvent1000_9.root:/diphoton");
       dir->GetObject("fTree",tree);
 
    }
