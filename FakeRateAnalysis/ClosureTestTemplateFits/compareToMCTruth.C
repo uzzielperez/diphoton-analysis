@@ -92,6 +92,8 @@ void add_gr(int year, std::string region="EE", bool adjustrange=false){
   //c1->BuildLegend();
   p1->BuildLegend(0.6,0.68,0.8,0.88);
   mg->GetHistogram()->GetXaxis()->SetRangeUser(0.,2.5);
+  mg->GetHistogram()->GetXaxis()->SetRangeUser(0.,2.5);
+  mg->GetXaxis()->SetLimits(0., 630.);
   if  (region=="EB" && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.3);
   if  (region=="EE" && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.7);
 
@@ -130,6 +132,7 @@ void add_gr(int year, std::string region="EE", bool adjustrange=false){
     r->SetPoint(i, pt, y);
     r->SetPointError(i, errX, errX, errY, errY);
 
+
     std::cout << binName << ": " << pt << ": "
               << "fakeRate Truth:" << grTruth->Eval(pt) << ": "
               << "fakeRate Fake:" << grFake->Eval(pt) << ": "
@@ -139,18 +142,22 @@ void add_gr(int year, std::string region="EE", bool adjustrange=false){
               << "gRFake errX" << grFake->GetErrorX(pt) << ": "
               << "gRTruth errX" << grTruth->GetErrorX(pt)
               << std::endl;
-
   }
   r->GetHistogram()->GetXaxis()->SetTitle("pT (GeV)");
-  r->GetHistogram()->GetYaxis()->SetTitle("Fake/Truth");
+  r->GetHistogram()->GetYaxis()->SetTitle("Fake/Truth  ");
 
   r->GetXaxis()->SetTitleSize(0.09);
   r->GetYaxis()->SetTitleSize(0.075);
   r->GetXaxis()->SetTitleOffset(0.8);
+
+  //r->GetHistogram->GetXaxis()->SetRangeUser(0.,2.5);
+  r->GetXaxis()->SetLimits(0., 630.);
+
   c1->Update();
 
   r->GetXaxis()->SetLabelSize(0.075);
   r->GetYaxis()->SetLabelSize(0.075);
+  r->GetYaxis()->SetTitleOffset(0.5);
   r->Draw("AL");
 
   if (adjustrange) c1->SaveAs(Form("closureTest_MCTruth_comparisons%s_%s_adjustrange.pdf", region.c_str(), std::to_string(year).c_str()));
@@ -169,8 +176,7 @@ void compareToMCTruth(int year=2016, bool setBatch=true){
    add_grPlus(year, "EB");
    add_grPlus(year, "EE");
    add_gr(year, "EB", true);
-   add_gr(year, "EE", true); 
-
+   add_gr(year, "EE", true);
 
    return 0;
 }
