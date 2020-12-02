@@ -48,7 +48,7 @@ void add_grPlus(int year, std::string region="EE"){
   return 0;
 }
 
-void add_gr(int year, std::string region="EE"){
+void add_gr(int year, std::string region="EE", bool adjustrange=false){
 
   auto c1 = new TCanvas("c1","c1",200,10,700,500);
   auto mg = new TMultiGraph();
@@ -84,7 +84,7 @@ void add_gr(int year, std::string region="EE"){
   grTruth->SetLineColor(kOrange);
   grFake->SetLineColor(kRed);
   mg->Add(grTruth); grTruth->SetTitle("MC as Truth"); //grTruth->SetLineWidth(3);
-  mg->Add(grFake); grFake->SetTitle("chIso5To10")  ; //grFake->SetLineWidth(3);
+  mg->Add(grFake); grFake->SetTitle("chIso5To10"); //grFake->SetLineWidth(3);
 
   mg->SetTitle(Form("Closure Test %s %s", std::to_string(year).c_str(), region.c_str()));
 
@@ -92,9 +92,13 @@ void add_gr(int year, std::string region="EE"){
   //c1->BuildLegend();
   p1->BuildLegend(0.6,0.68,0.8,0.88);
   mg->GetHistogram()->GetXaxis()->SetRangeUser(0.,2.5);
+  if  (region=="EB" && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.3);
+  if  (region=="EE" && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.7);
+
   gPad->Modified();
   gPad->Update();
 
+  // Ratio Plot
   padRatio->cd();
   std::vector<int> ptBinArray({ 50, 70, 90, 110, 130, 150, 200, 250, 300, 600});
   std::vector<double> ptBinArray_double;
@@ -149,7 +153,8 @@ void add_gr(int year, std::string region="EE"){
   r->GetYaxis()->SetLabelSize(0.075);
   r->Draw("AL");
 
-  c1->SaveAs(Form("closureTest_MCTruth_comparisons%s_%s.pdf", region.c_str(), std::to_string(year).c_str()));
+  if (adjustrange) c1->SaveAs(Form("closureTest_MCTruth_comparisons%s_%s_adjustrange.pdf", region.c_str(), std::to_string(year).c_str()));
+  else c1->SaveAs(Form("closureTest_MCTruth_comparisons%s_%s.pdf", region.c_str(), std::to_string(year).c_str()));
 
   return 0;
 
@@ -163,6 +168,9 @@ void compareToMCTruth(int year=2016, bool setBatch=true){
    add_gr(year, "EE");
    add_grPlus(year, "EB");
    add_grPlus(year, "EE");
+   add_gr(year, "EB", true);
+   add_gr(year, "EE", true); 
+
 
    return 0;
 }
