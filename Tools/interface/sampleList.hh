@@ -1151,10 +1151,10 @@ void initADD(const TString & baseDirectory)
 
 void initRSG(const TString & baseDirectory)
 {
-  std::vector<std::string> years = {"2017", "2018"};
+  std::vector<std::string> years = {"2016", "2017", "2018"};
   std::vector<std::string> kMpl_values = {"001", "01", "02"};
   std::map<std::string, std::string> pointNameBase;
-  pointNameBase["2016"] = "RSGravToGG_kMpl";
+  pointNameBase["2016"] = "RSGravToGG_kMpl-";
   pointNameBase["2017"] = pointNameBase["2018"] = "RSGravitonToGammaGamma_kMpl";
   std::map<std::string, std::string> tune;
   tune["2016"] = "TuneCUEP8M1";
@@ -1182,18 +1182,30 @@ void initRSG(const TString & baseDirectory)
 	}
 	std::string pointName = pointNameBase[year];
 	pointName += kMpl_value;
-	pointName += "_M_";
+	if(year == "2016") {
+	  pointName += "_M-";
+	}
+	else {
+	  pointName += "_M_";
+	}
 	pointName += std::to_string(M_bin);
-	pointName += "_" + tune[year] + "_13TeV_pythia8_";
+	pointName += "_" + tune[year] + "_13TeV";
+	if(year == "2016") {
+	  pointName += "-pythia8_";
+	}
+	else {
+	  pointName += "_pythia8_";
+	}
 	pointName += year;
 	chains[pointName] = new TChain("diphoton/fTree");
 	lineColors[pointName] = kBlack;
 	fillStyles[pointName] = 1001;
 	lineStyles[pointName] = kSolid;
+	std::cout << pointName << std::endl;
       }
     }
   }
-  // commented out unnecessary 2016 samples
+  // comment out 2016 samples with no 2017/2018 counterpart
   // chains["RSGravToGG_kMpl-001_M-500_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-001_M-500_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-001_M-500_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_154719/0000/*.root");
   // chains["RSGravToGG_kMpl-001_M-740_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-001_M-740_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-001_M-740_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_154843/0000/*.root");
   // chains["RSGravToGG_kMpl-001_M-745_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-001_M-745_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-001_M-745_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_154858/0000/*.root");
@@ -1213,9 +1225,9 @@ void initRSG(const TString & baseDirectory)
   chains["RSGravToGG_kMpl-001_M-3000_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-001_M-3000_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-001_M-3000_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_154534/0000/*.root");
   chains["RSGravToGG_kMpl-001_M-3250_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-001_M-3250_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-001_M-3250_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_154549/0000/*.root");
   chains["RSGravToGG_kMpl-001_M-3500_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-001_M-3500_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-001_M-3500_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_154603/0000/*.root");
-  chains["RSGravToGG_kMpl-001_M-3750_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-001_M-3750_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-001_M-3750_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_154618/0000/*.root");
+  //  chains["RSGravToGG_kMpl-001_M-3750_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-001_M-3750_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-001_M-3750_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_154618/0000/*.root");
   chains["RSGravToGG_kMpl-001_M-4000_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-001_M-4000_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-001_M-4000_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_154634/0000/*.root");
-  chains["RSGravToGG_kMpl-001_M-4500_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-001_M-4500_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-001_M-4500_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_154649/0000/*.root");
+  //  chains["RSGravToGG_kMpl-001_M-4500_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-001_M-4500_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-001_M-4500_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_154649/0000/*.root");
   chains["RSGravToGG_kMpl-001_M-5000_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-001_M-5000_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-001_M-5000_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_154703/0000/*.root");
   // chains["RSGravToGG_kMpl-001_M-5500_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-001_M-5500_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-001_M-5500_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_154733/0000/*.root");
   // chains["RSGravToGG_kMpl-001_M-6000_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-001_M-6000_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-001_M-6000_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_154749/0000/*.root");
@@ -1237,7 +1249,7 @@ void initRSG(const TString & baseDirectory)
   chains["RSGravToGG_kMpl-01_M-2000_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-01_M-2000_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-01_M-2000_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_155129/0000/*.root");
   chains["RSGravToGG_kMpl-01_M-2250_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-01_M-2250_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-01_M-2250_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_155143/0000/*.root");
   chains["RSGravToGG_kMpl-01_M-2500_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-01_M-2500_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-01_M-2500_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_155157/0000/*.root");
-  chains["RSGravToGG_kMpl-01_M-2750_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-01_M-2750_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-01_M-2750_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_155211/0000/*.root");
+  //  chains["RSGravToGG_kMpl-01_M-2750_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-01_M-2750_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-01_M-2750_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_155211/0000/*.root");
   chains["RSGravToGG_kMpl-01_M-3000_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-01_M-3000_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-01_M-3000_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_155229/0000/*.root");
   chains["RSGravToGG_kMpl-01_M-3500_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-01_M-3500_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-01_M-3500_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v2__MINIAODSIM/201105_155245/0000/*.root");
   chains["RSGravToGG_kMpl-01_M-4000_TuneCUEP8M1_13TeV-pythia8_2016"]->Add(baseDirectory + "/store/user/cawest/diphoton/5cf7dd6/RSGravToGG_kMpl-01_M-4000_TuneCUEP8M1_13TeV-pythia8/crab_RSGravToGG_kMpl-01_M-4000_TuneCUEP8M1_13TeV-pythia8__Summer16MiniAODv3-v1__MINIAODSIM/201105_155259/0000/*.root");
