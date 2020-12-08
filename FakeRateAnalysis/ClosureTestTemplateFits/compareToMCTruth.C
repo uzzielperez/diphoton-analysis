@@ -117,9 +117,10 @@ void add_gr(int year, std::string region="EE", bool adjustrange=false){
     double ptBinSize = ptHigh - ptLow;
     TString binName = TString::Format("%iTo%i",ptBinArray[i],ptBinArray[i+1]);
 
-    double pt = (ptLow+ptHigh)/2;
+    // double pt = (ptLow+ptHigh)/2;
+    double pt = grFake->GetX()[i];
     double y = grFake->Eval(pt)/grTruth->Eval(pt);
-
+    std::cout << "pt: " << pt  << "; FakeRate: " << y; 
     // error
     double errFakeY = grFake->GetErrorY(y);
     double errTruthY = grTruth->GetErrorY(y);
