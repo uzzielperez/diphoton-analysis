@@ -3,10 +3,22 @@ TString graphNamer(std::string region, std::string iso){
   return graphName;
 }
 
-double fakeRateRatioUncertainty(double erra, double errb, double a, double b) {
-  double uncert = TMath::Sqrt((erra*erra/(a*a)) + (errb*errb/(b*b)));
-  return uncert;
+// double fakeRateRatioUncertainty(double erra, double errb, double a, double b) {
+//   double uncert = TMath::Sqrt((erra*erra/(a*a)) + (errb*errb/(b*b)));
+//   return uncert;
+// }
+
+float fakeRateRatioUncertainty(float sigA, float sigB, float muA, float muB, bool isProd){
+    float mu;
+    if (isProd) mu = muA*muB;
+    else mu = muB/muA;
+
+    float fracErr = TMath::Sqrt((sigA*sigA/ muA*muA) + (sigB*sigB / muB*muB));
+    float sigma = fracErr * mu;
+
+    return sigma;
 }
+
 
 void add_grPlus(int year, std::string region="EE"){
   auto c1 = new TCanvas("c1","c1",200,10,700,500);
@@ -120,15 +132,26 @@ void add_gr(int year, std::string region="EE", bool adjustrange=false){
     // double pt = (ptLow+ptHigh)/2;
     double pt = grFake->GetX()[i];
     double y = grFake->Eval(pt)/grTruth->Eval(pt);
-    std::cout << "pt: " << pt  << "; FakeRate: " << y; 
+    std::cout << "pt: " << pt  << "; FakeRate: " << y;
     // error
-    double errFakeY = grFake->GetErrorY(y);
-    double errTruthY = grTruth->GetErrorY(y);
-    double errY = fakeRateRatioUncertainty(errFakeY, errTruthY, grFake->Eval(pt), grTruth->Eval(pt));
+    // double errFakeY = grFake->GetErrorY(y);
+    // double errTruthY = grTruth->GetErrorY(y);
+    // double errY = fakeRateRatioUncertainty(errTruthY, errFakeY, grTruth->Eval(pt), grFake->Eval(pt), false);
+    //
+    // double errFakeX = grFake->GetErrorX(pt);
+    // double errTruthX = grTruth->GetErrorX(pt);
+    // // double errX = fakeRateRatioUncertainty(errFakeX, errTruthX, pt, pt);
+    // double errX = errFakeX;
 
-    double errFakeX = grFake->GetErrorX(pt);
-    double errTruthX = grTruth->GetErrorX(pt);
-    double errX = fakeRateRatioUncertainty(errFakeX, errTruthX, pt, pt);
+    // error
+    double errFakeY = grFake->GetErrorYhigh(i) - grFake->GetErrorYlow(i);
+    double errTruthY = grTruth->GetErrorYhigh(i) - grTruth->GetErrorYlow(y);
+    double errY = fakeRateRatioUncertainty(errTruthY, errFakeY, grTruth->Eval(pt), grFake->Eval(pt), false);
+
+    double errFakeX = grFake->GetErrorXhigh(i) - grFake->GetErrorXlow(i);
+    double errTruthX = grTruth->GetErrorXhigh(i) - grTruth->GetErrorXlow(i);
+    // double errX = fakeRateRatioUncertainty(errFakeX, errTruthX, pt, pt);
+    double errX = errFakeX;
 
     r->SetPoint(i, pt, y);
     r->SetPointError(i, errX, errX, errY, errY);
@@ -138,10 +161,10 @@ void add_gr(int year, std::string region="EE", bool adjustrange=false){
               << "fakeRate Truth:" << grTruth->Eval(pt) << ": "
               << "fakeRate Fake:" << grFake->Eval(pt) << ": "
               << "fakeRate Ratio:" << y << ": "
-              << "gRFake errY" << grFake->GetErrorY(y) << ": "
-              << "gRTruth errY" << grTruth->GetErrorY(y) << ": "
-              << "gRFake errX" << grFake->GetErrorX(pt) << ": "
-              << "gRTruth errX" << grTruth->GetErrorX(pt)
+              << "gRFake errY: " << errFakeY << ": "
+              << "gRTruth errY: " << errTruthY << ": "
+              << "gRFake errX: " << errFakeX << ": "
+              << "gRTruth errX: " << errTruthY
               << std::endl;
   }
   r->GetHistogram()->GetXaxis()->SetTitle("pT (GeV)");
@@ -159,7 +182,8 @@ void add_gr(int year, std::string region="EE", bool adjustrange=false){
   r->GetXaxis()->SetLabelSize(0.075);
   r->GetYaxis()->SetLabelSize(0.075);
   r->GetYaxis()->SetTitleOffset(0.5);
-  r->Draw("AL");
+  // r->Draw("AL");
+  r->Draw("AP"); // Draw Points only
 
   if (adjustrange) c1->SaveAs(Form("closureTest_MCTruth_comparisons%s_%s_adjustrange.pdf", region.c_str(), std::to_string(year).c_str()));
   else c1->SaveAs(Form("closureTest_MCTruth_comparisons%s_%s.pdf", region.c_str(), std::to_string(year).c_str()));
