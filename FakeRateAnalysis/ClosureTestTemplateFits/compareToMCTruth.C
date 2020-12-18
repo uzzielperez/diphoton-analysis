@@ -148,13 +148,13 @@ void add_gr(int year, std::string region="EE", bool adjustrange=false){
     double errTruthY = grTruth->GetErrorYhigh(i) - grTruth->GetErrorYlow(y);
     double errY = fakeRateRatioUncertainty(errTruthY, errFakeY, grTruth->Eval(pt), grFake->Eval(pt), false);
 
-    double errFakeX = grFake->GetErrorXhigh(i) - grFake->GetErrorXlow(i);
-    double errTruthX = grTruth->GetErrorXhigh(i) - grTruth->GetErrorXlow(i);
-    // double errX = fakeRateRatioUncertainty(errFakeX, errTruthX, pt, pt);
-    double errX = errFakeX;
+    // double errFakeX = grFake->GetErrorXhigh(i) - grFake->GetErrorXlow(i);
+    // double errTruthX = grTruth->GetErrorXhigh(i) - grTruth->GetErrorXlow(i);
+    // // double errX = fakeRateRatioUncertainty(errFakeX, errTruthX, pt, pt);
+    // double errX = errFakeX;
 
     r->SetPoint(i, pt, y);
-    r->SetPointError(i, errX, errX, errY, errY);
+    r->SetPointError(i,  grFake->GetErrorXlow(i), grFake->GetErrorXhigh(i), errY, errY);
 
 
     std::cout << binName << ": " << pt << ": "
@@ -163,8 +163,8 @@ void add_gr(int year, std::string region="EE", bool adjustrange=false){
               << "fakeRate Ratio:" << y << ": "
               << "gRFake errY: " << errFakeY << ": "
               << "gRTruth errY: " << errTruthY << ": "
-              << "gRFake errX: " << errFakeX << ": "
-              << "gRTruth errX: " << errTruthY
+              // << "gRFake errX: " << errFakeX << ": "
+              // << "gRTruth errX: " << errTruthY
               << std::endl;
   }
   r->GetHistogram()->GetXaxis()->SetTitle("pT (GeV)");
