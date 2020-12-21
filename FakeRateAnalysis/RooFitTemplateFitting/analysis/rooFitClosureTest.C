@@ -92,8 +92,6 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   TFile *histojetfile_templates;
   histojetfile_templates = TFile::Open(data_filename);
 
-
-
   // Real Templates
   TString mc_filename(basefilename + "diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + "_nPV0-200_MiniAOD_histograms.root");
   TFile *historealmcfile;
@@ -254,6 +252,10 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   TLatex *t_label = new TLatex();
   t_label->SetTextAlign(12);
   if (etaBin == "EB") t_label->DrawLatexNDC(0.55,0.60,"ECAL barrel");
+  else if (etaBin == "EB1") t_label->DrawLatexNDC(0.55,0.60,"ECAL inner barrel");
+  else if (etaBin == "EB2") t_label->DrawLatexNDC(0.55,0.60,"ECAL outer barrel");
+  else if (etaBin == "EE1") t_label->DrawLatexNDC(0.55,0.60,"ECAL inner endcap");
+  else if (etaBin == "EE2") t_label->DrawLatexNDC(0.55,0.60,"ECAL outer endcap");
   else t_label->DrawLatexNDC(0.55,0.60,"ECAL endcap");
   t_label->     DrawLatexNDC(0.55,0.55,label_pt_bin + " GeV");
   t_label->     DrawLatexNDC(0.55,0.50,sideband_string);

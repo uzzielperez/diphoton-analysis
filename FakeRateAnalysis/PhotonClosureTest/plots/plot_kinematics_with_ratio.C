@@ -410,7 +410,7 @@ void plot_kinematics_with_ratio(TString sample =  "all", TString era= "2016") {
   cmssw_version["2017"] = "94X";
   cmssw_version["2018"] = "102X";
 
-  TString base = "/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/reweighted/";
+  TString base = "/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/";
   TString basetruth = "/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/";
 
   TString filename = "";

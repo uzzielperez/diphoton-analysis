@@ -110,6 +110,12 @@ int main(int argc, char *argv[])
   std::vector<TGraphAsymmErrors*> bkgVsPtEBVec;
   std::vector<TGraphAsymmErrors*> bkgVsPtEEVec;
 
+  // granular 1- inner, 2- outer
+  std::vector<TGraphAsymmErrors*> fakeRatesEB1;
+  std::vector<TGraphAsymmErrors*> fakeRatesEB2;
+  std::vector<TGraphAsymmErrors*> fakeRatesEE1;
+  std::vector<TGraphAsymmErrors*> fakeRatesEE2;
+
   for (unsigned int i = 0; i < sidebandsEB.size(); i++) {
     double sidebandLow = sidebandsEB.at(i).first;
     double sidebandHigh = sidebandsEB.at(i).second;
@@ -128,6 +134,17 @@ int main(int argc, char *argv[])
     bkgvsptEB->SetName("bkgvsptEB"+postFix);
     bkgvsptEB->GetXaxis()->SetTitle("p_{T} (GeV)");
     bkgVsPtEBVec.push_back(bkgvsptEB);
+
+  // granular 1- inner, 2- outer
+    TGraphAsymmErrors* fakeRateEB1 = new TGraphAsymmErrors();
+    fakeRateEB1->SetName("fakeRateEB1"+postFix);
+    fakeRateEB1->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRatesEB1.push_back(fakeRateEB1);
+
+    TGraphAsymmErrors* fakeRateEB2 = new TGraphAsymmErrors();
+    fakeRateEB2->SetName("fakeRateEB2"+postFix);
+    fakeRateEB2->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRatesEB2.push_back(fakeRateEB2);
   }
 
   for (unsigned int i = 0; i < sidebandsEE.size(); i++) {
@@ -148,6 +165,17 @@ int main(int argc, char *argv[])
     bkgvsptEE->SetName("bkgvsptEE"+postFix);
     bkgvsptEE->GetXaxis()->SetTitle("p_{T} (GeV)");
     bkgVsPtEEVec.push_back(bkgvsptEE);
+
+    // granular 1- inner, 2- outer
+    TGraphAsymmErrors* fakeRateEE1 = new TGraphAsymmErrors();
+    fakeRateEE1->SetName("fakeRateEE1"+postFix);
+    fakeRateEE1->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRatesEE1.push_back(fakeRateEE1);
+
+    TGraphAsymmErrors* fakeRateEE2 = new TGraphAsymmErrors();
+    fakeRateEE2->SetName("fakeRateEE2"+postFix);
+    fakeRateEE2->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRatesEE2.push_back(fakeRateEE2);
   }
 
   TString pvCut = "";
@@ -214,6 +242,39 @@ int main(int argc, char *argv[])
       // record background fit result
       bkgVsPtEBVec.at(j)->SetPoint(i,graphX_EB,resEB.first/ptBinSize);
       bkgVsPtEBVec.at(j)->SetPointError(i,eXLow_EB,eXHigh_EB,resEB.second/ptBinSize,resEB.second/ptBinSize);
+
+      //granular 1-inner, 2-outer
+      //FIXME Return pair: (fake)
+      std::pair<double,double> resEB1 = rooFitClosureTest(sample,templateVariable,binName,TString("EB1"),sidebandsEB.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
+      std::pair<double,double> resEB2 = rooFitClosureTest(sample,templateVariable,binName,TString("EB2"),sidebandsEB.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
+
+      TString histNameEB1 = TString::Format("PtEB1_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
+      TString histNameEB2 = TString::Format("PtEB2_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
+      TH1D* histEB1 = static_cast<TH1D*>(infile->Get(histNameEB1));
+      TH1D* histEB2 = static_cast<TH1D*>(infile->Get(histNameEB2));
+
+      double denomEB1 = histEB1->Integral();
+      double graphX_EB1 = histEB1->GetMean();
+      // Fake Rate in EB1
+      double graphY_EB1 = resEB1.first/denomEB1;
+      double eXLow_EB1 = graphX_EB1 - ptLow;
+      double eXHigh_EB1 = ptHigh - graphX_EB1;
+      double ey_EB1 = fakeRateUncertainty(denomEB1,resEB1.second,graphY_EB1);
+
+      fakeRatesEB1.at(j)->SetPoint(i,graphX_EB1,graphY_EB1);
+      fakeRatesEB1.at(j)->SetPointError(i,eXLow_EB1,eXHigh_EB1,ey_EB1,ey_EB1);
+
+      double denomEB2 = histEB2->Integral();
+      double graphX_EB2 = histEB2->GetMean();
+      // Fake Rate in EB2
+      double graphY_EB2 = resEB2.first/denomEB2;
+      double eXLow_EB2 = graphX_EB2 - ptLow;
+      double eXHigh_EB2 = ptHigh - graphX_EB2;
+      double ey_EB2 = fakeRateUncertainty(denomEB2,resEB2.second,graphY_EB2);
+
+      fakeRatesEB2.at(j)->SetPoint(i,graphX_EB2,graphY_EB2);
+      fakeRatesEB2.at(j)->SetPointError(i,eXLow_EB2,eXHigh_EB2,ey_EB2,ey_EB2);
+
     } // end loop over pT bins
   } // end loop over sidebands
 
@@ -250,6 +311,38 @@ int main(int argc, char *argv[])
       fakeRatesEE.at(j)->SetPoint(i,graphX_EE,graphY_EE);
       fakeRatesEE.at(j)->SetPointError(i,eXLow_EE,eXHigh_EE,ey_EE,ey_EE);
 
+      //granular 1-inner, 2-outer
+      //FIXME Return pair: (fake)
+      std::pair<double,double> resEE1 = rooFitClosureTest(sample,templateVariable,binName,TString("EE1"),sidebandsEE.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
+      std::pair<double,double> resEE2 = rooFitClosureTest(sample,templateVariable,binName,TString("EE2"),sidebandsEE.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
+
+      TString histNameEE1 = TString::Format("PtEE1_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
+      TString histNameEE2 = TString::Format("PtEE2_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
+      TH1D* histEE1 = static_cast<TH1D*>(infile->Get(histNameEE1));
+      TH1D* histEE2 = static_cast<TH1D*>(infile->Get(histNameEE2));
+
+      double denomEE1 = histEE1->Integral();
+      double graphX_EE1 = histEE1->GetMean();
+      // Fake Rate in EE1
+      double graphY_EE1 = resEE1.first/denomEE1;
+      double eXLow_EE1 = graphX_EE1 - ptLow;
+      double eXHigh_EE1 = ptHigh - graphX_EE1;
+      double ey_EE1 = fakeRateUncertainty(denomEE1,resEE1.second,graphY_EE1);
+
+      fakeRatesEE1.at(j)->SetPoint(i,graphX_EE1,graphY_EE1);
+      fakeRatesEE1.at(j)->SetPointError(i,eXLow_EE1,eXHigh_EE1,ey_EE1,ey_EE1);
+
+      double denomEE2 = histEE2->Integral();
+      double graphX_EE2 = histEE2->GetMean();
+      // Fake Rate in EE2
+      double graphY_EE2 = resEE2.first/denomEE2;
+      double eXLow_EE2 = graphX_EE2 - ptLow;
+      double eXHigh_EE2 = ptHigh - graphX_EE2;
+      double ey_EE2 = fakeRateUncertainty(denomEE2,resEE2.second,graphY_EE2);
+
+      fakeRatesEE2.at(j)->SetPoint(i,graphX_EE2,graphY_EE2);
+      fakeRatesEE2.at(j)->SetPointError(i,eXLow_EE2,eXHigh_EE2,ey_EE2,ey_EE2);
+
       // fill debug vectors
       if (templateVariable == "sieie") {
 	if (sidebandLow == 9.) {
@@ -268,6 +361,12 @@ int main(int argc, char *argv[])
 
   TH1D* denomvsptEB = (TH1D*) infile->Get("phoPtEB_denominator_varbin")->Clone();
   TH1D* denomvsptEE = (TH1D*) infile->Get("phoPtEE_denominator_varbin")->Clone();
+  //granular: 1-inner, 2-outer
+  TH1D* denomvsptEB1 = (TH1D*) infile->Get("phoPtEB1_denominator_varbin")->Clone();
+  TH1D* denomvsptEB2 = (TH1D*) infile->Get("phoPtEB2_denominator_varbin")->Clone();
+  TH1D* denomvsptEE1 = (TH1D*) infile->Get("phoPtEE1_denominator_varbin")->Clone();
+  TH1D* denomvsptEE2 = (TH1D*) infile->Get("phoPtEE2_denominator_varbin")->Clone();
+
 
   for (int i = 1; i <= nBins-1; i++) {
     double binWidth = denomvsptEB->GetXaxis()->GetBinWidth(i);
@@ -275,10 +374,24 @@ int main(int argc, char *argv[])
     denomvsptEB->SetBinError  (i, denomvsptEB->GetBinError(i) / binWidth);
     denomvsptEE->SetBinContent(i, denomvsptEE->GetBinContent(i) / binWidth);
     denomvsptEE->SetBinError  (i, denomvsptEE->GetBinError(i) / binWidth);
+    // granular: 1-inner, 2-outer
+    denomvsptEB1->SetBinContent(i, denomvsptEB1->GetBinContent(i) / binWidth );
+    denomvsptEB1->SetBinError  (i, denomvsptEB1->GetBinError(i) / binWidth );
+    denomvsptEB2->SetBinContent(i, denomvsptEB2->GetBinContent(i) / binWidth );
+    denomvsptEB2->SetBinError  (i, denomvsptEB2->GetBinError(i) / binWidth );
+    denomvsptEE1->SetBinContent(i, denomvsptEE1->GetBinContent(i) / binWidth);
+    denomvsptEE1->SetBinError  (i, denomvsptEE1->GetBinError(i) / binWidth);
+    denomvsptEE2->SetBinContent(i, denomvsptEE2->GetBinContent(i) / binWidth);
+    denomvsptEE2->SetBinError  (i, denomvsptEE2->GetBinError(i) / binWidth);
   }
 
   denomvsptEB->GetXaxis()->SetTitle("p_{T} (GeV)");
   denomvsptEE->GetXaxis()->SetTitle("p_{T} (GeV)");
+  // granular: 1-inner, 2-outer
+  denomvsptEB1->GetXaxis()->SetTitle("p_{T} (GeV)");
+  denomvsptEB2->GetXaxis()->SetTitle("p_{T} (GeV)");
+  denomvsptEE1->GetXaxis()->SetTitle("p_{T} (GeV)");
+  denomvsptEE1->GetXaxis()->SetTitle("p_{T} (GeV)");
 
   // debug printout to see fake rate ratios
   if (templateVariable == "sieie") {
@@ -295,6 +408,11 @@ int main(int argc, char *argv[])
   outfile2.cd();
   denomvsptEB->Write();
   denomvsptEE->Write();
+  denomvsptEB1->Write();
+  denomvsptEB2->Write();
+  denomvsptEE1->Write();
+  denomvsptEE1->Write();
+
 
   for (unsigned int j = 0; j < sidebandsEB.size(); j++) {
     outfile2.cd();
@@ -330,6 +448,41 @@ int main(int argc, char *argv[])
     t_label->DrawLatexNDC(0.50,0.70,label);
 
     c.SaveAs("plots/fake_rate_" + sample + "_" + era + "_EB"+postFix+ pvCut + ".pdf");
+
+    // granular: 1-inner, 2-outer
+    fakeRatesEB1.at(j)->Write();
+    fakeRatesEB2.at(j)->Write();
+
+    TCanvas c1("c1","",800,600);
+
+    fakeRatesEB1.at(j)->Draw();
+    fakeRatesEB1.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRatesEB1.at(j)->GetYaxis()->SetTitle("fake rate");
+    fakeRatesEB1.at(j)->GetYaxis()->SetRangeUser(0.0, 0.25);
+    fakeRatesEB1.at(j)->GetYaxis()->SetTitleOffset(1.6);
+
+    TLatex *t_label1 = new TLatex();
+    t_label1->SetTextAlign(12);
+    t_label1->DrawLatexNDC(0.50,0.75,"ECAL inner barrel");
+    t_label1->DrawLatexNDC(0.50,0.70,label);
+
+    c1.SaveAs("plots/fake_rate_" + sample + "_" + era + "_EB1"+postFix+ pvCut + ".pdf");
+
+    TCanvas c2("c2","",800,600);
+
+    fakeRatesEB2.at(j)->Draw();
+    fakeRatesEB2.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRatesEB2.at(j)->GetYaxis()->SetTitle("fake rate");
+    fakeRatesEB2.at(j)->GetYaxis()->SetRangeUser(0.0, 0.25);
+    fakeRatesEB2.at(j)->GetYaxis()->SetTitleOffset(1.6);
+
+    TLatex *t_label2 = new TLatex();
+    t_label2->SetTextAlign(12);
+    t_label2->DrawLatexNDC(0.50,0.75,"ECAL outer barrel");
+    t_label2->DrawLatexNDC(0.50,0.70,label);
+
+    c2.SaveAs("plots/fake_rate_" + sample + "_" + era + "_EB2"+postFix+ pvCut + ".pdf");
+
   }
 
   for (unsigned int j = 0; j < sidebandsEE.size(); j++) {
@@ -366,6 +519,40 @@ int main(int argc, char *argv[])
     t_label->DrawLatexNDC(0.50,0.70,label);
 
     c.SaveAs("plots/fake_rate_" + sample + "_" + era + "_EE"+postFix+ pvCut + ".pdf");
+
+    // granular: 1-inner, 2-outer
+    fakeRatesEB1.at(j)->Write();
+    fakeRatesEB2.at(j)->Write();
+
+    TCanvas c1("c1","",800,600);
+
+    fakeRatesEB1.at(j)->Draw();
+    fakeRatesEB1.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRatesEB1.at(j)->GetYaxis()->SetTitle("fake rate");
+    fakeRatesEB1.at(j)->GetYaxis()->SetRangeUser(0.0, 0.25);
+    fakeRatesEB1.at(j)->GetYaxis()->SetTitleOffset(1.6);
+
+    TLatex *t_label1 = new TLatex();
+    t_label1->SetTextAlign(12);
+    t_label1->DrawLatexNDC(0.50,0.75,"ECAL inner barrel");
+    t_label1->DrawLatexNDC(0.50,0.70,label);
+
+    c1.SaveAs("plots/fake_rate_" + sample + "_" + era + "_EB1"+postFix+ pvCut + ".pdf");
+
+    TCanvas c2("c2","",800,600);
+
+    fakeRatesEB2.at(j)->Draw();
+    fakeRatesEB2.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRatesEB2.at(j)->GetYaxis()->SetTitle("fake rate");
+    fakeRatesEB2.at(j)->GetYaxis()->SetRangeUser(0.0, 0.25);
+    fakeRatesEB2.at(j)->GetYaxis()->SetTitleOffset(1.6);
+
+    TLatex *t_label2 = new TLatex();
+    t_label2->SetTextAlign(12);
+    t_label2->DrawLatexNDC(0.50,0.75,"ECAL outer barrel");
+    t_label2->DrawLatexNDC(0.50,0.70,label);
+
+    c2.SaveAs("plots/fake_rate_" + sample + "_" + era + "_EB2"+postFix+ pvCut + ".pdf");
   }
 
   outfile2.Close();
