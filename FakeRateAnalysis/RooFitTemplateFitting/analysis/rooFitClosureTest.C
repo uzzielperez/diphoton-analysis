@@ -381,4 +381,7 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   historealmcfile->cd();
   historealmcfile->Close();
 
+  histojetfile_templates->cd();
+  histojetfile_templates->Close();
+
 } // end of rooFitClosureTest()
