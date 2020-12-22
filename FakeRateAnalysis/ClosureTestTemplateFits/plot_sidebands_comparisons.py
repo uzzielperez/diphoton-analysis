@@ -17,6 +17,7 @@ import argparse
 # Command Line Options
 parser = argparse.ArgumentParser(description='plots templates')
 parser.add_argument('-e', '--era', help='dummy, 2016, 2017, 2018', default='dummy', type=str)
+parser.add_argument('-r', '--real', help='draw real template', default=False, type=bool)
 args = parser.parse_args()
 
 # To supress canvas from popping up. Speeds up plots production
@@ -30,6 +31,7 @@ cmssw_version = {
   "2018": "102X"
 }
 base = "/uscms_data/d3/cuperez/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/";
+drawReal = args.real
 
 if era == "dummy":
     PTBINS = [ 50, 70, 90, 130, 200, 600 ];
@@ -52,9 +54,10 @@ def GetHistObj(histname, openfile):
         # print obj
         return obj
 
-def GetHist(ptbin, isEB, type, chIsosideband=None):
+def GetHist(ptbin, etaBin, type, chIsosideband=None):
 
-  etaBin = ("EE", "EB")[isEB]
+  # etaBin = ("EE", "EB")[isEB]
+  # etaBin, EB & EB1, EB2 : EE & EE1, EE2 (1-inner; 2-outer)
   sideband = chIsosideband
 
   if type == "Real":
@@ -100,15 +103,15 @@ def GetHist(ptbin, isEB, type, chIsosideband=None):
   print histname
   return h, histname
 
-def CompareFakeTemp(isEB):
+def CompareFakeTemp(etaBin):
     # EB Templates
     for ptbin in range(len(PTBINS)-1):
         c = ROOT.TCanvas()
 
-        hNumerator, NumLabel = GetHist(ptbin, isEB, "Numerator")
-        hMCTruth, MCTruthlabel = GetHist(ptbin, isEB, "Truth")
-        hFake_chIso_5To10, Fakelabel_chIso_5To10 = GetHist(ptbin, isEB, "Fake", "5To10")
-        hFake_chIso_10To15, Fakelabel_chIso_10To15 = GetHist(ptbin, isEB, "Fake", "10To15")
+        hNumerator, NumLabel = GetHist(ptbin, etaBin, "Numerator")
+        hMCTruth, MCTruthlabel = GetHist(ptbin, etaBin, "Truth")
+        hFake_chIso_5To10, Fakelabel_chIso_5To10 = GetHist(ptbin, etaBin, "Fake", "5To10")
+        hFake_chIso_10To15, Fakelabel_chIso_10To15 = GetHist(ptbin, etaBin, "Fake", "10To15")
 
         #hMCTruth.SetMaximum(3 * hMCTruth.GetMaximum())
         hMCTruth.SetLineColor(kOrange-5)
@@ -128,6 +131,11 @@ def CompareFakeTemp(isEB):
             hDrawFirst = hFake_chIso_5To10
         elif max(hMaxList)==hMaxList[2]:
             hDrawFirst = hFake_chIso_10To15
+
+        if "EB" in etaBin:
+            isEB = True
+        if "EE" in etaBin:
+            isEB = False
 
         xMax = (0.08, 0.03)[isEB]
         hDrawFirst.GetXaxis().SetTitleOffset(1)
@@ -152,6 +160,10 @@ def CompareFakeTemp(isEB):
 
         ##
         postFix = ("endcap", "barrel")[isEB]
+        if "1" in etaBin:
+            postFix = "inner " + postFix
+        if "2" in etaBin:
+            postFix = "outer " + postFix
         t_label = TLatex()
         t_label.SetTextAlign(12)
         t_label.DrawLatexNDC(0.60,0.50,"ECAL %s %s"%(postFix, era));
@@ -160,20 +172,21 @@ def CompareFakeTemp(isEB):
         t_label.SetTextFont(42);
 
         ##
-        postFix = ("EE%s.pdf" %(era), "EB%s.pdf" %(era))[isEB]
+        # postFix = ("EE%s.pdf" %(era), "EB%s.pdf" %(era))[isEB]
+        postFix = "%s.pdf" %(etaBin)
 
         c.Draw()
         c.SaveAs("comp_fake_templates_pT"+str(PTBINS[ptbin]) + "To" + str(PTBINS[ptbin+1])+postFix)
 
-def CompareFakeTemp(isEB):
+def CompareFakeTemp(etaBin):
     # EB Templates
     for ptbin in range(len(PTBINS)-1):
         c = ROOT.TCanvas()
 
-        hNumerator, NumLabel = GetHist(ptbin, isEB, "Numerator")
-        hMCTruth, MCTruthlabel = GetHist(ptbin, isEB, "Truth")
-        hFake_chIso_5To10, Fakelabel_chIso_5To10 = GetHist(ptbin, isEB, "Fake", "5To10")
-        hFake_chIso_10To15, Fakelabel_chIso_10To15 = GetHist(ptbin, isEB, "Fake", "10To15")
+        hNumerator, NumLabel = GetHist(ptbin, etaBin, "Numerator")
+        hMCTruth, MCTruthlabel = GetHist(ptbin, etaBin, "Truth")
+        hFake_chIso_5To10, Fakelabel_chIso_5To10 = GetHist(ptbin, etaBin, "Fake", "5To10")
+        hFake_chIso_10To15, Fakelabel_chIso_10To15 = GetHist(ptbin, etaBin, "Fake", "10To15")
 
         #hMCTruth.SetMaximum(3 * hMCTruth.GetMaximum())
         hMCTruth.SetLineColor(kOrange-5)
@@ -183,23 +196,31 @@ def CompareFakeTemp(isEB):
         hFake_chIso_10To15.SetLineColor(kRed)
         hFake_chIso_10To15.Scale(1/hFake_chIso_10To15.Integral())
 
-        hReal, Reallabel = GetHist(ptbin, isEB, "Real")
-        hReal.SetLineColor(kGreen)
-        hReal.Scale(1/hReal.Integral())
+        if drawReal:
+            hReal, Reallabel = GetHist(ptbin, etaBin, "Real")
+            hReal.SetLineColor(kGreen)
+            hReal.Scale(1/hReal.Integral())
 
         hMaxList = []
         hMaxList.append(hMCTruth.GetMaximum())
         hMaxList.append(hFake_chIso_5To10.GetMaximum())
         hMaxList.append(hFake_chIso_10To15.GetMaximum())
-        hMaxList.append(hReal.GetMaximum())
+        if drawReal:
+            hMaxList.append(hReal.GetMaximum())
         if max(hMaxList)==hMaxList[0]:
             hDrawFirst = hMCTruth
         elif max(hMaxList)==hMaxList[1]:
             hDrawFirst = hFake_chIso_5To10
         elif max(hMaxList)==hMaxList[2]:
             hDrawFirst = hFake_chIso_10To15
-        elif max(hMaxList)==hMaxList[3]:
-            hDrawFirst = hReal
+        if drawReal:
+            if max(hMaxList)==hMaxList[3]:
+                hDrawFirst = hReal
+
+        if "EB" in etaBin:
+            isEB = True
+        if "EE" in etaBin:
+            isEB = False
 
         xMax = (0.08, 0.03)[isEB]
         hDrawFirst.GetXaxis().SetTitleOffset(1)
@@ -210,7 +231,8 @@ def CompareFakeTemp(isEB):
         hFake_chIso_5To10.Draw("same, hist")
         hMCTruth.Draw("same,hist")
         hFake_chIso_10To15.Draw("same, hist")
-        hReal.Draw("same, hist")
+        if drawReal:
+            hReal.Draw("same, hist")
 
         leg = TLegend(0.55, 0.65, 0.75, 0.85)
         leg.SetBorderSize(0)
@@ -221,11 +243,16 @@ def CompareFakeTemp(isEB):
         leg.AddEntry(hMCTruth, "MC Truth", "l")
         leg.AddEntry(hFake_chIso_5To10, "5 < Iso_{Ch} < 10", "l")
         leg.AddEntry(hFake_chIso_10To15, "10 < Iso_{Ch} < 15", "l")
-        leg.AddEntry(hReal, "Real", "l")
+        if drawReal:
+            leg.AddEntry(hReal, "Real", "l")
         leg.Draw()
 
         ##
         postFix = ("endcap", "barrel")[isEB]
+        if "1" in etaBin:
+            postFix = "inner " + postFix
+        if "2" in etaBin:
+            postFix = "outer " + postFix
         t_label = TLatex()
         t_label.SetTextAlign(12)
         t_label.DrawLatexNDC(0.60,0.50,"ECAL %s %s"%(postFix, era));
@@ -234,14 +261,23 @@ def CompareFakeTemp(isEB):
         t_label.SetTextFont(42);
 
         ##
-        postFix = ("EE%s.pdf" %(era), "EB%s.pdf" %(era))[isEB]
+        postFix = "%s.pdf" %(etaBin)
 
         c.Draw()
-        c.SaveAs("templates_pT"+str(PTBINS[ptbin]) + "To" + str(PTBINS[ptbin+1])+postFix)
+        if drawReal:
+            c.SaveAs("templates_pT"+str(PTBINS[ptbin]) + "To" + str(PTBINS[ptbin+1])+postFix)
+        else:
+            c.SaveAs("MCtemplates_pT"+str(PTBINS[ptbin]) + "To" + str(PTBINS[ptbin+1])+postFix)
 
 
 
 # main
 
-CompareFakeTemp(True)
-CompareFakeTemp(False)
+# CompareFakeTemp(True)
+# CompareFakeTemp(False)
+CompareFakeTemp("EB")
+CompareFakeTemp("EB1")
+CompareFakeTemp("EB2")
+CompareFakeTemp("EE")
+CompareFakeTemp("EE1")
+CompareFakeTemp("EE2")

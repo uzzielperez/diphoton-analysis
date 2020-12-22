@@ -702,12 +702,12 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
 	  // fake photons
 	  if (fakes) {
 	    if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-	    else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeNumeratorEE_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+	    if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeNumeratorEE_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
       // granular 1-inner, 2-outer
-      else if ( fabs(Photon_scEta) < 0.7221 ) sIeIeNumeratorEB1_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-      else if ( (0.7221 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) sIeIeNumeratorEB2_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-      else if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.033) )  sIeIeNumeratorEE1_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-      else if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )   sIeIeNumeratorEE2_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+      if ( fabs(Photon_scEta) < 0.7221 ) sIeIeNumeratorEB1_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+      if ( (0.7221 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) sIeIeNumeratorEB2_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+      if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.033) )  sIeIeNumeratorEE1_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+      if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )   sIeIeNumeratorEE2_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	  }
 	  // real photons
 	  if (reals) {

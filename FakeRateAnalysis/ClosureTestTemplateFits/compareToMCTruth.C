@@ -106,8 +106,10 @@ void add_gr(int year, std::string region="EE", bool adjustrange=false){
   mg->GetHistogram()->GetXaxis()->SetRangeUser(0.,2.5);
   mg->GetHistogram()->GetXaxis()->SetRangeUser(0.,2.5);
   mg->GetXaxis()->SetLimits(0., 630.);
-  if  (region=="EB" && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.3);
-  if  (region=="EE" && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.7);
+  // if  (region=="EB" && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.3);
+  // if  (region=="EE" && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.7);
+  if  (region.find("EB") != std::string::npos && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.3);
+  if  (region.find("EE") != std::string::npos && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.7);
 
   gPad->Modified();
   gPad->Update();
@@ -202,6 +204,22 @@ void compareToMCTruth(int year=2016, bool setBatch=true){
    add_grPlus(year, "EE");
    add_gr(year, "EB", true);
    add_gr(year, "EE", true);
+
+   // granular 1- inner
+   add_gr(year, "EB1");
+   add_gr(year, "EE1");
+   add_grPlus(year, "EB1");
+   add_grPlus(year, "EE1");
+   add_gr(year, "EB1", true);
+   add_gr(year, "EE1", true);
+
+   // granular 2- inner
+   add_gr(year, "EB2");
+   add_gr(year, "EE2");
+   add_grPlus(year, "EB2");
+   add_grPlus(year, "EE2");
+   add_gr(year, "EB2", true);
+   add_gr(year, "EE2", true);
 
    return 0;
 }

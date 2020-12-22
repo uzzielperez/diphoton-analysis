@@ -145,8 +145,6 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   hdenom->Print();
   // Denominator
 
-
-
   // avoiding 0 entries in the histograms
   // fake and real mc histos are the most critical
   for (int bincount = 1; bincount <= hfakeTemplate->GetNbinsX(); bincount++) {

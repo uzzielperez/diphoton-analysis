@@ -122,7 +122,7 @@ double fakeRates::getFakeRateClosureTest(double pt, std::string region, int year
   double pt_max = m_fakeRatesClosureTest[keyname_all]->GetX()[nmax];
   double pt_closure = (pt > pt_max) ? pt_max : pt;
   double fakeRate = m_fakeRatesClosureTest[keyname_all]->Eval(pt_closure);
-  std::cout << "FakeRate for pt: " << pt << "is " << fakeRate << std::endl;
+  // std::cout << "FakeRate for pt: " << pt << "is " << fakeRate << std::endl;
   return fakeRate;
 
 }
