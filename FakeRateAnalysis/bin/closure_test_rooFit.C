@@ -521,38 +521,38 @@ int main(int argc, char *argv[])
     c.SaveAs("plots/fake_rate_" + sample + "_" + era + "_EE"+postFix+ pvCut + ".pdf");
 
     // granular: 1-inner, 2-outer
-    fakeRatesEB1.at(j)->Write();
-    fakeRatesEB2.at(j)->Write();
+    fakeRatesEE1.at(j)->Write();
+    fakeRatesEE2.at(j)->Write();
 
     TCanvas c1("c1","",800,600);
 
-    fakeRatesEB1.at(j)->Draw();
-    fakeRatesEB1.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
-    fakeRatesEB1.at(j)->GetYaxis()->SetTitle("fake rate");
-    fakeRatesEB1.at(j)->GetYaxis()->SetRangeUser(0.0, 0.25);
-    fakeRatesEB1.at(j)->GetYaxis()->SetTitleOffset(1.6);
+    fakeRatesEE1.at(j)->Draw();
+    fakeRatesEE1.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRatesEE1.at(j)->GetYaxis()->SetTitle("fake rate");
+    fakeRatesEE1.at(j)->GetYaxis()->SetRangeUser(0.0, 0.6);
+    fakeRatesEE1.at(j)->GetYaxis()->SetTitleOffset(1.6);
 
     TLatex *t_label1 = new TLatex();
     t_label1->SetTextAlign(12);
-    t_label1->DrawLatexNDC(0.50,0.75,"ECAL inner barrel");
+    t_label1->DrawLatexNDC(0.50,0.75,"ECAL inner endcap");
     t_label1->DrawLatexNDC(0.50,0.70,label);
 
-    c1.SaveAs("plots/fake_rate_" + sample + "_" + era + "_EB1"+postFix+ pvCut + ".pdf");
+    c1.SaveAs("plots/fake_rate_" + sample + "_" + era + "_EE1"+postFix+ pvCut + ".pdf");
 
     TCanvas c2("c2","",800,600);
 
-    fakeRatesEB2.at(j)->Draw();
-    fakeRatesEB2.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
-    fakeRatesEB2.at(j)->GetYaxis()->SetTitle("fake rate");
-    fakeRatesEB2.at(j)->GetYaxis()->SetRangeUser(0.0, 0.25);
-    fakeRatesEB2.at(j)->GetYaxis()->SetTitleOffset(1.6);
+    fakeRatesEE2.at(j)->Draw();
+    fakeRatesEE2.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRatesEE2.at(j)->GetYaxis()->SetTitle("fake rate");
+    fakeRatesEE2.at(j)->GetYaxis()->SetRangeUser(0.0, 0.6);
+    fakeRatesEE2.at(j)->GetYaxis()->SetTitleOffset(1.6);
 
     TLatex *t_label2 = new TLatex();
     t_label2->SetTextAlign(12);
-    t_label2->DrawLatexNDC(0.50,0.75,"ECAL outer barrel");
+    t_label2->DrawLatexNDC(0.50,0.75,"ECAL outer endcap");
     t_label2->DrawLatexNDC(0.50,0.70,label);
 
-    c2.SaveAs("plots/fake_rate_" + sample + "_" + era + "_EB2"+postFix+ pvCut + ".pdf");
+    c2.SaveAs("plots/fake_rate_" + sample + "_" + era + "_EE2"+postFix+ pvCut + ".pdf");
   }
 
   outfile2.Close();

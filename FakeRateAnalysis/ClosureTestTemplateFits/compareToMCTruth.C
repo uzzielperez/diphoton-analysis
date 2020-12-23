@@ -20,7 +20,7 @@ float fakeRateRatioUncertainty(float sigA, float sigB, float muA, float muB, boo
 }
 
 
-void add_grPlus(int year, std::string region="EE"){
+void add_grCompSideBands(int year, std::string region="EE"){
   auto c1 = new TCanvas("c1","c1",200,10,700,500);
   auto mg = new TMultiGraph();
 
@@ -198,27 +198,31 @@ void compareToMCTruth(int year=2016, bool setBatch=true){
 
    if (setBatch) gROOT->SetBatch();
 
+   std::cout << "Drawing Fake Rate" << std::endl;
+
    add_gr(year, "EB");
    add_gr(year, "EE");
-   add_grPlus(year, "EB");
-   add_grPlus(year, "EE");
+   add_grCompSideBands(year, "EB");
+   add_grCompSideBands(year, "EE");
+   // adjust y-range same as data
    add_gr(year, "EB", true);
    add_gr(year, "EE", true);
 
-   // granular 1- inner
+   // granular 1- inner, 2- outer
    add_gr(year, "EB1");
-   add_gr(year, "EE1");
-   add_grPlus(year, "EB1");
-   add_grPlus(year, "EE1");
-   add_gr(year, "EB1", true);
-   add_gr(year, "EE1", true);
-
-   // granular 2- inner
    add_gr(year, "EB2");
-   add_gr(year, "EE2");
-   add_grPlus(year, "EB2");
-   add_grPlus(year, "EE2");
+   add_grCompSideBands(year, "EB1");
+   add_grCompSideBands(year, "EB2");
+   // adjust y-range same as data
+   add_gr(year, "EB1", true);
    add_gr(year, "EB2", true);
+
+   add_gr(year, "EE1");
+   add_gr(year, "EE2");
+   add_grCompSideBands(year, "EE1");
+   add_grCompSideBands(year, "EE2");
+   // adjust y-range same as data
+   add_gr(year, "EE1", true);
    add_gr(year, "EE2", true);
 
    return 0;
