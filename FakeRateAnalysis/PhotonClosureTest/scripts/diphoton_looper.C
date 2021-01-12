@@ -8,14 +8,18 @@
 
 #include "diphoton-analysis/FakeRateAnalysis/PhotonClosureTest/analysis/MCFakeRateClosureTest.C"
 #include "diphoton-analysis/FakeRateAnalysis/PhotonClosureTest/analysis/MCFakeRateClosureTestWithFakes.C"
+#include "diphoton-analysis/FakeRateAnalysis/PhotonClosureTest/analysis/MCFakeRateClosureTestReweight.C"
 
 using namespace std;
 
-void diphoton_looper(TString run, TString sample, bool do_fakes) {
+void diphoton_looper(TString run, TString sample, bool do_fakes, bool do_reweight) {
   cout << "\nUsing sample: " << sample << endl;
 
-  if (do_fakes) cout << "Running analysis class MCFakeRateClosureTestWithFakes.C for MC as truth" << endl;
-  else cout << "Running analysis class MCFakeRateClosureTest.C for MC as fakes" << endl;
+  if (!do_fakes && do_reweight) cout << "Running analysis class MCFakeRateClosureTestReweight.C to reweight denominator objects" << endl;
+  else if (do_fakes) cout << "Running analysis class MCFakeRateClosureTestWithFakes.C for MC as truth" << endl;
+  else if (!do_fakes) cout << "Running analysis class MCFakeRateClosureTest.C for MC as fakes" << endl;
+
+
   cout << endl;
 
   // use stopwatch for timing
@@ -24,8 +28,11 @@ void diphoton_looper(TString run, TString sample, bool do_fakes) {
 
   // select tree
   TString tree = "";
+
   if (do_fakes) tree = "diphoton/fTreeFake";
-  else tree = "diphoton/fTree";
+  else if (!do_fakes) tree = "diphoton/fTree";
+
+  // else tree = "diphoton/fTree";
   cout << "Using tree: " << tree << endl;
 
   // ntuple path (change as needed)
@@ -183,11 +190,16 @@ void diphoton_looper(TString run, TString sample, bool do_fakes) {
   cout << "Total number of entries: " << chain->GetEntries() << endl;
 
   // create instance using our chain and loop over entries
-  if (do_fakes) {
+  if (!do_fakes && do_reweight) {
+    std::cout << "Calling Reweighting Loop..." << std::endl;
+    MCFakeRateClosureTestReweight loop_reweight(chain);
+    loop_reweight.Loop(run, sample);
+  }
+  else if (do_fakes) {
     MCFakeRateClosureTestWithFakes loop_fakes(chain);
     loop_fakes.Loop(run, sample);
   }
-  else {
+  else if (!do_fakes) {
     MCFakeRateClosureTest loop_all(chain);
     loop_all.Loop(run, sample);
   }
