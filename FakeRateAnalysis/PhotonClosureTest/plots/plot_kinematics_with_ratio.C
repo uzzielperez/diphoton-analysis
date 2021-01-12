@@ -13,6 +13,15 @@ int plot_kinematics_with_etaBin(TFile *f_all, TFile *f_fakes, TFile *f_reweighte
   TH1D *h_fakes_EB = (TH1D *) f_fakes->Get("photon_fakes_"+name+"_EB");
   TH1D *h_unweighted_EB = (TH1D *) f_all->Get("photon_"+name+"_denominator_EB");
 
+  // Rebin histograms (from 200 bins to 400)
+  if (name == "pt"){
+    // h->Rebin() merges 2 bins in one h1
+    h_etaBinned_reweighted_EB->Rebin();
+    h_reweighted_EB->Rebin();
+    h_fakes_EB->Rebin();
+    h_unweighted_EB->Rebin();
+  }
+
   TLegend *l_EB = new TLegend(0.55, 0.65, 0.85, 0.85);
   l_EB->SetBorderSize(0);
   l_EB->SetFillColor(0);
