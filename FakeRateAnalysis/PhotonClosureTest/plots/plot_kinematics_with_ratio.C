@@ -17,10 +17,10 @@ int plot_kinematics_with_etaBin(TFile *f_all, TFile *f_fakes, TFile *f_reweighte
   if (name == "pt"){
     // h->Rebin() merges 2 bins in one h1
     // https://root.cern.ch/root/html534/TH1.html#TH1:Rebin
-    h_etaBinned_reweighted_EB->Rebin();
-    h_reweighted_EB->Rebin();
-    h_fakes_EB->Rebin();
-    h_unweighted_EB->Rebin();
+    h_etaBinned_reweighted_EB->Rebin(5);
+    h_reweighted_EB->Rebin(5);
+    h_fakes_EB->Rebin(5);
+    h_unweighted_EB->Rebin(5);
   }
 
   TLegend *l_EB = new TLegend(0.55, 0.65, 0.85, 0.85);
@@ -28,7 +28,7 @@ int plot_kinematics_with_etaBin(TFile *f_all, TFile *f_fakes, TFile *f_reweighte
   l_EB->SetFillColor(0);
   if (name == "pt") l_EB->AddEntry(h_unweighted_EB, "Denominator", "ep");
   l_EB->AddEntry(h_fakes_EB, "MC truth", "ep");
-  l_EB->AddEntry(h_etaBinned_reweighted_EB, "Fake Prediction (#eta)-binned");
+  l_EB->AddEntry(h_etaBinned_reweighted_EB, "Fake Prediction #eta-binned");
   l_EB->AddEntry(h_reweighted_EB, "Fake Prediction");
 
   c->cd(1);
@@ -58,6 +58,7 @@ int plot_kinematics_with_etaBin(TFile *f_all, TFile *f_fakes, TFile *f_reweighte
   h_fakes_EB->Draw("same");
   h_fakes_EB->SetMarkerColor(kRed);
   h_fakes_EB->SetLineColor(kRed);
+
   h_unweighted_EB->SetTitle("EB");
   h_unweighted_EB->SetMaximum(max(h_unweighted_EB->GetMaximum()*1.5,max(h_etaBinned_reweighted_EB->GetMaximum()*1.5,h_fakes_EB->GetMaximum()*1.5)));
   if (name == "pt") gPad->SetLogy();
@@ -134,6 +135,11 @@ int plot_kinematics_with_etaBin(TFile *f_all, TFile *f_fakes, TFile *f_reweighte
   h_ratio_etaBinned_EB->Draw("ep, SAME");
   h_ratio_etaBinned_EB->SetTitle("");
 
+  TLegend *l_ratio_EB = new TLegend(0.45, 0.80, 0.6, 0.95);
+  l_ratio_EB->SetBorderSize(0);
+  l_ratio_EB->SetFillColor(0);
+  l_ratio_EB->AddEntry(h_ratio_etaBinned_EB, "#eta-binned");
+  l_ratio_EB->AddEntry(h_ratio_EB, "pt-binned only");
 
   if (name == "pt") h_ratio_EB->GetXaxis()->SetTitle("p_{T} (GeV)");
   if (name == "eta") {
@@ -151,18 +157,29 @@ int plot_kinematics_with_etaBin(TFile *f_all, TFile *f_fakes, TFile *f_reweighte
   h_ratio_EB->GetXaxis()->SetLabelFont(43);
   h_ratio_EB->GetXaxis()->SetLabelSize(16);
 
+  l_ratio_EB->Draw();
+
   // EE
   TH1D *h_etaBinned_reweighted_EE= (TH1D *) f_reweighted->Get(etaBinned_reweighted_str+"_EE");
   TH1D *h_reweighted_EE = (TH1D *) f_reweighted->Get(reweighted_str+"_EE");
   TH1D *h_fakes_EE = (TH1D *) f_fakes->Get("photon_fakes_"+name+"_EE");
   TH1D *h_unweighted_EE = (TH1D *) f_all->Get("photon_"+name+"_denominator_EE");
 
+  if (name == "pt"){
+    // h->Rebin() merges 2 bins in one h1
+    // https://root.cern.ch/root/html534/TH1.html#TH1:Rebin
+    h_etaBinned_reweighted_EE->Rebin(5);
+    h_reweighted_EE->Rebin(5);
+    h_fakes_EE->Rebin(5);
+    h_unweighted_EE->Rebin(5);
+  }
+
   TLegend *l_EE = new TLegend(0.55, 0.65, 0.85, 0.85);
   l_EE->SetBorderSize(0);
   l_EE->SetFillColor(0);
   if (name == "pt") l_EE->AddEntry(h_unweighted_EE, "Denominator", "ep");
   l_EE->AddEntry(h_fakes_EE, "MC truth", "ep");
-  l_EE->AddEntry(h_etaBinned_reweighted_EE, "Fake Prediction (#eta)-binned");
+  l_EE->AddEntry(h_etaBinned_reweighted_EE, "Fake Prediction #eta-binned");
   l_EE->AddEntry(h_reweighted_EE, "Fake Prediction");
 
   c->cd(2);
@@ -260,12 +277,18 @@ int plot_kinematics_with_etaBin(TFile *f_all, TFile *f_fakes, TFile *f_reweighte
   h_ratio_etaBinned_EE->SetMaximum(1.3);
   if (name == "pt") h_ratio_etaBinned_EE->SetMinimum(0);
   //if (name == "pt") h_ratio_etaBinned_EE->SetMaximum(3.5);
-  if (name == "pt") h_ratio_etaBinned_EE->SetMaximum(2.0);
+  if (name == "pt") h_ratio_etaBinned_EE->SetMaximum(3.0);
   h_ratio_etaBinned_EE->SetStats(0);
   h_ratio_etaBinned_EE->Divide(h_fakes_EE);
   // h_ratio_etaBinned_EE->SetMarkerStyle(21);
   h_ratio_etaBinned_EE->Draw("ep, SAME");
   h_ratio_etaBinned_EE->SetTitle("");
+
+  TLegend *l_ratio_EE = new TLegend(0.45, 0.80, 0.6, 0.95);
+  l_ratio_EE->SetBorderSize(0);
+  l_ratio_EE->SetFillColor(0);
+  l_ratio_EE->AddEntry(h_ratio_etaBinned_EE, "#eta-binned");
+  l_ratio_EE->AddEntry(h_ratio_EE, "pt-binned only");
 
   if (name == "pt") h_ratio_EE->GetXaxis()->SetTitle("p_{T} (GeV)");
   if (name == "eta") {
@@ -282,6 +305,7 @@ int plot_kinematics_with_etaBin(TFile *f_all, TFile *f_fakes, TFile *f_reweighte
   h_ratio_EE->GetXaxis()->SetTitleOffset(4.5);
   h_ratio_EE->GetXaxis()->SetLabelFont(43);
   h_ratio_EE->GetXaxis()->SetLabelSize(16);
+  l_ratio_EE->Draw();
 
   TString outputfilename = "closure_test_photon_kinematics_"+name+"_"+era+"_withEtaBin";
   c->SaveAs(outputfilename+".pdf");
