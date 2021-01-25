@@ -4,10 +4,12 @@ int plot_kinematics_with_etaBin(TFile *f_all, TFile *f_fakes, TFile *f_reweighte
   TCanvas *c = new TCanvas("c", "", 1500, 700);
   c->Divide(2,1);
 
+  TString etaBinned_reweightedV2_str = "photon_"+name+"_denominator_fake_rate_weighted_granV2"; // adjust eta-binning with 3
   TString etaBinned_reweighted_str = "photon_"+name+"_denominator_fake_rate_weighted_gran";
   TString reweighted_str = "photon_"+name+"_denominator_fake_rate_weighted";
 
   // EB
+  TH1D *h_etaBinned_reweightedV2_EB = (TH1D *) f_reweighted->Get(etaBinned_reweightedV2_str+"_EB");
   TH1D *h_etaBinned_reweighted_EB = (TH1D *) f_reweighted->Get(etaBinned_reweighted_str+"_EB");
   TH1D *h_reweighted_EB = (TH1D *) f_reweighted->Get(reweighted_str+"_EB");
   TH1D *h_fakes_EB = (TH1D *) f_fakes->Get("photon_fakes_"+name+"_EB");
@@ -17,6 +19,7 @@ int plot_kinematics_with_etaBin(TFile *f_all, TFile *f_fakes, TFile *f_reweighte
   if (name == "pt"){
     // h->Rebin() merges 2 bins in one h1
     // https://root.cern.ch/root/html534/TH1.html#TH1:Rebin
+    h_etaBinned_reweightedV2_EB->Rebin(5);
     h_etaBinned_reweighted_EB->Rebin(5);
     h_reweighted_EB->Rebin(5);
     h_fakes_EB->Rebin(5);
@@ -28,6 +31,7 @@ int plot_kinematics_with_etaBin(TFile *f_all, TFile *f_fakes, TFile *f_reweighte
   l_EB->SetFillColor(0);
   if (name == "pt") l_EB->AddEntry(h_unweighted_EB, "Denominator", "ep");
   l_EB->AddEntry(h_fakes_EB, "MC truth", "ep");
+  l_EB->AddEntry(h_etaBinned_reweightedV2_EB, "Fake Prediction #eta-binned V2") // endcap with inner, middle and outer
   l_EB->AddEntry(h_etaBinned_reweighted_EB, "Fake Prediction #eta-binned");
   l_EB->AddEntry(h_reweighted_EB, "Fake Prediction");
 
@@ -43,6 +47,10 @@ int plot_kinematics_with_etaBin(TFile *f_all, TFile *f_fakes, TFile *f_reweighte
     h_unweighted_EB->SetMarkerColor(kBlack);
     h_unweighted_EB->SetLineColor(kBlack);
   }
+  h_etaBinned_reweightedV2_EB->Draw("same");
+  h_etaBinned_reweightedV2_EB->SetMarkerColor(kOrange);
+  h_etaBinned_reweightedV2_EB->SetLineColor(kOrange);
+
   h_etaBinned_reweighted_EB->Draw("same");
   h_etaBinned_reweighted_EB->SetMarkerColor(kBlue);
   h_etaBinned_reweighted_EB->SetLineColor(kBlue);
@@ -121,26 +129,6 @@ int plot_kinematics_with_etaBin(TFile *f_all, TFile *f_fakes, TFile *f_reweighte
   h_ratio_EB->GetYaxis()->SetLabelFont(43);
   h_ratio_EB->GetYaxis()->SetLabelSize(16);
 
-  TH1D *h_ratio_etaBinned_EB = (TH1D*) h_etaBinned_reweighted_EB->Clone("h_etaBinned_reweighted_EB");
-  h_ratio_etaBinned_EB->SetLineColor(kBlue);
-  h_ratio_etaBinned_EB->SetMarkerColor(kBlue);
-  h_ratio_etaBinned_EB->SetMinimum(0.4);
-  h_ratio_etaBinned_EB->SetMaximum(1.3);
-  if (name == "pt") h_ratio_etaBinned_EB->SetMinimum(0);
-  //if (name == "pt") h_ratio_etaBinned_EB->SetMaximum(3.5);
-  if (name == "pt") h_ratio_etaBinned_EB->SetMaximum(2.0);
-  h_ratio_etaBinned_EB->SetStats(0);
-  h_ratio_etaBinned_EB->Divide(h_fakes_EB);
-  // h_ratio_etaBinned_EB->SetMarkerStyle(21);
-  h_ratio_etaBinned_EB->Draw("ep, SAME");
-  h_ratio_etaBinned_EB->SetTitle("");
-
-  TLegend *l_ratio_EB = new TLegend(0.45, 0.80, 0.6, 0.95);
-  l_ratio_EB->SetBorderSize(0);
-  l_ratio_EB->SetFillColor(0);
-  l_ratio_EB->AddEntry(h_ratio_etaBinned_EB, "#eta-binned");
-  l_ratio_EB->AddEntry(h_ratio_EB, "pt-binned only");
-
   if (name == "pt") h_ratio_EB->GetXaxis()->SetTitle("p_{T} (GeV)");
   if (name == "eta") {
     h_ratio_EB->GetXaxis()->SetTitle("#eta");
@@ -156,6 +144,41 @@ int plot_kinematics_with_etaBin(TFile *f_all, TFile *f_fakes, TFile *f_reweighte
   h_ratio_EB->GetXaxis()->SetTitleOffset(4.5);
   h_ratio_EB->GetXaxis()->SetLabelFont(43);
   h_ratio_EB->GetXaxis()->SetLabelSize(16);
+
+  TH1D *h_ratio_etaBinned_EB = (TH1D*) h_etaBinned_reweighted_EB->Clone("h_etaBinned_reweighted_EB");
+  h_ratio_etaBinned_EB->SetLineColor(kBlue);
+  h_ratio_etaBinned_EB->SetMarkerColor(kBlue);
+  h_ratio_etaBinned_EB->SetMinimum(0.4);
+  h_ratio_etaBinned_EB->SetMaximum(1.3);
+  if (name == "pt") h_ratio_etaBinned_EB->SetMinimum(0);
+  //if (name == "pt") h_ratio_etaBinned_EB->SetMaximum(3.5);
+  if (name == "pt") h_ratio_etaBinned_EB->SetMaximum(2.0);
+  h_ratio_etaBinned_EB->SetStats(0);
+  h_ratio_etaBinned_EB->Divide(h_fakes_EB);
+  // h_ratio_etaBinned_EB->SetMarkerStyle(21);
+  h_ratio_etaBinned_EB->Draw("ep, SAME");
+  h_ratio_etaBinned_EB->SetTitle("");
+
+  TH1D *h_ratio_etaBinnedV2_EB = (TH1D*) h_etaBinned_reweightedV2_EB->Clone("h_etaBinned_reweightedV2_EB");
+  h_ratio_etaBinnedV2_EB->SetLineColor(kOrange);
+  h_ratio_etaBinnedV2_EB->SetMarkerColor(kOrange);
+  h_ratio_etaBinnedV2_EB->SetMinimum(0.4);
+  h_ratio_etaBinnedV2_EB->SetMaximum(1.3);
+  if (name == "pt") h_ratio_etaBinnedV2_EB->SetMinimum(0);
+  //if (name == "pt") h_ratio_etaBinnedV2_EB->SetMaximum(3.5);
+  if (name == "pt") h_ratio_etaBinnedV2_EB->SetMaximum(2.0);
+  h_ratio_etaBinnedV2_EB->SetStats(0);
+  h_ratio_etaBinnedV2_EB->Divide(h_fakes_EB);
+  // h_ratio_etaBinnedV2_EB->SetMarkerStyle(21);
+  h_ratio_etaBinnedV2_EB->Draw("ep, SAME");
+  h_ratio_etaBinnedV2_EB->SetTitle("");
+
+  TLegend *l_ratio_EB = new TLegend(0.45, 0.80, 0.6, 0.95);
+  l_ratio_EB->SetBorderSize(0);
+  l_ratio_EB->SetFillColor(0);
+  l_ratio_EB->AddEntry(h_ratio_etaBinnedV2_EB, "#eta-binned V2");
+  l_ratio_EB->AddEntry(h_ratio_etaBinned_EB, "#eta-binned");
+  l_ratio_EB->AddEntry(h_ratio_EB, "pt-binned only");
 
   l_ratio_EB->Draw();
 
@@ -787,7 +810,7 @@ void plot_kinematics_with_ratio(TString sample =  "all", TString era= "2017") {
   plot_kinematics_sansdenom(f_closure_test,f_closure_test_matching, f_reweighted, "eta",era, false);
   plot_kinematics_sansdenom(f_closure_test,f_closure_test_matching, f_reweighted, "phi",era, false);
 
-  // With Eta-binning
+  // With Eta-binning compared with pt-binning only
   plot_kinematics_with_etaBin(f_closure_test,f_closure_test_matching, f_reweighted, "pt",era);
   plot_kinematics_with_etaBin(f_closure_test,f_closure_test_matching, f_reweighted, "eta",era);
   plot_kinematics_with_etaBin(f_closure_test,f_closure_test_matching, f_reweighted, "phi",era);
