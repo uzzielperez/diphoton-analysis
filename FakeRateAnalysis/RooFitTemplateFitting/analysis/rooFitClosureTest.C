@@ -133,9 +133,22 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   TH1D *hData;
   TH1D *hdenom;
   if (sample == "alltruth") {
+
+    TString histNameDen = TString("phoPt") + etaBin + TString("_denominator_varbin");
+    TString histNameNum = templateVariable + etaBin + TString("_numerator_pt") + ptBin;
+
+    std::cout << "Getting " << histNameDen << std::endl;
     TFile *inputFile = TFile::Open(input_filename);
-    hData = (TH1D*) inputFile->Get( templateVariable + etaBin + TString("_numerator_pt") + ptBin);
-    hdenom   = (TH1D*) inputFile->Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );
+    inputFile->Print();
+
+    hdenom   = (TH1D*) inputFile->Get( histNameDen );
+    hdenom->Print();
+
+    std::cout << "Getting " << histNameNum << std::endl;
+    hData = (TH1D*) inputFile->Get( histNameNum );
+    hData->Print();
+    inputFile->Close();
+
   }
   else{
     hData = (TH1D*) histojetfile->Get( templateVariable + etaBin + TString("_numerator_pt") + ptBin);
@@ -186,6 +199,7 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   }
   template_fit_variable.setRange("sigrange",0.0,template_fit_variable_cut);
 
+  // ----------------- Roo Hists and Pdfs 
   RooDataHist faketemplate("faketemplate","fake template",template_fit_variable,hfakeTemplate);
   RooHistPdf fakepdf("fakepdf","test hist fake pdf",template_fit_variable,faketemplate);
 
@@ -253,7 +267,8 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   else if (etaBin == "EB1") t_label->DrawLatexNDC(0.55,0.60,"ECAL inner barrel");
   else if (etaBin == "EB2") t_label->DrawLatexNDC(0.55,0.60,"ECAL outer barrel");
   else if (etaBin == "EE1") t_label->DrawLatexNDC(0.55,0.60,"ECAL inner endcap");
-  else if (etaBin == "EE2") t_label->DrawLatexNDC(0.55,0.60,"ECAL outer endcap");
+  else if (etaBin == "EE2") t_label->DrawLatexNDC(0.55,0.60,"ECAL middle endcap");
+  else if (etaBin == "EE3") t_label->DrawLatexNDC(0.55,0.60,"ECAL outer endcap");
   else t_label->DrawLatexNDC(0.55,0.60,"ECAL endcap");
   t_label->     DrawLatexNDC(0.55,0.55,label_pt_bin + " GeV");
   t_label->     DrawLatexNDC(0.55,0.50,sideband_string);
@@ -383,5 +398,7 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
 
   histojetfile_templates->cd();
   histojetfile_templates->Close();
+
+  outfile.Close();
 
 } // end of rooFitClosureTest()

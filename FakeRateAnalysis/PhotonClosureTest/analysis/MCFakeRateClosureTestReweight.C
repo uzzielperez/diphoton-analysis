@@ -143,21 +143,6 @@ void MCFakeRateClosureTestReweight::Loop(TString run, TString sample)
   photon_phi_denominator_fake_rate_weighted_gran_EB->Sumw2();
   photon_phi_denominator_fake_rate_weighted_gran_EE->Sumw2();
 
-  // Single Histogram for EB / EE but granular eta-binned fake rates
-  TH1D *photon_pt_denominator_fake_rate_weighted_granV2_EB = new TH1D("photon_pt_denominator_fake_rate_weighted_granV2_EB","",200,0,2000);
-  TH1D *photon_pt_denominator_fake_rate_weighted_granV2_EE = new TH1D("photon_pt_denominator_fake_rate_weighted_granV2_EE","",200,0,2000);
-  photon_pt_denominator_fake_rate_weighted_granV2_EB->Sumw2();
-  photon_pt_denominator_fake_rate_weighted_granV2_EE->Sumw2();
-  TH1D *photon_eta_denominator_fake_rate_weighted_granV2_EB = new TH1D("photon_eta_denominator_fake_rate_weighted_granV2_EB","",100,-5,5);
-  TH1D *photon_eta_denominator_fake_rate_weighted_granV2_EE = new TH1D("photon_eta_denominator_fake_rate_weighted_granV2_EE","",100,-5,5);
-  photon_eta_denominator_fake_rate_weighted_granV2_EB->Sumw2();
-  photon_eta_denominator_fake_rate_weighted_granV2_EE->Sumw2();
-  TH1D *photon_phi_denominator_fake_rate_weighted_granV2_EB = new TH1D("photon_phi_denominator_fake_rate_weighted_granV2_EB","",100,-5,5);
-  TH1D *photon_phi_denominator_fake_rate_weighted_granV2_EE = new TH1D("photon_phi_denominator_fake_rate_weighted_granV2_EE","",100,-5,5);
-  photon_phi_denominator_fake_rate_weighted_granV2_EB->Sumw2();
-  photon_phi_denominator_fake_rate_weighted_granV2_EE->Sumw2();
-
-
   // loop over all entries
   Long64_t nentries = fChain->GetEntriesFast();
 
@@ -212,70 +197,70 @@ void MCFakeRateClosureTestReweight::Loop(TString run, TString sample)
       }
       // Granular Eta-binned FakeRate Reweighting
       // EB1 - inner barrel
-      if ( fabs(Photon_scEta) < 0.7221 ){
-        photon_pt_denominator_fake_rate_weighted_EB1->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
-        photon_eta_denominator_fake_rate_weighted_EB1->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
-        photon_phi_denominator_fake_rate_weighted_EB1->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
-
-        photon_pt_denominator_fake_rate_weighted_gran_EB->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
-        photon_eta_denominator_fake_rate_weighted_gran_EB->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
-        photon_phi_denominator_fake_rate_weighted_gran_EB->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
-      }
-      if ( (0.7221 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ){
-        photon_pt_denominator_fake_rate_weighted_EB2->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
-        photon_eta_denominator_fake_rate_weighted_EB2->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
-        photon_phi_denominator_fake_rate_weighted_EB2->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
-
-        photon_pt_denominator_fake_rate_weighted_gran_EB->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
-        photon_eta_denominator_fake_rate_weighted_gran_EB->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
-        photon_phi_denominator_fake_rate_weighted_gran_EB->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
-      }
-      if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.033) ){
-        photon_pt_denominator_fake_rate_weighted_EE1->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE1" ));
-        photon_eta_denominator_fake_rate_weighted_EE1->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE1" ));
-        photon_phi_denominator_fake_rate_weighted_EE1->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE1" ));
-
-        photon_pt_denominator_fake_rate_weighted_gran_EE->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE1" ));
-        photon_eta_denominator_fake_rate_weighted_gran_EE->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE1" ));
-        photon_phi_denominator_fake_rate_weighted_gran_EE->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE1" ));
-      }
-      if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ){
-        photon_pt_denominator_fake_rate_weighted_EE2->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE2" ));
-        photon_eta_denominator_fake_rate_weighted_EE2->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE2" ));
-        photon_phi_denominator_fake_rate_weighted_EE2->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE2" ));
-
-        photon_pt_denominator_fake_rate_weighted_gran_EE->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE2" ));
-        photon_eta_denominator_fake_rate_weighted_gran_EE->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE2" ));
-        photon_phi_denominator_fake_rate_weighted_gran_EE->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE2" ));
-      } // end EE2
+      // if ( fabs(Photon_scEta) < 0.7221 ){
+      //   photon_pt_denominator_fake_rate_weighted_EB1->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
+      //   photon_eta_denominator_fake_rate_weighted_EB1->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
+      //   photon_phi_denominator_fake_rate_weighted_EB1->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
+      //
+      //   photon_pt_denominator_fake_rate_weighted_gran_EB->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
+      //   photon_eta_denominator_fake_rate_weighted_gran_EB->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
+      //   photon_phi_denominator_fake_rate_weighted_gran_EB->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
+      // }
+      // if ( (0.7221 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ){
+      //   photon_pt_denominator_fake_rate_weighted_EB2->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
+      //   photon_eta_denominator_fake_rate_weighted_EB2->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
+      //   photon_phi_denominator_fake_rate_weighted_EB2->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
+      //
+      //   photon_pt_denominator_fake_rate_weighted_gran_EB->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
+      //   photon_eta_denominator_fake_rate_weighted_gran_EB->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
+      //   photon_phi_denominator_fake_rate_weighted_gran_EB->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
+      // }
+      // if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.033) ){
+      //   photon_pt_denominator_fake_rate_weighted_EE1->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE1" ));
+      //   photon_eta_denominator_fake_rate_weighted_EE1->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE1" ));
+      //   photon_phi_denominator_fake_rate_weighted_EE1->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE1" ));
+      //
+      //   photon_pt_denominator_fake_rate_weighted_gran_EE->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE1" ));
+      //   photon_eta_denominator_fake_rate_weighted_gran_EE->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE1" ));
+      //   photon_phi_denominator_fake_rate_weighted_gran_EE->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE1" ));
+      // }
+      // if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ){
+      //   photon_pt_denominator_fake_rate_weighted_EE2->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE2" ));
+      //   photon_eta_denominator_fake_rate_weighted_EE2->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE2" ));
+      //   photon_phi_denominator_fake_rate_weighted_EE2->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE2" ));
+      //
+      //   photon_pt_denominator_fake_rate_weighted_gran_EE->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE2" ));
+      //   photon_eta_denominator_fake_rate_weighted_gran_EE->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE2" ));
+      //   photon_phi_denominator_fake_rate_weighted_gran_EE->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE2" ));
+      // } // end EE2
 
       // Granular Eta-binned FakeRate Reweighting V2
       // EE - split into inner, middle, outer
       // EB mildly adjusted split inner, outer
       if ( fabs(Photon_scEta) < 0.783 ){
-        photon_pt_denominator_fake_rate_weighted_granV2_EB->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinnedV2(Photon_pt, "EB1" ));
-        photon_eta_denominator_fake_rate_weighted_granV2_EB->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinnedV2(Photon_pt, "EB1" ));
-        photon_phi_denominator_fake_rate_weighted_granV2_EB->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinnedV2(Photon_pt, "EB1" ));
+        photon_pt_denominator_fake_rate_weighted_gran_EB->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
+        photon_eta_denominator_fake_rate_weighted_gran_EB->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
+        photon_phi_denominator_fake_rate_weighted_gran_EB->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
       } // EB inner
       if ( (0.783 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ){
-        photon_pt_denominator_fake_rate_weighted_granV2_EB->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinnedV2(Photon_pt, "EB2" ));
-        photon_eta_denominator_fake_rate_weighted_granV2_EB->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinnedV2(Photon_pt, "EB2" ));
-        photon_phi_denominator_fake_rate_weighted_granV2_EB->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinnedV2(Photon_pt, "EB2" ));
+        photon_pt_denominator_fake_rate_weighted_gran_EB->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
+        photon_eta_denominator_fake_rate_weighted_gran_EB->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
+        photon_phi_denominator_fake_rate_weighted_gran_EB->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
       } // EB outer
       if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.8773) ){
-        photon_pt_denominator_fake_rate_weighted_granV2_EE->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinnedV2(Photon_pt, "EE1" ));
-        photon_eta_denominator_fake_rate_weighted_granV2_EE->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinnedV2(Photon_pt, "EE1" ));
-        photon_phi_denominator_fake_rate_weighted_granV2_EE->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinnedV2(Photon_pt, "EE1" ));
+        photon_pt_denominator_fake_rate_weighted_gran_EE->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE1" ));
+        photon_eta_denominator_fake_rate_weighted_gran_EE->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE1" ));
+        photon_phi_denominator_fake_rate_weighted_gran_EE->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE1" ));
       } // EE inner
       if ( (1.8773 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.1887) ){
-        photon_pt_denominator_fake_rate_weighted_granV2_EE->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinnedV2(Photon_pt, "EE2" ));
-        photon_eta_denominator_fake_rate_weighted_granV2_EE->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinnedV2(Photon_pt, "EE2" ));
-        photon_phi_denominator_fake_rate_weighted_granV2_EE->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinnedV2(Photon_pt, "EE2" ));
+        photon_pt_denominator_fake_rate_weighted_gran_EE->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE2" ));
+        photon_eta_denominator_fake_rate_weighted_gran_EE->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE2" ));
+        photon_phi_denominator_fake_rate_weighted_gran_EE->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE2" ));
       } // EE middle
       if ( (2.1887 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ){
-        photon_pt_denominator_fake_rate_weighted_granV2_EE->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinnedV2(Photon_pt, "EE3" ));
-        photon_eta_denominator_fake_rate_weighted_granV2_EE->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinnedV2(Photon_pt, "EE3" ));
-        photon_phi_denominator_fake_rate_weighted_granV2_EE->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinnedV2(Photon_pt, "EE3" ));
+        photon_pt_denominator_fake_rate_weighted_gran_EE->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE3" ));
+        photon_eta_denominator_fake_rate_weighted_gran_EE->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE3" ));
+        photon_phi_denominator_fake_rate_weighted_gran_EE->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EE3" ));
       } // EE outer
 
     } // end if denominator object
@@ -345,19 +330,6 @@ void MCFakeRateClosureTestReweight::Loop(TString run, TString sample)
   std::cout << photon_phi_denominator_fake_rate_weighted_gran_EB->GetName() << "\t integral: " << photon_phi_denominator_fake_rate_weighted_gran_EB->Integral() << std::endl;
   std::cout << photon_phi_denominator_fake_rate_weighted_gran_EE->GetName() << "\t integral: " << photon_phi_denominator_fake_rate_weighted_gran_EE->Integral() << std::endl;
 
-  // granular eta-binned fake rate combined v2
-  photon_pt_denominator_fake_rate_weighted_granV2_EB->Write();
-  photon_pt_denominator_fake_rate_weighted_granV2_EE->Write();
-  std::cout << photon_pt_denominator_fake_rate_weighted_granV2_EB->GetName() << "\t integral: " << photon_pt_denominator_fake_rate_weighted_granV2_EB->Integral() << std::endl;
-  std::cout << photon_pt_denominator_fake_rate_weighted_granV2_EE->GetName() << "\t integral: " << photon_pt_denominator_fake_rate_weighted_granV2_EE->Integral() << std::endl;
-  photon_eta_denominator_fake_rate_weighted_granV2_EB->Write();
-  photon_eta_denominator_fake_rate_weighted_granV2_EE->Write();
-  std::cout << photon_eta_denominator_fake_rate_weighted_granV2_EB->GetName() << "\t integral: " << photon_eta_denominator_fake_rate_weighted_granV2_EB->Integral() << std::endl;
-  std::cout << photon_eta_denominator_fake_rate_weighted_granV2_EE->GetName() << "\t integral: " << photon_eta_denominator_fake_rate_weighted_granV2_EE->Integral() << std::endl;
-  photon_phi_denominator_fake_rate_weighted_granV2_EB->Write();
-  photon_phi_denominator_fake_rate_weighted_granV2_EE->Write();
-  std::cout << photon_phi_denominator_fake_rate_weighted_granV2_EB->GetName() << "\t integral: " << photon_phi_denominator_fake_rate_weighted_granV2_EB->Integral() << std::endl;
-  std::cout << photon_phi_denominator_fake_rate_weighted_granV2_EE->GetName() << "\t integral: " << photon_phi_denominator_fake_rate_weighted_granV2_EE->Integral() << std::endl;
   file_out.ls();
   file_out.Close();
 
@@ -387,10 +359,5 @@ double MCFakeRateClosureTestReweight::FakeRateEE(double pt) {
 }
 
 double MCFakeRateClosureTestReweight::FakeRateEtaBinned(double pt, std::string region) {
-  return m_fakeRate->getFakeRateClosureTest(pt, region, m_year);
-}
-
-double MCFakeRateClosureTestReweight::FakeRateEtaBinnedV2(double pt, std::string region) {
-  // EE split into inner, middle, outer
   return m_fakeRate->getFakeRateClosureTest(pt, region, m_year);
 }

@@ -70,6 +70,7 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
   std::vector<TH1D*> sigmaIetaIetaEE;
   std::vector<TH1D*> sigmaIetaIetaEE1;
   std::vector<TH1D*> sigmaIetaIetaEE2;
+  std::vector<TH1D*> sigmaIetaIetaEE3;
   std::vector<TH1D*> chIsoEB;
   std::vector<TH1D*> chIsoEE;
 
@@ -108,6 +109,10 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
     TH1D *hEE2 = new TH1D(Form("sieieEE2_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEE2",nbinsSieieEE,0.,0.1);
     hEE2->Sumw2();
     sigmaIetaIetaEE2.push_back(hEE2);
+
+    TH1D *hEE3 = new TH1D(Form("sieieEE3_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"sigmaIetaIetaEE3",nbinsSieieEE,0.,0.1);
+    hEE3->Sumw2();
+    sigmaIetaIetaEE3.push_back(hEE3);
 
     TH1D *hEB_chIso = new TH1D(Form("chIsoEB_realtemplate_pt%dTo%d",binLowEdge,binUpperEdge),"chIsoEB",nbinsChIso,0.,50.);
     hEB_chIso->Sumw2();
@@ -213,11 +218,13 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
 	  if (is_chIso_numerator_object) chIsoEB.at(i)->Fill(Photon_chargedHadIso03,Event_weightAll);
 	}
 	// EB1
-	if (fabs(Photon_scEta) < 0.7221) {
+	// if (fabs(Photon_scEta) < 0.7221) {
+  if (fabs(Photon_scEta) < 0.783) {
 	  if (is_sieie_numerator_object) sigmaIetaIetaEB1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	}
 	// EB2
-	if (0.7221 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.4442) {
+	//if (0.7221 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.4442) {
+  if (0.783 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.4442) {
 	  if (is_sieie_numerator_object) sigmaIetaIetaEB2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	}
 	// EE
@@ -226,13 +233,19 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
 	  if (is_chIso_numerator_object) chIsoEE.at(i)->Fill(Photon_chargedHadIso03,Event_weightAll);
 	}
 	// EE1
-	if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.033) {
+	//if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.033) {
+  if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.8773) {
 	  if (is_sieie_numerator_object) sigmaIetaIetaEE1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	}
 	// EE2
-	if (2.033 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+	//if (2.033 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+  if (1.8773 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.1887) {
 	  if (is_sieie_numerator_object) sigmaIetaIetaEE2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	}
+  if (2.1887 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+    if (is_sieie_numerator_object) sigmaIetaIetaEE3.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+  }
+
       } // end pt cut
     } // end loop over pt bin increments
 
@@ -242,7 +255,7 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
 
   // normalize histograms and write to file
   std::vector<std::vector<TH1D*>> hists_to_normalize = {chIsoEB, sigmaIetaIetaEB, sigmaIetaIetaEB1, sigmaIetaIetaEB2, // EB
-							chIsoEE, sigmaIetaIetaEE, sigmaIetaIetaEE1, sigmaIetaIetaEE2}; // EE
+							chIsoEE, sigmaIetaIetaEE, sigmaIetaIetaEE1, sigmaIetaIetaEE2, sigmaIetaIetaEE3}; // EE
 
   for(auto& hists : hists_to_normalize) {
     for (auto& it : hists) {
