@@ -3,12 +3,24 @@ TString graphNamer(std::string region, std::string iso){
   return graphName;
 }
 
-double fakeRateRatioUncertainty(double erra, double errb, double a, double b) {
-  double uncert = TMath::Sqrt((erra*erra/(a*a)) + (errb*errb/(b*b)));
-  return uncert;
+// double fakeRateRatioUncertainty(double erra, double errb, double a, double b) {
+//   double uncert = TMath::Sqrt((erra*erra/(a*a)) + (errb*errb/(b*b)));
+//   return uncert;
+// }
+
+float fakeRateRatioUncertainty(float sigA, float sigB, float muA, float muB, bool isProd){
+    float mu;
+    if (isProd) mu = muA*muB;
+    else mu = muB/muA;
+
+    float fracErr = TMath::Sqrt((sigA*sigA/ muA*muA) + (sigB*sigB / muB*muB));
+    float sigma = fracErr * mu;
+
+    return sigma;
 }
 
-void add_grPlus(int year, std::string region="EE"){
+
+void add_grCompSideBands(int year, std::string region="EE"){
   auto c1 = new TCanvas("c1","c1",200,10,700,500);
   auto mg = new TMultiGraph();
 
@@ -94,8 +106,10 @@ void add_gr(int year, std::string region="EE", bool adjustrange=false){
   mg->GetHistogram()->GetXaxis()->SetRangeUser(0.,2.5);
   mg->GetHistogram()->GetXaxis()->SetRangeUser(0.,2.5);
   mg->GetXaxis()->SetLimits(0., 630.);
-  if  (region=="EB" && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.3);
-  if  (region=="EE" && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.7);
+  // if  (region=="EB" && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.3);
+  // if  (region=="EE" && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.7);
+  if  (region.find("EB") != std::string::npos && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.3);
+  if  (region.find("EE") != std::string::npos && adjustrange) mg->GetHistogram()->GetYaxis()->SetRangeUser(0.,0.7);
 
   gPad->Modified();
   gPad->Update();
@@ -117,30 +131,42 @@ void add_gr(int year, std::string region="EE", bool adjustrange=false){
     double ptBinSize = ptHigh - ptLow;
     TString binName = TString::Format("%iTo%i",ptBinArray[i],ptBinArray[i+1]);
 
-    double pt = (ptLow+ptHigh)/2;
+    // double pt = (ptLow+ptHigh)/2;
+    double pt = grFake->GetX()[i];
     double y = grFake->Eval(pt)/grTruth->Eval(pt);
+    std::cout << "pt: " << pt  << "; FakeRate: " << y;
+    // error
+    // double errFakeY = grFake->GetErrorY(y);
+    // double errTruthY = grTruth->GetErrorY(y);
+    // double errY = fakeRateRatioUncertainty(errTruthY, errFakeY, grTruth->Eval(pt), grFake->Eval(pt), false);
+    //
+    // double errFakeX = grFake->GetErrorX(pt);
+    // double errTruthX = grTruth->GetErrorX(pt);
+    // // double errX = fakeRateRatioUncertainty(errFakeX, errTruthX, pt, pt);
+    // double errX = errFakeX;
 
     // error
-    double errFakeY = grFake->GetErrorY(y);
-    double errTruthY = grTruth->GetErrorY(y);
-    double errY = fakeRateRatioUncertainty(errFakeY, errTruthY, grFake->Eval(pt), grTruth->Eval(pt));
+    double errFakeY = grFake->GetErrorYhigh(i) - grFake->GetErrorYlow(i);
+    double errTruthY = grTruth->GetErrorYhigh(i) - grTruth->GetErrorYlow(y);
+    double errY = fakeRateRatioUncertainty(errTruthY, errFakeY, grTruth->Eval(pt), grFake->Eval(pt), false);
 
-    double errFakeX = grFake->GetErrorX(pt);
-    double errTruthX = grTruth->GetErrorX(pt);
-    double errX = fakeRateRatioUncertainty(errFakeX, errTruthX, pt, pt);
+    // double errFakeX = grFake->GetErrorXhigh(i) - grFake->GetErrorXlow(i);
+    // double errTruthX = grTruth->GetErrorXhigh(i) - grTruth->GetErrorXlow(i);
+    // // double errX = fakeRateRatioUncertainty(errFakeX, errTruthX, pt, pt);
+    // double errX = errFakeX;
 
     r->SetPoint(i, pt, y);
-    r->SetPointError(i, errX, errX, errY, errY);
+    r->SetPointError(i,  grFake->GetErrorXlow(i), grFake->GetErrorXhigh(i), errY, errY);
 
 
     std::cout << binName << ": " << pt << ": "
               << "fakeRate Truth:" << grTruth->Eval(pt) << ": "
               << "fakeRate Fake:" << grFake->Eval(pt) << ": "
               << "fakeRate Ratio:" << y << ": "
-              << "gRFake errY" << grFake->GetErrorY(y) << ": "
-              << "gRTruth errY" << grTruth->GetErrorY(y) << ": "
-              << "gRFake errX" << grFake->GetErrorX(pt) << ": "
-              << "gRTruth errX" << grTruth->GetErrorX(pt)
+              << "gRFake errY: " << errFakeY << ": "
+              << "gRTruth errY: " << errTruthY << ": "
+              // << "gRFake errX: " << errFakeX << ": "
+              // << "gRTruth errX: " << errTruthY
               << std::endl;
   }
   r->GetHistogram()->GetXaxis()->SetTitle("pT (GeV)");
@@ -158,7 +184,8 @@ void add_gr(int year, std::string region="EE", bool adjustrange=false){
   r->GetXaxis()->SetLabelSize(0.075);
   r->GetYaxis()->SetLabelSize(0.075);
   r->GetYaxis()->SetTitleOffset(0.5);
-  r->Draw("AL");
+  // r->Draw("AL");
+  r->Draw("AP"); // Draw Points only
 
   if (adjustrange) c1->SaveAs(Form("closureTest_MCTruth_comparisons%s_%s_adjustrange.pdf", region.c_str(), std::to_string(year).c_str()));
   else c1->SaveAs(Form("closureTest_MCTruth_comparisons%s_%s.pdf", region.c_str(), std::to_string(year).c_str()));
@@ -171,12 +198,32 @@ void compareToMCTruth(int year=2016, bool setBatch=true){
 
    if (setBatch) gROOT->SetBatch();
 
+   std::cout << "Drawing Fake Rate" << std::endl;
+
    add_gr(year, "EB");
    add_gr(year, "EE");
-   add_grPlus(year, "EB");
-   add_grPlus(year, "EE");
+   add_grCompSideBands(year, "EB");
+   add_grCompSideBands(year, "EE");
+   // adjust y-range same as data
    add_gr(year, "EB", true);
    add_gr(year, "EE", true);
+
+   // granular 1- inner, 2- outer
+   add_gr(year, "EB1");
+   add_gr(year, "EB2");
+   add_grCompSideBands(year, "EB1");
+   add_grCompSideBands(year, "EB2");
+   // adjust y-range same as data
+   add_gr(year, "EB1", true);
+   add_gr(year, "EB2", true);
+
+   add_gr(year, "EE1");
+   add_gr(year, "EE2");
+   add_grCompSideBands(year, "EE1");
+   add_grCompSideBands(year, "EE2");
+   // adjust y-range same as data
+   add_gr(year, "EE1", true);
+   add_gr(year, "EE2", true);
 
    return 0;
 }
