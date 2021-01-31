@@ -26,6 +26,11 @@ See MCFakeRateClosureTest
 
 ### Full 2016/2017/2018 Closure Test Pipeline
 
+Summary:
+* Make Fake Templates, Real, MC Truth templates
+* Run Template Fitting Code to get the fake rates
+* Propagate Fake Rates to Kinematics Plots
+
 To make templates
 
 ```
@@ -39,6 +44,7 @@ See Templates
 To run:
 
 ```
+cd FakeRateAnalysis/ClosureTestTemplateFits
 python plot_sidebands_comparisons.py -e 2016
 
 ```

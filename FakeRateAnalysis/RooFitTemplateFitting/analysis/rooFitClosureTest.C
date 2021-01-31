@@ -129,7 +129,7 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   TH1D *hrealTemplate = (TH1D*) historealmcfile->Get( templateVariable + etaBin + TString("_realtemplate_pt") + ptBin );
   hrealTemplate->Print();
 
-  // Numerator
+  // Numerator Templates
   TH1D *hData;
   TH1D *hdenom;
   if (sample == "alltruth") {
@@ -199,7 +199,7 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   }
   template_fit_variable.setRange("sigrange",0.0,template_fit_variable_cut);
 
-  // ----------------- Roo Hists and Pdfs 
+  // ----------------- Roo Hists and Pdfs
   RooDataHist faketemplate("faketemplate","fake template",template_fit_variable,hfakeTemplate);
   RooHistPdf fakepdf("fakepdf","test hist fake pdf",template_fit_variable,faketemplate);
 
