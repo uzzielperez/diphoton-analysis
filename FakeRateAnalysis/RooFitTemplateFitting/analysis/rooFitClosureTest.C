@@ -130,6 +130,7 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   hrealTemplate->Print();
 
   // Numerator Templates
+  // The number of jets passing the high-photon ID
   TH1D *hData;
   TH1D *hdenom;
   if (sample == "alltruth") {
@@ -151,6 +152,8 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
 
   }
   else{
+    // The MC as fakes have real photon contamination
+    // so we fit templates of real and fake photons using either sieie or chiso
     hData = (TH1D*) histojetfile->Get( templateVariable + etaBin + TString("_numerator_pt") + ptBin);
     hdenom   = (TH1D*) histojetfile->Get( TString("phoPt") + etaBin + TString("_denominator_varbin") );
   }
@@ -381,6 +384,8 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
 
   cout << numerator << " " << denominator << " " << contamination << endl;
 
+  //FIXME: If "alltruth" write such that fake value is not derived from fit but from MC Truth numerator which could be
+  // photon_fakes_pt_EB 
   float fakerate = fakevalue/denominator;
   float fakerateerror = TMath::Sqrt((fakeerrormax*fakeerrormax/denominator/denominator) + (fakerate*fakerate/denominator));
 

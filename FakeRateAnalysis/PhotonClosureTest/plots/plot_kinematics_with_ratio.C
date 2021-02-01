@@ -8,9 +8,9 @@ int plot_kinematics_with_etaBin(TFile *f_all, TFile *f_fakes, TFile *f_reweighte
   TString reweighted_str = "photon_"+name+"_denominator_fake_rate_weighted";
 
   // EB
-  TH1D *h_etaBinned_reweighted_EB = (TH1D *) f_reweighted->Get(etaBinned_reweighted_str+"_EB");
+  TH1D *h_etaBinned_reweighted_EB = (TH1D *) f_reweighted->Get(etaBinned_reweighted_str+"_EB"); // Fake Rate * Denominator 
   TH1D *h_reweighted_EB = (TH1D *) f_reweighted->Get(reweighted_str+"_EB");
-  TH1D *h_fakes_EB = (TH1D *) f_fakes->Get("photon_fakes_"+name+"_EB");
+  TH1D *h_fakes_EB = (TH1D *) f_fakes->Get("photon_fakes_"+name+"_EB"); // MC truth
   TH1D *h_unweighted_EB = (TH1D *) f_all->Get("photon_"+name+"_denominator_EB");
 
   // Rebin histograms (from 200 bins to 400)
