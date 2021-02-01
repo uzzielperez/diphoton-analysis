@@ -33,9 +33,9 @@
  * From /analysis, run
  * root -l -b -q ../scripts/fakeRateCalculation.C'("mc","sieie")'
  */
-std::pair<double,double> rooFitClosureTest(TString sample, TString templateVariable, TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin, TString era, int pvCutLow, int pvCutHigh)
-{
-  //bool no_template_pv_binning = true;
+
+// Do fitting if sample is not MC Truth
+std::pair<double,double> fit(TString sample, TString templateVariable, TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin, TString era, int pvCutLow, int pvCutHigh){
 
   std::map<TString, TString> cmssw_version;
   cmssw_version["2016"] = "76X";
@@ -253,7 +253,8 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   else if (etaBin == "EB1") t_label->DrawLatexNDC(0.55,0.60,"ECAL inner barrel");
   else if (etaBin == "EB2") t_label->DrawLatexNDC(0.55,0.60,"ECAL outer barrel");
   else if (etaBin == "EE1") t_label->DrawLatexNDC(0.55,0.60,"ECAL inner endcap");
-  else if (etaBin == "EE2") t_label->DrawLatexNDC(0.55,0.60,"ECAL outer endcap");
+  else if (etaBin == "EE2") t_label->DrawLatexNDC(0.55,0.60,"ECAL middle endcap");
+  else if (etaBin == "EE3") t_label->DrawLatexNDC(0.55,0.60,"ECAL outer endcap");
   else t_label->DrawLatexNDC(0.55,0.60,"ECAL endcap");
   t_label->     DrawLatexNDC(0.55,0.55,label_pt_bin + " GeV");
   t_label->     DrawLatexNDC(0.55,0.50,sideband_string);
@@ -383,5 +384,29 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
 
   histojetfile_templates->cd();
   histojetfile_templates->Close();
+}
+
+// FIXME: Do simple simple numerator/denominator if MC Truth
+// std::pair<double,double> fakeRateMCTruth(){
+//
+// }
+
+std::pair<double,double> rooFitClosureTest(TString sample, TString templateVariable, TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin, TString era, int pvCutLow, int pvCutHigh)
+{
+  //bool no_template_pv_binning = true;
+
+  // FIXME Fitting Procedure with RooFit
+  // if (sample != "alltruth") then do fit()
+  // return fakevalue
+
+  std::pair<double, double> fitRes = fit(sample, templateVariable, ptBin, etaBin, sideband, denomBin, era, pvCutLow, pvCutHigh);
+  float fakevalue = fitRes.first;
+  float fakeerrormax = fitRes.second;
+
+  // if (sample == "alltruth") run division
+
+  return std::make_pair(fakevalue,fakeerrormax);
+
+
 
 } // end of rooFitClosureTest()
