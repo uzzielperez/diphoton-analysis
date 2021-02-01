@@ -168,6 +168,25 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   TH1D *photon_fakes_phi_EE = new TH1D("photon_fakes_phi_EE","",100,-5,5);
   photon_fakes_phi_EB->Sumw2();
   photon_fakes_phi_EE->Sumw2();
+
+  // distribution of fakes for eta-binned fake rate calculation
+
+  // inner EB/EE
+  TH1D *photon_fakes_pt_EB1 = new TH1D("photon_fakes_pt_EB1","",200,0,2000);
+  TH1D *photon_fakes_pt_EE1 = new TH1D("photon_fakes_pt_EE1","",200,0,2000);
+  photon_fakes_pt_EB1->Sumw2();
+  photon_fakes_pt_EE1->Sumw2();
+
+  // outer EB, middle EE
+  TH1D *photon_fakes_pt_EB2 = new TH1D("photon_fakes_pt_EB2","",200,0,2000);
+  TH1D *photon_fakes_pt_EE2 = new TH1D("photon_fakes_pt_EE2","",200,0,2000);
+  photon_fakes_pt_EB2->Sumw2();
+  photon_fakes_pt_EE2->Sumw2();
+
+  // outer EE
+  TH1D *photon_fakes_pt_EE3 = new TH1D("photon_fakes_pt_EE3","",200,0,2000);
+  photon_fakes_pt_EE3->Sumw2();
+
   // distributions of quark fakes
   TH1D *photon_quark_fakes_sIeIe_EB = new TH1D("photon_quark_fakes_sIeIe_EB","",50,0,0.1);
   TH1D *photon_quark_fakes_sIeIe_EE = new TH1D("photon_quark_fakes_sIeIe_EE","",25,0,0.1);
@@ -502,6 +521,10 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
 	    photon_fakes_pt_EB->Fill(Photon_pt,Event_weightAll);
 	    photon_fakes_eta_EB->Fill(Photon_eta,Event_weightAll);
 	    photon_fakes_phi_EB->Fill(Photon_phi,Event_weightAll);
+
+      // For granular fake rate calculation:
+      if ( fabs(Photon_scEta) < 0.783 ) photon_fakes_pt_EB1->Fill(Photon_pt,Event_weightAll);
+      if ( (0.783 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) photon_fakes_pt_EB2->Fill(Photon_pt,Event_weightAll);
 	  }
 	  if (quark_fakes) {
 	    nQuarkFakesEB++;
@@ -599,6 +622,11 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
 	    photon_fakes_pt_EE->Fill(Photon_pt,Event_weightAll);
 	    photon_fakes_eta_EE->Fill(Photon_eta,Event_weightAll);
 	    photon_fakes_phi_EE->Fill(Photon_phi,Event_weightAll);
+
+      // For Granular Fake Rate Calculation
+      if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.8773) )  photon_fakes_pt_EE1->Fill(Photon_pt,Event_weightAll);
+      if ( (1.8773 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.1887) )  photon_fakes_pt_EE2->Fill(Photon_pt,Event_weightAll);
+      if ( (2.1887 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )   photon_fakes_pt_EE3->Fill(Photon_pt,Event_weightAll);
 	  }
 	  if (quark_fakes) {
 	    nQuarkFakesEE++;
@@ -1231,6 +1259,19 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   photon_fakes_phi_EE->Write();
   std::cout << photon_fakes_phi_EB->GetName() << "\t integral: " << photon_fakes_phi_EB->Integral() << std::endl;
   std::cout << photon_fakes_phi_EE->GetName() << "\t integral: " << photon_fakes_phi_EE->Integral() << std::endl;
+
+  // write fake distributions for granular Fake Rate Calculation
+  photon_fakes_pt_EB1->Write();
+  photon_fakes_pt_EB2->Write();
+  photon_fakes_pt_EE1->Write();
+  photon_fakes_pt_EE2->Write();
+  photon_fakes_pt_EE3->Write();
+  std::cout << photon_fakes_pt_EB1->GetName() << "\t integral: " << photon_fakes_pt_EB1->Integral() << std::endl;
+  std::cout << photon_fakes_pt_EB2->GetName() << "\t integral: " << photon_fakes_pt_EB2->Integral() << std::endl;
+  std::cout << photon_fakes_pt_EE1->GetName() << "\t integral: " << photon_fakes_pt_EE1->Integral() << std::endl;
+  std::cout << photon_fakes_pt_EE2->GetName() << "\t integral: " << photon_fakes_pt_EE2->Integral() << std::endl;
+  std::cout << photon_fakes_pt_EE3->GetName() << "\t integral: " << photon_fakes_pt_EE3->Integral() << std::endl;
+
   // write quark fake distributions
   photon_quark_fakes_sIeIe_EB->Write();
   photon_quark_fakes_sIeIe_EE->Write();
@@ -1273,7 +1314,6 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   phoPtEE_quark_passHighPtID_varbin.Write();
   phoPtEB_gluon_passHighPtID_varbin.Write();
   phoPtEE_gluon_passHighPtID_varbin.Write();
-
 
   double bin_sum_EB = 0;
   std::cout << phoPtEB_passHighPtID_varbin.GetName() << "\t integral: " << phoPtEB_passHighPtID_varbin.Integral() << std::endl;
