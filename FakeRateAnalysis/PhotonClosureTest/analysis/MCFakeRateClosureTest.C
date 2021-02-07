@@ -120,10 +120,13 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
   TH1D phoPtEE1_denominator_varbin("phoPtEE1_denominator_varbin","",nBins-1,ptBinArray);
   TH1D phoPtEB2_denominator_varbin("phoPtEB2_denominator_varbin","",nBins-1,ptBinArray);
   TH1D phoPtEE2_denominator_varbin("phoPtEE2_denominator_varbin","",nBins-1,ptBinArray);
+  TH1D phoPtEE3_denominator_varbin("phoPtEE3_denominator_varbin","",nBins-1,ptBinArray);
+  // fake templates granular 1- inner, 2- outer (EE, 1-inner, 2-middle, 3-outer)
   phoPtEB1_denominator_varbin.Sumw2();
   phoPtEE1_denominator_varbin.Sumw2();
   phoPtEB2_denominator_varbin.Sumw2();
   phoPtEE2_denominator_varbin.Sumw2();
+  phoPtEE3_denominator_varbin.Sumw2();
 
   // all objects
   TH1D *photon_pt_denominator_EB = new TH1D("photon_pt_denominator_EB","",200,0,2000);
@@ -162,6 +165,8 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
   std::vector< std::vector<TH1D*> > sIeIeFakeTemplatesEB2;
   std::vector< std::vector<TH1D*> > sIeIeFakeTemplatesEE1;
   std::vector< std::vector<TH1D*> > sIeIeFakeTemplatesEE2;
+  std::vector< std::vector<TH1D*> > sIeIeFakeTemplatesEE2;
+  std::vector< std::vector<TH1D*> > sIeIeFakeTemplatesEE3;
 
   // create empty vectors to hold all the templates
   for (int i = 0; i < nBins-1; i++) {
@@ -181,6 +186,7 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
     sIeIeFakeTemplatesEB2.push_back(eb2vec);
     sIeIeFakeTemplatesEE1.push_back(ee1vec);
     sIeIeFakeTemplatesEE2.push_back(ee2vec);
+    sIeIeFakeTemplatesEE3.push_back(ee3vec);
   }
 
   // numerator histogram vector for each pt bin
@@ -194,6 +200,7 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
   std::vector<TH1D*> sIeIeNumeratorEB2;
   std::vector<TH1D*> sIeIeNumeratorEE1;
   std::vector<TH1D*> sIeIeNumeratorEE2;
+  std::vector<TH1D*> sIeIeNumeratorEE3;
 
 
   // denominator histogram vector for each pt bin
@@ -205,6 +212,7 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
   std::vector<TH1D*> denomPtEB2;
   std::vector<TH1D*> denomPtEE1;
   std::vector<TH1D*> denomPtEE2;
+  std::vector<TH1D*> denomPtEE3;
 
   // loop over pT bins and book histograms
   for (int i = 0; i < nBins-1; i++) {
@@ -238,6 +246,10 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
       TH1D* sieieEE2_faketemplate = new TH1D(Form( "sieieEE2_faketemplate_pt%dTo%d_chIso%dTo%d",(int)binLowEdge,(int)binUpperEdge,(int)sidebandLow,(int)sidebandHigh ),"",25,0.,0.1);
       sieieEE2_faketemplate->Sumw2();
       sIeIeFakeTemplatesEE2.at(i).push_back( sieieEE2_faketemplate );
+
+      TH1D* sieieEE3_faketemplate = new TH1D(Form( "sieieEE3_faketemplate_pt%dTo%d_chIso%dTo%d",(int)binLowEdge,(int)binUpperEdge,(int)sidebandLow,(int)sidebandHigh ),"",25,0.,0.1);
+      sieieEE3_faketemplate->Sumw2();
+      sIeIeFakeTemplatesEE3.at(i).push_back( sieieEE3_faketemplate );
 
     } // end loop over chIso sidebands
 
@@ -281,6 +293,9 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
     hEE2_sieie_numerator->Sumw2();
     sIeIeNumeratorEE2.push_back(hEE2_sieie_numerator);
 
+    TH1D *hEE3_sieie_numerator = new TH1D(Form("sieieEE3_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE3",25,0.,0.1);
+    hEE3_sieie_numerator->Sumw2();
+    sIeIeNumeratorEE3.push_back(hEE3_sieie_numerator);
 
     // book chIso numberator histograms
     TH1D *hEB_chIso_numerator = new TH1D(Form("chIsoEB_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEB",50,0.,50.);
@@ -312,6 +327,10 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
     hEE2_denominator->Sumw2();
     denomPtEE2.push_back(hEE2_denominator);
 
+    TH1D *hEE3_denominator = new TH1D(Form("PtEE3_denominator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEE3",100,binLowEdge,binUpperEdge);
+    hEE3_denominator->Sumw2();
+    denomPtEE3.push_back(hEE3_denominator);
+
   } // end loop over pt bins
 
   // histograms in PV bins
@@ -321,12 +340,14 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
   std::vector<TH1D*> photonIsoEE;
   std::vector<TH1D*> photonIsoEE1;
   std::vector<TH1D*> photonIsoEE2;
+  std::vector<TH1D*> photonIsoEE3;
   std::vector<TH1D*> corPhotonIsoEB;
   std::vector<TH1D*> corPhotonIsoEB1;
   std::vector<TH1D*> corPhotonIsoEB2;
   std::vector<TH1D*> corPhotonIsoEE;
   std::vector<TH1D*> corPhotonIsoEE1;
   std::vector<TH1D*> corPhotonIsoEE2;
+  std::vector<TH1D*> corPhotonIsoEE3;
 
   for (std::vector<std::pair<int,int> >::const_iterator it = nPV_regions.begin(); it != nPV_regions.end(); ++it) {
 
@@ -352,6 +373,9 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
     TH1D* photon_iso_EE2 = new TH1D(Form( "photonIso_EE2_nPV%dTo%d",(int)pv_low,(int)pv_high),"",80,-20,20);
     photon_iso_EE2->Sumw2();
     photonIsoEE2.push_back( photon_iso_EE2 );
+    TH1D* photon_iso_EE3 = new TH1D(Form( "photonIso_EE3_nPV%dTo%d",(int)pv_low,(int)pv_high),"",80,-20,20);
+    photon_iso_EE3->Sumw2();
+     photonIsoEE3.push_back( photon_iso_EE3 );
 
     // corrected photon isolation
     TH1D* cor_photon_iso_EB = new TH1D(Form( "corPhotonIso_EB_nPV%dTo%d",(int)pv_low,(int)pv_high),"",80,-20,20);
@@ -372,6 +396,9 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
     TH1D* cor_photon_iso_EE2 = new TH1D(Form( "corPhotonIso_EE2_nPV%dTo%d",(int)pv_low,(int)pv_high),"",80,-20,20);
     cor_photon_iso_EE2->Sumw2();
     corPhotonIsoEE2.push_back( cor_photon_iso_EE2 );
+    TH1D* cor_photon_iso_EE3 = new TH1D(Form( "corPhotonIso_EE3_nPV%dTo%d",(int)pv_low,(int)pv_high),"",80,-20,20);
+    cor_photon_iso_EE3->Sumw2();
+    corPhotonIsoEE3.push_back( cor_photon_iso_EE3 );
 
   } // end loop over pv bins
 
@@ -427,12 +454,14 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
 	    corPhotonIsoEB.at(pos)->Fill(Photon_corPhotonIso03,Event_weightAll);
 	  }
 	  // EB1
-	  if (fabs(Photon_scEta) < 0.7221) {
+	  // if (fabs(Photon_scEta) < 0.7221) {
+    if (fabs(Photon_scEta) < 0.783) {
 	    photonIsoEB1.at(pos)->Fill(Photon_photonIso03,Event_weightAll);
 	    corPhotonIsoEB1.at(pos)->Fill(Photon_corPhotonIso03,Event_weightAll);
 	  }
 	  // EB2
-	  if (0.7221 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.4442) {
+	  // if (0.7221 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.4442) {
+    if (0.783 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.4442) {
 	    photonIsoEB2.at(pos)->Fill(Photon_photonIso03,Event_weightAll);
 	    corPhotonIsoEB2.at(pos)->Fill(Photon_corPhotonIso03,Event_weightAll);
 	  }
@@ -442,15 +471,22 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
 	    corPhotonIsoEE.at(pos)->Fill(Photon_corPhotonIso03,Event_weightAll);
 	  }
 	  // EE1
-	  if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.033) {
+	  // if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.033) {
+    if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.8773) {
 	    photonIsoEE1.at(pos)->Fill(Photon_photonIso03,Event_weightAll);
 	    corPhotonIsoEE1.at(pos)->Fill(Photon_corPhotonIso03,Event_weightAll);
 	  }
 	  // EE2
-	  if (2.033 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+	  // if (2.033 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+    if (1.8773 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.1887) {
 	    photonIsoEE2.at(pos)->Fill(Photon_photonIso03,Event_weightAll);
 	    corPhotonIsoEE2.at(pos)->Fill(Photon_corPhotonIso03,Event_weightAll);
 	  }
+    // EE3
+    if (2.1887 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
+      photonIsoEE3.at(pos)->Fill(Photon_photonIso03,Event_weightAll);
+      corPhotonIsoEE3.at(pos)->Fill(Photon_corPhotonIso03,Event_weightAll);
+    }
 	} // end if pV cuts
       } // end for loop over PV regions
     } // end if high-pT ID photons
@@ -479,10 +515,17 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
       } // end EE
 
       // granular 1-inner, 2-outer
-      if ( fabs(Photon_scEta) < 0.7221 ) phoPtEB1_denominator_varbin.Fill(Photon_pt,Event_weightAll);
-      if ( (0.7221 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) phoPtEB2_denominator_varbin.Fill(Photon_pt,Event_weightAll);
-      if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.033) )  phoPtEE1_denominator_varbin.Fill(Photon_pt,Event_weightAll);
-      if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  phoPtEE2_denominator_varbin.Fill(Photon_pt,Event_weightAll);
+      // if ( fabs(Photon_scEta) < 0.7221 ) phoPtEB1_denominator_varbin.Fill(Photon_pt,Event_weightAll);
+      // if ( (0.7221 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) phoPtEB2_denominator_varbin.Fill(Photon_pt,Event_weightAll);
+      // if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.033) )  phoPtEE1_denominator_varbin.Fill(Photon_pt,Event_weightAll);
+      // if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  phoPtEE2_denominator_varbin.Fill(Photon_pt,Event_weightAll);
+
+      // granular 1-inner, 2-outer (EE: 1-inner, 2-middle, 3-outer)
+     if ( fabs(Photon_scEta) < 0.783 ) phoPtEB1_denominator_varbin.Fill(Photon_pt,Event_weightAll);
+     if ( (0.783 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) phoPtEB2_denominator_varbin.Fill(Photon_pt,Event_weightAll);
+     if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.8773) )  phoPtEE1_denominator_varbin.Fill(Photon_pt,Event_weightAll);
+     if ( (1.8773 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.1887) )  phoPtEE2_denominator_varbin.Fill(Photon_pt,Event_weightAll);
+     if ( (2.1887 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  phoPtEE3_denominator_varbin.Fill(Photon_pt,Event_weightAll);
     } // end if denominator object
 
     // fill pt binned histograms
@@ -495,11 +538,19 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
       	if (is_sieie_numerator_object) {
       	  if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
       	  if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  sIeIeNumeratorEE.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-          // granular 1-inner, 2-outer
-          if ( fabs(Photon_scEta) < 0.7221 ) sIeIeNumeratorEB1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-          if ( (0.7221 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) sIeIeNumeratorEB2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-          if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.033) )  sIeIeNumeratorEE1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-          if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  sIeIeNumeratorEE2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          // // granular 1-inner, 2-outer
+          // if ( fabs(Photon_scEta) < 0.7221 ) sIeIeNumeratorEB1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          // if ( (0.7221 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) sIeIeNumeratorEB2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          // if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.033) )  sIeIeNumeratorEE1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          // if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  sIeIeNumeratorEE2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+
+          // granular 1-inner, 2-outer (EE: 1-inner, 2-middle, 3-outer)
+          if ( fabs(Photon_scEta) < 0.783 ) sIeIeNumeratorEB1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          if ( (0.783 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) sIeIeNumeratorEB2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.8773) )  sIeIeNumeratorEE1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          if ( (1.8773 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.1887) )  sIeIeNumeratorEE2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          if ( (2.1887 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  sIeIeNumeratorEE3.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+
       	} // end if sieie numerator object
 	// fill chIso numerator histograms
       	if (is_chIso_numerator_object) {
@@ -514,11 +565,18 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
 	    denomPtEB.at(i)->Fill(Photon_pt,Event_weightAll);
 	  if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )
 	    denomPtEE.at(i)->Fill(Photon_pt,Event_weightAll);
-    // granular 1-inner, 2-outer
-    if ( fabs(Photon_scEta) < 0.7221 ) denomPtEB1.at(i)->Fill(Photon_pt,Event_weightAll);
-    if ( (0.7221 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) denomPtEB2.at(i)->Fill(Photon_pt,Event_weightAll);
-    if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.033) )  denomPtEE1.at(i)->Fill(Photon_pt,Event_weightAll);
-    if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  denomPtEE2.at(i)->Fill(Photon_pt,Event_weightAll);
+    // // granular 1-inner, 2-outer
+    // if ( fabs(Photon_scEta) < 0.7221 ) denomPtEB1.at(i)->Fill(Photon_pt,Event_weightAll);
+    // if ( (0.7221 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) denomPtEB2.at(i)->Fill(Photon_pt,Event_weightAll);
+    // if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.033) )  denomPtEE1.at(i)->Fill(Photon_pt,Event_weightAll);
+    // if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  denomPtEE2.at(i)->Fill(Photon_pt,Event_weightAll);
+
+    // granular 1-inner, 2-outer (EE: 1-inner, 2-middle, 3-outer)
+    if ( fabs(Photon_scEta) < 0.783 ) denomPtEB1.at(i)->Fill(Photon_pt,Event_weightAll);
+    if ( (0.783 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) denomPtEB2.at(i)->Fill(Photon_pt,Event_weightAll);
+    if ( (1.566  < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.8773) )  denomPtEE1.at(i)->Fill(Photon_pt,Event_weightAll);
+    if ( (1.8773 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.1887) )  denomPtEE2.at(i)->Fill(Photon_pt,Event_weightAll);
+    if ( (2.1887 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  denomPtEE3.at(i)->Fill(Photon_pt,Event_weightAll);
 
 	} // end if denominator object
 	// fill fake templates with chIso sidebands
@@ -533,11 +591,18 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
 	      sIeIeFakeTemplatesEB.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
             if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )
 	      sIeIeFakeTemplatesEE.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-        // granular: 1- inner, 2- outer
-            if ( fabs(Photon_scEta) < 0.7221 ) sIeIeFakeTemplatesEB1.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-            if ( (0.7221 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) sIeIeFakeTemplatesEB2.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-            if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.033) )  sIeIeFakeTemplatesEE1.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-            if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  sIeIeFakeTemplatesEE2.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+        // // granular: 1- inner, 2- outer
+        //     if ( fabs(Photon_scEta) < 0.7221 ) sIeIeFakeTemplatesEB1.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+        //     if ( (0.7221 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) sIeIeFakeTemplatesEB2.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+        //     if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.033) )  sIeIeFakeTemplatesEE1.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+        //     if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  sIeIeFakeTemplatesEE2.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+
+          // granular 1-inner, 2-outer (EE: 1-inner, 2-middle, 3-outer)
+          if ( fabs(Photon_scEta) < 0.783 ) sIeIeFakeTemplatesEB1.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          if ( (0.783 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) sIeIeFakeTemplatesEB2.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.8773) )  sIeIeFakeTemplatesEE1.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          if ( (1.8773 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.1887) )  sIeIeFakeTemplatesEE2.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          if ( (2.1887 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  sIeIeFakeTemplatesEE3.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
           } // end if fake template object
         } // end for loop over chIso sidebands for fake templates
 	// fill fake templates with sieie sidebands in EB
@@ -586,10 +651,12 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
   phoPtEB2_denominator_varbin.Write();
   phoPtEE1_denominator_varbin.Write();
   phoPtEE2_denominator_varbin.Write();
+  phoPtEE3_denominator_varbin.Write();
   std::cout << phoPtEB1_denominator_varbin.GetName() << "\t integral: " << phoPtEB1_denominator_varbin.Integral() << std::endl;
   std::cout << phoPtEE1_denominator_varbin.GetName() << "\t integral: " << phoPtEE1_denominator_varbin.Integral() << std::endl;
   std::cout << phoPtEB2_denominator_varbin.GetName() << "\t integral: " << phoPtEB2_denominator_varbin.Integral() << std::endl;
-  std::cout << phoPtEE2_denominator_varbin.GetName() << "\t integral: " << phoPtEE_denominator_varbin.Integral() << std::endl;
+  std::cout << phoPtEE2_denominator_varbin.GetName() << "\t integral: " << phoPtEE2_denominator_varbin.Integral() << std::endl;
+  std::cout << phoPtEE3_denominator_varbin.GetName() << "\t integral: " << phoPtEE3_denominator_varbin.Integral() << std::endl;
   // all objects
   photon_pt_denominator_EB->Write();
   photon_pt_denominator_EE->Write();
@@ -643,6 +710,10 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
     std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEE3.begin() ; it != sIeIeNumeratorEE2.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
+    (*it)->Write();
+  }
 
   // write chIso numerator histograms
   for (std::vector<TH1D*>::iterator it = chIsoNumeratorEB.begin() ; it != chIsoNumeratorEB.end(); ++it) {
@@ -681,6 +752,11 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
     std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
+  for (std::vector<TH1D*>::iterator it = denomPtEE3.begin() ; it != denomPtEE3.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
+    (*it)->Write();
+  }
+
 
 
   // write PV histograms
@@ -707,6 +783,10 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
     (*it)->Write();
   }
   for (std::vector<TH1D*>::iterator it = photonIsoEE2.begin() ; it != photonIsoEE2.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
+    (*it)->Write();
+  }
+  for (std::vector<TH1D*>::iterator it = photonIsoEE3.begin() ; it != photonIsoEE3.end(); ++it) {
     std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
@@ -754,6 +834,7 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
       TH1D* tempHistEB2 = sIeIeFakeTemplatesEB2.at(i).at(j);
       TH1D* tempHistEE1 = sIeIeFakeTemplatesEE1.at(i).at(j);
       TH1D* tempHistEE2 = sIeIeFakeTemplatesEE2.at(i).at(j);
+      TH1D* tempHistEE3 = sIeIeFakeTemplatesEE3.at(i).at(j);
 
       std::cout << tempHistEB1->GetName() << "\t integral: " << tempHistEB1->Integral() << std::endl;
       tempHistEB1->Scale(1./tempHistEB1->Integral());
@@ -767,6 +848,9 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
       std::cout << tempHistEE2->GetName() << "\t integral: " << tempHistEE2->Integral() << std::endl;
       tempHistEE2->Scale(1./tempHistEE2->Integral());
       tempHistEE2->Write();
+      std::cout << tempHistEE3->GetName() << "\t integral: " << tempHistEE3->Integral() << std::endl;
+      tempHistEE3->Scale(1./tempHistEE3->Integral());
+      tempHistEE3->Write();
 
     }
   }

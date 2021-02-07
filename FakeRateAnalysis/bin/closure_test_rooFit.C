@@ -10,9 +10,15 @@
 #include "diphoton-analysis/FakeRateAnalysis/RooFitTemplateFitting/analysis/rooFitClosureTest.C"
 
 double fakeRateUncertainty(double denominator, double fakeerror, double fakerate) {
+  // double uncert = TMath::Sqrt((fakeerror*fakeerror/denominator/denominator) + (fakerate*fakerate/denominator));
+  // Calculate fakeRate Uncertainty given numerator error = fitresult.2 and numerator (fakevalue) = fitresult.1
+  // and the denominator error and the denominator
   double uncert = TMath::Sqrt((fakeerror*fakeerror/denominator/denominator) + (fakerate*fakerate/denominator));
   return uncert;
 }
+
+
+
 
 int main(int argc, char *argv[])
 {
@@ -27,6 +33,7 @@ int main(int argc, char *argv[])
   sw.Start();
 
   std::cout << "\nStarting closure_test_rooFit()\n" << std::endl;
+  // FIXME: Call ulimit -n 2048 when doing granular
 
   if(argc < 3) {
     std::cout << "Syntax: closure_test_rooFit.exe [DiPhotonJets/GGJets/GJets/all/alltruth] [sieie/chIso] [2016/2017/2018] [PV_low] [PV_high]" << std::endl;
@@ -115,6 +122,7 @@ int main(int argc, char *argv[])
   std::vector<TGraphAsymmErrors*> fakeRatesEB2;
   std::vector<TGraphAsymmErrors*> fakeRatesEE1;
   std::vector<TGraphAsymmErrors*> fakeRatesEE2;
+  std::vector<TGraphAsymmErrors*> fakeRatesEE3;
 
   for (unsigned int i = 0; i < sidebandsEB.size(); i++) {
     double sidebandLow = sidebandsEB.at(i).first;
@@ -176,6 +184,11 @@ int main(int argc, char *argv[])
     fakeRateEE2->SetName("fakeRateEE2"+postFix);
     fakeRateEE2->GetXaxis()->SetTitle("p_{T} (GeV)");
     fakeRatesEE2.push_back(fakeRateEE2);
+
+    TGraphAsymmErrors* fakeRateEE3 = new TGraphAsymmErrors();
+    fakeRateEE3->SetName("fakeRateEE3"+postFix);
+    fakeRateEE3->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRatesEE3.push_back(fakeRateEE3);
   }
 
   TString pvCut = "";
@@ -315,11 +328,15 @@ int main(int argc, char *argv[])
       //FIXME Return pair: (fake)
       std::pair<double,double> resEE1 = rooFitClosureTest(sample,templateVariable,binName,TString("EE1"),sidebandsEE.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
       std::pair<double,double> resEE2 = rooFitClosureTest(sample,templateVariable,binName,TString("EE2"),sidebandsEE.at(j),i+1, era, pvCutLow, pvCutHigh); // i+1 is the bin number in the denominator pT distribution corresponding to this pT bin
+      std::pair<double,double> resEE3 = rooFitClosureTest(sample,templateVariable,binName,TString("EE3"),sidebandsEE.at(j),i+1, era, pvCutLow, pvCutHigh);
 
       TString histNameEE1 = TString::Format("PtEE1_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
       TString histNameEE2 = TString::Format("PtEE2_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
       TH1D* histEE1 = static_cast<TH1D*>(infile->Get(histNameEE1));
       TH1D* histEE2 = static_cast<TH1D*>(infile->Get(histNameEE2));
+
+      TString histNameEE3 = TString::Format("PtEE3_denominator_pt%iTo%i",ptBinArray[i],ptBinArray[i+1]);
+      TH1D* histEE3 = static_cast<TH1D*>(infile->Get(histNameEE3));
 
       double denomEE1 = histEE1->Integral();
       double graphX_EE1 = histEE1->GetMean();
@@ -342,6 +359,17 @@ int main(int argc, char *argv[])
 
       fakeRatesEE2.at(j)->SetPoint(i,graphX_EE2,graphY_EE2);
       fakeRatesEE2.at(j)->SetPointError(i,eXLow_EE2,eXHigh_EE2,ey_EE2,ey_EE2);
+
+      double denomEE3 = histEE3->Integral();
+      double graphX_EE3 = histEE3->GetMean();
+      // Fake Rate in EE3
+      double graphY_EE3 = resEE3.first/denomEE3;
+      double eXLow_EE3 = graphX_EE3 - ptLow;
+      double eXHigh_EE3 = ptHigh - graphX_EE3;
+      double ey_EE3 = fakeRateUncertainty(denomEE3,resEE3.second,graphY_EE3);
+
+      fakeRatesEE3.at(j)->SetPoint(i,graphX_EE3,graphY_EE3);
+      fakeRatesEE3.at(j)->SetPointError(i,eXLow_EE3,eXHigh_EE3,ey_EE3,ey_EE3);
 
       // fill debug vectors
       if (templateVariable == "sieie") {
@@ -366,6 +394,7 @@ int main(int argc, char *argv[])
   TH1D* denomvsptEB2 = (TH1D*) infile->Get("phoPtEB2_denominator_varbin")->Clone();
   TH1D* denomvsptEE1 = (TH1D*) infile->Get("phoPtEE1_denominator_varbin")->Clone();
   TH1D* denomvsptEE2 = (TH1D*) infile->Get("phoPtEE2_denominator_varbin")->Clone();
+  TH1D* denomvsptEE3 = (TH1D*) infile->Get("phoPtEE3_denominator_varbin")->Clone();
 
 
   for (int i = 1; i <= nBins-1; i++) {
@@ -383,6 +412,8 @@ int main(int argc, char *argv[])
     denomvsptEE1->SetBinError  (i, denomvsptEE1->GetBinError(i) / binWidth);
     denomvsptEE2->SetBinContent(i, denomvsptEE2->GetBinContent(i) / binWidth);
     denomvsptEE2->SetBinError  (i, denomvsptEE2->GetBinError(i) / binWidth);
+    denomvsptEE3->SetBinContent(i, denomvsptEE3->GetBinContent(i) / binWidth);
+    denomvsptEE3->SetBinError  (i, denomvsptEE3->GetBinError(i) / binWidth);
   }
 
   denomvsptEB->GetXaxis()->SetTitle("p_{T} (GeV)");
@@ -391,7 +422,8 @@ int main(int argc, char *argv[])
   denomvsptEB1->GetXaxis()->SetTitle("p_{T} (GeV)");
   denomvsptEB2->GetXaxis()->SetTitle("p_{T} (GeV)");
   denomvsptEE1->GetXaxis()->SetTitle("p_{T} (GeV)");
-  denomvsptEE1->GetXaxis()->SetTitle("p_{T} (GeV)");
+  denomvsptEE2->GetXaxis()->SetTitle("p_{T} (GeV)");
+  denomvsptEE3->GetXaxis()->SetTitle("p_{T} (GeV)");
 
   // debug printout to see fake rate ratios
   if (templateVariable == "sieie") {
@@ -411,7 +443,8 @@ int main(int argc, char *argv[])
   denomvsptEB1->Write();
   denomvsptEB2->Write();
   denomvsptEE1->Write();
-  denomvsptEE1->Write();
+  denomvsptEE2->Write();
+  denomvsptEE3->Write();
 
 
   for (unsigned int j = 0; j < sidebandsEB.size(); j++) {
@@ -523,6 +556,7 @@ int main(int argc, char *argv[])
     // granular: 1-inner, 2-outer
     fakeRatesEE1.at(j)->Write();
     fakeRatesEE2.at(j)->Write();
+    fakeRatesEE3.at(j)->Write();
 
     TCanvas c1("c1","",800,600);
 
@@ -553,6 +587,21 @@ int main(int argc, char *argv[])
     t_label2->DrawLatexNDC(0.50,0.70,label);
 
     c2.SaveAs("plots/fake_rate_" + sample + "_" + era + "_EE2"+postFix+ pvCut + ".pdf");
+
+    TCanvas c3("c3","",800,600);
+
+    fakeRatesEE3.at(j)->Draw();
+    fakeRatesEE3.at(j)->GetXaxis()->SetTitle("p_{T} (GeV)");
+    fakeRatesEE3.at(j)->GetYaxis()->SetTitle("fake rate");
+    fakeRatesEE3.at(j)->GetYaxis()->SetRangeUser(0.0, 0.6);
+    fakeRatesEE3.at(j)->GetYaxis()->SetTitleOffset(1.6);
+
+    TLatex *t_label3 = new TLatex();
+    t_label3->SetTextAlign(12);
+    t_label3->DrawLatexNDC(0.50,0.75,"ECAL outer endcap");
+    t_label3->DrawLatexNDC(0.50,0.70,label);
+
+    c2.SaveAs("plots/fake_rate_" + sample + "_" + era + "_EE3"+postFix+ pvCut + ".pdf");
   }
 
   outfile2.Close();

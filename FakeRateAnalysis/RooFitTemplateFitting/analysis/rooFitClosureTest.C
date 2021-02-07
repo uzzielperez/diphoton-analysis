@@ -82,11 +82,12 @@ std::pair<double,double> fit(TString sample, TString templateVariable, TString p
   if (sample == "GJets")  data_filename = "diphoton_fake_rate_closure_test_GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "GGJets") data_filename = "diphoton_fake_rate_closure_test_GGJets_M-all_Pt-50_13TeV-sherpa_" + cmssw_version[era] + "_MiniAOD_histograms.root";
   if (sample == "all")    data_filename = "diphoton_fake_rate_closure_test_all_samples_" + cmssw_version[era] + "_MiniAOD_histograms.root";
-  if (sample == "alltruth"){
-    data_filename = "diphoton_fake_rate_closure_test_matching_all_samples_"+ cmssw_version[era] +"_MiniAOD_histograms.root";
-    input_filename = "diphoton_fake_rate_closure_test_all_samples_" + cmssw_version[era] + "_MiniAOD_histograms.root";
-    std::cout << "Using numerator file: " << input_filename << std::endl;
-  }
+  // if (sample == "alltruth"){
+  //   data_filename = "diphoton_fake_rate_closure_test_matching_all_samples_"+ cmssw_version[era] +"_MiniAOD_histograms.root";
+  //   input_filename = "diphoton_fake_rate_closure_test_all_samples_" + cmssw_version[era] + "_MiniAOD_histograms.root";
+  //   std::cout << "Using numerator file: " << input_filename << std::endl;
+  // }
+  // FIXME: remove alltruth
 
   TFile *histojetfile = TFile::Open(data_filename);
   TFile *histojetfile_templates;
@@ -374,7 +375,7 @@ std::pair<double,double> fit(TString sample, TString templateVariable, TString p
   cout << "Ending rooFitClosureTest" << endl;
   cout << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" << endl;
 
-  return std::make_pair(fakevalue,fakeerrormax);
+  return std::make_pair(fakevalue,fakeerrormax); // return numerator and numerator error
 
   histojetfile->cd();
   histojetfile->Close();
@@ -387,26 +388,102 @@ std::pair<double,double> fit(TString sample, TString templateVariable, TString p
 }
 
 // FIXME: Do simple simple numerator/denominator if MC Truth
-// std::pair<double,double> fakeRateMCTruth(){
-//
-// }
+std::pair<double,double> fakeRateMCTruth(TString sample, TString templateVariable, TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin, TString era, int pvCutLow, int pvCutHigh){
+  std::map<TString, TString> cmssw_version;
+  cmssw_version["2016"] = "76X";
+  cmssw_version["2017"] = "94X";
+  cmssw_version["Run2017B"] = "94X";
+  cmssw_version["Run2017C"] = "94X";
+  cmssw_version["Run2017D"] = "94X";
+  cmssw_version["Run2017E"] = "94X";
+  cmssw_version["Run2017F"] = "94X";
+  cmssw_version["2018"] = "102X";
+  cmssw_version["Run2018A"] = "102X";
+  cmssw_version["Run2018B"] = "102X";
+  cmssw_version["Run2018C"] = "102X";
+  cmssw_version["Run2018D"] = "102X";
+
+  gROOT->SetBatch();
+  gSystem->Load("libRooFit");
+  gSystem->AddIncludePath("-I$ROOFITSYS/include");
+
+  using namespace RooFit;
+  using namespace std;
+
+  cout << endl;
+  cout << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" << endl;
+
+  setTDRStyle();
+  gROOT->ForceStyle();
+
+  cout << "Starting rooFitClosureTest" << endl;
+  cout << "Using " << sample << ", " << templateVariable << ", " << etaBin << ", pt " << ptBin << ", " << sideband.first << " < sideband < " << sideband.second << endl;
+
+  // for real templates (same for data and mc)
+  TString extra("");
+
+  // for numerator, fake templates, and denominator (choose data or mc)
+  //TString basefilename("root://cmseos.fnal.gov//store/user/cawest/fake_rate/");
+  TString basefilename("/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/");
+  TString pvCut = "";
+
+  TString num_filename = "diphoton_fake_rate_closure_test_matching_all_samples_"+ cmssw_version[era] +"_MiniAOD_histograms.root"; // get numerator here
+  TString denom_filename = "diphoton_fake_rate_closure_test_all_samples_" + cmssw_version[era] + "_MiniAOD_histograms.root"; // get denominator here
+  std::cout << "Using numerator file: " << num_filename << std::endl;
+
+  TFile *inNumFile = TFile::Open(num_filename,"read");
+  TFile *inDenomFile = TFile::Open(denom_filename,"read");
+
+  // numerator
+  // TString hNumerator = TString("photon_fakes_pt_") + etaBin;
+  TString hNumerator = TString("Pt") + etaBin + TString("_numerator_pt") + ptBin;
+  TH1D* hNum = static_cast<TH1D*>(inNumFile->Get(hNumerator));
+  // denominator
+  TString hDenominator = TString("Pt") + etaBin + TString("_denominator_pt") + ptBin;
+  // TString hDenominator = TString("photon_pt_denominator_") + etaBin
+  TH1D* hDen = static_cast<TH1D*>(inDenomFile->Get(hDenominator));
+
+  float numerator = hNum->Integral();
+  float denominator = hDen->Integral();
+  float fakerate = numerator/denominator;
+
+  float numError = hNum->GetStdDevError();
+  float denomErr = hDen->GetStdDevError();
+  float fakerateerror = fakerate * TMath::Sqrt((numError*numError/numerator/numerator) + (denomErr*denomErr/denominator/denominator));
+
+  // TString ptBinLow = ptBin( 0, 2 );
+  // TString ptBinHi  = ptBin( 4, 6 );
+  // float numerator = hNum->Integral(hNum->FindBin(ptBinLow.Atof()), hNum->FindBin(ptBinHi.Atof()));
+  // float denominator = hNum->Integral(hNum->FindBin(ptBinLow.Atof()), hNum->FindBin(ptBinHi.Atof()));
+
+  // fakevalue/denominator
+  // float fakerateerror = TMath::Sqrt((fakeerrormax*fakeerrormax/denominator/denominator) + (fakerate*fakerate/denominator));
+  // Calculate fakerateerror first
+
+  cout << "Here: " << fakerate << " " << fakerateerror << endl;
+  cout << "Ending FakeRate for MC Truth Calculation" << endl;
+  cout << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" << endl;
+
+  // Return numerator fakevalue only from
+  return std::make_pair(numerator, numError);
+}
 
 std::pair<double,double> rooFitClosureTest(TString sample, TString templateVariable, TString ptBin, TString etaBin, std::pair<double,double> sideband, int denomBin, TString era, int pvCutLow, int pvCutHigh)
 {
   //bool no_template_pv_binning = true;
+  // do fitting procedure to extract fakes
 
-  // FIXME Fitting Procedure with RooFit
-  // if (sample != "alltruth") then do fit()
-  // return fakevalue
-
-  std::pair<double, double> fitRes = fit(sample, templateVariable, ptBin, etaBin, sideband, denomBin, era, pvCutLow, pvCutHigh);
-  float fakevalue = fitRes.first;
-  float fakeerrormax = fitRes.second;
-
-  // if (sample == "alltruth") run division
-
-  return std::make_pair(fakevalue,fakeerrormax);
-
-
+  if (sample != "alltruth"){
+    std::pair<double, double> Res = fit(sample, templateVariable, ptBin, etaBin, sideband, denomBin, era, pvCutLow, pvCutHigh);
+    float fakevalue = Res.first;
+    float fakeerror  = Res.second;
+    return std::make_pair(fakevalue, fakeerror);
+  }
+  else {
+    std::pair<double, double> Res = fakeRateMCTruth(sample, templateVariable, ptBin, etaBin, sideband, denomBin, era, pvCutLow, pvCutHigh);
+    float fakevalue = Res.first;
+    float fakeerror  = Res.second;
+    return std::make_pair(fakevalue, fakeerror);
+  }
 
 } // end of rooFitClosureTest()

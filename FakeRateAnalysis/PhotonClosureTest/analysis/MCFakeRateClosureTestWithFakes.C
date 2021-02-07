@@ -326,11 +326,12 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   std::vector<TH1D*> sIeIeNumeratorEE_fromFakes;
   std::vector<TH1D*> chIsoNumeratorEB_fromFakes;
   std::vector<TH1D*> chIsoNumeratorEE_fromFakes;
-  // granular 1-inner, 2-outer
+  // granular 1-inner, 2-outer (EE 1-inner, 2-middle, 3-outer)
   std::vector<TH1D*> sIeIeNumeratorEB1_fromFakes;
   std::vector<TH1D*> sIeIeNumeratorEB2_fromFakes;
   std::vector<TH1D*> sIeIeNumeratorEE1_fromFakes;
   std::vector<TH1D*> sIeIeNumeratorEE2_fromFakes;
+  std::vector<TH1D*> sIeIeNumeratorEE3_fromFakes;
   // other sieie numerator histograms
   std::vector<TH1D*> sIeIeNumeratorEB_fromReal;
   std::vector<TH1D*> sIeIeNumeratorEE_fromReal;
@@ -350,6 +351,18 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
   std::vector<TH1D*> sIeIeNumeratorEE_fromNonPhotonMatch;
   std::vector<TH1D*> sIeIeNumeratorEB_fromGenParticleMatch;
   std::vector<TH1D*> sIeIeNumeratorEE_fromGenParticleMatch;
+
+  // ptbinned fake distributions
+  // numerator histogram vector for each pt bin
+  std::vector<TH1D*> numPtEB;
+  std::vector<TH1D*> numPtEE;
+
+  // // numerator for granular
+  std::vector<TH1D*> numPtEB1;
+  std::vector<TH1D*> numPtEB2;
+  std::vector<TH1D*> numPtEE1;
+  std::vector<TH1D*> numPtEE2;
+  std::vector<TH1D*> numPtEE3;
 
   // loop over bins increments and create histograms
   for (int i = 0; i < nBins-1; i++) {
@@ -376,6 +389,9 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
     TH1D *hEE2_sieie_numerator_fakes = new TH1D(Form("sieieEE2_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE2",25,0.,0.1);
     hEE2_sieie_numerator_fakes->Sumw2();
     sIeIeNumeratorEE2_fromFakes.push_back(hEE2_sieie_numerator_fakes);
+    TH1D *hEE3_sieie_numerator_fakes = new TH1D(Form("sieieEE3_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE3",25,0.,0.1);
+    hEE3_sieie_numerator_fakes->Sumw2();
+    sIeIeNumeratorEE3_fromFakes.push_back(hEE3_sieie_numerator_fakes);
 
     TH1D *hEB_chIso_numerator_fakes = new TH1D(Form("chIsoEB_numerator_fakes_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"chIsoEB",50,0.,50.);
     hEB_chIso_numerator_fakes->Sumw2();
@@ -446,6 +462,30 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
     TH1D *hEE_numerator_genParticleMatch = new TH1D(Form("sieieEE_numerator_genParticleMatch_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"sigmaIetaIetaEE",25,0.,0.1);
     hEE_numerator_genParticleMatch->Sumw2();
     sIeIeNumeratorEE_fromGenParticleMatch.push_back(hEE_numerator_genParticleMatch);
+
+    TH1D *hEB_numerator = new TH1D(Form("PtEB_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEB",100,binLowEdge,binUpperEdge);
+    hEB_numerator->Sumw2();
+    numPtEB.push_back(hEB_numerator);
+    TH1D *hEE_numerator = new TH1D(Form("PtEE_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEE",100,binLowEdge,binUpperEdge);
+    hEE_numerator->Sumw2();
+    numPtEE.push_back(hEE_numerator);
+
+    // granular numerator histograms
+    TH1D *hEB1_numerator = new TH1D(Form("PtEB1_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEB1",100,binLowEdge,binUpperEdge);
+    hEB1_numerator->Sumw2();
+    numPtEB1.push_back(hEB1_numerator);
+    TH1D *hEB2_numerator = new TH1D(Form("PtEB2_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEB2",100,binLowEdge,binUpperEdge);
+    hEB2_numerator->Sumw2();
+    numPtEB2.push_back(hEB2_numerator);
+    TH1D *hEE1_numerator = new TH1D(Form("PtEE1_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEE1",100,binLowEdge,binUpperEdge);
+    hEE1_numerator->Sumw2();
+    numPtEE1.push_back(hEE1_numerator);
+    TH1D *hEE2_numerator = new TH1D(Form("PtEE2_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEE2",100,binLowEdge,binUpperEdge);
+    hEE2_numerator->Sumw2();
+    numPtEE2.push_back(hEE2_numerator);
+    TH1D *hEE3_numerator = new TH1D(Form("PtEE3_numerator_pt%dTo%d",(int)binLowEdge,(int)binUpperEdge),"PtEE3",100,binLowEdge,binUpperEdge);
+    hEE3_numerator->Sumw2();
+    numPtEE3.push_back(hEE3_numerator);
   }
 
   Long64_t nentries = fChain->GetEntriesFast();
@@ -732,10 +772,33 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
 	    if (fabs(Photon_scEta) < 1.4442) sIeIeNumeratorEB_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	    if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) sIeIeNumeratorEE_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
       // granular 1-inner, 2-outer
-      if ( fabs(Photon_scEta) < 0.7221 ) sIeIeNumeratorEB1_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-      if ( (0.7221 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) sIeIeNumeratorEB2_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-      if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.033) )  sIeIeNumeratorEE1_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-      if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )   sIeIeNumeratorEE2_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+      // if ( fabs(Photon_scEta) < 0.7221 ) sIeIeNumeratorEB1_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+      // if ( (0.7221 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) sIeIeNumeratorEB2_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+      // if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.033) )  sIeIeNumeratorEE1_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+      // if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )   sIeIeNumeratorEE2_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+
+      if ( fabs(Photon_scEta) < 0.783 ) sIeIeNumeratorEB1_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+      if ( (0.783 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) sIeIeNumeratorEB2_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+      if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.8773) )  sIeIeNumeratorEE1_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+      if ( (1.8773 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.1887) )  sIeIeNumeratorEE2_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+      if ( (2.1887 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )   sIeIeNumeratorEE3_fromFakes.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+
+      // pt numerator fakes
+      if (fabs(Photon_scEta) < 1.4442) numPtEB.at(i)->Fill(Photon_pt,Event_weightAll);
+      if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) ) numPtEE.at(i)->Fill(Photon_pt,Event_weightAll);
+      // // granular 1-inner, 2-outer
+      // if ( fabs(Photon_scEta) < 0.7221 ) numPtEB1.at(i)->Fill(Photon_pt,Event_weightAll);
+      // if ( (0.7221 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) numPtEB2.at(i)->Fill(Photon_pt,Event_weightAll);
+      // if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.033) )  numPtEE1.at(i)->Fill(Photon_pt,Event_weightAll);
+      // if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  numPtEE2.at(i)->Fill(Photon_pt,Event_weightAll);
+
+      // granular 1-inner, 2-outer EB, 1-inner, 2-middle, 3-outer EE
+      if ( fabs(Photon_scEta) < 0.783 ) numPtEB1.at(i)->Fill(Photon_pt,Event_weightAll);
+      if ( (0.783 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) numPtEB2.at(i)->Fill(Photon_pt,Event_weightAll);
+      if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.8773) )  numPtEE1.at(i)->Fill(Photon_pt,Event_weightAll);
+      if ( (1.8773 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.1887) ) numPtEE2.at(i)->Fill(Photon_pt,Event_weightAll);
+      if ( (2.1887 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  numPtEE3.at(i)->Fill(Photon_pt,Event_weightAll);
+
 	  }
 	  // real photons
 	  if (reals) {
@@ -1367,6 +1430,10 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
     std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEE3_fromFakes.begin() ; it != sIeIeNumeratorEE3_fromFakes.end(); ++it) {
+   std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
+   (*it)->Write();
+ }
   // end granular hists
   for (std::vector<TH1D*>::iterator it = chIsoNumeratorEB_fromFakes.begin() ; it != chIsoNumeratorEB_fromFakes.end(); ++it) {
     std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
@@ -1449,6 +1516,39 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
     std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
+
+  // write numerator pt-binned histograms
+  for (std::vector<TH1D*>::iterator it = numPtEB.begin() ; it != numPtEB.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
+    (*it)->Write();
+  }
+  for (std::vector<TH1D*>::iterator it = numPtEE.begin() ; it != numPtEE.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
+    (*it)->Write();
+  }
+
+  // write granular
+  for (std::vector<TH1D*>::iterator it = numPtEB1.begin() ; it != numPtEB1.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
+    (*it)->Write();
+  }
+  for (std::vector<TH1D*>::iterator it = numPtEB2.begin() ; it != numPtEB2.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
+    (*it)->Write();
+  }
+  for (std::vector<TH1D*>::iterator it = numPtEE1.begin() ; it != numPtEE1.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
+    (*it)->Write();
+  }
+  for (std::vector<TH1D*>::iterator it = numPtEE2.begin() ; it != numPtEE2.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
+    (*it)->Write();
+  }
+  for (std::vector<TH1D*>::iterator it = numPtEE3.begin() ; it != numPtEE3.end(); ++it) {
+    std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
+    (*it)->Write();
+  }
+
 
   file_out.ls();
   file_out.Close();
