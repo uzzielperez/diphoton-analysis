@@ -165,7 +165,6 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
   std::vector< std::vector<TH1D*> > sIeIeFakeTemplatesEB2;
   std::vector< std::vector<TH1D*> > sIeIeFakeTemplatesEE1;
   std::vector< std::vector<TH1D*> > sIeIeFakeTemplatesEE2;
-  std::vector< std::vector<TH1D*> > sIeIeFakeTemplatesEE2;
   std::vector< std::vector<TH1D*> > sIeIeFakeTemplatesEE3;
 
   // create empty vectors to hold all the templates
@@ -182,6 +181,7 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
     std::vector<TH1D*> eb2vec;
     std::vector<TH1D*> ee1vec;
     std::vector<TH1D*> ee2vec;
+    std::vector<TH1D*> ee3vec;
     sIeIeFakeTemplatesEB1.push_back(eb1vec);
     sIeIeFakeTemplatesEB2.push_back(eb2vec);
     sIeIeFakeTemplatesEE1.push_back(ee1vec);

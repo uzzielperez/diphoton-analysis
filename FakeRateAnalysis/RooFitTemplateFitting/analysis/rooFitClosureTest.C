@@ -436,7 +436,8 @@ std::pair<double,double> fakeRateMCTruth(TString sample, TString templateVariabl
 
   // numerator
   // TString hNumerator = TString("photon_fakes_pt_") + etaBin;
-  TString hNumerator = TString("Pt") + etaBin + TString("_numerator_pt") + ptBin;
+  //TString hNumerator = TString("Pt") + etaBin + TString("_numerator_pt") + ptBin;
+  TString hNumerator = templateVariable + etaBin + "_numerator_fakesID_pt" + ptBin;
   TH1D* hNum = static_cast<TH1D*>(inNumFile->Get(hNumerator));
   // denominator
   TString hDenominator = TString("Pt") + etaBin + TString("_denominator_pt") + ptBin;
@@ -472,6 +473,11 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
 {
   //bool no_template_pv_binning = true;
   // do fitting procedure to extract fakes
+
+  // std::pair<double, double> Res = fit(sample, templateVariable, ptBin, etaBin, sideband, denomBin, era, pvCutLow, pvCutHigh);
+  // float fakevalue = Res.first;
+  // float fakeerror  = Res.second;
+  // return std::make_pair(fakevalue, fakeerror);
 
   if (sample != "alltruth"){
     std::pair<double, double> Res = fit(sample, templateVariable, ptBin, etaBin, sideband, denomBin, era, pvCutLow, pvCutHigh);

@@ -60,7 +60,7 @@ fakeRates::fakeRates(std::string fakeRateType, int year) : m_year(year)
 
 else{
   std::cout << "Closure Test" << std::endl;
-  std::vector<std::string> regions = {"EB", "EE", "EB1", "EB2", "EE1", "EE2"};
+  std::vector<std::string> regions = {"EB", "EE", "EB1", "EB2", "EE1", "EE2", "EE3"};
 
     for (auto region : regions){
       TFile *f = TFile::Open(Form("%s/src/fakeRatePlots_all_%d_nPV0-200.root", cmssw_base, year));

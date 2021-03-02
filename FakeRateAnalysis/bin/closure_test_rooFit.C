@@ -17,9 +17,6 @@ double fakeRateUncertainty(double denominator, double fakeerror, double fakerate
   return uncert;
 }
 
-
-
-
 int main(int argc, char *argv[])
 {
   TString sample;
