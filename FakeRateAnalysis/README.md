@@ -26,6 +26,9 @@ See MCFakeRateClosureTest
 
 ### Full 2016/2017/2018 Closure Test Pipeline
 
+1.) Make Real and Fake (MC as truth and MC as fake), Templates
+
+
 To make templates
 
 ```
