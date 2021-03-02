@@ -92,8 +92,6 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   TFile *histojetfile_templates;
   histojetfile_templates = TFile::Open(data_filename);
 
-
-
   // Real Templates
   TString mc_filename(basefilename + "diphoton_fake_rate_real_templates_all_GGJets_GJets_" + cmssw_version[era] + "_nPV0-200_MiniAOD_histograms.root");
   TFile *historealmcfile;
@@ -146,8 +144,6 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   hData->Print();
   hdenom->Print();
   // Denominator
-
-
 
   // avoiding 0 entries in the histograms
   // fake and real mc histos are the most critical
@@ -237,7 +233,8 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   }
   float xframemax = xframe->GetMaximum();
   xframe->GetYaxis()->SetRangeUser(1.e-1,1.1*xframemax);
-  xframe->GetYaxis()->SetTitle("#gamma Candidates / ( 0.0005 )");
+  //xframe->GetYaxis()->SetTitle("#gamma Candidates / ( 0.0005 )");
+  etaBin.Contains("EB") ? xframe->GetYaxis()->SetTitle("#gamma Candidates / ( 0.002 )") : xframe->GetYaxis()->SetTitle("#gamma Candidates / ( 0.004 )");
   //  xframe->GetYaxis()->SetTitleOffset(1.6);
   xframe->Draw();
 
@@ -253,6 +250,10 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
   TLatex *t_label = new TLatex();
   t_label->SetTextAlign(12);
   if (etaBin == "EB") t_label->DrawLatexNDC(0.55,0.60,"ECAL barrel");
+  else if (etaBin == "EB1") t_label->DrawLatexNDC(0.55,0.60,"ECAL inner barrel");
+  else if (etaBin == "EB2") t_label->DrawLatexNDC(0.55,0.60,"ECAL outer barrel");
+  else if (etaBin == "EE1") t_label->DrawLatexNDC(0.55,0.60,"ECAL inner endcap");
+  else if (etaBin == "EE2") t_label->DrawLatexNDC(0.55,0.60,"ECAL outer endcap");
   else t_label->DrawLatexNDC(0.55,0.60,"ECAL endcap");
   t_label->     DrawLatexNDC(0.55,0.55,label_pt_bin + " GeV");
   t_label->     DrawLatexNDC(0.55,0.50,sideband_string);
@@ -303,7 +304,8 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
     etaBin.Contains("EB") ? xframeClone->GetXaxis()->SetRangeUser(0.,50.) : xframeClone->GetXaxis()->SetRangeUser(0.,50.);
   }
   xframeClone->GetYaxis()->SetRangeUser(1.e-1,10.0*xframemax);
-  xframeClone->GetYaxis()->SetTitle("#gamma Candidates / ( 0.0005 )");
+  // xframeClone->GetYaxis()->SetTitle("#gamma Candidates / ( 0.0005 )");
+  etaBin.Contains("EB") ? xframe->GetYaxis()->SetTitle("#gamma Candidates / ( 0.002 )") : xframe->GetYaxis()->SetTitle("#gamma Candidates / ( 0.004 )");
   //  xframeClone->GetYaxis()->SetTitle(xframe->GetYaxis()->GetTitle());
   xframeClone->GetYaxis()->SetTitleOffset(1.2);
 
@@ -378,5 +380,8 @@ std::pair<double,double> rooFitClosureTest(TString sample, TString templateVaria
 
   historealmcfile->cd();
   historealmcfile->Close();
+
+  histojetfile_templates->cd();
+  histojetfile_templates->Close();
 
 } // end of rooFitClosureTest()
