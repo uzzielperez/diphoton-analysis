@@ -144,6 +144,11 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
     // uncomment me?
     if (Photon_r9_5x5 < 0.8) continue; // r9 cut for resonant sync
 
+    // photon pt cut (already applied in the analyzer)
+    // if (Photon_pt < 50.) continue;
+    // Apply Higher pT cut 125 GeV
+    // if (Photon_pt < 125.) continue;
+
     // calculate nPV
     int numVtxAfterCut = 0;
     for(unsigned int i=0; i < VertexCollInfo_vx->size(); i++){
@@ -213,11 +218,11 @@ void MCFakeRateAnalysis::Loop(int year, const std::string & sample, int pvCutLow
 	  if (is_chIso_numerator_object) chIsoEB.at(i)->Fill(Photon_chargedHadIso03,Event_weightAll);
 	}
 	// EB1
-	if (fabs(Photon_scEta) < 0.7221) {
+	if (fabs(Photon_scEta) < 1.000) {
 	  if (is_sieie_numerator_object) sigmaIetaIetaEB1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	}
 	// EB2
-	if (0.7221 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.4442) {
+	if (1.000 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.4442) {
 	  if (is_sieie_numerator_object) sigmaIetaIetaEB2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 	}
 	// EE

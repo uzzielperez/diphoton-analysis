@@ -169,7 +169,9 @@ void MCFakeRateClosureTestReweight::Loop(TString run, TString sample)
     if (is_sieie_numerator_object) nNumerator_passSipipCut++;
 
     // photon pt cut (already applied in the analyzer)
-    if (Photon_pt < 50.) continue;
+    // if (Photon_pt < 50.) continue;
+    // Apply Higher pT cut 125 GeV
+    // if (Photon_pt < 125.) continue;
 
     // calculate nPV
     int nPV_after_cut = 0;
@@ -237,12 +239,12 @@ void MCFakeRateClosureTestReweight::Loop(TString run, TString sample)
       // Granular Eta-binned FakeRate Reweighting V2
       // EE - split into inner, middle, outer
       // EB mildly adjusted split inner, outer
-      if ( fabs(Photon_scEta) < 0.783 ){
+      if ( fabs(Photon_scEta) < 1.000 ){
         photon_pt_denominator_fake_rate_weighted_gran_EB->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
         photon_eta_denominator_fake_rate_weighted_gran_EB->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
         photon_phi_denominator_fake_rate_weighted_gran_EB->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB1" ));
       } // EB inner
-      if ( (0.783 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ){
+      if ( (1.000 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ){
         photon_pt_denominator_fake_rate_weighted_gran_EB->Fill(Photon_pt,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
         photon_eta_denominator_fake_rate_weighted_gran_EB->Fill(Photon_eta,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));
         photon_phi_denominator_fake_rate_weighted_gran_EB->Fill(Photon_phi,Event_weightAll*FakeRateEtaBinned(Photon_pt, "EB2" ));

@@ -428,7 +428,9 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
     if (is_sieie_numerator_object) nNumerator_passSipipCut++;
 
     // photon pt cut (already applied in the analyzer)
-    if (Photon_pt < 50.) continue;
+    // if (Photon_pt < 50.) continue;
+    // Apply Higher pT cut 125 GeV
+    // if (Photon_pt < 125.) continue;
 
     // calculate nPV
     int nPV_after_cut = 0;
@@ -455,13 +457,13 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
 	  }
 	  // EB1
 	  // if (fabs(Photon_scEta) < 0.7221) {
-    if (fabs(Photon_scEta) < 0.783) {
+    if (fabs(Photon_scEta) < 1.000) {
 	    photonIsoEB1.at(pos)->Fill(Photon_photonIso03,Event_weightAll);
 	    corPhotonIsoEB1.at(pos)->Fill(Photon_corPhotonIso03,Event_weightAll);
 	  }
 	  // EB2
 	  // if (0.7221 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.4442) {
-    if (0.783 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.4442) {
+    if (1.000 < fabs(Photon_scEta) && fabs(Photon_scEta) < 1.4442) {
 	    photonIsoEB2.at(pos)->Fill(Photon_photonIso03,Event_weightAll);
 	    corPhotonIsoEB2.at(pos)->Fill(Photon_corPhotonIso03,Event_weightAll);
 	  }
@@ -521,8 +523,8 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
       // if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  phoPtEE2_denominator_varbin.Fill(Photon_pt,Event_weightAll);
 
       // granular 1-inner, 2-outer (EE: 1-inner, 2-middle, 3-outer)
-     if ( fabs(Photon_scEta) < 0.783 ) phoPtEB1_denominator_varbin.Fill(Photon_pt,Event_weightAll);
-     if ( (0.783 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) phoPtEB2_denominator_varbin.Fill(Photon_pt,Event_weightAll);
+     if ( fabs(Photon_scEta) < 1.000 ) phoPtEB1_denominator_varbin.Fill(Photon_pt,Event_weightAll);
+     if ( (1.000 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) phoPtEB2_denominator_varbin.Fill(Photon_pt,Event_weightAll);
      if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.8773) )  phoPtEE1_denominator_varbin.Fill(Photon_pt,Event_weightAll);
      if ( (1.8773 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.1887) )  phoPtEE2_denominator_varbin.Fill(Photon_pt,Event_weightAll);
      if ( (2.1887 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  phoPtEE3_denominator_varbin.Fill(Photon_pt,Event_weightAll);
@@ -545,8 +547,8 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
           // if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  sIeIeNumeratorEE2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 
           // granular 1-inner, 2-outer (EE: 1-inner, 2-middle, 3-outer)
-          if ( fabs(Photon_scEta) < 0.783 ) sIeIeNumeratorEB1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-          if ( (0.783 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) sIeIeNumeratorEB2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          if ( fabs(Photon_scEta) < 1.000 ) sIeIeNumeratorEB1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          if ( (1.000 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) sIeIeNumeratorEB2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
           if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.8773) )  sIeIeNumeratorEE1.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
           if ( (1.8773 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.1887) )  sIeIeNumeratorEE2.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
           if ( (2.1887 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  sIeIeNumeratorEE3.at(i)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
@@ -572,8 +574,8 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
     // if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  denomPtEE2.at(i)->Fill(Photon_pt,Event_weightAll);
 
     // granular 1-inner, 2-outer (EE: 1-inner, 2-middle, 3-outer)
-    if ( fabs(Photon_scEta) < 0.783 ) denomPtEB1.at(i)->Fill(Photon_pt,Event_weightAll);
-    if ( (0.783 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) denomPtEB2.at(i)->Fill(Photon_pt,Event_weightAll);
+    if ( fabs(Photon_scEta) < 1.000 ) denomPtEB1.at(i)->Fill(Photon_pt,Event_weightAll);
+    if ( (1.000 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) denomPtEB2.at(i)->Fill(Photon_pt,Event_weightAll);
     if ( (1.566  < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.8773) )  denomPtEE1.at(i)->Fill(Photon_pt,Event_weightAll);
     if ( (1.8773 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.1887) )  denomPtEE2.at(i)->Fill(Photon_pt,Event_weightAll);
     if ( (2.1887 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  denomPtEE3.at(i)->Fill(Photon_pt,Event_weightAll);
@@ -598,8 +600,8 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
         //     if ( (2.033 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  sIeIeFakeTemplatesEE2.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
 
           // granular 1-inner, 2-outer (EE: 1-inner, 2-middle, 3-outer)
-          if ( fabs(Photon_scEta) < 0.783 ) sIeIeFakeTemplatesEB1.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
-          if ( (0.783 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) sIeIeFakeTemplatesEB2.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          if ( fabs(Photon_scEta) < 1.000 ) sIeIeFakeTemplatesEB1.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
+          if ( (1.000 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.4442) ) sIeIeFakeTemplatesEB2.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
           if ( (1.566 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 1.8773) )  sIeIeFakeTemplatesEE1.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
           if ( (1.8773 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.1887) )  sIeIeFakeTemplatesEE2.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
           if ( (2.1887 < fabs(Photon_scEta)) && (fabs(Photon_scEta) < 2.5) )  sIeIeFakeTemplatesEE3.at(i).at(j)->Fill(Photon_sigmaIetaIeta5x5,Event_weightAll);
