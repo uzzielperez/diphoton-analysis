@@ -3,7 +3,7 @@
 import ROOT
 from ROOT import *
 import sys
-
+import os
 ##################
 #
 # This code overlays Real, Fake and Numerator Templates
@@ -18,6 +18,7 @@ import argparse
 parser = argparse.ArgumentParser(description='plots templates')
 parser.add_argument('-e', '--era', help='dummy, 2016, 2017, 2018', default='dummy', type=str)
 parser.add_argument('-r', '--real', help='draw real template', default=False, type=bool)
+parser.add_argument('-d', '--dset', help='datasets', default='all', type=str)
 args = parser.parse_args()
 
 # To supress canvas from popping up. Speeds up plots production
@@ -30,8 +31,27 @@ cmssw_version = {
   "2017": "94X",
   "2018": "102X"
 }
-base = "/uscms_data/d3/cuperez/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/";
+# base = "/uscms_data/d3/cuperez/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/";
+# base = "/uscms_data/d3/cuperez/tribosons/FakeRate/FakeRate/CMSSW_10_2_26/src/";
+
+base = os.getenv("CMSSW_BASE")
+print base
+
 drawReal = args.real
+
+dsetName = args.dset
+print "Sample %s" %(dsetName)
+
+if dsetName == "all":
+    realSetName = "all_GGJets_GJets"
+    fakeSetName = "all_samples"
+if dsetName == "GJets":
+    realSetName = "GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"
+    fakeSetName = "GJets_HT-all_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"
+
+print "Processing %s" %(realSetName)
+print "Processing %s" %(fakeSetName)
+
 
 if era == "dummy":
     PTBINS = [ 50, 70, 90, 130, 200, 600 ];
@@ -62,26 +82,26 @@ def GetHist(ptbin, etaBin, type, chIsosideband=None):
 
   if type == "Real":
       if era == "dummy":
-          filename = "diphoton_fake_rate_real_templates_all_GGJets_GJets_76X_MiniAOD_histograms.root"
+          filename = "diphoton_fake_rate_real_templates_%s_76X_MiniAOD_histograms.root" %(realSetName)
       else:
-          filename = "%sdiphoton_fake_rate_real_templates_all_GGJets_GJets_%s_nPV0-200_MiniAOD_histograms.root" %(base, cmssw_version[era])
+          filename = "%s/src/diphoton_fake_rate_real_templates_%s_%s_nPV0-200_MiniAOD_histograms.root" %(base, realSetName, cmssw_version[era])
       histname = "sieie" + etaBin + "_realtemplate_pt" + str(PTBINS[ptbin]) + "To" + str(PTBINS[ptbin+1])
       color = kRed
       # fillstyle = 3001
       drawAs = "hist, same"
   elif type == "Truth":
       if era == "dummy":
-          filename = "diphoton_fake_rate_closure_test_matching_all_samples_80X_MiniAOD_histograms_test.root"
+          filename = "diphoton_fake_rate_closure_test_matching_%s_80X_MiniAOD_histograms_test.root" %(fakeSetName)
       else:
-          filename = "%sdiphoton_fake_rate_closure_test_matching_all_samples_%s_MiniAOD_histograms.root" %(base, cmssw_version[era])
+          filename = "%s/src/diphoton_fake_rate_closure_test_matching_%s_%s_MiniAOD_histograms.root" %(base, fakeSetName, cmssw_version[era])
       histname = "sieie" + etaBin + "_numerator_fakes_pt" + str(PTBINS[ptbin]) + "To" + str(PTBINS[ptbin+1])
       color = kRed
       drawAs = "hist, same"
   else:
       if era == "dummy":
-          filename = "diphoton_fake_rate_closure_test_all_samples_76X_MiniAOD_histograms.root"
+          filename = "diphoton_fake_rate_closure_test_%s_76X_MiniAOD_histograms.root" %(fakeSetName)
       else:
-          filename = "%sdiphoton_fake_rate_closure_test_all_samples_%s_MiniAOD_histograms.root" %(base, cmssw_version[era])
+          filename = "%s/src/diphoton_fake_rate_closure_test_%s_%s_MiniAOD_histograms.root" %(base, fakeSetName, cmssw_version[era])
   if type == "Numerator":
       histname = "sieie" + etaBin + "_numerator_pt" + str(PTBINS[ptbin]) + "To" + str(PTBINS[ptbin+1])
       drawAs = "e, same"
@@ -89,9 +109,9 @@ def GetHist(ptbin, etaBin, type, chIsosideband=None):
       histname = "sieie" + etaBin + "_denominator_pt" + str(PTBINS[ptbin]) + "To" + str(PTBINS[ptbin+1])
   if type == "Fake":
       if era == "dummy":
-          filename = "diphoton_fake_rate_closure_test_all_samples_76X_MiniAOD_histograms.root"
+          filename = "diphoton_fake_rate_closure_test_%s_76X_MiniAOD_histograms.root" %(fakeSetName)
       else:
-          filename = "%sdiphoton_fake_rate_closure_test_all_samples_%s_MiniAOD_histograms.root" %(base, cmssw_version[era])
+          filename = "%s/src/diphoton_fake_rate_closure_test_%s_%s_MiniAOD_histograms.root" %(base, fakeSetName, cmssw_version[era])
       histname = "sieie" + etaBin + "_faketemplate_pt" + str(PTBINS[ptbin]) + "To" + str(PTBINS[ptbin+1]) + "_chIso" + sideband;
       drawAs = "hist, same"
 
