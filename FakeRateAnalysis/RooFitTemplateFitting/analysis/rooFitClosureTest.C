@@ -72,7 +72,7 @@ std::pair<double,double> fit(TString sample, TString templateVariable, TString p
 
   // for numerator, fake templates, and denominator (choose data or mc)
   //TString basefilename("root://cmseos.fnal.gov//store/user/cawest/fake_rate/");
-  TString basefilename("/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/");
+  TString basefilename("/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_26/src/");
   TString data_filename = "";
   TString pvCut = "";
   TString input_filename = "";
@@ -424,7 +424,7 @@ std::pair<double,double> fakeRateMCTruth(TString sample, TString templateVariabl
 
   // for numerator, fake templates, and denominator (choose data or mc)
   //TString basefilename("root://cmseos.fnal.gov//store/user/cawest/fake_rate/");
-  TString basefilename("/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_18/src/");
+  TString basefilename("/uscms/home/cuperez/nobackup/tribosons/FakeRate/FakeRate/CMSSW_10_2_26/src/");
   TString pvCut = "";
 
   TString num_filename = "diphoton_fake_rate_closure_test_matching_all_samples_"+ cmssw_version[era] +"_MiniAOD_histograms.root"; // get numerator here

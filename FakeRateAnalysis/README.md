@@ -31,7 +31,8 @@ To make templates
 ```
 cmsenv
 scram b
-photon_closure_test.exe [2016/2017/2018] [QCD/GJets/GGJets/all] [fakes/truth]
+photon_closure_test.exe [2016/2017/2018] [QCD/GJets/GGJets/all] [fakes/truth] default
+real_templates.exe [2015/2016/2017/2018] [DiPhotonJets/GGJets/GJets/all] [PV_low] [PV_high] [isClosureTest(true/false)]
 ```
 
 See Templates
@@ -48,6 +49,7 @@ To run RooFit Template Fitting:
 # Output from previous step expected in CMSSW_BASE/src
 mkdir plots
 closure_test_rooFit.exe all sieie [2016/2017/2018] 0 200
+closure_test_rooFit.exe alltruth sieie [2016/2017/2018] 0 200
 ```
 
 To plot Fake Rate vs MC truth
@@ -60,6 +62,7 @@ root -l 'compareToMCTruth.C(2018)'
 To plot reweighted kinematics
 ```
 # Must rerun Template making code after fitting code to reweight
+photon_closure_test.exe [2016/2017/2018] [QCD/GJets/GGJets/all] [fakes/truth] reweight
 # Output templates expected in CMSSW_BASE/src
 cd diphoton-analysis/FakeRateAnalysis/PhotonClosureTest/plots
 root -l 'plot_kinematics_with_ratio.C("all", "2016")'

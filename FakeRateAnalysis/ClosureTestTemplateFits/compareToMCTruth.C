@@ -219,11 +219,14 @@ void compareToMCTruth(int year=2016, bool setBatch=true){
 
    add_gr(year, "EE1");
    add_gr(year, "EE2");
+   add_gr(year, "EE3");
    add_grCompSideBands(year, "EE1");
    add_grCompSideBands(year, "EE2");
+   add_grCompSideBands(year, "EE3");
    // adjust y-range same as data
    add_gr(year, "EE1", true);
    add_gr(year, "EE2", true);
+   add_gr(year, "EE3", true);
 
    return 0;
 }

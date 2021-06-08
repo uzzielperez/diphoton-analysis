@@ -22,7 +22,7 @@ public:
   int m_year;
   // std::unique_ptr<fakeRatesClosureTest> m_fakeRate;
   // std::unique_ptr<float> m_fakeRate;
-  std::unique_ptr<fakeRates> m_fakeRate;
+  // std::unique_ptr<fakeRates> m_fakeRate;
 };
 
 
@@ -32,7 +32,7 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
   // m_fakeRate = std::make_unique<fakeRates>("average", m_year);
   // m_fakeRatesClosureTest = std::make_unique<fakeRatesClosureTest>("all", m_year,);
   // m_fakeRate = std::make_unique<float>();
-  m_fakeRate = std::make_unique<fakeRates>("all", m_year);
+  // m_fakeRate = std::make_unique<fakeRates>("all", m_year);
 
 //   In a ROOT session, you can do:
 //      root> .L MCFakeRateClosureTest.C
@@ -70,6 +70,15 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
   // count number of numerator photons
   int nNumerator              = 0;
   int nNumerator_passSipipCut = 0;
+
+  // edges
+  // double EBPlus  = 1.4442;
+  // double EBMinus = 1.000;
+  //
+  // double EEMinus = 1.566;
+  // double EEMidMinus = 1.8773;
+  // double EEMidPlus = 2.1887;
+  // double EEPlus = 2.5;
 
   // define number of bin edges
   const int nBins = 10;
@@ -428,7 +437,7 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
     if (is_sieie_numerator_object) nNumerator_passSipipCut++;
 
     // photon pt cut (already applied in the analyzer)
-    // if (Photon_pt < 50.) continue;
+    if (Photon_pt < 50.) continue;
     // Apply Higher pT cut 125 GeV
     // if (Photon_pt < 125.) continue;
 
@@ -499,21 +508,21 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
       if (fabs(Photon_scEta) < 1.4442) {
 	phoPtEB_denominator_varbin.Fill(Photon_pt,Event_weightAll);
 	photon_pt_denominator_EB->Fill(Photon_pt,Event_weightAll);
-	photon_pt_denominator_fake_rate_weighted_EB->Fill(Photon_pt,Event_weightAll*FakeRateEB(Photon_pt));
+	// photon_pt_denominator_fake_rate_weighted_EB->Fill(Photon_pt,Event_weightAll*FakeRateEB(Photon_pt));
 	photon_eta_denominator_EB->Fill(Photon_eta,Event_weightAll);
-	photon_eta_denominator_fake_rate_weighted_EB->Fill(Photon_eta,Event_weightAll*FakeRateEB(Photon_pt));
+	// photon_eta_denominator_fake_rate_weighted_EB->Fill(Photon_eta,Event_weightAll*FakeRateEB(Photon_pt));
 	photon_phi_denominator_EB->Fill(Photon_phi,Event_weightAll);
-	photon_phi_denominator_fake_rate_weighted_EB->Fill(Photon_phi,Event_weightAll*FakeRateEB(Photon_pt));
+	// photon_phi_denominator_fake_rate_weighted_EB->Fill(Photon_phi,Event_weightAll*FakeRateEB(Photon_pt));
       } // end EB
       // EE
       if (1.566 < fabs(Photon_scEta) && fabs(Photon_scEta) < 2.5) {
 	phoPtEE_denominator_varbin.Fill(Photon_pt,Event_weightAll);
 	photon_pt_denominator_EE->Fill(Photon_pt,Event_weightAll);
-	photon_pt_denominator_fake_rate_weighted_EE->Fill(Photon_pt,Event_weightAll*FakeRateEE(Photon_pt));
+	//photon_pt_denominator_fake_rate_weighted_EE->Fill(Photon_pt,Event_weightAll*FakeRateEE(Photon_pt));
 	photon_eta_denominator_EE->Fill(Photon_eta,Event_weightAll);
-	photon_eta_denominator_fake_rate_weighted_EE->Fill(Photon_eta,Event_weightAll*FakeRateEE(Photon_pt));
+	//photon_eta_denominator_fake_rate_weighted_EE->Fill(Photon_eta,Event_weightAll*FakeRateEE(Photon_pt));
 	photon_phi_denominator_EE->Fill(Photon_phi,Event_weightAll);
-	photon_phi_denominator_fake_rate_weighted_EE->Fill(Photon_phi,Event_weightAll*FakeRateEE(Photon_pt));
+	//photon_phi_denominator_fake_rate_weighted_EE->Fill(Photon_phi,Event_weightAll*FakeRateEE(Photon_pt));
       } // end EE
 
       // granular 1-inner, 2-outer
@@ -712,7 +721,7 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
     std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
-  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEE3.begin() ; it != sIeIeNumeratorEE2.end(); ++it) {
+  for (std::vector<TH1D*>::iterator it = sIeIeNumeratorEE3.begin() ; it != sIeIeNumeratorEE3.end(); ++it) {
     std::cout << (*it)->GetName() << "\t integral: " << (*it)->Integral() << std::endl;
     (*it)->Write();
   }
@@ -881,24 +890,24 @@ void MCFakeRateClosureTest::Loop(TString run, TString sample)
 } // end of Loop()
 
 
-double MCFakeRateClosureTest::FakeRateEB(double pt) {
-  double p0 = 0.00401543257042;
-  double p1 = 85.57002275698491;
-  double p2 = 1.71203116120994;
-  // add getFakeRate method from Chris (2016, 2017, 2018)
-  if (m_year == 2016 or m_year == 2017 or m_year == 2018){
-    return m_fakeRate->getFakeRateClosureTest(pt, "EB", m_year);
-  }
-  return p0+p1/std::pow(pt,p2);
-}
-
-double MCFakeRateClosureTest::FakeRateEE(double pt) {
-  double p0 = -0.15299002741780;
-  double p1 = 0.63378808277185;
-  double p2 = 0.21130650931470;
-  // add getFakeRate method from Chris (2016, 2017, 2018)
-  if (m_year == 2016 or m_year == 2017 or m_year == 2018){
-    return m_fakeRate->getFakeRateClosureTest(pt, "EE", m_year);
-  }
-  return p0+p1/std::pow(pt,p2);
-}
+// double MCFakeRateClosureTest::FakeRateEB(double pt) {
+//   double p0 = 0.00401543257042;
+//   double p1 = 85.57002275698491;
+//   double p2 = 1.71203116120994;
+//   // add getFakeRate method from Chris (2016, 2017, 2018)
+//   if (m_year == 2016 or m_year == 2017 or m_year == 2018){
+//     return m_fakeRate->getFakeRateClosureTest(pt, "EB", m_year);
+//   }
+//   return p0+p1/std::pow(pt,p2);
+// }
+//
+// double MCFakeRateClosureTest::FakeRateEE(double pt) {
+//   double p0 = -0.15299002741780;
+//   double p1 = 0.63378808277185;
+//   double p2 = 0.21130650931470;
+//   // add getFakeRate method from Chris (2016, 2017, 2018)
+//   if (m_year == 2016 or m_year == 2017 or m_year == 2018){
+//     return m_fakeRate->getFakeRateClosureTest(pt, "EE", m_year);
+//   }
+//   return p0+p1/std::pow(pt,p2);
+// }

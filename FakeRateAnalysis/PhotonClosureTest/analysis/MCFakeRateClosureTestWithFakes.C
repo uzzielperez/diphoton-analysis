@@ -549,7 +549,7 @@ void MCFakeRateClosureTestWithFakes::Loop(TString run, TString sample)
     if (Photon_sigmaIphiIphi5x5 < 0.009) continue;
 
     // photon pt cut (already applied in the analyzer)
-    // if (Photon_pt < 50.) continue;
+    if (Photon_pt < 50.) continue;
     // Apply Higher pT cut 125 GeV
     // if (Photon_pt < 125.) continue;
 
