@@ -60,7 +60,7 @@ fakeRates::fakeRates(std::string fakeRateType, int year) : m_year(year)
 
 else{
   std::cout << "Closure Test" << std::endl;
-  std::vector<std::string> regions = {"EB", "EE"};
+  std::vector<std::string> regions = {"EB", "EE", "EB1", "EB2", "EE1", "EE2"};
 
     for (auto region : regions){
       TFile *f = TFile::Open(Form("%s/src/fakeRatePlots_all_%d_nPV0-200.root", cmssw_base, year));
@@ -122,7 +122,7 @@ double fakeRates::getFakeRateClosureTest(double pt, std::string region, int year
   double pt_max = m_fakeRatesClosureTest[keyname_all]->GetX()[nmax];
   double pt_closure = (pt > pt_max) ? pt_max : pt;
   double fakeRate = m_fakeRatesClosureTest[keyname_all]->Eval(pt_closure);
-  std::cout << "FakeRate for pt: " << pt << "is " << fakeRate << std::endl;
+  // std::cout << "FakeRate for pt: " << pt << "is " << fakeRate << std::endl;
   return fakeRate;
 
 }

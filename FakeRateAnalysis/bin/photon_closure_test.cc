@@ -4,10 +4,10 @@
 
 int main(int argc, char *argv[])
 {
-  std::string samples, run, fakes;
+  std::string samples, run, fakes, reweight;
 
-  if(argc != 4) {
-    std::cout << "Syntax: photon_closure_test.exe [2016/2017/2018] [QCD/GJets/GGJets/all] [fakes/truth]" << std::endl;
+  if(argc !=5 ) {
+    std::cout << "Syntax: photon_closure_test.exe [2016/2017/2018] [QCD/GJets/GGJets/all] [fakes/truth] [reweight/default]" << std::endl;
     return -1;
   }
   else {
@@ -33,11 +33,21 @@ int main(int argc, char *argv[])
       std::cout << "Only 'fakes' and 'truth' are allowed parameters. " << std::endl;
       return -1;
     }
+    reweight = argv[4];
+    if(reweight.compare("reweight") != 0
+      and reweight.compare("default") !=0){
+      std::cout << "Only 'reweight' and 'default' are allowed parameters" << std::endl;
+      return -1;
+    }
+
+
   }
   bool do_fakes = fakes.compare("fakes");
   std::cout << "Doing MC as " << fakes << std::endl;
+  bool do_reweight = reweight.compare("default");
+  if (do_reweight) std::cout << "Reweighting denominators with fake rate";
 
-  diphoton_looper(run, samples, do_fakes);
+  diphoton_looper(run, samples, do_fakes, do_reweight);
 
   return 0;
 }
